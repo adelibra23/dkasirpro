@@ -111,7 +111,7 @@
         <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
     </div>
 
-    <!-- SCANNER MODAL (REVISI v19.2) -->
+    <!-- SCANNER MODAL -->
     <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6">
         <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
         <div class="w-full max-w-sm"><div id="reader" class="rounded-[40px] overflow-hidden border-4 border-indigo-600 shadow-2xl"></div></div>
@@ -181,13 +181,17 @@
         let printCharacteristic = null;
         let lastReceiptData = null;
         
-        // --- SCANNER STATE (v19.2) ---
         let lastScannedCode = "";
         let lastScannedTime = 0;
-        const SCAN_COOLDOWN = 2500; // Jeda 2.5 detik untuk produk yang sama
+        const SCAN_COOLDOWN = 2500;
         const beep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
 
-        window.onload = () => { loadSettings(); renderHome(); renderItems(); renderPos(); };
+        // --- ONLOAD REVISION (Keep active tab) ---
+        window.onload = () => { 
+            loadSettings(); 
+            const savedTab = localStorage.getItem('dk_active_tab') || 'home';
+            switchTab(savedTab); 
+        };
 
         // --- UTILS ---
         function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n || 0); }
@@ -195,14 +199,22 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        // --- NAVIGATION REVISION (Save to LocalStorage) ---
         function switchTab(t) {
             document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(`tab-${t}`);
             if(target) target.classList.add('active');
+            
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.replace('text-indigo-600', 'text-slate-300'));
             const navBtn = document.getElementById(`n-${t}`);
             if(navBtn) navBtn.classList.replace('text-slate-300', 'text-indigo-600');
-            if(t === 'home') renderHome(); if(t === 'data') renderData();
+            
+            localStorage.setItem('dk_active_tab', t);
+
+            if(t === 'home') renderHome(); 
+            if(t === 'data') renderData();
+            if(t === 'items') renderItems();
+            if(t === 'pos') renderPos();
         }
 
         // --- THEME ---
@@ -212,34 +224,26 @@
             localStorage.setItem('dk_config', JSON.stringify(config));
         }
 
-        // --- SCANNER REVISION (v19.2) ---
+        // --- SCANNER ---
         async function openScanner() {
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return showToast("Butuh HTTPS!");
             openModal('modal-scanner');
             if(!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-            const configQr = { fps: 24, qrbox: { width: 280, height: 160 } };
-            
-            html5QrCode.start({ facingMode: "environment" }, configQr, onScanSuccess)
+            html5QrCode.start({ facingMode: "environment" }, { fps: 24, qrbox: { width: 280, height: 160 } }, onScanSuccess)
             .catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
         }
 
         function onScanSuccess(text) {
             const now = Date.now();
-            // Jeda Keamanan: Cegah scan berulang untuk item yang sama terlalu cepat
             if (text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
-
             const found = items.find(i => String(i.barcode) === String(text));
             if(found) {
                 if(found.stock > 0) {
                     addToCart(found.id);
                     lastScannedCode = text;
                     lastScannedTime = now;
-                    
-                    // Feedback Suara & Getar
                     beep.currentTime = 0; beep.play();
                     if(window.navigator.vibrate) navigator.vibrate(100);
-
-                    // Feedback Visual
                     const fb = document.getElementById('scan-feedback');
                     fb.innerText = `Terdeteksi: ${found.name}`;
                     fb.classList.remove('hidden');
@@ -250,7 +254,7 @@
 
         async function closeScanner() { if(html5QrCode) await html5QrCode.stop(); closeModal('modal-scanner'); }
 
-        // --- POS ENGINE ---
+        // --- POS ---
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
             document.getElementById('pos-grid').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `
@@ -298,29 +302,15 @@
             const total = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, '')) || 0;
             const pay = Number(document.getElementById('pay-amt').value) || 0;
             if(pay < total) return showToast("Uang Kurang!");
-
-            const log = { 
-                id: "T-" + Date.now(), 
-                items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), 
-                amount: total, 
-                total_cost: cart.reduce((a,c) => a+((c.cost||0)*c.qty), 0), 
-                pay: pay, 
-                change: pay - total,
-                date: new Date().toISOString().split('T')[0], 
-                created_at: new Date().toISOString() 
-            };
-            
+            const log = { id: "T-" + Date.now(), items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), amount: total, total_cost: cart.reduce((a,c) => a+((c.cost||0)*c.qty), 0), pay: pay, change: pay - total, date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
             logs.push(log); saveStorage(); closeModal('modal-checkout');
-            lastReceiptData = log; 
             showReceipt(log);
             resetCart(); renderHome(); renderPos(); showToast("Berhasil!"); await syncCloud(log);
         }
 
         function showReceipt(d) {
-            // Set global data agar fungsi print/share bisa mengaksesnya
             lastReceiptData = d;
-            
             document.getElementById('rec-store-name').innerText = config.storeName;
             document.getElementById('rec-store-addr').innerText = config.storeAddress;
             document.getElementById('rec-store-phone').innerText = config.storePhone;
@@ -330,114 +320,8 @@
             document.getElementById('rec-total').innerText = formatIDR(d.amount);
             document.getElementById('rec-pay').innerText = formatIDR(d.pay);
             document.getElementById('rec-change').innerText = formatIDR(d.change);
-            
-            if(config.logo) { 
-                document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10">`; 
-                document.getElementById('rec-logo-box').classList.remove('hidden'); 
-            } else {
-                document.getElementById('rec-logo-box').classList.add('hidden');
-            }
-            openModal('modal-receipt');
-        }
-
-        function renderData() {
-            const f = document.getElementById('date-filter').value;
-            const fil = logs.filter(l => !f || l.date === f).reverse();
-            document.getElementById('data-list').innerHTML = fil.map(l => `
-                <div class="card p-5 flex justify-between items-center shadow-sm active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'>
-                    <div class="flex gap-4 items-center">
-                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center text-xs">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-                        <div>
-                            <p class="text-[11px] font-black line-clamp-1 text-slate-800 dark:text-slate-100">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p>
-                            <p class="text-[8px] text-slate-400 font-bold uppercase">${l.date} • ${l.id.substring(l.id.length - 6)}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
-                        <div class="flex gap-2 mt-1 justify-end">
-                            <i class="fa-solid fa-print text-[8px] text-slate-300"></i>
-                            <i class="fa-solid fa-share-nodes text-[8px] text-slate-300"></i>
-                        </div>
-                    </div>
-                </div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold">Kosong</p>';
-        }
-
-        function exportExcel() {
-            if(logs.length === 0) return showToast("Data Kosong");
-            const filterDate = document.getElementById('date-filter').value;
-            const dataToExport = logs.filter(l => !filterDate || l.date === filterDate).map(l => ({
-                ID: l.id,
-                Tanggal: l.date,
-                Items: l.items ? l.items.map(i => `${i.name}(x${i.qty})`).join(', ') : '-',
-                Total: l.amount,
-                Bayar: l.pay,
-                Kembali: l.change
-            }));
-            const ws = XLSX.utils.json_to_sheet(dataToExport);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-            XLSX.writeFile(wb, `DheKasir_Laporan_${filterDate || 'Semua'}.xlsx`);
-        }
-
-        function exportPDF() {
-            if(logs.length === 0) return showToast("Data Kosong");
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const filterDate = document.getElementById('date-filter').value;
-            
-            doc.text(`Laporan Penjualan - ${config.storeName}`, 14, 15);
-            doc.setFontSize(10);
-            doc.text(`Periode: ${filterDate || 'Semua Waktu'}`, 14, 22);
-
-            const filtered = logs.filter(l => !filterDate || l.date === filterDate);
-            const rows = filtered.map(l => [
-                l.date,
-                l.id.substring(l.id.length - 6),
-                l.items ? l.items.map(i => i.name).join(', ') : '-',
-                formatIDR(l.amount)
-            ]);
-
-            doc.autoTable({
-                startY: 30,
-                head: [['Tanggal', 'ID', 'Barang', 'Total']],
-                body: rows,
-                theme: 'striped',
-                headStyles: { fillStyle: '#4f46e5' }
-            });
-
-            doc.save(`Laporan_DheKasir_${filterDate || 'Semua'}.pdf`);
-        }
-
-        function shareToWhatsApp() {
-            if(!lastReceiptData) return showToast("Data Tidak Ditemukan");
-            let msg = `*STRUK BELANJA - ${config.storeName.toUpperCase()}*\n`;
-            msg += `_Tanggal: ${new Date(lastReceiptData.created_at).toLocaleString('id-ID')}_\n`;
-            msg += `----------------------------------\n`;
-            lastReceiptData.items.forEach(i => {
-                msg += `${i.name}\n${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`;
-            });
-            msg += `----------------------------------\n`;
-            msg += `*TOTAL: ${formatIDR(lastReceiptData.amount)}*\n`;
-            msg += `*TUNAI: ${formatIDR(lastReceiptData.pay)}*\n`;
-            msg += `*KEMBALI: ${formatIDR(lastReceiptData.change)}*\n\n`;
-            msg += `Terima Kasih Telah Berbelanja!`;
-            
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
-        }
-
-        function showReceipt(d) {
-            document.getElementById('rec-store-name').innerText = config.storeName;
-            document.getElementById('rec-store-addr').innerText = config.storeAddress;
-            document.getElementById('rec-store-phone').innerText = config.storePhone;
-            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString();
-            document.getElementById('rec-id').innerText = "ID: " + d.id;
-            document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
-            document.getElementById('rec-total').innerText = formatIDR(d.amount);
-            document.getElementById('rec-pay').innerText = formatIDR(d.pay);
-            document.getElementById('rec-change').innerText = formatIDR(d.change);
             if(config.logo) { document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10">`; document.getElementById('rec-logo-box').classList.remove('hidden'); }
+            else { document.getElementById('rec-logo-box').classList.add('hidden'); }
             openModal('modal-receipt');
         }
 
@@ -468,7 +352,7 @@
             } catch (e) { showToast("Gagal Print!"); }
         }
 
-        // --- DASHBOARD & ANALYTICS ---
+        // --- DASHBOARD ---
         function renderHome() {
             let profit = 0, omzet = 0, best = {};
             const hourMap = new Array(24).fill(0);
@@ -481,7 +365,7 @@
             });
             document.getElementById('dash-profit').innerText = formatIDR(profit);
             document.getElementById('dash-omzet').innerText = formatIDR(omzet);
-            document.getElementById('dash-low-stock').innerText = items.filter(i => i.stock < 5).length;
+            document.getElementById('dash-low-stock').innerText = items.filter(i => i.stock < 5).length + " Item";
             const top = Object.entries(best).sort((a,b) => b[1]-a[1]).slice(0,3);
             document.getElementById('top-products').innerHTML = top.map(([n, q]) => `<div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl font-bold text-[10px]"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') || '<p class="text-center opacity-30 text-[10px]">No Data</p>';
             initChart(hourMap);
@@ -493,7 +377,7 @@
             mainChart = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length:24}, (_,i) => i+':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } } });
         }
 
-        // --- STORAGE & SYNC ---
+        // --- STORAGE ---
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; document.getElementById('logo-preview').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; document.getElementById('app-logo').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; }; r.readAsDataURL(input.files[0]); } }
         function openStoreSettings() { openModal('modal-store-cfg'); document.getElementById('cfg-name').value = config.storeName; document.getElementById('cfg-address').value = config.storeAddress; document.getElementById('cfg-phone').value = config.storePhone; document.getElementById('cfg-url').value = config.url; }
         async function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); document.getElementById('store-name-display').innerText = config.storeName; closeModal('modal-store-cfg'); showToast("Disimpan!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
@@ -501,9 +385,10 @@
         function renderItems() { document.getElementById('item-list').innerHTML = items.map(i => `<div class="card p-5 flex justify-between items-center shadow-sm"><div class="flex items-center gap-4">📦<div><p class="text-xs font-black dark:text-slate-100">${i.name}</p><p class="text-[9px] text-slate-400 uppercase">Jual: ${formatIDR(i.price)} • Stok: ${i.stock}</p></div></div><button onclick="openProductModal(${i.id})" class="text-indigo-600"><i class="fa-solid fa-edit text-xs"></i></button></div>`).join(''); }
         function openProductModal(id = null) { if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; } else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; } openModal('modal-product'); }
         async function saveProduct() { const idIn = document.getElementById('p-id').value; const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value) }; if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d); saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("OK!"); syncCloud(d); }
-        function renderData() { const f = document.getElementById('date-filter').value; const fil = logs.filter(l => !f || l.date === f).reverse(); document.getElementById('data-list').innerHTML = fil.map(l => `<div class="card p-5 flex justify-between items-center shadow-sm" onclick='lastReceiptData=${JSON.stringify(l)};showReceipt(lastReceiptData)'><div class="flex gap-4 items-center"><div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1 text-slate-800 dark:text-slate-100">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 font-bold uppercase">${l.date}</p></div></div><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold">Kosong</p>'; }
-        function shareToWhatsApp() { if(!lastReceiptData) return; let msg = `*STRUK BELANJA - ${config.storeName}*\n------------------\n`; lastReceiptData.items.forEach(i => msg += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); msg += `------------------\n*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); }
-        function downloadReceiptPDF() { const { jsPDF } = window.jspdf; html2canvas(document.getElementById('receipt-area')).then(canvas => { const img = canvas.toDataURL('image/png'); const doc = new jsPDF({ unit: 'mm', format: [80, 150] }); doc.addImage(img, 'PNG', 0, 0, 80, 150); doc.save(`Struk_${lastReceiptData.id}.pdf`); }); }
+        function renderData() { const f = document.getElementById('date-filter').value; const fil = logs.filter(l => !f || l.date === f).reverse(); document.getElementById('data-list').innerHTML = fil.map(l => `<div class="card p-5 flex justify-between items-center shadow-sm active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex gap-4 items-center"><div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1 text-slate-800 dark:text-slate-100">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 font-bold uppercase">${l.date} • ${l.id.substring(l.id.length - 6)}</p></div></div><div class="text-right"><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold">Kosong</p>'; }
+        function shareToWhatsApp() { if(!lastReceiptData) return; let msg = `*STRUK - ${config.storeName.toUpperCase()}*\n`; lastReceiptData.items.forEach(i => msg += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); msg += `*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank'); }
+        function exportExcel() { if(logs.length === 0) return; const data = logs.map(l => ({ ID: l.id, Tanggal: l.date, Total: l.amount })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, `Laporan_DheKasir.xlsx`); }
+        function exportPDF() { if(logs.length === 0) return; const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text(`Laporan Penjualan - ${config.storeName}`, 14, 15); doc.autoTable({ startY: 25, head: [['Tanggal', 'ID', 'Total']], body: logs.map(l => [l.date, l.id, formatIDR(l.amount)]) }); doc.save(`Laporan_DheKasir.pdf`); }
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); document.getElementById('cloud-dot').className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"; } catch(e){} }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); }
     </script>
