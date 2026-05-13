@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DheKasir - Retail POS v6.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Library Pemindai Barcode (Versi Stabil) -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --border-color: #f1f5f9; }
+        .dark { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --border-color: #334155; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-color); color: var(--text-main); transition: background-color 0.3s ease; }
+        .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .animate-pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        
+        /* Barcode Scanner UI Fix */
+        #reader { width: 100% !important; border: none !important; border-radius: 24px; overflow: hidden; background: #000; }
+        #reader video { border-radius: 24px; object-fit: cover; }
+        .scanner-overlay { position: relative; border: 4px solid #4f46e5; border-radius: 28px; }
+        .scanner-overlay::after { content: ""; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: rgba(255,0,0,0.7); box-shadow: 0 0 15px red; animation: laser 2s infinite; z-index: 10; }
+        @keyframes laser { 0%, 100% { top: 20%; } 50% { top: 80%; } }
+    </style>
+</head>
+<body class="overflow-x-hidden hide-scrollbar">
+
+    <div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col pb-32">
+        
+        <header class="p-6 pb-4 flex justify-between items-center bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <div id="app-logo-container" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden shadow-sm">
+                    <span class="text-xl font-black text-indigo-600">D</span>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 tracking-tight" id="store-name-display">DheKasir</h1>
+                    <div class="flex items-center gap-1.5"><div id="cloud-status-dot" class="w-2 h-2 bg-slate-300 rounded-full"></div><span id="cloud-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest uppercase">LOKAL</span></div>
+                </div>
+            </div>
+            <button onclick="openScanner()" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-all">
+                <i class="fa-solid fa-barcode text-xl"></i>
+            </button>
+        </header>
+
+        <main class="flex-1 px-5 pt-4">
+            <!-- TAB: HOME -->
+            <section id="tab-home" class="tab-content space-y-6">
+                <div class="premium-gradient p-8 rounded-[40px] text-white shadow-2xl shadow-indigo-200 relative overflow-hidden">
+                    <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
+                    <div class="relative z-10">
+                        <p class="text-[11px] opacity-80 font-bold uppercase tracking-widest mb-1">Saldo Tersedia</p>
+                        <h2 class="text-3xl font-black mb-6 tracking-tight" id="dash-balance">Rp 0</h2>
+                        <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-6">
+                            <div><p class="text-[10px] uppercase opacity-70 font-bold mb-1">Pemasukan</p><p class="text-sm font-bold" id="dash-in">Rp 0</p></div>
+                            <div><p class="text-[10px] uppercase opacity-70 font-bold mb-1">Pengeluaran</p><p class="text-sm font-bold text-rose-200" id="dash-out">Rp 0</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6 rounded-[35px] shadow-sm"><canvas id="mainChart" height="180"></canvas></div>
+                <div class="card p-6 rounded-[35px] shadow-sm space-y-4">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Produk Terlaris</h3>
+                    <div id="best-seller-list" class="space-y-3"></div>
+                </div>
+            </section>
+
+            <!-- TAB: POS -->
+            <section id="tab-pos" class="tab-content hidden space-y-4">
+                <div class="flex gap-2 sticky top-[88px] z-30 pt-2 bg-transparent pb-2">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-300"></i>
+                        <input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari item atau scan..." class="w-full pl-12 pr-4 py-4 card rounded-3xl outline-none shadow-sm text-sm">
+                    </div>
+                </div>
+                <div id="pos-grid" class="grid grid-cols-2 gap-4 pb-40"></div>
+            </section>
+
+            <!-- TAB: ITEMS -->
+            <section id="tab-items" class="tab-content hidden space-y-4">
+                <div class="flex justify-between items-center mb-2"><h2 class="text-xl font-black text-slate-800">Master Item</h2><button onclick="openProductModal()" class="px-5 py-3 premium-gradient text-white rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg">Tambah Baru</button></div>
+                <div id="item-list" class="space-y-3 pb-32"></div>
+            </section>
+
+            <!-- TAB: DATA -->
+            <section id="tab-data" class="tab-content hidden space-y-6">
+                <div class="flex justify-between items-center"><h2 class="text-xl font-black text-slate-800">Riwayat</h2><input type="date" id="date-filter" onchange="renderData()" class="card rounded-xl px-3 py-2 text-[11px] font-bold outline-none"></div>
+                <div id="data-summary" class="grid grid-cols-2 gap-3"></div>
+                <div id="data-list" class="space-y-3 pb-32"></div>
+            </section>
+
+            <!-- TAB: SETTINGS -->
+            <section id="tab-settings" class="tab-content hidden space-y-6 pb-32">
+                <div class="card p-8 rounded-[40px] shadow-sm space-y-4">
+                    <div class="flex items-center gap-3"><i class="fa-solid fa-store text-slate-400 text-xl"></i><h3 class="font-bold text-slate-800">Profil Toko</h3></div>
+                    <div class="flex flex-col items-center gap-3 py-4 border-b border-dashed border-slate-100">
+                        <div id="logo-preview" class="w-20 h-20 bg-slate-50 border border-slate-200 rounded-3xl flex items-center justify-center overflow-hidden">
+                            <i class="fa-solid fa-image text-slate-300 text-2xl"></i>
+                        </div>
+                        <label class="px-4 py-2 bg-indigo-50 text-indigo-600 rounded-xl text-[10px] font-bold uppercase cursor-pointer">
+                            Unggah Logo
+                            <input type="file" id="cfg-logo-input" accept="image/*" class="hidden" onchange="handleLogoUpload(this)">
+                        </label>
+                    </div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">Nama Toko</label><input type="text" id="cfg-name" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm outline-none"></div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">Alamat Toko</label><input type="text" id="cfg-address" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm outline-none"></div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">Kontak WA</label><input type="text" id="cfg-phone" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm outline-none"></div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">Pajak %</label><input type="number" id="cfg-tax" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm outline-none"></div>
+                        <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">Diskon %</label><input type="number" id="cfg-discount" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm outline-none"></div>
+                    </div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase ml-3">GAS URL (Database)</label><input type="text" id="cfg-url" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-[10px] outline-none"></div>
+                    <button onclick="saveSettings()" class="w-full py-5 premium-gradient text-white rounded-3xl font-black text-xs uppercase shadow-xl">Simpan & Sinkron</button>
+                    <button onclick="connectPrinter()" class="w-full py-3 text-emerald-500 font-bold text-[10px] uppercase border border-emerald-100 rounded-2xl mt-4">Hubungkan Printer</button>
+                    <p id="printer-status" class="text-center text-[9px] font-bold text-slate-300 uppercase">OFFLINE</p>
+                </div>
+            </section>
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-slate-100 p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+            <button onclick="switchTab('home')" class="nav-btn text-indigo-600 flex flex-col items-center gap-1.5" id="n-home"><i class="fa-solid fa-house-chimney text-xl"></i><span class="text-[9px] font-bold uppercase">Home</span></button>
+            <button onclick="switchTab('pos')" class="nav-btn text-slate-300 flex flex-col items-center gap-1.5" id="n-pos"><i class="fa-solid fa-cash-register text-xl"></i><span class="text-[9px] font-bold uppercase">Kasir</span></button>
+            <button onclick="switchTab('items')" class="nav-btn text-slate-300 flex flex-col items-center gap-1.5" id="n-items"><i class="fa-solid fa-box text-xl"></i><span class="text-[9px] font-bold uppercase">Item</span></button>
+            <button onclick="switchTab('data')" class="nav-btn text-slate-300 flex flex-col items-center gap-1.5" id="n-data"><i class="fa-solid fa-receipt text-xl"></i><span class="text-[9px] font-bold uppercase">Data</span></button>
+            <button onclick="switchTab('settings')" class="nav-btn text-slate-300 flex flex-col items-center gap-1.5" id="n-settings"><i class="fa-solid fa-user-gear text-xl"></i><span class="text-[9px] font-bold uppercase">User</span></button>
+        </nav>
+
+        <!-- Barcode Scanner Modal -->
+        <div id="modal-scanner" class="fixed inset-0 z-[100] bg-slate-900 hidden flex items-center justify-center p-6">
+            <div class="bg-white w-full max-w-sm rounded-[40px] p-6 shadow-2xl relative">
+                <button onclick="closeScanner()" class="absolute -top-4 -right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-400 shadow-lg z-[110]"><i class="fa-solid fa-xmark"></i></button>
+                <div class="text-center mb-4"><h3 class="text-lg font-black text-slate-800">Scan Produk</h3><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gunakan Kamera Belakang</p></div>
+                <div class="scanner-overlay overflow-hidden rounded-[24px] bg-black min-h-[250px] flex items-center justify-center">
+                    <div id="reader" style="width: 100%;"></div>
+                </div>
+                <p id="scanner-msg" class="text-center text-[10px] font-bold mt-4 h-4"></p>
+            </div>
+        </div>
+
+        <!-- Floating Cart -->
+        <div id="cart-float" class="hidden fixed bottom-28 left-6 right-6 max-w-[360px] mx-auto bg-white p-5 rounded-[35px] border border-slate-100 shadow-2xl z-40 animate-pop">
+            <div class="flex justify-between items-center mb-5"><div class="flex items-center gap-3"><div id="cart-qty" class="w-10 h-10 bg-indigo-600 text-white rounded-2xl flex items-center justify-center font-black text-xs">0</div><div><p class="text-[10px] font-bold text-slate-400 uppercase">Belanjaan</p><p id="cart-total" class="text-xl font-black text-slate-800">Rp 0</p></div></div><button onclick="resetCart()" class="text-rose-500 font-bold text-[10px] uppercase p-2">Reset</button></div>
+            <button onclick="openCheckout()" class="w-full py-5 premium-gradient text-white rounded-[24px] font-black text-xs uppercase shadow-lg">Bayar Sekarang</button>
+        </div>
+
+        <!-- Checkout Modal -->
+        <div id="modal-checkout" class="fixed inset-0 z-[60] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+            <div class="bg-white w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop max-h-[95vh] overflow-y-auto hide-scrollbar">
+                <h3 class="text-xl font-black mb-6 text-center uppercase text-slate-800">Pembayaran</h3>
+                <div id="co-items" class="space-y-2 mb-6 bg-slate-50 p-6 rounded-3xl max-h-48 overflow-y-auto"></div>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><label class="text-[8px] font-black text-slate-400 uppercase">Potongan (Rp)</label><input type="number" id="co-discount-input" oninput="recalcCheckout()" class="w-full bg-transparent font-bold text-rose-500 outline-none" value="0"></div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100"><label class="text-[8px] font-black text-slate-400 uppercase">Pajak (%)</label><input type="number" id="co-tax-input" oninput="recalcCheckout()" class="w-full bg-transparent font-bold text-indigo-500 outline-none"></div>
+                </div>
+                <div class="space-y-2 mb-6 px-4 text-xs font-bold">
+                    <div class="flex justify-between text-slate-400"><span>Murni</span><span id="co-subtotal">Rp 0</span></div>
+                    <div class="flex justify-between items-center pt-2 border-t border-slate-100 font-black text-slate-800 text-lg"><span>Total Akhir</span><span id="co-grandtotal">Rp 0</span></div>
+                </div>
+                <div class="space-y-4">
+                    <input type="number" id="pay-amt" oninput="calcChange()" placeholder="Uang Tunai" class="w-full p-6 bg-emerald-50 text-emerald-700 font-black rounded-[30px] text-center text-3xl outline-none border-2 border-emerald-100">
+                    <div class="flex justify-between items-center px-6 py-4 bg-slate-50 rounded-2xl"><span class="text-xs font-bold text-slate-400 uppercase">Kembalian</span><span id="pay-change" class="text-xl font-black text-slate-800">Rp 0</span></div>
+                    <button onclick="finishCheckout()" class="w-full py-6 premium-gradient text-white rounded-[30px] font-black text-sm uppercase shadow-xl">Konfirmasi Bayar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Receipt Modal -->
+        <div id="modal-receipt" class="fixed inset-0 z-[70] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+            <div class="bg-white w-full max-w-xs rounded-[40px] p-8 animate-pop receipt-container text-slate-800 shadow-2xl max-h-[85vh] overflow-y-auto hide-scrollbar">
+                <div class="text-center border-b border-dashed border-slate-300 pb-4 mb-4">
+                    <div id="rec-logo-area" class="flex justify-center mb-2 hidden"></div>
+                    <h4 class="font-black text-lg uppercase mb-1" id="rec-store-name">-</h4>
+                    <p class="text-[9px] mb-1" id="rec-store-addr">-</p>
+                    <p class="text-[9px] mb-1" id="rec-store-phone">-</p>
+                    <p class="text-[8px] opacity-60" id="rec-date">00/00/0000 00:00</p>
+                </div>
+                <div id="rec-items" class="text-[10px] space-y-2 mb-4"></div>
+                <div class="border-t border-dashed border-slate-300 pt-4 space-y-1 text-[10px]">
+                    <div class="flex justify-between font-black text-sm pt-2 border-t border-dotted border-slate-200 mt-1"><span>TOTAL</span><span id="rec-total">Rp 0</span></div>
+                    <div class="flex justify-between mt-2 pt-2 border-t border-slate-100"><span>Tunai</span><span id="rec-pay">Rp 0</span></div>
+                    <div class="flex justify-between font-bold"><span>Kembali</span><span id="rec-change">Rp 0</span></div>
+                </div>
+                <div class="mt-6 flex flex-col items-center">
+                    <div class="w-32 h-32 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100"><i class="fa-solid fa-qrcode text-4xl text-slate-200"></i></div>
+                    <p id="rec-tid" class="text-[7px] font-bold text-slate-300 mt-2 tracking-widest"></p>
+                </div>
+                <div class="text-center mt-6">
+                    <button onclick="printBluetoothReceipt()" id="btn-print-action" class="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase mb-2">Print Bluetooth</button>
+                    <button onclick="closeModal('modal-receipt')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase">Tutup</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Item Modal -->
+        <div id="modal-product" class="fixed inset-0 z-[60] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
+            <div class="bg-white w-full rounded-[40px] p-8 animate-pop overflow-y-auto max-h-[85vh]">
+                <h3 class="text-xl font-black mb-6 text-slate-800">Detail Produk</h3>
+                <input type="hidden" id="p-id">
+                <div class="space-y-4">
+                    <input type="text" id="p-barcode" placeholder="Barcode / SKU" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-indigo-600">
+                    <input type="text" id="p-name" placeholder="Nama Produk" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold">
+                    <div class="grid grid-cols-2 gap-4">
+                        <input type="number" id="p-price" placeholder="Harga" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold text-indigo-600">
+                        <input type="number" id="p-stock" placeholder="Stok" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold">
+                    </div>
+                    <input type="text" id="p-thumb" placeholder="Emoji (☕) atau URL Gambar" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm">
+                    <select id="p-cat" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold"><option value="Makanan">Makanan</option><option value="Minuman">Minuman</option><option value="Umum">Umum</option></select>
+                    <div class="flex gap-3"><button onclick="closeModal('modal-product')" class="flex-1 py-4 bg-slate-50 rounded-2xl font-bold text-slate-400">Batal</button><button onclick="saveProduct()" class="flex-1 py-4 premium-gradient text-white rounded-2xl font-bold shadow-lg">Simpan</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[100] uppercase tracking-widest"></div>
+    </div>
+
+    <script>
+        let items = JSON.parse(localStorage.getItem('dk_items')) || [{ id: Date.now(), barcode: '123', name: 'Produk Demo', price: 10000, stock: 99, cat: 'Umum', thumb: '📦' }];
+        let logs = JSON.parse(localStorage.getItem('dk_logs')) || [];
+        let config = JSON.parse(localStorage.getItem('dk_config')) || { darkMode: false, storeName: 'DheKasir Retail', storeAddress: '-', storePhone: '-', taxRate: 11, defDiscount: 0, url: '', logo: null };
+        let cart = [];
+        let mainChart = null;
+        let printCharacteristic = null;
+        let lastReceiptData = null;
+        let html5QrCode = null;
+
+        window.onload = () => { 
+            loadInitialSettings(); 
+            renderHome(); 
+            renderItems(); 
+            renderPos(); 
+            checkSyncStatus(); 
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                showToast("Scanner Butuh HTTPS!");
+            }
+        };
+
+        function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n); }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('opacity-0', 'top-12'); t.classList.add('top-16'); setTimeout(() => { t.classList.add('opacity-0', 'top-12'); t.classList.remove('top-16'); }, 2000); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function switchTab(t) { 
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.add('hidden')); 
+            const targetTab = document.getElementById(`tab-${t}`);
+            if(targetTab) targetTab.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('text-indigo-600'); b.classList.add('text-slate-300'); });
+            const targetNav = document.getElementById(`n-${t}`);
+            if(targetNav) { targetNav.classList.remove('text-slate-300'); targetNav.classList.add('text-indigo-600'); }
+            if (t === 'home') renderHome(); 
+            if (t === 'data') renderData(); 
+        }
+
+        async function openScanner() {
+            openModal('modal-scanner');
+            const msg = document.getElementById('scanner-msg');
+            msg.innerText = "Mencari Kamera...";
+            
+            try {
+                if (!html5QrCode) {
+                    html5QrCode = new Html5Qrcode("reader");
+                }
+                
+                const qrConfig = { fps: 15, qrbox: { width: 250, height: 150 } };
+                
+                await html5QrCode.start(
+                    { facingMode: "environment" }, 
+                    qrConfig, 
+                    onScanSuccess
+                );
+                msg.innerText = "Kamera Aktif";
+                msg.className = "text-center text-[10px] font-bold text-indigo-500 mt-4 h-4";
+            } catch (err) {
+                console.error(err);
+                msg.innerText = "GAGAL: Pastikan Izin & HTTPS";
+                msg.className = "text-center text-[10px] font-bold text-rose-500 mt-4 h-4";
+            }
+        }
+
+        function onScanSuccess(decodedText) {
+            const msg = document.getElementById('scanner-msg');
+            const found = items.find(i => String(i.barcode) === String(decodedText));
+            if (found) {
+                if (found.stock <= 0) {
+                    msg.innerText = "STOK HABIS!";
+                    msg.className = "text-center text-[10px] font-bold text-rose-500 mt-4 h-4";
+                } else {
+                    addToCart(found.id);
+                    msg.innerText = `DITEMUKAN: ${found.name}`;
+                    msg.className = "text-center text-[10px] font-bold text-emerald-500 mt-4 h-4";
+                    if (window.navigator.vibrate) window.navigator.vibrate(150);
+                }
+            } else {
+                msg.innerText = `BARCODE ${decodedText} TIDAK TERDAFTAR`;
+                msg.className = "text-center text-[10px] font-bold text-rose-400 mt-4 h-4";
+            }
+        }
+
+        async function closeScanner() {
+            if (html5QrCode) {
+                try {
+                    await html5QrCode.stop();
+                } catch(e) {}
+            }
+            closeModal('modal-scanner');
+        }
+
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    config.logo = base64;
+                    document.getElementById('logo-preview').innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+                    document.getElementById('app-logo-container').innerHTML = `<img src="${base64}" class="w-full h-full object-cover">`;
+                    showToast("Logo Terpasang!");
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function connectPrinter() {
+            const status = document.getElementById('printer-status');
+            try {
+                const device = await navigator.bluetooth.requestDevice({ 
+                    acceptAllDevices: true, 
+                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb'] 
+                });
+                status.innerText = "CONNECTING...";
+                const server = await device.gatt.connect();
+                const services = await server.getPrimaryServices();
+                let foundChar = null;
+                for (const service of services) {
+                    const chars = await service.getCharacteristics();
+                    for (const c of chars) { if (c.properties.write || c.properties.writeWithoutResponse) { foundChar = c; break; } }
+                    if (foundChar) break;
+                }
+                printCharacteristic = foundChar;
+                status.innerText = `READY: ${device.name}`;
+                status.className = "text-center text-[9px] font-bold text-emerald-500 uppercase";
+                showToast("Printer Konek!");
+            } catch (error) { status.innerText = "GAGAL"; showToast("BT Error"); }
+        }
+
+        async function printBluetoothReceipt() {
+            if (!printCharacteristic || !lastReceiptData) return showToast("Buka Bluetooth!");
+            const btn = document.getElementById('btn-print-action'); btn.disabled = true;
+            const encoder = new TextEncoder();
+            const esc = '\x1b', gs = '\x1d';
+            const cmd = { init: esc + '@', center: esc + 'a' + '\x01', left: esc + 'a' + '\x00', boldOn: esc + 'E' + '\x01', boldOff: esc + 'E' + '\x00', cut: gs + 'V' + '\x42' + '\x00' };
+            
+            let receipt = cmd.init + cmd.center + cmd.boldOn + config.storeName.toUpperCase() + cmd.boldOff + '\n' + config.storeAddress + '\n' + config.storePhone + '\n' + new Date(lastReceiptData.created_at).toLocaleString('id-ID') + '\n--------------------------------\n' + cmd.left;
+            lastReceiptData.items.forEach(i => { receipt += `${i.name.substring(0, 31)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${(i.price * i.qty).toLocaleString()}\n`; });
+            receipt += '--------------------------------\n' + `TOTAL   : Rp ${lastReceiptData.amount.toLocaleString()}\n` + `TUNAI   : Rp ${lastReceiptData.pay.toLocaleString()}\n` + `KEMBALI : Rp ${lastReceiptData.change.toLocaleString()}\n` + cmd.center + '\nTERIMA KASIH\n\n\n\n' + cmd.cut;
+
+            try {
+                const chunks = []; for (let i = 0; i < receipt.length; i += 20) chunks.push(receipt.substring(i, i + 20));
+                for (const chunk of chunks) {
+                    await printCharacteristic.writeValue(encoder.encode(chunk));
+                    await new Promise(r => setTimeout(r, 50));
+                }
+                showToast("Selesai!");
+            } catch (error) { showToast("Gagal Print"); }
+            finally { btn.disabled = false; }
+        }
+
+        function loadInitialSettings() {
+            const saved = JSON.parse(localStorage.getItem('dk_config'));
+            if(saved) {
+                config = {...config, ...saved};
+                document.getElementById('cfg-name').value = config.storeName || '';
+                document.getElementById('cfg-address').value = config.storeAddress || '';
+                document.getElementById('cfg-phone').value = config.storePhone || '';
+                document.getElementById('cfg-url').value = config.url || '';
+                document.getElementById('cfg-tax').value = config.taxRate || 11;
+                document.getElementById('cfg-discount').value = config.defDiscount || 0;
+                document.getElementById('store-name-display').innerText = config.storeName || 'DheKasir';
+                if(config.logo) {
+                    document.getElementById('logo-preview').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`;
+                    document.getElementById('app-logo-container').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`;
+                }
+            }
+        }
+
+        async function saveSettings() {
+            config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, taxRate: Number(document.getElementById('cfg-tax').value), defDiscount: Number(document.getElementById('cfg-discount').value), url: document.getElementById('cfg-url').value };
+            localStorage.setItem('dk_config', JSON.stringify(config));
+            document.getElementById('store-name-display').innerText = config.storeName;
+            checkSyncStatus(); showToast("OK!"); await syncCloud({ type: 'settings', id: 'app_config', data: config });
+        }
+
+        function renderHome() {
+            const today = new Date().toISOString().split('T')[0];
+            let balance = 0, inc = 0, exp = 0;
+            const counter = {};
+            logs.forEach(l => {
+                const a = Number(l.amount) || 0;
+                if (l.type === 'income') { balance += a; if (l.date === today) inc += a; if (l.items) l.items.forEach(it => { counter[it.name] = (counter[it.name] || 0) + it.qty; }); }
+                else { balance -= a; if (l.date === today) exp += a; }
+            });
+            document.getElementById('dash-balance').innerText = formatIDR(balance);
+            document.getElementById('dash-in').innerText = formatIDR(inc);
+            document.getElementById('dash-out').innerText = formatIDR(exp);
+            const best = Object.entries(counter).sort((a,b) => b[1] - a[1]).slice(0, 3);
+            document.getElementById('best-seller-list').innerHTML = best.length ? best.map(([n, q]) => `<div class="flex justify-between items-center text-xs font-bold bg-slate-50 p-3 rounded-2xl"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') : '<p class="text-[10px] text-slate-300 text-center">Belum ada data</p>';
+            initChart();
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            if (mainChart) mainChart.destroy();
+            const labels = [], datasets = [];
+            for(let i=6; i>=0; i--) { const d = new Date(); d.setDate(d.getDate() - i); labels.push(d.toLocaleDateString('id-ID', {weekday:'short'})); datasets.push(logs.filter(l => l.date === d.toISOString().split('T')[0] && l.type === 'income').reduce((a,b) => a + Number(b.amount), 0)); }
+            mainChart = new Chart(ctx, { type: 'line', data: { labels, datasets: [{ data: datasets, borderColor: '#4f46e5', borderWidth: 3, tension: 0.4, fill: true, backgroundColor: 'rgba(79, 70, 229, 0.05)', pointRadius: 0 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 9, weight: '700' }, color: '#94a3b8' } } } } });
+        }
+
+        function renderPos() {
+            const q = document.getElementById('pos-search').value.toLowerCase();
+            document.getElementById('pos-grid').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || i.barcode.includes(q)).map(i => {
+                const isOut = i.stock <= 0;
+                let ic = i.thumb && i.thumb.length < 5 ? `<span class="text-3xl">${i.thumb}</span>` : (i.thumb ? `<img src="${i.thumb}" class="w-full h-full object-cover rounded-[22px]">` : `<i class="fa-solid fa-box text-3xl"></i>`);
+                return `<div onclick="${isOut ? '' : `addToCart(${i.id})`}" class="card p-4 rounded-[30px] active:scale-95 transition-all ${isOut ? 'opacity-40 grayscale' : ''}"><div class="w-full aspect-square bg-slate-50 rounded-[22px] flex items-center justify-center text-indigo-300 mb-3 overflow-hidden">${ic}</div><p class="text-[11px] font-bold text-slate-800 line-clamp-1">${i.name}</p><p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p><p class="text-[8px] font-black text-slate-400 mt-1">Stok: ${i.stock}</p></div>`;
+            }).join('');
+        }
+
+        function addToCart(id) {
+            const it = items.find(i => i.id == id);
+            const inC = cart.find(c => c.id == id);
+            if(inC) { if(inC.qty >= it.stock) return showToast("Stok Habis"); inC.qty++; } else { cart.push({...it, qty: 1}); }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            document.getElementById('cart-qty').innerText = cart.reduce((a,b) => a + b.qty, 0);
+            document.getElementById('cart-total').innerText = formatIDR(total);
+            document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0);
+        }
+
+        function resetCart() { cart = []; updateCartUI(); }
+
+        function openCheckout() {
+            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            document.getElementById('co-subtotal').innerText = formatIDR(total);
+            document.getElementById('co-tax-input').value = config.taxRate;
+            document.getElementById('co-discount-input').value = config.defDiscount;
+            recalcCheckout(); openModal('modal-checkout');
+        }
+
+        function recalcCheckout() {
+            const sub = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            const dis = Number(document.getElementById('co-discount-input').value) || 0;
+            const tx = Math.round((sub - dis) * (Number(document.getElementById('co-tax-input').value) / 100));
+            document.getElementById('co-grandtotal').innerText = formatIDR(Math.max(0, sub - dis + tx));
+            calcChange();
+        }
+
+        function calcChange() {
+            const grand = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, '')) || 0;
+            const pay = Number(document.getElementById('pay-amt').value) || 0;
+            document.getElementById('pay-change').innerText = formatIDR(Math.max(0, pay - grand));
+        }
+
+        async function finishCheckout() {
+            const total = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, ''));
+            const pay = Number(document.getElementById('pay-amt').value) || 0;
+            if(pay < total) return showToast("Uang Kurang!");
+            
+            const sub = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            const dis = Number(document.getElementById('co-discount-input').value) || 0;
+            const tax = Math.round((sub - dis) * (Number(document.getElementById('co-tax-input').value) / 100));
+            
+            const log = { id: "T-" + Date.now(), type: 'income', category: 'Penjualan', items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })), subtotal: sub, tax, discount: dis, amount: total, pay, change: pay - total, date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
+            
+            for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; await syncCloud(i); } }
+            logs.push(log); saveStorage(); closeModal('modal-checkout');
+            lastReceiptData = log; showReceipt(log);
+            cart = []; updateCartUI(); renderHome(); renderPos(); showToast("Berhasil!"); await syncCloud(log);
+        }
+
+        function showReceipt(d) {
+            document.getElementById('rec-store-name').innerText = config.storeName;
+            document.getElementById('rec-store-addr').innerText = config.storeAddress;
+            document.getElementById('rec-store-phone').innerText = config.storePhone;
+            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString();
+            document.getElementById('rec-items').innerHTML = d.items.map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
+            document.getElementById('rec-total').innerText = formatIDR(d.amount);
+            document.getElementById('rec-pay').innerText = formatIDR(d.pay);
+            document.getElementById('rec-change').innerText = formatIDR(d.change);
+            document.getElementById('rec-tid').innerText = d.id;
+            if(config.logo) { document.getElementById('rec-logo-area').innerHTML = `<img src="${config.logo}" class="h-10">`; document.getElementById('rec-logo-area').classList.remove('hidden'); }
+            openModal('modal-receipt');
+        }
+
+        function renderItems() { document.getElementById('item-list').innerHTML = items.map(i => `<div class="card p-5 rounded-[30px] flex justify-between items-center shadow-sm"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-xl">${i.thumb || '📦'}</div><div><p class="text-[13px] font-bold text-slate-800">${i.name}</p><p class="text-[10px] text-slate-400 font-bold uppercase">${formatIDR(i.price)} • Stok: ${i.stock}</p></div></div><button onclick="openProductModal(${i.id})" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl"><i class="fa-solid fa-edit text-xs"></i></button></div>`).join(''); }
+        function openProductModal(id = null) { if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; document.getElementById('p-thumb').value = i.thumb || ''; document.getElementById('p-cat').value = i.cat || 'Umum'; } else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; document.getElementById('p-thumb').value = ''; document.getElementById('p-cat').value = 'Umum'; } openModal('modal-product'); }
+        async function saveProduct() { const idIn = document.getElementById('p-id').value; const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), thumb: document.getElementById('p-thumb').value, cat: document.getElementById('p-cat').value }; if(!d.name) return showToast("Isi Nama Produk!"); if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else { items.push(d); } saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("Tersimpan!"); await syncCloud(d); }
+
+        function renderData() { 
+            const f = document.getElementById('date-filter').value; 
+            const fil = logs.filter(l => !f || l.date === f).reverse(); 
+            const inc = fil.filter(l => l.type === 'income').reduce((a,b) => a + Number(b.amount), 0), exp = fil.filter(l => l.type === 'expense').reduce((a,b) => a + Number(b.amount), 0); 
+            document.getElementById('data-summary').innerHTML = `<div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100"><p class="text-[9px] font-bold text-emerald-600 uppercase">Cash In</p><p class="text-xs font-black text-emerald-800">${formatIDR(inc)}</p></div><div class="bg-rose-50 p-4 rounded-2xl border border-rose-100"><p class="text-[9px] font-bold text-rose-600 uppercase">Cash Out</p><p class="text-xs font-black text-rose-800">${formatIDR(exp)}</p></div>`; 
+            document.getElementById('data-list').innerHTML = fil.map((l) => `<div class="card p-5 rounded-[32px] flex justify-between items-center shadow-sm" onclick="showHistoryReceipt('${l.id}')"><div class="flex gap-4 items-center"><div class="w-10 h-10 ${l.type === 'income' ? 'bg-emerald-50 text-emerald-500' : 'bg-rose-50 text-rose-500'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid ${l.type === 'income' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i></div><div><p class="text-[11px] font-black text-slate-800 line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : (l.note || 'Transaksi')}</p><p class="text-[9px] text-slate-400 font-bold uppercase">${l.category}</p></div></div><div class="text-right"><p class="text-[12px] font-black ${l.type === 'income' ? 'text-emerald-500' : 'text-rose-500'}">${l.type === 'income' ? '+' : '-'}${formatIDR(l.amount)}</p></div></div>`).join('');
+        }
+
+        function showHistoryReceipt(id) { const found = logs.find(l => String(l.id) === String(id)); if(found && found.items) { lastReceiptData = found; showReceipt(found); } }
+        function checkSyncStatus() { const dot = document.getElementById('cloud-status-dot'), txt = document.getElementById('cloud-status-text'); if(config.url && config.url.startsWith('http')) { dot.className = "w-2 h-2 bg-emerald-500 rounded-full animate-pulse"; txt.innerText = "Online"; txt.className = "text-[10px] font-bold text-emerald-500 uppercase tracking-widest"; } else { dot.className = "w-2 h-2 bg-slate-300 rounded-full"; txt.innerText = "Mode Lokal"; txt.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest"; } }
+        async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); } catch (e) { console.error("Sync Error", e); } }
+        function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); }
+    </script>
+</body>
+</html>
