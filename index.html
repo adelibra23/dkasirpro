@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir Platinum v19.2</title>
+    <title>DheKasir Platinum v19.2.1 - Patch</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-dim uppercase tracking-widest" id="status-text">v19.2 Pro</span></div>
+                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-dim uppercase tracking-widest" id="status-text">v19.2.1 Platinum</span></div>
                 </div>
             </div>
             <button onclick="openScanner()" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20"><i class="fa-solid fa-barcode text-xl"></i></button>
@@ -91,7 +91,7 @@
                 <div class="card p-2 space-y-1">
                     <div class="flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-700/50"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-moon"></i></div><span class="text-sm font-bold">Tema Gelap</span></div><label class="switch"><input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"><span class="slider"></span></label></div>
                     <div onclick="openStoreSettings()" class="flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-700/50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-store"></i></div><span class="text-sm font-bold">Setelan Toko</span></div><i class="fa-solid fa-chevron-right text-xs text-slate-300"></i></div>
-                    <div onclick="connectPrinter()" class="flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-700/50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-600"><i class="fa-solid fa-print"></i></div><span class="text-sm font-bold">Printer Thermal</span></div><span id="printer-status" class="text-[8px] font-black text-slate-300 uppercase">OFFLINE</span></div>
+                    <div onclick="connectPrinter()" class="flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-700/50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-emerald-600"><i class="fa-solid fa-print"></i></div><span class="text-sm font-bold">Printer Thermal</span></div><span id="printer-status" class="text-[8px] font-black text-slate-300 uppercase transition-all duration-300">OFFLINE</span></div>
                 </div>
             </section>
         </main>
@@ -119,7 +119,7 @@
         <p id="scanner-status" class="text-white/40 text-[10px] font-bold mt-6 tracking-widest uppercase text-center">Auto-Insert Aktif<br>(Jeda 2.5 Detik per Produk)</p>
     </div>
 
-    <!-- OTHER MODALS -->
+    <!-- CHECKOUT MODAL -->
     <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
         <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop">
             <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Pembayaran</h3>
@@ -133,6 +133,7 @@
         </div>
     </div>
 
+    <!-- RECEIPT MODAL -->
     <div id="modal-receipt" class="fixed inset-0 z-[110] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white w-full max-w-xs rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[90vh]">
             <div id="receipt-area" class="receipt-area bg-white text-slate-800 text-center overflow-y-auto flex-1 hide-scrollbar">
@@ -147,26 +148,13 @@
                 <div id="rec-items" class="text-[10px] space-y-2 mb-4 text-left"></div>
                 <div class="border-t border-dashed border-slate-300 pt-4 space-y-1 text-[10px]"><div class="flex justify-between font-black text-sm pt-2"><span>TOTAL</span><span id="rec-total">Rp 0</span></div><div class="flex justify-between mt-1"><span>Tunai</span><span id="rec-pay">Rp 0</span></div><div class="flex justify-between font-bold"><span>Kembali</span><span id="rec-change">Rp 0</span></div></div>
             </div>
-            <div class="grid grid-cols-2 gap-2 mt-6"><button onclick="printBluetoothReceipt()" class="col-span-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase"><i class="fa-solid fa-print mr-2"></i> Print Bluetooth</button><button onclick="shareToWhatsApp()" class="py-3 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase"><i class="fa-brands fa-whatsapp"></i> WA</button><button onclick="closeModal('modal-receipt')" class="py-3 text-slate-400 font-bold text-[10px] uppercase">Tutup</button></div>
-        </div>
-    </div>
-
-    <div id="modal-store-cfg" class="fixed inset-0 z-[120] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto hide-scrollbar">
-            <h3 class="font-black flex items-center gap-2"><i class="fa-solid fa-store text-indigo-600"></i> Setelan Toko</h3>
-            <div class="space-y-4">
-                <div class="flex flex-col items-center gap-3"><div id="logo-preview" class="w-20 h-20 bg-slate-50 dark:bg-slate-900 rounded-2xl flex items-center justify-center border-2 border-dashed border-slate-200 overflow-hidden"><i class="fa-solid fa-image text-slate-300 text-2xl"></i></div><input type="file" id="logo-input" class="hidden" accept="image/*" onchange="handleLogoUpload(this)"><button onclick="document.getElementById('logo-input').click()" class="text-[10px] font-bold text-indigo-600 uppercase">Ganti Logo</button></div>
-                <input type="text" id="cfg-name" placeholder="Nama Toko" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm border-none outline-none"><input type="text" id="cfg-address" placeholder="Alamat Lengkap" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm border-none outline-none"><input type="text" id="cfg-phone" placeholder="WhatsApp (62...)" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm border-none outline-none"><input type="text" id="cfg-url" placeholder="Google Script URL" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-[10px] border-none outline-none">
+            <div class="grid grid-cols-2 gap-2 mt-6">
+                <button id="btn-print-thermal" onclick="printBluetoothReceipt()" class="col-span-2 py-4 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> Print Bluetooth
+                </button>
+                <button onclick="shareToWhatsApp()" class="py-3 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase"><i class="fa-brands fa-whatsapp"></i> WA</button>
+                <button onclick="closeModal('modal-receipt')" class="py-3 text-slate-400 font-bold text-[10px] uppercase">Tutup</button>
             </div>
-            <button onclick="saveSettings()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-[10px] uppercase shadow-xl">Simpan</button>
-            <button onclick="closeModal('modal-store-cfg')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase">Batal</button>
-        </div>
-    </div>
-
-    <div id="modal-product" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-        <div class="bg-white dark:bg-slate-800 w-full rounded-[40px] p-8 animate-pop overflow-y-auto max-h-[85vh]">
-            <h3 class="text-xl font-black mb-6">Master Produk</h3>
-            <input type="hidden" id="p-id"><div class="space-y-4"><input type="text" id="p-barcode" placeholder="Barcode SKU" class="w-full p-4 bg-slate-50 dark:bg-slate-800 border-none rounded-2xl text-sm font-bold text-indigo-600"><input type="text" id="p-name" placeholder="Nama Produk" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm font-bold outline-none"><div class="grid grid-cols-2 gap-4"><input type="number" id="p-cost" placeholder="Hrg Modal" class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm outline-none"><input type="number" id="p-price" placeholder="Hrg Jual" class="p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm font-bold text-indigo-600 outline-none"></div><input type="number" id="p-stock" placeholder="Stok" class="w-full p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm outline-none"><button onclick="saveProduct()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl">Simpan Data</button><button onclick="closeModal('modal-product')" class="w-full text-slate-400 font-bold py-2 text-[10px] uppercase">Batal</button></div>
         </div>
     </div>
 
@@ -178,6 +166,9 @@
         let cart = [];
         let mainChart = null;
         let html5QrCode = null;
+        
+        // --- BLUETOOTH STABILITY FIXES ---
+        let printDevice = null;
         let printCharacteristic = null;
         let lastReceiptData = null;
         
@@ -186,7 +177,6 @@
         const SCAN_COOLDOWN = 2500;
         const beep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
 
-        // --- ONLOAD REVISION (Keep active tab) ---
         window.onload = () => { 
             loadSettings(); 
             const savedTab = localStorage.getItem('dk_active_tab') || 'home';
@@ -199,7 +189,7 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // --- NAVIGATION REVISION (Save to LocalStorage) ---
+        // --- NAVIGATION ---
         function switchTab(t) {
             document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(`tab-${t}`);
@@ -224,7 +214,120 @@
             localStorage.setItem('dk_config', JSON.stringify(config));
         }
 
-        // --- SCANNER ---
+        // --- IMPROVED PRINTER LOGIC (BLE STABILITY) ---
+        async function connectPrinter() {
+            const statusLabel = document.getElementById('printer-status');
+            try {
+                statusLabel.innerText = "MENCARI...";
+                statusLabel.classList.replace('text-slate-300', 'text-amber-500');
+                
+                printDevice = await navigator.bluetooth.requestDevice({ 
+                    acceptAllDevices: true, 
+                    optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb'] 
+                });
+
+                // Listen for disconnection
+                printDevice.addEventListener('gattserverdisconnected', handleDisconnection);
+
+                const server = await printDevice.gatt.connect();
+                const services = await server.getPrimaryServices();
+                
+                for (const s of services) { 
+                    const chars = await s.getCharacteristics(); 
+                    for (const c of chars) { 
+                        if (c.properties.write || c.properties.writeWithoutResponse) { 
+                            printCharacteristic = c; 
+                            break; 
+                        } 
+                    } 
+                    if (printCharacteristic) break; 
+                }
+
+                if (printCharacteristic) {
+                    statusLabel.innerText = "READY";
+                    statusLabel.classList.replace('text-amber-500', 'text-emerald-500');
+                    showToast("Printer Terhubung!");
+                } else {
+                    throw new Error("Karakteristik tidak ditemukan");
+                }
+            } catch (e) { 
+                console.error(e);
+                statusLabel.innerText = "OFFLINE";
+                statusLabel.classList.replace('text-amber-500', 'text-slate-300');
+                statusLabel.classList.replace('text-emerald-500', 'text-slate-300');
+                showToast("Koneksi Gagal/Dibatalkan"); 
+            }
+        }
+
+        function handleDisconnection() {
+            const statusLabel = document.getElementById('printer-status');
+            statusLabel.innerText = "OFFLINE";
+            statusLabel.className = "text-[8px] font-black text-slate-300 uppercase";
+            printCharacteristic = null;
+            printDevice = null;
+            showToast("Printer Terputus!");
+        }
+
+        async function printBluetoothReceipt() {
+            if (!printCharacteristic || !lastReceiptData) {
+                showToast("Printer Belum Konek!");
+                return connectPrinter();
+            }
+
+            const btn = document.getElementById('btn-print-thermal');
+            const originalHTML = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = "<i class='fa-solid fa-spinner animate-spin'></i> MENCETAK...";
+
+            const enc = new TextEncoder();
+            const esc = '\x1b', gs = '\x1d';
+            
+            // ESC/POS Commands: Initialize + Center Alignment
+            let t = esc + '@' + esc + 'a' + '\x01';
+            t += config.storeName.toUpperCase() + '\n';
+            t += config.storeAddress + '\n';
+            t += new Date(lastReceiptData.created_at).toLocaleString('id-ID') + '\n';
+            t += '--------------------------------\n';
+            t += esc + 'a' + '\x00'; // Left align items
+
+            lastReceiptData.items.forEach(i => {
+                const name = i.name.length > 20 ? i.name.substring(0, 18) + '..' : i.name.padEnd(20, ' ');
+                t += `${name}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`;
+            });
+
+            t += '--------------------------------\n';
+            t += `TOTAL   : ${formatIDR(lastReceiptData.amount)}\n`;
+            t += `TUNAI   : ${formatIDR(lastReceiptData.pay)}\n`;
+            t += `KEMBALI : ${formatIDR(lastReceiptData.change)}\n\n`;
+            t += esc + 'a' + '\x01' + 'TERIMA KASIH\nSELAMAT BELANJA KEMBALI\n\n\n\n' + gs + 'V' + '\x42' + '\x00';
+
+            try {
+                // VERIFY CONNECTION before sending
+                if (!printDevice || !printDevice.gatt.connected) {
+                    await printDevice.gatt.connect();
+                }
+
+                // CHUNKING: Send 16 bytes per packet for highest stability
+                const chunks = []; 
+                for(let i=0; i<t.length; i+=16) chunks.push(t.substring(i, i+16));
+                
+                for(const ch of chunks) { 
+                    await printCharacteristic.writeValue(enc.encode(ch)); 
+                    // 60ms delay ensures printer buffer is ready for next packet
+                    await new Promise(r => setTimeout(r, 60)); 
+                }
+                
+                showToast("Print Sukses!");
+            } catch (e) { 
+                console.error(e);
+                showToast("Print Gagal/Terputus!"); 
+                handleDisconnection();
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalHTML;
+            }
+        }
+
         async function openScanner() {
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return showToast("Butuh HTTPS!");
             openModal('modal-scanner');
@@ -254,7 +357,6 @@
 
         async function closeScanner() { if(html5QrCode) await html5QrCode.stop(); closeModal('modal-scanner'); }
 
-        // --- POS ---
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
             document.getElementById('pos-grid').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `
@@ -283,7 +385,6 @@
 
         function resetCart() { cart = []; updateCartUI(); }
 
-        // --- CHECKOUT ---
         function openCheckout() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             document.getElementById('co-grandtotal').innerText = formatIDR(total);
@@ -325,34 +426,6 @@
             openModal('modal-receipt');
         }
 
-        // --- PRINTER ---
-        async function connectPrinter() {
-            try {
-                const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb'] });
-                const server = await device.gatt.connect();
-                const services = await server.getPrimaryServices();
-                for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) { if (c.properties.write || c.properties.writeWithoutResponse) { printCharacteristic = c; break; } } if (printCharacteristic) break; }
-                document.getElementById('printer-status').innerText = "READY";
-                document.getElementById('printer-status').classList.replace('text-slate-300', 'text-emerald-500');
-                showToast("Printer Konek!");
-            } catch (e) { showToast("Gagal Bluetooth!"); }
-        }
-
-        async function printBluetoothReceipt() {
-            if(!printCharacteristic || !lastReceiptData) return showToast("Koneksi Printer?");
-            const enc = new TextEncoder();
-            const esc = '\x1b', gs = '\x1d';
-            let t = esc + '@' + esc + 'a' + '\x01' + config.storeName.toUpperCase() + '\n' + config.storeAddress + '\n' + new Date().toLocaleString() + '\n--------------------------------\n' + esc + 'a' + '\x00';
-            lastReceiptData.items.forEach(i => t += `${i.name.substring(0,20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`);
-            t += '--------------------------------\n' + `TOTAL: ${formatIDR(lastReceiptData.amount)}\n` + `TUNAI: ${formatIDR(lastReceiptData.pay)}\n` + `KEMBALI: ${formatIDR(lastReceiptData.change)}\n\nTERIMA KASIH\n\n\n\n` + gs + 'V' + '\x42' + '\x00';
-            try {
-                const chunks = []; for(let i=0; i<t.length; i+=20) chunks.push(t.substring(i, i+20));
-                for(const ch of chunks) { await printCharacteristic.writeValue(enc.encode(ch)); await new Promise(r => setTimeout(r, 45)); }
-                showToast("Print Sukses!");
-            } catch (e) { showToast("Gagal Print!"); }
-        }
-
-        // --- DASHBOARD ---
         function renderHome() {
             let profit = 0, omzet = 0, best = {};
             const hourMap = new Array(24).fill(0);
@@ -377,7 +450,6 @@
             mainChart = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length:24}, (_,i) => i+':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } } });
         }
 
-        // --- STORAGE ---
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; document.getElementById('logo-preview').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; document.getElementById('app-logo').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; }; r.readAsDataURL(input.files[0]); } }
         function openStoreSettings() { openModal('modal-store-cfg'); document.getElementById('cfg-name').value = config.storeName; document.getElementById('cfg-address').value = config.storeAddress; document.getElementById('cfg-phone').value = config.storePhone; document.getElementById('cfg-url').value = config.url; }
         async function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); document.getElementById('store-name-display').innerText = config.storeName; closeModal('modal-store-cfg'); showToast("Disimpan!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
