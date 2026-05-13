@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir - Ultimate Analytics v12.0</title>
+    <title>DheKasir - Ultimate Integrated v12.1 Fixed</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
-    <!-- Export Libraries -->
+    <!-- Export & PDF Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -17,17 +17,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #f8fafc; --card: #ffffff; --primary: #4f46e5; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #1e293b; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #1e293b; transition: 0.3s; }
         .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
-        .card { background: var(--card); border: 1px solid rgba(0,0,0,0.05); }
+        .card { background: var(--card); border: 1px solid rgba(0,0,0,0.05); border-radius: 30px; }
         .tab-content { display: none; padding-bottom: 120px; }
-        .tab-content.active { display: block; animation: slideUp 0.4s ease; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; } }
+        .tab-content.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .nav-item { transition: 0.3s; }
         .nav-active { color: #4f46e5 !important; font-weight: 800; transform: scale(1.1); }
-        .report-section { display: none; }
-        .report-section.active { display: block; }
+        .receipt-container { font-family: 'Courier New', Courier, monospace; line-height: 1.2; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="overflow-x-hidden hide-scrollbar">
@@ -37,14 +36,14 @@
         <!-- Header -->
         <header class="p-5 flex justify-between items-center bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">D</div>
+                <div id="logo-header" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">D</div>
                 <div>
                     <h1 class="text-sm font-bold" id="store-name-display">DheKasir</h1>
-                    <p class="text-[8px] font-black text-indigo-500 uppercase tracking-widest">v12.0 Analytics</p>
+                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-2 h-2 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v12.1 Pro</span></div>
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="switchTab('reports')" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-chart-pie text-xs"></i></button>
+                <button onclick="switchTab('reports')" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-chart-pie text-xs"></i></button>
                 <button onclick="openScanner()" class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-barcode text-sm"></i></button>
             </div>
         </header>
@@ -58,29 +57,22 @@
                         <h2 class="text-3xl font-black tracking-tight" id="dash-profit">Rp 0</h2>
                         <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-6 mt-6">
                             <div><p class="text-[9px] opacity-70 font-bold uppercase">Omzet</p><p class="text-sm font-bold" id="dash-omzet">Rp 0</p></div>
-                            <div><p class="text-[9px] opacity-70 font-bold uppercase">Pengeluaran</p><p class="text-sm font-bold" id="dash-out">Rp 0</p></div>
+                            <div><p class="text-[9px] opacity-70 font-bold uppercase">Stok Rendah</p><p class="text-sm font-bold" id="dash-low-stock">0 Item</p></div>
+                        </div>
+                        <!-- Added missing element to prevent JS error -->
+                        <div class="mt-4 pt-4 border-t border-white/10 hidden">
+                            <p id="dash-balance">Rp 0</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="card p-5 rounded-[30px] flex items-center gap-3">
-                        <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-cart-shopping text-xs"></i></div>
-                        <div><p class="text-[9px] font-bold text-slate-400">TRX HARI INI</p><p class="text-xs font-black" id="dash-trx-count">0</p></div>
-                    </div>
-                    <div class="card p-5 rounded-[30px] flex items-center gap-3">
-                        <div class="w-10 h-10 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-box-open text-xs"></i></div>
-                        <div><p class="text-[9px] font-bold text-slate-400">STOK TIPIS</p><p class="text-xs font-black text-rose-600" id="dash-low-stock">0</p></div>
-                    </div>
-                </div>
-
-                <div class="card p-6 rounded-[35px] space-y-4">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Jam Ramai Penjualan</h3>
+                <div class="card p-6 space-y-4 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Waktu Ramai Penjualan</h3>
                     <canvas id="hourChart" height="120"></canvas>
                 </div>
 
-                <div class="card p-6 rounded-[35px] space-y-4">
-                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">3 Produk Terlaris</h3>
+                <div class="card p-6 space-y-4 shadow-sm">
+                    <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Top 3 Produk</h3>
                     <div id="top-products" class="space-y-2"></div>
                 </div>
             </section>
@@ -88,136 +80,149 @@
             <!-- TAB: POS -->
             <section id="tab-pos" class="tab-content space-y-4">
                 <div class="sticky top-0 bg-transparent pb-2 z-20">
-                    <div class="relative"><input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari nama atau scan..." class="w-full p-4 pl-12 card rounded-3xl outline-none text-sm"><i class="fa-solid fa-search absolute left-5 top-4 text-slate-300"></i></div>
+                    <div class="relative"><input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari nama atau barcode..." class="w-full p-4 pl-12 card outline-none text-sm shadow-sm"><i class="fa-solid fa-search absolute left-5 top-4 text-slate-300"></i></div>
                 </div>
                 <div id="pos-grid" class="grid grid-cols-2 gap-4 pb-10"></div>
             </section>
 
-            <!-- TAB: ITEMS -->
+            <!-- TAB: ITEM -->
             <section id="tab-items" class="tab-content space-y-4">
                 <div class="flex justify-between items-center"><h2 class="text-xl font-black">Inventaris</h2><button onclick="openProductModal()" class="px-4 py-2 premium-gradient text-white rounded-xl font-bold text-[10px] uppercase shadow-lg">Tambah Baru</button></div>
-                <div id="item-list" class="space-y-3"></div>
+                <div id="item-list" class="space-y-3 pb-32"></div>
             </section>
 
-            <!-- TAB: REPORTS (NEW CENTER) -->
+            <!-- TAB: REPORTS -->
             <section id="tab-reports" class="tab-content space-y-6">
                 <h2 class="text-xl font-black">Pusat Laporan</h2>
-                
-                <div class="flex gap-2 overflow-x-auto hide-scrollbar pb-2">
+                <div class="flex gap-2 overflow-x-auto hide-scrollbar">
                     <button onclick="showReport('sales')" id="btn-rep-sales" class="rep-tab-btn flex-none px-4 py-2 bg-indigo-600 text-white rounded-xl text-[10px] font-black uppercase">Penjualan</button>
-                    <button onclick="showReport('profit')" id="btn-rep-profit" class="rep-tab-btn flex-none px-4 py-2 bg-white text-slate-400 rounded-xl text-[10px] font-black uppercase">Laba Rugi</button>
-                    <button onclick="showReport('stock')" id="btn-rep-stock" class="rep-tab-btn flex-none px-4 py-2 bg-white text-slate-400 rounded-xl text-[10px] font-black uppercase">Stok</button>
+                    <button onclick="showReport('profit')" id="btn-rep-profit" class="rep-tab-btn flex-none px-4 py-2 bg-white text-slate-400 rounded-xl text-[10px] font-black uppercase shadow-sm">Laba Rugi</button>
+                    <button onclick="showReport('stock')" id="btn-rep-stock" class="rep-tab-btn flex-none px-4 py-2 bg-white text-slate-400 rounded-xl text-[10px] font-black uppercase shadow-sm">Stok</button>
                 </div>
-
                 <div class="flex justify-between items-center bg-white p-4 rounded-2xl border shadow-sm">
                     <div class="text-[10px] font-bold text-slate-400 uppercase">Periode</div>
                     <select id="report-period" onchange="generateSelectedReport()" class="text-[10px] font-black text-indigo-600 outline-none">
                         <option value="today">Hari Ini</option>
-                        <option value="week">Minggu Ini</option>
-                        <option value="month">Bulan Ini</option>
                         <option value="all">Semua Data</option>
                     </select>
                 </div>
-
-                <div id="report-container" class="space-y-4 min-h-[300px]">
-                    <!-- Report Content Injected Here -->
-                </div>
-
+                <div id="report-container" class="min-h-[300px]"></div>
                 <div class="grid grid-cols-2 gap-3 mt-6">
-                    <button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-emerald-100"><i class="fa-solid fa-file-excel mr-2"></i> Export Excel</button>
-                    <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg shadow-rose-100"><i class="fa-solid fa-file-pdf mr-2"></i> Export PDF</button>
+                    <button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
+                    <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
                 </div>
             </section>
 
-            <!-- TAB: USER / SETTINGS -->
+            <!-- TAB: SETTINGS -->
             <section id="tab-settings" class="tab-content space-y-6">
-                <div class="card p-8 rounded-[40px] space-y-4 shadow-sm">
-                    <h3 class="font-bold">Konfigurasi Toko</h3>
-                    <input type="text" id="cfg-name" placeholder="Nama Toko" class="w-full p-4 bg-slate-50 rounded-2xl text-sm border-none outline-none">
-                    <input type="text" id="cfg-url" placeholder="Google Script API URL" class="w-full p-4 bg-slate-50 rounded-2xl text-[10px] border-none outline-none">
-                    <button onclick="saveSettings()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl mt-4">Simpan Perubahan</button>
+                <div class="card p-8 space-y-4 shadow-sm">
+                    <h3 class="font-bold">Informasi Toko</h3>
+                    <div class="flex flex-col items-center gap-2 mb-4">
+                        <div id="logo-preview" class="w-20 h-20 bg-slate-50 border rounded-2xl flex items-center justify-center overflow-hidden"><i class="fa-solid fa-image text-slate-200"></i></div>
+                        <input type="file" id="logo-input" class="hidden" onchange="handleLogo(this)">
+                        <button onclick="document.getElementById('logo-input').click()" class="text-[10px] font-black text-indigo-600 uppercase">Ganti Logo</button>
+                    </div>
+                    <input type="text" id="cfg-name" placeholder="Nama Toko" class="w-full p-4 bg-slate-50 rounded-2xl text-sm outline-none">
+                    <input type="text" id="cfg-address" placeholder="Alamat Lengkap" class="w-full p-4 bg-slate-50 rounded-2xl text-sm outline-none">
+                    <input type="text" id="cfg-phone" placeholder="WhatsApp (62...)" class="w-full p-4 bg-slate-50 rounded-2xl text-sm outline-none">
+                    <input type="text" id="cfg-url" placeholder="Google Script URL" class="w-full p-4 bg-slate-50 rounded-2xl text-[10px] outline-none">
+                    <button onclick="connectPrinter()" class="w-full py-4 border-2 border-emerald-100 text-emerald-600 rounded-2xl font-black text-[10px] uppercase"><i class="fa-solid fa-bluetooth mr-2"></i> Hubungkan Printer</button>
+                    <button onclick="saveSettings()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl">Simpan Pengaturan</button>
                 </div>
             </section>
         </main>
 
-        <!-- Navigation Bar -->
+        <!-- Navigation -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-xl border-t p-4 flex justify-around items-center z-50 rounded-t-[35px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-            <button onclick="switchTab('home')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-home"><i class="fa-solid fa-home text-lg"></i><span class="text-[8px] font-bold">HOME</span></button>
+            <button onclick="switchTab('home')" class="nav-item text-slate-300 flex flex-col items-center gap-1 nav-active" id="n-home"><i class="fa-solid fa-home text-lg"></i><span class="text-[8px] font-bold">HOME</span></button>
             <button onclick="switchTab('pos')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-pos"><i class="fa-solid fa-cash-register text-lg"></i><span class="text-[8px] font-bold">KASIR</span></button>
-            <button onclick="switchTab('items')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-items"><i class="fa-solid fa-box text-lg"></i><span class="text-[8px] font-bold">STOK</span></button>
+            <button onclick="switchTab('items')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-items"><i class="fa-solid fa-box text-lg"></i><span class="text-[8px] font-bold">ITEM</span></button>
             <button onclick="switchTab('reports')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-reports"><i class="fa-solid fa-chart-line text-lg"></i><span class="text-[8px] font-bold">LAPORAN</span></button>
             <button onclick="switchTab('settings')" class="nav-item text-slate-300 flex flex-col items-center gap-1" id="n-settings"><i class="fa-solid fa-user-gear text-lg"></i><span class="text-[8px] font-bold">USER</span></button>
         </nav>
 
         <!-- Floating Cart -->
-        <div id="cart-float" class="hidden fixed bottom-24 left-6 right-6 max-w-[360px] mx-auto bg-white p-5 rounded-[30px] border shadow-2xl z-40 animate-pop">
+        <div id="cart-float" class="hidden fixed bottom-28 left-6 right-6 max-w-[360px] mx-auto bg-white p-5 rounded-[35px] border shadow-2xl z-40 animate-pop">
             <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center gap-3">
-                    <div id="cart-qty" class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs">0</div>
-                    <p id="cart-total" class="text-xl font-black">Rp 0</p>
-                </div>
+                <div id="cart-count-ui" class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs">0</div>
+                <p id="cart-total-ui" class="text-xl font-black">Rp 0</p>
                 <button onclick="resetCart()" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
             </div>
-            <button onclick="openCheckout()" class="w-full py-5 premium-gradient text-white rounded-[24px] font-black text-xs uppercase shadow-lg">Lanjutkan Pembayaran</button>
-        </div>
-
-        <!-- MODAL: PRODUCT -->
-        <div id="modal-product" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-            <div class="bg-white w-full rounded-[40px] p-8 shadow-2xl animate-pop overflow-y-auto max-h-[85vh]">
-                <h3 class="text-xl font-black mb-6">Detail Barang</h3>
-                <input type="hidden" id="p-id">
-                <div class="space-y-4">
-                    <input type="text" id="p-barcode" placeholder="Barcode SKU" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold text-indigo-600 border border-slate-100 outline-none">
-                    <input type="text" id="p-name" placeholder="Nama Produk" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold border border-slate-100 outline-none">
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="text-[10px] font-black text-slate-400 ml-2 uppercase">Hrg Modal</label>
-                        <input type="number" id="p-cost" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold text-rose-500 border border-slate-100 outline-none"></div>
-                        <div><label class="text-[10px] font-black text-slate-400 ml-2 uppercase">Hrg Jual</label>
-                        <input type="number" id="p-price" placeholder="0" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold text-emerald-600 border border-slate-100 outline-none"></div>
-                    </div>
-                    <input type="number" id="p-stock" placeholder="Stok Sekarang" class="w-full p-4 bg-slate-50 rounded-2xl text-sm border border-slate-100 outline-none">
-                    <button onclick="saveProduct()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-lg">Simpan Barang</button>
-                    <button onclick="closeModal('modal-product')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase mt-2">Batal</button>
-                </div>
-            </div>
+            <button onclick="openCheckout()" class="w-full py-5 premium-gradient text-white rounded-[24px] font-black text-xs uppercase shadow-lg">Bayar Sekarang</button>
         </div>
 
         <!-- MODAL: CHECKOUT -->
         <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
             <div class="bg-white w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl">
-                <h3 class="text-xl font-black mb-6 text-center">Konfirmasi Bayar</h3>
+                <h3 class="text-xl font-black mb-6 text-center uppercase">Pembayaran</h3>
                 <div class="space-y-4">
-                    <div class="flex justify-between font-black text-2xl border-b pb-4"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase ml-2">Uang Tunai Pelanggan</label>
-                        <input type="number" id="pay-amt" oninput="calcChange()" placeholder="Masukkan Nominal" class="w-full p-6 bg-emerald-50 text-emerald-700 font-black rounded-3xl text-center text-3xl outline-none border-2 border-emerald-100">
-                        <div class="flex justify-between items-center px-6 py-4 bg-slate-50 rounded-2xl"><span class="text-xs font-bold text-slate-400 uppercase">Kembalian</span><span id="pay-change" class="text-xl font-black">Rp 0</span></div>
-                    </div>
+                    <div class="flex justify-between font-black text-xl border-b pb-4"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
+                    <input type="number" id="pay-amt" oninput="calcChange()" placeholder="Masukkan Uang Tunai" class="w-full p-6 bg-emerald-50 text-emerald-700 font-black rounded-3xl text-center text-3xl outline-none border-2 border-emerald-100">
+                    <div class="flex justify-between items-center px-6 py-4 bg-slate-50 rounded-2xl"><span class="text-xs font-bold text-slate-400">KEMBALIAN</span><span id="pay-change" class="text-xl font-black text-slate-800">Rp 0</span></div>
                     <button onclick="finishCheckout()" class="w-full py-6 premium-gradient text-white rounded-[30px] font-black text-sm uppercase shadow-xl">Selesaikan Pesanan</button>
-                    <button onclick="closeModal('modal-checkout')" class="w-full text-slate-400 font-bold py-2 text-[10px] uppercase">Kembali</button>
+                    <button onclick="closeModal('modal-checkout')" class="w-full text-slate-400 font-bold py-2 text-[10px] uppercase">Batal</button>
                 </div>
             </div>
         </div>
 
-        <!-- Barcode Scanner Modal -->
-        <div id="modal-scanner" class="fixed inset-0 z-[110] bg-black hidden flex flex-col items-center justify-center p-6">
-            <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-xmark"></i></button>
-            <div class="w-full max-w-sm rounded-[40px] overflow-hidden border-4 border-indigo-500 shadow-2xl shadow-indigo-500/20"><div id="reader"></div></div>
-            <p class="text-white/40 text-[10px] font-bold mt-6 tracking-widest uppercase">Arahkan Barcode ke Kotak</p>
+        <!-- MODAL: RECEIPT (STRUK) -->
+        <div id="modal-receipt" class="fixed inset-0 z-[110] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+            <div class="bg-white w-full max-w-xs rounded-[40px] p-8 animate-pop receipt-container text-slate-800 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div id="receipt-area" class="text-center">
+                    <div id="rec-logo-box" class="flex justify-center mb-2 hidden"></div>
+                    <h4 class="font-black text-lg uppercase" id="rec-store-name">-</h4>
+                    <p class="text-[9px] italic" id="rec-store-addr">-</p>
+                    <p class="text-[9px]" id="rec-store-phone">-</p>
+                    <p class="text-[8px] opacity-60 mt-2" id="rec-date">-</p>
+                    <div id="rec-items" class="text-[10px] space-y-1 my-4 text-left border-y border-dashed py-3"></div>
+                    <div class="text-[10px] space-y-1">
+                        <div class="flex justify-between font-black text-sm"><span>TOTAL</span><span id="rec-total">Rp 0</span></div>
+                        <div class="flex justify-between"><span>BAYAR</span><span id="rec-pay">Rp 0</span></div>
+                        <div class="flex justify-between font-bold"><span>KEMBALI</span><span id="rec-change">Rp 0</span></div>
+                    </div>
+                    <div class="mt-6 flex flex-col items-center">
+                        <div class="w-24 h-24 bg-slate-50 rounded-xl flex items-center justify-center border border-slate-100"><i class="fa-solid fa-qrcode text-3xl text-slate-200"></i></div>
+                        <p class="text-[7px] font-bold text-slate-300 mt-2" id="rec-id">#000</p>
+                    </div>
+                </div>
+                <div class="mt-6 flex flex-col gap-2">
+                    <button onclick="printBluetoothReceipt()" id="btn-bt-print" class="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg"><i class="fa-solid fa-print mr-2"></i> Print Bluetooth</button>
+                    <button onclick="closeModal('modal-receipt')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase">Tutup</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL: PRODUCT -->
+        <div id="modal-product" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
+            <div class="bg-white w-full rounded-[40px] p-8 animate-pop overflow-y-auto max-h-[85vh]">
+                <h3 class="text-xl font-black mb-6">Master Item</h3>
+                <input type="hidden" id="p-id"><div class="space-y-4">
+                <input type="text" id="p-barcode" placeholder="Barcode SKU" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm font-bold text-indigo-600">
+                <input type="text" id="p-name" placeholder="Nama Produk" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm font-bold">
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-[9px] font-black text-slate-400 ml-2 uppercase">Hrg Modal</label><input type="number" id="p-cost" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm font-bold text-rose-500"></div>
+                    <div><label class="text-[9px] font-black text-slate-400 ml-2 uppercase">Hrg Jual</label><input type="number" id="p-price" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm font-bold text-emerald-600"></div>
+                </div>
+                <input type="number" id="p-stock" placeholder="Stok Sekarang" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm">
+                <input type="text" id="p-thumb" placeholder="Emoji Ikon (☕)" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm">
+                <button onclick="saveProduct()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl">Simpan</button>
+                <button onclick="closeModal('modal-product')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase mt-2">Batal</button>
+                </div>
+            </div>
         </div>
 
         <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
     </div>
 
     <script>
-        // --- DATA STATE ---
         let items = JSON.parse(localStorage.getItem('dk_items')) || [];
         let logs = JSON.parse(localStorage.getItem('dk_logs')) || [];
-        let config = JSON.parse(localStorage.getItem('dk_config')) || { storeName: 'DheKasir Analytics', url: '' };
+        let config = JSON.parse(localStorage.getItem('dk_config')) || { storeName: 'DheKasir Pro', storeAddress: '-', storePhone: '', url: '', logo: null };
         let cart = [];
         let activeReport = 'sales';
         let hourChart = null;
-        let html5QrCode = null;
+        let printCharacteristic = null;
+        let lastReceiptData = null;
 
         window.onload = () => { loadSettings(); renderHome(); renderItems(); renderPos(); };
 
@@ -226,29 +231,77 @@
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('opacity-0', 'top-12'); t.classList.add('top-16'); setTimeout(() => { t.classList.add('opacity-0', 'top-12'); t.classList.remove('top-16'); }, 2000); }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
         function switchTab(t) { 
-            document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active')); 
             const target = document.getElementById(`tab-${t}`);
-            if(target) target.classList.add('active'); 
-            document.querySelectorAll('.nav-item').forEach(b => { b.classList.remove('nav-active'); b.classList.add('text-slate-300'); });
-            const nav = document.getElementById(`n-${t}`);
+            if(!target) return console.warn("Tab not found:", t);
+
+            document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active')); 
+            target.classList.add('active'); 
+            
+            document.querySelectorAll('.nav-item').forEach(b => { 
+                b.classList.remove('nav-active'); 
+                b.classList.add('text-slate-300'); 
+            }); 
+            const nav = document.getElementById(`n-${t}`); 
             if(nav) nav.classList.add('nav-active'); 
-            if (t === 'home') renderHome(); if (t === 'reports') generateSelectedReport(); if (t === 'items') renderItems(); if (t === 'pos') renderPos();
+            
+            if (t === 'home') renderHome(); 
+            if (t === 'reports') generateSelectedReport(); 
+        }
+
+        // --- PRINTING ---
+        async function connectPrinter() {
+            try {
+                const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb'] });
+                const server = await device.gatt.connect();
+                const services = await server.getPrimaryServices();
+                for (const service of services) {
+                    const chars = await service.getCharacteristics();
+                    for (const c of chars) { if (c.properties.write || c.properties.writeWithoutResponse) { printCharacteristic = c; break; } }
+                    if (printCharacteristic) break;
+                }
+                showToast("Printer Terhubung!");
+            } catch (e) { showToast("Gagal Bluetooth"); }
+        }
+
+        async function printBluetoothReceipt() {
+            if (!printCharacteristic || !lastReceiptData) return showToast("Koneksi Printer?");
+            const enc = new TextEncoder();
+            const esc = '\x1b', gs = '\x1d';
+            const cmd = { init: esc + '@', center: esc + 'a' + '\x01', left: esc + 'a' + '\x00', boldOn: esc + 'E' + '\x01', boldOff: esc + 'E' + '\x00', cut: gs + 'V' + '\x42' + '\x00' };
+            
+            let text = cmd.init + cmd.center + cmd.boldOn + config.storeName.toUpperCase() + cmd.boldOff + '\n' + config.storeAddress + '\n' + config.storePhone + '\n' + new Date(lastReceiptData.created_at).toLocaleString('id-ID') + '\n--------------------------------\n' + cmd.left;
+            lastReceiptData.items.forEach(i => { text += `${i.name.substring(0, 20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${(i.price * i.qty).toLocaleString()}\n`; });
+            text += '--------------------------------\n' + `TOTAL   : Rp ${lastReceiptData.amount.toLocaleString()}\n` + `BAYAR   : Rp ${lastReceiptData.pay.toLocaleString()}\n` + `KEMBALI : Rp ${lastReceiptData.change.toLocaleString()}\n` + cmd.center + '\nTerima Kasih\n\n\n\n' + cmd.cut;
+
+            try {
+                const chunks = []; for (let i = 0; i < text.length; i += 20) chunks.push(text.substring(i, i + 20));
+                for (const chunk of chunks) {
+                    const data = enc.encode(chunk);
+                    if (printCharacteristic.properties.writeWithoutResponse) await printCharacteristic.writeValueWithoutResponse(data);
+                    else await printCharacteristic.writeValue(data);
+                    await new Promise(r => setTimeout(r, 40));
+                }
+                showToast("Print Sukses!");
+            } catch (e) { showToast("Gagal Cetak"); }
         }
 
         // --- POS ENGINE ---
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
-            document.getElementById('pos-grid').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `
-                <div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 rounded-[30px] active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">
-                    <div class="w-full aspect-square bg-slate-50 rounded-[22px] flex items-center justify-center text-3xl mb-3">📦</div>
+            const grid = document.getElementById('pos-grid');
+            if(!grid) return;
+            grid.innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `
+                <div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">
+                    <div class="w-full aspect-square bg-slate-50 rounded-[22px] flex items-center justify-center text-3xl mb-3">${i.thumb || '📦'}</div>
                     <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
                     <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
-                    <p class="text-[8px] font-bold text-slate-400 mt-1 uppercase">Stok: ${i.stock}</p>
+                    <p class="text-[8px] font-black text-slate-400 mt-1">Stok: ${i.stock}</p>
                 </div>`).join('');
         }
         function addToCart(id) { const it = items.find(i => i.id == id); const inC = cart.find(c => c.id == id); if(inC) inC.qty++; else cart.push({...it, qty: 1}); updateCartUI(); }
-        function updateCartUI() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('cart-qty').innerText = cart.reduce((a,b) => a + b.qty, 0); document.getElementById('cart-total').innerText = formatIDR(total); document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0); }
+        function updateCartUI() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('cart-count-ui').innerText = cart.reduce((a,b) => a + b.qty, 0); document.getElementById('cart-total-ui').innerText = formatIDR(total); document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0); }
         function resetCart() { cart = []; updateCartUI(); }
         function openCheckout() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('co-grandtotal').innerText = formatIDR(total); openModal('modal-checkout'); }
         function calcChange() { const grand = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, '')); const pay = Number(document.getElementById('pay-amt').value); document.getElementById('pay-change').innerText = formatIDR(Math.max(0, pay - grand)); }
@@ -257,26 +310,36 @@
             const total = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, ''));
             const pay = Number(document.getElementById('pay-amt').value);
             if(pay < total) return showToast("Kurang Bayar!");
-
-            // Hitung Total Modal (HPP) untuk Laba Rugi
-            const totalCost = cart.reduce((acc, curr) => acc + ((curr.cost || 0) * curr.qty), 0);
             
-            const now = new Date();
+            const subtotalModal = cart.reduce((a,b) => a + ((b.cost || 0) * b.qty), 0);
             const log = { 
-                id: "T-" + Date.now(), type: 'income', status: 'SUCCESS',
+                id: "T-" + Date.now(), type: 'income', category: 'POS',
                 items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })),
-                amount: total, total_cost: totalCost, pay_cash: total, pay_qris: 0, pay_debt: 0,
-                date: now.toISOString().split('T')[0], 
-                created_at: now.toISOString(),
-                hour: now.getHours()
+                amount: total, total_cost: subtotalModal, pay: pay, change: pay - total,
+                date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString()
             };
 
-            for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
-            logs.push(log); saveStorage(); closeModal('modal-checkout'); resetCart(); renderHome(); renderPos(); showToast("Penjualan Berhasil!");
-            await syncCloud(log);
+            for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; await syncCloud(i); } }
+            logs.push(log); saveStorage(); closeModal('modal-checkout');
+            lastReceiptData = log; showReceipt(log);
+            resetCart(); renderHome(); renderPos(); showToast("Berhasil!"); await syncCloud(log);
         }
 
-        // --- REPORT CENTER v12.0 ---
+        function showReceipt(d) {
+            document.getElementById('rec-store-name').innerText = config.storeName;
+            document.getElementById('rec-store-addr').innerText = config.storeAddress;
+            document.getElementById('rec-store-phone').innerText = config.storePhone;
+            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString();
+            document.getElementById('rec-items').innerHTML = d.items.map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
+            document.getElementById('rec-total').innerText = formatIDR(d.amount);
+            document.getElementById('rec-pay').innerText = formatIDR(d.pay);
+            document.getElementById('rec-change').innerText = formatIDR(d.change);
+            document.getElementById('rec-id').innerText = d.id;
+            if(config.logo) { document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10">`; document.getElementById('rec-logo-box').classList.remove('hidden'); }
+            openModal('modal-receipt');
+        }
+
+        // --- ANALYTICS v12.1 ---
         function showReport(type) {
             activeReport = type;
             document.querySelectorAll('.rep-tab-btn').forEach(b => { b.classList.replace('bg-indigo-600', 'bg-white'); b.classList.replace('text-white', 'text-slate-400'); });
@@ -286,141 +349,69 @@
         }
 
         function generateSelectedReport() {
-            const period = document.getElementById('report-period').value;
             const container = document.getElementById('report-container');
-            const filteredLogs = filterLogsByPeriod(logs, period);
-
+            const filtered = logs.filter(l => l.status !== 'VOID').reverse();
+            
             if (activeReport === 'sales') {
-                container.innerHTML = `<div class="card p-5 rounded-3xl space-y-4">
-                    <h4 class="text-[10px] font-black uppercase text-slate-400">Rincian Penjualan</h4>
-                    <div class="space-y-3">${filteredLogs.length ? filteredLogs.map(l => `
-                        <div class="flex justify-between items-center text-xs border-b border-slate-50 pb-2">
-                            <div><p class="font-bold">${l.id}</p><p class="text-[8px] opacity-50">${l.created_at.split('T')[0]}</p></div>
-                            <p class="font-black text-indigo-600">${formatIDR(l.amount)}</p>
-                        </div>`).join('') : '<p class="text-center py-10 text-[10px] opacity-30">Tidak Ada Data</p>'}</div>
-                </div>`;
+                container.innerHTML = `<div class="card p-5 space-y-3">${filtered.length ? filtered.map(l => `<div class="flex justify-between items-center text-xs border-b pb-2"><div><p class="font-bold">${l.id}</p><p class="text-[8px] opacity-40">${l.date}</p></div><p class="font-black">${formatIDR(l.amount)}</p></div>`).join('') : '<p class="text-center py-10 opacity-30">Kosong</p>'}</div>`;
             } else if (activeReport === 'profit') {
-                const totalSales = filteredLogs.reduce((a,b) => a + (b.amount || 0), 0);
-                const totalHpp = filteredLogs.reduce((a,b) => a + (b.total_cost || 0), 0);
-                const grossProfit = totalSales - totalHpp;
-                container.innerHTML = `
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="card p-4 rounded-2xl"><p class="text-[8px] font-black text-slate-400 uppercase">Omzet</p><p class="text-xs font-black">${formatIDR(totalSales)}</p></div>
-                        <div class="card p-4 rounded-2xl"><p class="text-[8px] font-black text-slate-400 uppercase">Total HPP</p><p class="text-xs font-black">${formatIDR(totalHpp)}</p></div>
-                    </div>
-                    <div class="card p-6 rounded-[30px] premium-gradient text-white shadow-xl">
-                        <p class="text-[10px] font-black uppercase opacity-80">Laba Rugi Bersih</p>
-                        <h3 class="text-2xl font-black">${formatIDR(grossProfit)}</h3>
-                    </div>`;
+                const totalOmzet = filtered.reduce((a,b) => a + b.amount, 0);
+                const totalHpp = filtered.reduce((a,b) => a + (b.total_cost || 0), 0);
+                container.innerHTML = `<div class="grid grid-cols-2 gap-3 mb-4"><div class="card p-4 text-xs font-bold text-slate-400 uppercase">Omzet<p class="text-slate-800 text-sm">${formatIDR(totalOmzet)}</p></div><div class="card p-4 text-xs font-bold text-slate-400 uppercase">HPP<p class="text-slate-800 text-sm">${formatIDR(totalHpp)}</p></div></div><div class="premium-gradient p-6 rounded-[30px] text-white shadow-xl"><p class="text-[10px] font-black uppercase opacity-70">Laba Bersih</p><h3 class="text-2xl font-black">${formatIDR(totalOmzet - totalHpp)}</h3></div>`;
             } else if (activeReport === 'stock') {
-                container.innerHTML = `<div class="card p-5 rounded-3xl space-y-4">
-                    <h4 class="text-[10px] font-black uppercase text-slate-400">Laporan Stok Gudang</h4>
-                    <table class="w-full text-[10px]">
-                        <thead class="text-slate-300"><tr><th class="text-left pb-2">Nama</th><th class="text-right pb-2">Stok</th><th class="text-right pb-2">Nilai Aset</th></tr></thead>
-                        <tbody>${items.map(i => `<tr><td class="py-1 font-bold">${i.name}</td><td class="text-right ${i.stock < 5 ? 'text-rose-500 font-black' : ''}">${i.stock}</td><td class="text-right">${formatIDR(i.stock * (i.cost || 0))}</td></tr>`).join('')}</tbody>
-                    </table>
-                </div>`;
+                container.innerHTML = `<div class="card p-5"><table class="w-full text-[10px]"><thead class="text-slate-400 border-b"><tr><th class="text-left pb-2">NAMA</th><th class="text-right pb-2">STOK</th><th class="text-right pb-2">ASET</th></tr></thead><tbody>${items.map(i => `<tr><td class="py-2 font-bold">${i.name}</td><td class="text-right ${i.stock < 5 ? 'text-rose-500 font-black' : ''}">${i.stock}</td><td class="text-right">${formatIDR(i.stock * (i.cost || 0))}</td></tr>`).join('')}</tbody></table></div>`;
             }
         }
 
-        function filterLogsByPeriod(data, period) {
-            const now = new Date();
-            const today = now.toISOString().split('T')[0];
-            if(period === 'today') return data.filter(l => l.date === today);
-            if(period === 'all') return data;
-            // Simplified period filter for demo
-            return data;
-        }
-
-        // --- DASHBOARD ANALYTICS ---
         function renderHome() {
-            const today = new Date().toISOString().split('T')[0];
-            let omzet = 0, profit = 0, out = 0, trxs = 0;
-            const hourMap = new Array(24).fill(0);
-            const bestSeller = {};
-
+            let omzet = 0, profit = 0, hours = new Array(24).fill(0), best = {};
             logs.forEach(l => {
                 if(l.status === 'VOID') return;
-                const a = Number(l.amount) || 0;
-                if(l.type === 'income') {
-                    omzet += a;
-                    profit += (a - (l.total_cost || 0));
-                    if(l.date === today) trxs++;
-                    // Map Jam
-                    const h = new Date(l.created_at).getHours();
-                    hourMap[h]++;
-                    // Top Products
-                    if(l.items) l.items.forEach(it => bestSeller[it.name] = (bestSeller[it.name] || 0) + it.qty);
-                } else {
-                    out += a;
-                }
+                omzet += l.amount;
+                profit += (l.amount - (l.total_cost || 0));
+                const h = new Date(l.created_at).getHours();
+                hours[h]++;
+                if(l.items) l.items.forEach(it => best[it.name] = (best[it.name] || 0) + it.qty);
             });
-
-            document.getElementById('dash-profit').innerText = formatIDR(profit);
-            document.getElementById('dash-omzet').innerText = formatIDR(omzet);
-            document.getElementById('dash-out').innerText = formatIDR(out);
-            document.getElementById('dash-trx-count').innerText = trxs;
-            document.getElementById('dash-low-stock').innerText = items.filter(i => i.stock < 5).length;
-
-            const top3 = Object.entries(bestSeller).sort((a,b) => b[1] - a[1]).slice(0, 3);
-            document.getElementById('top-products').innerHTML = top3.map(([n, q]) => `<div class="flex justify-between items-center text-[10px] font-bold p-2 bg-slate-50 rounded-xl"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') || '<p class="text-center opacity-30 text-[10px]">No Data</p>';
             
-            initHourChart(hourMap);
+            // Check for element existence before setting innerText
+            const omzetEl = document.getElementById('dash-omzet');
+            const profitEl = document.getElementById('dash-profit');
+            const stockEl = document.getElementById('dash-low-stock');
+            
+            if(omzetEl) omzetEl.innerText = formatIDR(omzet);
+            if(profitEl) profitEl.innerText = formatIDR(profit);
+            if(stockEl) stockEl.innerText = items.filter(i => i.stock < 5).length + " Item";
+            
+            const sorted = Object.entries(best).sort((a,b) => b[1] - a[1]).slice(0,3);
+            const topProductsEl = document.getElementById('top-products');
+            if(topProductsEl) {
+                topProductsEl.innerHTML = sorted.length ? sorted.map(([n, q]) => `<div class="flex justify-between items-center text-[10px] font-bold p-3 bg-slate-50 rounded-2xl"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') : '<p class="text-center opacity-30 text-[10px]">No Data</p>';
+            }
+            initHourChart(hours);
         }
 
         function initHourChart(data) {
-            const ctx = document.getElementById('hourChart').getContext('2d');
+            const chartCanvas = document.getElementById('hourChart');
+            if(!chartCanvas) return;
+            const ctx = chartCanvas.getContext('2d');
             if(hourChart) hourChart.destroy();
-            hourChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: Array.from({length: 24}, (_, i) => i + ':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 5 }] },
-                options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } }
-            });
+            hourChart = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length:24}, (_,i) => i+':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 5 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } } });
         }
 
-        // --- EXPORT LOGIC ---
-        function exportExcel() {
-            showToast("Memproses Excel...");
-            const dataToExport = logs.map(l => ({
-                ID: l.id, Tipe: l.type, Status: l.status, Omzet: l.amount, Modal: l.total_cost, Laba: l.amount - (l.total_cost || 0), Tanggal: l.date
-            }));
-            const ws = XLSX.utils.json_to_sheet(dataToExport);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan");
-            XLSX.writeFile(wb, `Laporan_DheKasir_${Date.now()}.xlsx`);
-        }
-
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            showToast("Memproses PDF...");
-            html2canvas(document.getElementById('report-container')).then(canvas => {
-                const img = canvas.toDataURL('image/png');
-                doc.text(`${config.storeName} - Laporan Bisnis`, 10, 10);
-                doc.addImage(img, 'PNG', 10, 20, 190, 0);
-                doc.save('Laporan_Bisnis.pdf');
-            });
-        }
-
-        // --- CORE DATA & SYNC ---
-        function saveSettings() { config.storeName = document.getElementById('cfg-name').value; config.url = document.getElementById('cfg-url').value; localStorage.setItem('dk_config', JSON.stringify(config)); showToast("Settings OK"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
-        function loadSettings() { const s = JSON.parse(localStorage.getItem('dk_config')); if(s) { config = s; document.getElementById('cfg-name').value = s.storeName; document.getElementById('cfg-url').value = s.url; document.getElementById('store-name-display').innerText = s.storeName; } }
-        async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); } catch(e){} }
+        // --- CORE DATA ---
+        function handleLogo(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; document.getElementById('logo-preview').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; }; r.readAsDataURL(input.files[0]); } }
+        async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); document.getElementById('cloud-dot').className = "w-2 h-2 bg-emerald-500 rounded-full"; } catch(e){ document.getElementById('cloud-dot').className = "w-2 h-2 bg-rose-500 rounded-full"; } }
+        function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); document.getElementById('store-name-display').innerText = config.storeName; showToast("Simpan OK!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
+        function loadSettings() { const saved = JSON.parse(localStorage.getItem('dk_config')); if(saved) { config = {...config, ...saved}; document.getElementById('cfg-name').value = config.storeName; document.getElementById('cfg-address').value = config.storeAddress; document.getElementById('cfg-phone').value = config.storePhone; document.getElementById('cfg-url').value = config.url; document.getElementById('store-name-display').innerText = config.storeName; if(config.logo) document.getElementById('logo-preview').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; } }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); }
-        function renderItems() { document.getElementById('item-list').innerHTML = items.map(i => `<div class="card p-5 rounded-[30px] flex justify-between items-center"><div class="flex items-center gap-3">📦<div><p class="text-xs font-black">${i.name}</p><p class="text-[8px] text-slate-400 uppercase">Jual: ${formatIDR(i.price)} • Stok: ${i.stock}</p></div></div><button onclick="openProductModal(${i.id})" class="text-indigo-600"><i class="fa-solid fa-edit"></i></button></div>`).join(''); }
-        function openProductModal(id = null) { if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; } else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; } openModal('modal-product'); }
-        function saveProduct() { 
-            const id = document.getElementById('p-id').value; 
-            const d = { 
-                id: id ? Number(id) : Date.now(), barcode: document.getElementById('p-barcode').value, 
-                name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), 
-                price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), 
-                cat: 'Umum' 
-            };
-            if(id) { const idx = items.findIndex(x => x.id == id); items[idx] = d; } else items.push(d); 
-            saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("Barang Disimpan!"); syncCloud(d); 
-        }
-        async function openScanner() { showToast("Gunakan di HTTPS (Vercel)"); }
+        function renderItems() { const list = document.getElementById('item-list'); if(list) list.innerHTML = items.map(i => `<div class="card p-5 flex justify-between items-center"><div class="flex items-center gap-4"><div class="text-xl">${i.thumb || '📦'}</div><div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] text-slate-400">JUAL: ${formatIDR(i.price)} • MODAL: ${formatIDR(i.cost||0)}</p></div></div><button onclick="openProductModal(${i.id})" class="text-indigo-600"><i class="fa-solid fa-edit"></i></button></div>`).join(''); }
+        function openProductModal(id = null) { if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; document.getElementById('p-thumb').value = i.thumb || ''; } else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; document.getElementById('p-thumb').value = ''; } openModal('modal-product'); }
+        async function saveProduct() { const idIn = document.getElementById('p-id').value; const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), thumb: document.getElementById('p-thumb').value }; if(!d.name) return; if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d); saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("OK!"); await syncCloud(d); }
+        async function openScanner() { openModal('modal-scanner'); if(!html5QrCode) html5QrCode = new Html5Qrcode("reader"); html5QrCode.start({ facingMode: "environment" }, { fps: 20, qrbox: 250 }, (t) => { const f = items.find(i => i.barcode === t); if(f) { addToCart(f.id); showToast("+ " + f.name); } }); }
+        async function closeScanner() { if(html5QrCode) await html5QrCode.stop(); closeModal('modal-scanner'); }
+        function exportExcel() { const ws = XLSX.utils.json_to_sheet(logs); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, "DheKasir_Report.xlsx"); }
+        async function exportPDF() { showToast("PDF Processing..."); const canvas = await html2canvas(document.getElementById('report-container')); const img = canvas.toDataURL('image/png'); const pdf = new jspdf.jsPDF(); pdf.addImage(img, 'PNG', 10, 20, 190, 0); pdf.save("Laporan_Kasir.pdf"); }
     </script>
 </body>
 </html>
