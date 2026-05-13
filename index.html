@@ -27,6 +27,10 @@
         .scanner-overlay { position: relative; border: 4px solid #4f46e5; border-radius: 28px; }
         .scanner-overlay::after { content: ""; position: absolute; top: 50%; left: 10%; right: 10%; height: 2px; background: rgba(255,0,0,0.7); box-shadow: 0 0 15px red; animation: laser 2s infinite; z-index: 10; }
         @keyframes laser { 0%, 100% { top: 20%; } 50% { top: 80%; } }
+
+        /* Scanned Product Info */
+        .scan-result-popup { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="overflow-x-hidden hide-scrollbar">
@@ -136,14 +140,30 @@
         <div id="modal-scanner" class="fixed inset-0 z-[100] bg-slate-900 hidden flex items-center justify-center p-6">
             <div class="bg-white w-full max-w-sm rounded-[40px] p-6 shadow-2xl relative">
                 <button onclick="closeScanner()" class="absolute -top-4 -right-4 w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-400 shadow-lg z-[110]"><i class="fa-solid fa-xmark"></i></button>
-                <div class="text-center mb-4"><h3 class="text-lg font-black text-slate-800">Scan Produk</h3><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Gunakan Kamera Belakang</p></div>
+                <div class="text-center mb-4"><h3 class="text-lg font-black text-slate-800">Pindai Barcode</h3><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mode Retail Aktif</p></div>
+                
                 <div class="scanner-overlay overflow-hidden rounded-[24px] bg-black min-h-[250px] flex items-center justify-center">
                     <div id="reader" style="width: 100%;"></div>
                 </div>
+
+                <!-- Last Scanned Info (Style Retail) -->
+                <div id="last-scan-container" class="mt-4 p-4 bg-slate-50 rounded-2xl border border-slate-100 hidden scan-result-popup">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p id="scan-prod-name" class="text-xs font-black text-slate-800 line-clamp-1">-</p>
+                            <p id="scan-prod-price" class="text-[10px] font-bold text-indigo-600">Rp 0</p>
+                        </div>
+                        <div class="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs font-black">
+                            x<span id="scan-prod-qty">0</span>
+                        </div>
+                    </div>
+                </div>
+
                 <p id="scanner-msg" class="text-center text-[10px] font-bold mt-4 h-4"></p>
+                
                 <!-- Scanner Controls -->
-                <div class="flex justify-center gap-4 mt-4">
-                    <button id="btn-torch" onclick="toggleTorch()" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400"><i class="fa-solid fa-bolt"></i></button>
+                <div class="flex justify-center gap-4 mt-2">
+                    <button id="btn-torch" onclick="toggleTorch()" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 active:bg-indigo-50 active:text-indigo-600"><i class="fa-solid fa-bolt"></i></button>
                 </div>
             </div>
         </div>
@@ -181,7 +201,7 @@
                 <div class="text-center border-b border-dashed border-slate-300 pb-4 mb-4">
                     <div id="rec-logo-area" class="flex justify-center mb-2 hidden"></div>
                     <h4 class="font-black text-lg uppercase mb-1" id="rec-store-name">-</h4>
-                    <p class="text-[9px] mb-1" id="rec-store-addr">-</p>
+                    <p class="text-[9px] italic mb-1" id="rec-store-addr">-</p>
                     <p class="text-[9px] mb-1" id="rec-store-phone">-</p>
                     <p class="text-[8px] opacity-60" id="rec-date">00/00/0000 00:00</p>
                 </div>
@@ -197,7 +217,7 @@
                 </div>
                 <div class="text-center mt-6">
                     <button onclick="printBluetoothReceipt()" id="btn-print-action" class="w-full py-4 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase mb-2">Print Bluetooth</button>
-                    <button onclick="closeModal('modal-receipt')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase">Tutup</button>
+                    <button onclick="closeModal('modal-receipt')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase">Tutup Struk</button>
                 </div>
             </div>
         </div>
@@ -215,7 +235,7 @@
                         <input type="number" id="p-stock" placeholder="Stok" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold">
                     </div>
                     <input type="text" id="p-thumb" placeholder="Emoji (☕) atau URL Gambar" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm">
-                    <select id="p-cat" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold"><option value="Makanan">Makanan</option><option value="Minuman">Minuman</option><option value="Umum">Umum</option></select>
+                    <select id="p-cat" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl text-sm font-bold"><option value="Makanan">Makanan</option><option value="Minuman">Minuman</option><option value="Sembako">Sembako</option><option value="Umum">Umum</option></select>
                     <div class="flex gap-3"><button onclick="closeModal('modal-product')" class="flex-1 py-4 bg-slate-50 rounded-2xl font-bold text-slate-400">Batal</button><button onclick="saveProduct()" class="flex-1 py-4 premium-gradient text-white rounded-2xl font-bold shadow-lg">Simpan</button></div>
                 </div>
             </div>
@@ -235,6 +255,11 @@
         let lastReceiptData = null;
         let html5QrCode = null;
         let isTorchOn = false;
+        
+        // Anti-Multi-Scan Logic
+        let lastScannedCode = "";
+        let lastScannedTime = 0;
+        const SCAN_COOLDOWN = 1500; // 1.5 detik jeda per item
 
         // Sound Feedback
         const beep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
@@ -267,7 +292,7 @@
             if (t === 'data') renderData(); 
         }
 
-        // --- SCANNER LOGIC v7.0 ---
+        // --- SCANNER LOGIC v7.0 (Retail Revision) ---
         async function openScanner() {
             openModal('modal-scanner');
             const msg = document.getElementById('scanner-msg');
@@ -278,42 +303,70 @@
                     html5QrCode = new Html5Qrcode("reader");
                 }
                 
-                const qrConfig = { fps: 15, qrbox: { width: 250, height: 150 } };
+                // Konfigurasi untuk barcode garis tipis (Retail)
+                const qrConfig = { 
+                    fps: 20, 
+                    qrbox: { width: 280, height: 160 },
+                    aspectRatio: 1.0
+                };
                 
                 await html5QrCode.start(
                     { facingMode: "environment" }, 
                     qrConfig, 
                     onScanSuccess
                 );
-                msg.innerText = "Kamera Aktif";
+                msg.innerText = "Siap Pindai";
                 msg.className = "text-center text-[10px] font-bold text-indigo-500 mt-4 h-4";
             } catch (err) {
                 console.error(err);
-                msg.innerText = "GAGAL: Pastikan Izin & HTTPS";
+                msg.innerText = "GAGAL: Gunakan HTTPS & Izinkan Kamera";
                 msg.className = "text-center text-[10px] font-bold text-rose-500 mt-4 h-4";
             }
         }
 
         function onScanSuccess(decodedText) {
+            const now = Date.now();
             const msg = document.getElementById('scanner-msg');
+            const infoBox = document.getElementById('last-scan-container');
+
+            // Cek Cooldown (Agar tidak double scan item yang sama terlalu cepat)
+            if (decodedText === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) {
+                return;
+            }
+
             const found = items.find(i => String(i.barcode) === String(decodedText));
             
             if (found) {
                 if (found.stock <= 0) {
                     msg.innerText = "STOK HABIS!";
                     msg.className = "text-center text-[10px] font-bold text-rose-500 mt-4 h-4";
+                    infoBox.classList.add('hidden');
                 } else {
                     addToCart(found.id);
-                    msg.innerText = `DITEMUKAN: ${found.name}`;
+                    
+                    // Update Info Popup (Retail Style)
+                    const inCart = cart.find(c => c.id == found.id);
+                    document.getElementById('scan-prod-name').innerText = found.name;
+                    document.getElementById('scan-prod-price').innerText = formatIDR(found.price);
+                    document.getElementById('scan-prod-qty').innerText = inCart ? inCart.qty : 1;
+                    
+                    infoBox.classList.remove('hidden');
+                    msg.innerText = "BERHASIL";
                     msg.className = "text-center text-[10px] font-bold text-emerald-500 mt-4 h-4";
                     
                     // Audio & Haptic Feedback
+                    beep.currentTime = 0;
                     beep.play();
-                    if (window.navigator.vibrate) window.navigator.vibrate(150);
+                    if (window.navigator.vibrate) window.navigator.vibrate(100);
+
+                    // Simpan state scan terakhir
+                    lastScannedCode = decodedText;
+                    lastScannedTime = now;
                 }
             } else {
-                msg.innerText = `BARCODE ${decodedText} TIDAK TERDAFTAR`;
+                msg.innerText = `KODE ${decodedText} TIDAK TERDAFTAR`;
                 msg.className = "text-center text-[10px] font-bold text-rose-400 mt-4 h-4";
+                infoBox.classList.add('hidden');
             }
         }
 
@@ -325,6 +378,7 @@
             }
             isTorchOn = false;
             document.getElementById('btn-torch').classList.remove('text-indigo-600');
+            document.getElementById('last-scan-container').classList.add('hidden');
             closeModal('modal-scanner');
         }
 
@@ -336,9 +390,8 @@
                     advanced: [{ torch: isTorchOn }]
                 });
                 document.getElementById('btn-torch').classList.toggle('text-indigo-600', isTorchOn);
-                showToast(isTorchOn ? "Senter Nyala" : "Senter Padam");
             } catch (err) {
-                showToast("Torch tidak didukung perangkat ini");
+                showToast("Senter tidak didukung");
             }
         }
 
@@ -381,7 +434,7 @@
         }
 
         async function printBluetoothReceipt() {
-            if (!printCharacteristic || !lastReceiptData) return showToast("Buka Bluetooth!");
+            if (!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!");
             const btn = document.getElementById('btn-print-action'); btn.disabled = true;
             const encoder = new TextEncoder();
             const esc = '\x1b', gs = '\x1d';
@@ -465,7 +518,15 @@
         function addToCart(id) {
             const it = items.find(i => i.id == id);
             const inC = cart.find(c => c.id == id);
-            if(inC) { if(inC.qty >= it.stock) return showToast("Stok Habis"); inC.qty++; } else { cart.push({...it, qty: 1}); }
+            if(inC) { 
+                if(inC.qty >= it.stock) {
+                    showToast("Stok Habis!");
+                    return;
+                }
+                inC.qty++; 
+            } else { 
+                cart.push({...it, qty: 1}); 
+            }
             updateCartUI();
         }
 
@@ -501,7 +562,7 @@
         }
 
         async function finishCheckout() {
-            const total = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, ''));
+            const total = Number(document.getElementById('co-grandtotal').innerText.replace(/[Rp.\s]/g, '')) || 0;
             const pay = Number(document.getElementById('pay-amt').value) || 0;
             if(pay < total) return showToast("Uang Kurang!");
             
@@ -511,6 +572,7 @@
             
             const log = { id: "T-" + Date.now(), type: 'income', category: 'Penjualan', items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price })), subtotal: sub, tax, discount: dis, amount: total, pay, change: pay - total, date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
             
+            // Sync Stok & Log
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; await syncCloud(i); } }
             logs.push(log); saveStorage(); closeModal('modal-checkout');
             lastReceiptData = log; showReceipt(log);
