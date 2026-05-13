@@ -136,7 +136,14 @@
     <div id="modal-receipt" class="fixed inset-0 z-[110] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white w-full max-w-xs rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[90vh]">
             <div id="receipt-area" class="receipt-area bg-white text-slate-800 text-center overflow-y-auto flex-1 hide-scrollbar">
-                <div class="border-b border-dashed border-slate-300 pb-4 mb-4"><div id="rec-logo-box" class="flex justify-center mb-2 hidden"></div><h4 class="font-black text-lg uppercase" id="rec-store-name">-</h4><p class="text-[9px] italic" id="rec-store-addr">-</p><p class="text-[9px]" id="rec-store-phone">-</p><p class="text-[8px] opacity-60 mt-2" id="rec-date">-</p></div>
+                <div class="border-b border-dashed border-slate-300 pb-4 mb-4">
+                    <div id="rec-logo-box" class="flex justify-center mb-2 hidden"></div>
+                    <h4 class="font-black text-lg uppercase" id="rec-store-name">-</h4>
+                    <p class="text-[9px] italic" id="rec-store-addr">-</p>
+                    <p class="text-[9px]" id="rec-store-phone">-</p>
+                    <p class="text-[8px] opacity-60 mt-2" id="rec-date">-</p>
+                    <p class="text-[7px] font-bold mt-1 tracking-widest" id="rec-id">-</p>
+                </div>
                 <div id="rec-items" class="text-[10px] space-y-2 mb-4 text-left"></div>
                 <div class="border-t border-dashed border-slate-300 pt-4 space-y-1 text-[10px]"><div class="flex justify-between font-black text-sm pt-2"><span>TOTAL</span><span id="rec-total">Rp 0</span></div><div class="flex justify-between mt-1"><span>Tunai</span><span id="rec-pay">Rp 0</span></div><div class="flex justify-between font-bold"><span>Kembali</span><span id="rec-change">Rp 0</span></div></div>
             </div>
@@ -293,15 +300,131 @@
             if(pay < total) return showToast("Uang Kurang!");
 
             const log = { 
-                id: "T-" + Date.now(), items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), 
-                amount: total, total_cost: cart.reduce((a,c) => a+((c.cost||0)*c.qty), 0), pay: pay, change: pay - total,
-                date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() 
+                id: "T-" + Date.now(), 
+                items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), 
+                amount: total, 
+                total_cost: cart.reduce((a,c) => a+((c.cost||0)*c.qty), 0), 
+                pay: pay, 
+                change: pay - total,
+                date: new Date().toISOString().split('T')[0], 
+                created_at: new Date().toISOString() 
             };
             
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
             logs.push(log); saveStorage(); closeModal('modal-checkout');
-            lastReceiptData = log; showReceipt(log);
+            lastReceiptData = log; 
+            showReceipt(log);
             resetCart(); renderHome(); renderPos(); showToast("Berhasil!"); await syncCloud(log);
+        }
+
+        function showReceipt(d) {
+            // Set global data agar fungsi print/share bisa mengaksesnya
+            lastReceiptData = d;
+            
+            document.getElementById('rec-store-name').innerText = config.storeName;
+            document.getElementById('rec-store-addr').innerText = config.storeAddress;
+            document.getElementById('rec-store-phone').innerText = config.storePhone;
+            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString('id-ID');
+            document.getElementById('rec-id').innerText = "TRX: " + d.id;
+            document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
+            document.getElementById('rec-total').innerText = formatIDR(d.amount);
+            document.getElementById('rec-pay').innerText = formatIDR(d.pay);
+            document.getElementById('rec-change').innerText = formatIDR(d.change);
+            
+            if(config.logo) { 
+                document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10">`; 
+                document.getElementById('rec-logo-box').classList.remove('hidden'); 
+            } else {
+                document.getElementById('rec-logo-box').classList.add('hidden');
+            }
+            openModal('modal-receipt');
+        }
+
+        function renderData() {
+            const f = document.getElementById('date-filter').value;
+            const fil = logs.filter(l => !f || l.date === f).reverse();
+            document.getElementById('data-list').innerHTML = fil.map(l => `
+                <div class="card p-5 flex justify-between items-center shadow-sm active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'>
+                    <div class="flex gap-4 items-center">
+                        <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center text-xs">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <div>
+                            <p class="text-[11px] font-black line-clamp-1 text-slate-800 dark:text-slate-100">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p>
+                            <p class="text-[8px] text-slate-400 font-bold uppercase">${l.date} • ${l.id.substring(l.id.length - 6)}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
+                        <div class="flex gap-2 mt-1 justify-end">
+                            <i class="fa-solid fa-print text-[8px] text-slate-300"></i>
+                            <i class="fa-solid fa-share-nodes text-[8px] text-slate-300"></i>
+                        </div>
+                    </div>
+                </div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold">Kosong</p>';
+        }
+
+        function exportExcel() {
+            if(logs.length === 0) return showToast("Data Kosong");
+            const filterDate = document.getElementById('date-filter').value;
+            const dataToExport = logs.filter(l => !filterDate || l.date === filterDate).map(l => ({
+                ID: l.id,
+                Tanggal: l.date,
+                Items: l.items ? l.items.map(i => `${i.name}(x${i.qty})`).join(', ') : '-',
+                Total: l.amount,
+                Bayar: l.pay,
+                Kembali: l.change
+            }));
+            const ws = XLSX.utils.json_to_sheet(dataToExport);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+            XLSX.writeFile(wb, `DheKasir_Laporan_${filterDate || 'Semua'}.xlsx`);
+        }
+
+        function exportPDF() {
+            if(logs.length === 0) return showToast("Data Kosong");
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const filterDate = document.getElementById('date-filter').value;
+            
+            doc.text(`Laporan Penjualan - ${config.storeName}`, 14, 15);
+            doc.setFontSize(10);
+            doc.text(`Periode: ${filterDate || 'Semua Waktu'}`, 14, 22);
+
+            const filtered = logs.filter(l => !filterDate || l.date === filterDate);
+            const rows = filtered.map(l => [
+                l.date,
+                l.id.substring(l.id.length - 6),
+                l.items ? l.items.map(i => i.name).join(', ') : '-',
+                formatIDR(l.amount)
+            ]);
+
+            doc.autoTable({
+                startY: 30,
+                head: [['Tanggal', 'ID', 'Barang', 'Total']],
+                body: rows,
+                theme: 'striped',
+                headStyles: { fillStyle: '#4f46e5' }
+            });
+
+            doc.save(`Laporan_DheKasir_${filterDate || 'Semua'}.pdf`);
+        }
+
+        function shareToWhatsApp() {
+            if(!lastReceiptData) return showToast("Data Tidak Ditemukan");
+            let msg = `*STRUK BELANJA - ${config.storeName.toUpperCase()}*\n`;
+            msg += `_Tanggal: ${new Date(lastReceiptData.created_at).toLocaleString('id-ID')}_\n`;
+            msg += `----------------------------------\n`;
+            lastReceiptData.items.forEach(i => {
+                msg += `${i.name}\n${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`;
+            });
+            msg += `----------------------------------\n`;
+            msg += `*TOTAL: ${formatIDR(lastReceiptData.amount)}*\n`;
+            msg += `*TUNAI: ${formatIDR(lastReceiptData.pay)}*\n`;
+            msg += `*KEMBALI: ${formatIDR(lastReceiptData.change)}*\n\n`;
+            msg += `Terima Kasih Telah Berbelanja!`;
+            
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function showReceipt(d) {
