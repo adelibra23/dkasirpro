@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir - Retail POS v6.1</title>
+    <title>DheKasir - Retail POS v7.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Library Pemindai Barcode (Versi Stabil) -->
+    <!-- Library Barcode Terbaru -->
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root { --bg-color: #f8fafc; --card-bg: #ffffff; --text-main: #1e293b; --border-color: #f1f5f9; }
-        .dark { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --border-color: #334155; }
+        .dark { --bg-color: #0f172a; --card-bg: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8; --border-color: #334155; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-color); color: var(--text-main); transition: background-color 0.3s ease; }
         .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .logo-gradient { background: linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%); }
         .animate-pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         @keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .card { background-color: var(--card-bg); border: 1px solid var(--border-color); }
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* Barcode Scanner UI Fix */
+        /* Barcode Scanner UI */
         #reader { width: 100% !important; border: none !important; border-radius: 24px; overflow: hidden; background: #000; }
         #reader video { border-radius: 24px; object-fit: cover; }
         .scanner-overlay { position: relative; border: 4px solid #4f46e5; border-radius: 28px; }
@@ -32,6 +33,7 @@
 
     <div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col pb-32">
         
+        <!-- Header -->
         <header class="p-6 pb-4 flex justify-between items-center bg-white/80 backdrop-blur-lg sticky top-0 z-40 border-b border-slate-100">
             <div class="flex items-center gap-3">
                 <div id="app-logo-container" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center overflow-hidden shadow-sm">
@@ -39,9 +41,10 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-800 tracking-tight" id="store-name-display">DheKasir</h1>
-                    <div class="flex items-center gap-1.5"><div id="cloud-status-dot" class="w-2 h-2 bg-slate-300 rounded-full"></div><span id="cloud-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest uppercase">LOKAL</span></div>
+                    <div class="flex items-center gap-1.5"><div id="cloud-status-dot" class="w-2 h-2 bg-slate-300 rounded-full"></div><span id="cloud-status-text" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">LOKAL</span></div>
                 </div>
             </div>
+            <!-- Tombol Scanner Utama -->
             <button onclick="openScanner()" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg active:scale-90 transition-all">
                 <i class="fa-solid fa-barcode text-xl"></i>
             </button>
@@ -79,7 +82,7 @@
                 <div id="pos-grid" class="grid grid-cols-2 gap-4 pb-40"></div>
             </section>
 
-            <!-- TAB: ITEMS -->
+            <!-- TAB: ITEM -->
             <section id="tab-items" class="tab-content hidden space-y-4">
                 <div class="flex justify-between items-center mb-2"><h2 class="text-xl font-black text-slate-800">Master Item</h2><button onclick="openProductModal()" class="px-5 py-3 premium-gradient text-white rounded-2xl font-bold text-[10px] uppercase tracking-widest shadow-lg">Tambah Baru</button></div>
                 <div id="item-list" class="space-y-3 pb-32"></div>
@@ -120,6 +123,7 @@
             </section>
         </main>
 
+        <!-- Navbar -->
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/90 backdrop-blur-xl border-t border-slate-100 p-5 flex justify-around items-center z-50 rounded-t-[40px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
             <button onclick="switchTab('home')" class="nav-btn text-indigo-600 flex flex-col items-center gap-1.5" id="n-home"><i class="fa-solid fa-house-chimney text-xl"></i><span class="text-[9px] font-bold uppercase">Home</span></button>
             <button onclick="switchTab('pos')" class="nav-btn text-slate-300 flex flex-col items-center gap-1.5" id="n-pos"><i class="fa-solid fa-cash-register text-xl"></i><span class="text-[9px] font-bold uppercase">Kasir</span></button>
@@ -137,6 +141,10 @@
                     <div id="reader" style="width: 100%;"></div>
                 </div>
                 <p id="scanner-msg" class="text-center text-[10px] font-bold mt-4 h-4"></p>
+                <!-- Scanner Controls -->
+                <div class="flex justify-center gap-4 mt-4">
+                    <button id="btn-torch" onclick="toggleTorch()" class="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400"><i class="fa-solid fa-bolt"></i></button>
+                </div>
             </div>
         </div>
 
@@ -217,6 +225,7 @@
     </div>
 
     <script>
+        // --- DATA STATE ---
         let items = JSON.parse(localStorage.getItem('dk_items')) || [{ id: Date.now(), barcode: '123', name: 'Produk Demo', price: 10000, stock: 99, cat: 'Umum', thumb: '📦' }];
         let logs = JSON.parse(localStorage.getItem('dk_logs')) || [];
         let config = JSON.parse(localStorage.getItem('dk_config')) || { darkMode: false, storeName: 'DheKasir Retail', storeAddress: '-', storePhone: '-', taxRate: 11, defDiscount: 0, url: '', logo: null };
@@ -225,6 +234,10 @@
         let printCharacteristic = null;
         let lastReceiptData = null;
         let html5QrCode = null;
+        let isTorchOn = false;
+
+        // Sound Feedback
+        const beep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
 
         window.onload = () => { 
             loadInitialSettings(); 
@@ -237,6 +250,7 @@
             }
         };
 
+        // --- CORE HELPERS ---
         function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n); }
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.remove('opacity-0', 'top-12'); t.classList.add('top-16'); setTimeout(() => { t.classList.add('opacity-0', 'top-12'); t.classList.remove('top-16'); }, 2000); }
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
@@ -253,6 +267,7 @@
             if (t === 'data') renderData(); 
         }
 
+        // --- SCANNER LOGIC v7.0 ---
         async function openScanner() {
             openModal('modal-scanner');
             const msg = document.getElementById('scanner-msg');
@@ -282,6 +297,7 @@
         function onScanSuccess(decodedText) {
             const msg = document.getElementById('scanner-msg');
             const found = items.find(i => String(i.barcode) === String(decodedText));
+            
             if (found) {
                 if (found.stock <= 0) {
                     msg.innerText = "STOK HABIS!";
@@ -290,6 +306,9 @@
                     addToCart(found.id);
                     msg.innerText = `DITEMUKAN: ${found.name}`;
                     msg.className = "text-center text-[10px] font-bold text-emerald-500 mt-4 h-4";
+                    
+                    // Audio & Haptic Feedback
+                    beep.play();
                     if (window.navigator.vibrate) window.navigator.vibrate(150);
                 }
             } else {
@@ -304,9 +323,26 @@
                     await html5QrCode.stop();
                 } catch(e) {}
             }
+            isTorchOn = false;
+            document.getElementById('btn-torch').classList.remove('text-indigo-600');
             closeModal('modal-scanner');
         }
 
+        async function toggleTorch() {
+            if (!html5QrCode) return;
+            isTorchOn = !isTorchOn;
+            try {
+                await html5QrCode.applyVideoConstraints({
+                    advanced: [{ torch: isTorchOn }]
+                });
+                document.getElementById('btn-torch').classList.toggle('text-indigo-600', isTorchOn);
+                showToast(isTorchOn ? "Senter Nyala" : "Senter Padam");
+            } catch (err) {
+                showToast("Torch tidak didukung perangkat ini");
+            }
+        }
+
+        // --- LOGO & PRINTER ---
         function handleLogoUpload(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
@@ -366,6 +402,7 @@
             finally { btn.disabled = false; }
         }
 
+        // --- APP LOGIC ---
         function loadInitialSettings() {
             const saved = JSON.parse(localStorage.getItem('dk_config'));
             if(saved) {
@@ -509,6 +546,10 @@
         function showHistoryReceipt(id) { const found = logs.find(l => String(l.id) === String(id)); if(found && found.items) { lastReceiptData = found; showReceipt(found); } }
         function checkSyncStatus() { const dot = document.getElementById('cloud-status-dot'), txt = document.getElementById('cloud-status-text'); if(config.url && config.url.startsWith('http')) { dot.className = "w-2 h-2 bg-emerald-500 rounded-full animate-pulse"; txt.innerText = "Online"; txt.className = "text-[10px] font-bold text-emerald-500 uppercase tracking-widest"; } else { dot.className = "w-2 h-2 bg-slate-300 rounded-full"; txt.innerText = "Mode Lokal"; txt.className = "text-[10px] font-bold text-slate-400 uppercase tracking-widest"; } }
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); } catch (e) { console.error("Sync Error", e); } }
+        async function forceSync() { if(!config.url) return showToast("URL Cloud Kosong!"); const btn = document.getElementById('btn-sync'); btn.disabled = true; btn.innerHTML = 'SYNCING...'; let c = 0; for(const l of logs) { await syncCloud(l); c++; await new Promise(r => setTimeout(r, 80)); } for(const i of items) { await syncCloud(i); c++; await new Promise(r => setTimeout(r, 80)); } btn.disabled = false; btn.innerHTML = 'SYNC COMPLETE'; showToast(`${c} Data Tersinkron`); }
+        function openFinanceModal(type) { document.getElementById('fin-type').value = type; document.getElementById('fin-title').innerText = type === 'income' ? 'Pemasukan Kas' : 'Pengeluaran Kas'; document.getElementById('fin-amt').value = ''; document.getElementById('fin-note').value = ''; openModal('modal-finance'); }
+        async function saveFinance() { const amt = Number(document.getElementById('fin-amt').value); if(amt <= 0) return showToast("Nominal Kosong"); const l = { id: "M-" + Date.now(), type: document.getElementById('fin-type').value, category: "Manual", amount: amt, note: document.getElementById('fin-note').value || '-', date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() }; logs.push(l); saveStorage(); closeModal('modal-finance'); renderHome(); showToast("Catatan Tersimpan"); await syncCloud(l); }
+        function toggleDarkModeUI() { document.body.classList.toggle('dark', document.getElementById('cfg-darkmode').checked); }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); }
     </script>
 </body>
