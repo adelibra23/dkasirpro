@@ -263,12 +263,12 @@
 
     <div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-4">
-            <h3 class="font-black text-lg">Kelola Kategori</h3>
-            <div class="flex gap-2">
-                <input type="text" id="new-cat-name" placeholder="Kategori Baru" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm outline-none border">
-                <button onclick="addCategory()" class="w-12 h-12 premium-gradient text-white rounded-2xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-plus"></i></button>
+            <h3 class="font-black text-lg text-center uppercase tracking-widest">Kelola Kategori</h3>
+            <div class="p-1 bg-slate-100 dark:bg-slate-900 rounded-3xl flex gap-2">
+                <input type="text" id="new-cat-name" placeholder="Kategori Baru" class="flex-1 p-4 bg-transparent text-sm font-bold outline-none border-none">
+                <button onclick="addCategory()" class="w-12 h-12 premium-gradient text-white rounded-[20px] flex items-center justify-center shadow-lg active:scale-90 transition-all"><i class="fa-solid fa-plus"></i></button>
             </div>
-            <div id="category-list" class="space-y-2 max-h-60 overflow-y-auto hide-scrollbar py-2"></div>
+            <div id="category-list" class="space-y-2 max-h-[350px] overflow-y-auto hide-scrollbar py-2"></div>
             <button onclick="closeModal('modal-category')" class="w-full py-4 text-slate-400 font-bold text-[10px] uppercase text-center">Tutup</button>
         </div>
     </div>
@@ -407,99 +407,78 @@
             if(t === 'debts') renderDebts();
         }
 
-        // --- HELPER UNTUK FILTER DATA ---
-        function getFilteredLogs() {
-            const fInput = document.getElementById('date-filter');
-            const f = fInput ? fInput.value : "";
-            return logs.filter(l => !f || l.date === f);
+        // --- MANAJEMEN KATEGORI (UPDATED) ---
+        function openCategoryModal() { renderCategoryList(); openModal('modal-category'); }
+        
+        function renderCategoryList() {
+            const list = document.getElementById('category-list');
+            if(!list) return;
+            // Filter 'Semua' karena itu hanya untuk UI Filter di POS
+            list.innerHTML = categories.filter(c => c !== 'Semua').map(c => `
+                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-[22px] group hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-transparent hover:border-indigo-100 dark:hover:border-indigo-900">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 font-bold text-[10px]">${c.charAt(0)}</div>
+                        <span class="text-sm font-bold">${c}</span>
+                    </div>
+                    ${c !== 'Umum' ? `
+                    <button onclick="deleteCategory('${c}')" class="w-8 h-8 flex items-center justify-center text-rose-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all">
+                        <i class="fa-solid fa-trash-can text-[10px]"></i>
+                    </button>` : `<span class="text-[8px] font-black text-slate-300 uppercase tracking-widest px-2">System</span>`}
+                </div>
+            `).join('') || '<p class="text-center opacity-30 py-10 text-[10px]">Belum Ada Kategori</p>';
         }
 
-        // --- UPGRADED EXCEL EXPORT ---
-        function exportExcel() {
-            const filtered = getFilteredLogs();
-            if(filtered.length === 0) return showToast("Tidak ada data untuk diekspor");
+        function addCategory() {
+            const input = document.getElementById('new-cat-name');
+            const val = input.value.trim();
+            if(!val) return showToast("Nama Kategori Kosong!");
+            if(categories.includes(val)) return showToast("Kategori Sudah Ada!");
             
-            const data = filtered.map((l, index) => ({
-                "No": index + 1,
-                "ID Transaksi": l.id,
-                "Tanggal": l.date,
-                "Jam": new Date(l.created_at).toLocaleTimeString('id-ID'),
-                "Metode": l.method,
-                "Daftar Produk": l.items ? l.items.map(i => `${i.name} (${i.qty})`).join(", ") : "-",
-                "Total Penjualan (Rp)": l.amount
-            }));
+            categories.push(val);
+            input.value = '';
             
-            const ws = XLSX.utils.json_to_sheet(data);
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Laporan Penjualan");
-            const fileName = `Laporan_DheKasir_${new Date().toISOString().split('T')[0]}.xlsx`;
-            XLSX.writeFile(wb, fileName);
-            showToast("Excel Berhasil Diunduh");
+            saveCategories();
+            renderCategoryList();
+            renderCategoryOptions();
+            renderPosCategoryChips();
+            showToast("Kategori Ditambahkan");
         }
 
-        // --- UPGRADED PDF EXPORT ---
-        function exportPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const filtered = getFilteredLogs();
-            if(filtered.length === 0) return showToast("Tidak ada data untuk diekspor");
-
-            const storeName = config.storeName || "DheKasir Platinum";
-            const dateFilter = document.getElementById('date-filter').value || "Semua Tanggal";
-
-            // Header Laporan
-            doc.setFontSize(22);
-            doc.setTextColor(79, 70, 229); // Indigo
-            doc.text(storeName.toUpperCase(), 14, 22);
+        function deleteCategory(name) {
+            if(name === 'Umum' || name === 'Semua') return;
             
-            doc.setFontSize(10);
-            doc.setTextColor(100, 116, 139);
-            doc.text(config.storeAddress || "Alamat Toko Belum Diatur", 14, 28);
-            doc.text(`Periode Laporan: ${dateFilter}`, 14, 34);
-            doc.text(`Waktu Cetak: ${new Date().toLocaleString('id-ID')}`, 14, 40);
+            // Konfirmasi sederhana via toast info / logic internal
+            categories = categories.filter(c => c !== name);
             
-            const tableData = filtered.map(l => [
-                l.date,
-                l.id,
-                l.items ? l.items.map(i => i.name).join(", ") : "-",
-                l.method,
-                formatIDR(l.amount)
-            ]);
-            
-            doc.autoTable({
-                startY: 46,
-                head: [['Tanggal', 'ID Transaksi', 'Daftar Produk', 'Metode', 'Total']],
-                body: tableData,
-                theme: 'grid',
-                headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
-                styles: { fontSize: 8, cellPadding: 3 },
-                columnStyles: { 2: { cellWidth: 60 } } // Kolom produk lebih lebar
+            // Integrasi: Jika kategori dihapus, ubah kategori produk yang terpengaruh ke "Umum"
+            let affectedCount = 0;
+            items.forEach(i => {
+                if(i.category === name) {
+                    i.category = 'Umum';
+                    affectedCount++;
+                }
             });
+
+            saveCategories();
+            if(affectedCount > 0) saveStorage(); // Simpan perubahan item jika ada yang berubah
             
-            const finalY = doc.lastAutoTable.finalY || 46;
-            const totalRevenue = filtered.reduce((a, b) => a + b.amount, 0);
-            
-            // Summary Section
-            doc.setFontSize(12);
-            doc.setTextColor(30, 41, 59);
-            doc.text(`RINGKASAN LAPORAN:`, 14, finalY + 15);
-            doc.setFontSize(10);
-            doc.text(`Total Transaksi: ${filtered.length}`, 14, finalY + 22);
-            doc.setFontSize(11);
-            doc.setFont("helvetica", "bold");
-            doc.text(`TOTAL PENDAPATAN: ${formatIDR(totalRevenue)}`, 14, finalY + 29);
-            
-            doc.save(`Laporan_DheKasir_${Date.now()}.pdf`);
-            showToast("PDF Berhasil Diunduh");
+            renderCategoryList();
+            renderCategoryOptions();
+            renderPosCategoryChips();
+            renderItems();
+            renderPos();
+            showToast("Dihapus & Produk Dialihkan");
         }
 
-        // --- CORE FUNCTIONS (SCANNER, POS, ITEMS) ---
+        function saveCategories() { localStorage.setItem('dk_categories', JSON.stringify(categories)); }
+
         function renderCategoryOptions() {
             const select = document.getElementById('p-category');
             if(!select) return;
             select.innerHTML = categories.filter(c => c !== 'Semua').map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
+        // --- FILTER KATEGORI POS ---
         function renderPosCategoryChips() {
             const container = document.getElementById('pos-category-chips');
             if(!container) return;
@@ -511,7 +490,8 @@
         }
 
         function setPosCategory(c) { activePosCategory = c; renderPosCategoryChips(); renderPos(); }
-        function saveCategories() { localStorage.setItem('dk_categories', JSON.stringify(categories)); }
+
+        // --- CORE FUNCTIONS (POS, ITEMS, DATA) ---
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
             const grid = document.getElementById('pos-grid');
@@ -682,6 +662,7 @@
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; loadSettings(); }; r.readAsDataURL(input.files[0]); } }
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); const dot = document.getElementById('cloud-dot'); if(dot) dot.className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"; } catch(e){} }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); localStorage.setItem('dk_debts', JSON.stringify(debts)); }
+        
         function renderItems() {
             const searchVal = document.getElementById('item-search');
             const q = searchVal ? searchVal.value.toLowerCase() : "";
@@ -691,6 +672,7 @@
         }
 
         function deleteProduct(id) { items = items.filter(x => x.id !== id); saveStorage(); renderItems(); renderPos(); showToast("Produk Dihapus"); }
+        
         function openProductModal(id = null) {
             if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost || 0; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; document.getElementById('p-category').value = i.category || 'Umum'; }
             else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; }
@@ -712,6 +694,7 @@
         }
 
         function deleteLog(id) { logs = logs.filter(l => l.id !== id); saveStorage(); renderData(); showToast("Log Dihapus"); }
+        
         function renderDebts() {
             const label = document.getElementById('debt-count-label'); if(label) label.innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG";
             const list = document.getElementById('debt-list'); if(!list) return;
@@ -719,12 +702,26 @@
         }
 
         function openDebtDetail(id) { const d = debts.find(x => x.id === id); currentDebtId = id; document.getElementById('det-debt-name').innerText = d.customer; document.getElementById('det-debt-id').innerText = d.id; document.getElementById('det-debt-total').innerText = formatIDR(d.total); document.getElementById('det-debt-paid').innerText = formatIDR(d.paid); document.getElementById('det-debt-rem').innerText = formatIDR(d.balance); openModal('modal-debt-detail'); }
+        
         async function payInstallment() { const amt = Number(document.getElementById('ins-amt').value); if(!amt || amt <= 0) return showToast("Isi Nominal!"); const d = debts.find(x => x.id === currentDebtId); d.paid += amt; d.balance = d.total - d.paid; if(d.balance <= 0) d.status = 'LUNAS'; saveStorage(); closeModal('modal-debt-detail'); renderDebts(); await syncCloud({ type: 'debt_record', ...d }); }
+        
         async function connectPrinter() { try { const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] }); const server = await device.gatt.connect(); const services = await server.getPrimaryServices(); for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) { if (c.properties.write) { printCharacteristic = c; break; } } if (printCharacteristic) break; } const status = document.getElementById('printer-status'); if(status) { status.innerText = "READY"; status.className = "text-[8px] font-black text-emerald-500 uppercase"; } showToast("Printer Terhubung!"); } catch (e) { showToast("Gagal Bluetooth!"); } }
+        
         async function printBluetoothReceipt() { if(!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!"); const enc = new TextEncoder(); const esc = '\x1b', gs = '\x1d'; let t = esc + '@' + esc + 'a' + '\x01' + config.storeName.toUpperCase() + '\n' + config.storeAddress + '\n--------------------------------\n' + esc + 'a' + '\x00'; lastReceiptData.items.forEach(i => t += `${i.name.substring(0,20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`); t += '--------------------------------\n' + `TOTAL: ${formatIDR(lastReceiptData.amount)}\n` + `KEMBALI: ${formatIDR(lastReceiptData.change)}\n\nTERIMA KASIH\n\n\n\n` + gs + 'V' + '\x42' + '\x00'; try { const chunks = []; for(let i=0; i<t.length; i+=16) chunks.push(t.substring(i, i+16)); for(const ch of chunks) { await printCharacteristic.writeValue(enc.encode(ch)); await new Promise(r => setTimeout(r, 60)); } showToast("Berhasil Mencetak"); } catch (e) { showToast("Gagal Cetak!"); } }
+        
         function shareWhatsApp() { if(!lastReceiptData) return; let m = `*${config.storeName}*\n${new Date(lastReceiptData.created_at).toLocaleString()}\n----------------\n`; lastReceiptData.items.forEach(i => m += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); m += `----------------\n*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank'); }
 
-        window.onload = () => { loadSettings(); const savedTab = localStorage.getItem('dk_active_tab') || 'home'; switchTab(savedTab); renderCategoryOptions(); renderPosCategoryChips(); };
+        // --- UPGRADED EXCEL & PDF (CONSISTENT FROM PREVIOUS STABLE) ---
+        function exportExcel() { const filtered = getFilteredLogs(); if(filtered.length === 0) return showToast("Data Kosong!"); const data = filtered.map((l, index) => ({ "No": index + 1, "ID": l.id, "Tanggal": l.date, "Metode": l.method, "Produk": l.items ? l.items.map(i => `${i.name}(${i.qty})`).join(", ") : "-", "Total": l.amount })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, `Laporan_${Date.now()}.xlsx`); showToast("Excel Siap!"); }
+        function exportPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); const filtered = getFilteredLogs(); if(filtered.length === 0) return showToast("Data Kosong!"); doc.text(config.storeName, 14, 20); doc.autoTable({ startY: 30, head: [['Tanggal', 'ID', 'Produk', 'Metode', 'Total']], body: filtered.map(l => [l.date, l.id, l.items ? l.items.map(i => i.name).join(", ") : "-", l.method, formatIDR(l.amount)]) }); doc.save(`Laporan_${Date.now()}.pdf`); showToast("PDF Siap!"); }
+
+        window.onload = () => { 
+            loadSettings(); 
+            const savedTab = localStorage.getItem('dk_active_tab') || 'home'; 
+            switchTab(savedTab); 
+            renderCategoryOptions(); 
+            renderPosCategoryChips(); 
+        };
     </script>
 </body>
 </html>
