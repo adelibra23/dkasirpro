@@ -383,6 +383,8 @@
         let currentDebtId = null;
         const SCAN_COOLDOWN = 2500;
         const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
+        // Mendefinisikan suara beep untuk scan barcode
+        const scanBeep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
 
         function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n || 0); }
         function showToast(m) { const t = document.getElementById('toast'); if(!t) return; t.innerText = m; t.classList.remove('opacity-0'); t.classList.add('opacity-100'); setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2000); }
@@ -685,11 +687,25 @@
                 if (text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
                 const found = items.find(i => String(i.barcode) === String(text));
                 if(found && found.stock > 0) {
-                    addToCart(found.id); lastScannedCode = text; lastScannedTime = now;
+                    addToCart(found.id); 
+                    lastScannedCode = text; 
+                    lastScannedTime = now;
+
+                    // Fitur Baru: Memberikan getaran pada HP (100ms)
+                    if (window.navigator && window.navigator.vibrate) {
+                        window.navigator.vibrate(100);
+                    }
+
+                    // Fitur Baru: Memutar suara Beep saat scan berhasil
+                    scanBeep.currentTime = 0;
+                    scanBeep.play().catch(e => console.log("Audio play blocked by browser policy"));
+
                     const feedback = document.getElementById('scan-feedback');
                     feedback.innerText = `+ ${found.name}`; 
                     feedback.classList.remove('hidden');
                     setTimeout(() => feedback.classList.add('hidden'), 2000);
+                } else if(found && found.stock <= 0) {
+                    showToast("Stok Habis!");
                 }
             }).catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
         }
