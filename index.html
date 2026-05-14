@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir Platinum v22.5 - Final Stable</title>
+    <title>DheKasir Platinum v22.6 - Professional POS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -46,7 +46,7 @@
                 <div id="app-logo" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/20 text-white font-black text-lg">D</div>
                 <div>
                     <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v22.5 STABLE</span></div>
+                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v22.6 STABLE</span></div>
                 </div>
             </div>
             <button onclick="openScanner()" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20"><i class="fa-solid fa-barcode text-xl"></i></button>
@@ -75,7 +75,7 @@
                 <div id="pos-grid" class="grid grid-cols-2 gap-4 pb-10"></div>
             </section>
 
-            <!-- TAB: STOK (ITEM) -->
+            <!-- TAB: STOK -->
             <section id="tab-items" class="tab-content space-y-4">
                 <div class="flex justify-between items-center"><h2 class="text-xl font-black">Inventaris</h2><button onclick="openProductModal()" class="px-4 py-2 premium-gradient text-white rounded-xl font-bold text-[10px] uppercase shadow-lg">Tambah</button></div>
                 <div class="relative">
@@ -85,13 +85,13 @@
                 <div id="item-list" class="space-y-3"></div>
             </section>
 
-            <!-- TAB: HUTANG (DEBT) -->
+            <!-- TAB: HUTANG -->
             <section id="tab-debts" class="tab-content space-y-6">
                 <div class="flex justify-between items-center"><h2 class="text-xl font-black">Buku Hutang</h2><div class="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-[10px] font-black" id="debt-count-label">0 ORANG</div></div>
                 <div id="debt-list" class="space-y-3"></div>
             </section>
 
-            <!-- TAB: DATA (RIWAYAT) -->
+            <!-- TAB: DATA -->
             <section id="tab-data" class="tab-content space-y-6">
                 <div class="flex justify-between items-center"><h2 class="text-xl font-black">Laporan</h2><input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none"></div>
                 <div class="grid grid-cols-2 gap-3"><button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button><button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button></div>
@@ -104,9 +104,16 @@
                 <div class="card p-2 space-y-1">
                     <p class="px-4 pt-4 pb-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">Tampilan</p>
                     <div class="flex items-center justify-between p-4 border-b border-slate-50 dark:border-slate-700/50"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-moon"></i></div><span class="text-sm font-bold">Tema Gelap</span></div><label class="switch"><input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"><span class="slider"></span></label></div>
+                    
                     <p class="px-4 pt-6 pb-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">Konfigurasi</p>
                     <div onclick="openStoreSettings()" class="flex items-center justify-between p-4 border-b border-slate-50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-store"></i></div><span class="text-sm font-bold">Setelan Toko</span></div><i class="fa-solid fa-chevron-right text-xs text-slate-300"></i></div>
-                    <div onclick="connectPrinter()" class="flex items-center justify-between p-4 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-slate-400"><i class="fa-solid fa-print"></i></div><span class="text-sm font-bold">Printer Thermal</span></div><span id="printer-status" class="text-[8px] font-black text-slate-300 uppercase">OFFLINE</span></div>
+                    <div onclick="connectPrinter()" class="flex items-center justify-between p-4 border-b border-slate-50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-slate-400"><i class="fa-solid fa-print"></i></div><span class="text-sm font-bold">Printer Thermal</span></div><span id="printer-status" class="text-[8px] font-black text-slate-300 uppercase">OFFLINE</span></div>
+
+                    <!-- NEW: INFO SECTION -->
+                    <p class="px-4 pt-6 pb-2 text-[9px] font-black text-slate-400 uppercase tracking-widest">Bantuan & Informasi</p>
+                    <div onclick="openModal('modal-about')" class="flex items-center justify-between p-4 border-b border-slate-50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-circle-info"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-slate-300"></i></div>
+                    <div onclick="contactSupport()" class="flex items-center justify-between p-4 border-b border-slate-50 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-headset"></i></div><span class="text-sm font-bold">Hubungi Kami</span></div><i class="fa-solid fa-chevron-right text-xs text-slate-300"></i></div>
+                    <div onclick="openModal('modal-privacy')" class="flex items-center justify-between p-4 cursor-pointer active:bg-slate-50 rounded-xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-indigo-600"><i class="fa-solid fa-shield-halved"></i></div><span class="text-sm font-bold">Privasi & Kebijakan</span></div><i class="fa-solid fa-chevron-right text-xs text-slate-300"></i></div>
                 </div>
             </section>
         </main>
@@ -246,6 +253,32 @@
         </div>
     </div>
 
+    <!-- MODAL: TENTANG APLIKASI -->
+    <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-10 animate-pop shadow-2xl text-center">
+            <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-6 shadow-xl">D</div>
+            <h3 class="font-black text-xl mb-2">DheKasir Platinum</h3>
+            <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 22.6 STABLE</p>
+            <p class="text-xs leading-relaxed text-slate-500 dark:text-slate-400 mb-8">Solusi kasir retail modern terpadu untuk UMKM Indonesia. Membantu Anda mengelola transaksi, stok, dan piutang pelanggan dengan mudah dan aman secara Cloud.</p>
+            <button onclick="closeModal('modal-about')" class="w-full py-4 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase shadow-sm">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MODAL: PRIVASI & KEBIJAKAN -->
+    <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[80vh]">
+            <h3 class="font-black text-lg mb-4 text-center">Privasi & Kebijakan</h3>
+            <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 space-y-4 text-justify">
+                <p><strong>1. Pengumpulan Data:</strong> DheKasir Platinum menyimpan data transaksi dan inventaris Anda secara lokal di perangkat Anda (LocalStorage) dan secara opsional di Google Spreadsheet pribadi Anda melalui integrasi URL API.</p>
+                <p><strong>2. Keamanan:</strong> Kami tidak memiliki akses ke database Google Spreadsheet Anda. Keamanan data sepenuhnya bergantung pada kerahasiaan URL Google Apps Script yang Anda buat.</p>
+                <p><strong>3. Penggunaan Kamera:</strong> Izin kamera hanya digunakan untuk fitur pemindaian barcode produk dan tidak menyimpan gambar atau video apapun ke server luar.</p>
+                <p><strong>4. Bluetooth:</strong> Fitur Bluetooth hanya digunakan untuk berkomunikasi dengan printer thermal eksternal saat proses pencetakan struk.</p>
+                <p><strong>5. Perubahan:</strong> Kami berhak memperbarui kebijakan ini sewaktu-waktu untuk meningkatkan layanan aplikasi.</p>
+            </div>
+            <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-6 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase shadow-sm">Saya Mengerti</button>
+        </div>
+    </div>
+
     <script>
         // --- DATA STATE ---
         let items = JSON.parse(localStorage.getItem('dk_items')) || [];
@@ -277,7 +310,6 @@
         function openModal(id) { const el = document.getElementById(id); if(el) el.classList.remove('hidden'); }
         function closeModal(id) { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }
 
-        // --- STREAMING_CHUNK:Implementing navigation and theme logic... ---
         function switchTab(t) {
             document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(`tab-${t}`);
@@ -310,8 +342,9 @@
         function openStoreSettings() { openModal('modal-store-cfg'); document.getElementById('cfg-name').value = config.storeName; document.getElementById('cfg-address').value = config.storeAddress; document.getElementById('cfg-phone').value = config.storePhone; document.getElementById('cfg-url').value = config.url; if(config.logo) document.getElementById('logo-preview-cfg').innerHTML = `<img src="${config.logo}" class="w-full h-full object-cover">`; }
         async function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); loadSettings(); closeModal('modal-store-cfg'); showToast("Simpan Berhasil!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; loadSettings(); }; r.readAsDataURL(input.files[0]); } }
+        function contactSupport() { window.open(`https://wa.me/${config.storePhone || '6281234567890'}?text=Halo%20Admin%20DheKasir,%20saya%20butuh%20bantuan%20terkait%20aplikasi.`, '_blank'); }
 
-        // --- STREAMING_CHUNK:Implementing POS and Scanner modules... ---
+        // --- SCANNER & POS ---
         async function openScanner() {
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return showToast("Wajib HTTPS!");
             openModal('modal-scanner');
@@ -360,7 +393,7 @@
         }
         function resetCart() { cart = []; updateCartUI(); }
 
-        // --- STREAMING_CHUNK:Implementing payment and checkout processes... ---
+        // --- CHECKOUT ---
         function setPayMethod(m) {
             payMethod = m;
             document.getElementById('m-cash').className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
@@ -402,7 +435,7 @@
             logs.push(log); saveStorage(); closeModal('modal-checkout'); showReceipt(log); resetCart(); renderHome(); renderPos(); await syncCloud(log);
         }
 
-        // --- STREAMING_CHUNK:Implementing report, export, and bluetooth printer features... ---
+        // --- REPORT & EXPORT ---
         function showReceipt(d) {
             lastReceiptData = d;
             document.getElementById('rec-store-name').innerText = config.storeName;
@@ -444,7 +477,7 @@
         function exportExcel() { const ws = XLSX.utils.json_to_sheet(logs); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Logs"); XLSX.writeFile(wb, "Laporan_DheKasir.xlsx"); }
         function exportPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text("Laporan Penjualan - " + config.storeName, 10, 10); doc.autoTable({ head: [['ID', 'Items', 'Total', 'Tanggal']], body: logs.map(l => [l.id, l.items ? l.items.map(i => i.name).join(', ') : '-', formatIDR(l.amount), l.date]) }); doc.save("Laporan_DheKasir.pdf"); }
 
-        // --- STREAMING_CHUNK:Implementing dashboard analytics and debt management... ---
+        // --- DASHBOARD ---
         function renderHome() {
             let profit = 0, omzet = 0, debtT = 0, best = {};
             const hourMap = new Array(24).fill(0);
@@ -469,32 +502,7 @@
             mainChart = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length:24}, (_,i) => i+':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } } });
         }
 
-        function renderDebts() {
-            document.getElementById('debt-count-label').innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG";
-            document.getElementById('debt-list').innerHTML = debts.slice().reverse().map(d => `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 transition-all ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black dark:text-slate-100">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black ${d.status === 'LUNAS' ? 'text-emerald-500' : 'text-rose-500'}">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold uppercase tracking-widest">Buku Hutang Kosong</p>';
-        }
-        function openDebtDetail(id) {
-            const d = debts.find(x => x.id === id); currentDebtId = id;
-            document.getElementById('det-debt-name').innerText = d.customer;
-            document.getElementById('det-debt-id').innerText = d.id;
-            document.getElementById('det-debt-total').innerText = formatIDR(d.total);
-            document.getElementById('det-debt-paid').innerText = formatIDR(d.paid);
-            document.getElementById('det-debt-rem').innerText = formatIDR(d.balance);
-            document.getElementById('debt-pay-input').classList.toggle('hidden', d.status === 'LUNAS');
-            openModal('modal-debt-detail');
-        }
-        async function payInstallment() {
-            const amt = Number(document.getElementById('ins-amt').value);
-            if(!amt || amt <= 0) return showToast("Nominal Salah!");
-            const d = debts.find(x => x.id === currentDebtId);
-            if(amt > d.balance) return showToast("Kelebihan!");
-            d.paid += amt; d.balance = d.total - d.paid;
-            if(d.balance <= 0) d.status = 'LUNAS';
-            logs.push({ id: "INC-"+Date.now(), type: 'income', category: 'Cicilan', amount: amt, note: `Cicilan ${d.customer}`, date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() });
-            saveStorage(); closeModal('modal-debt-detail'); renderDebts(); renderHome(); showToast("OK!"); await syncCloud({ type: 'debt_record', ...d });
-        }
-
-        // --- STREAMING_CHUNK:Implementing master data inventory logic... ---
+        // --- MASTER DATA ---
         function renderItems() {
             const si = document.getElementById('item-search');
             const q = si ? si.value.toLowerCase() : "";
@@ -507,9 +515,13 @@
         }
         async function saveProduct() { const idIn = document.getElementById('p-id').value; const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value) }; if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d); saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("OK!"); await syncCloud(d); }
         function deleteProduct(id) { items = items.filter(x => x.id != id); saveStorage(); renderItems(); }
-        function renderData() { const f = document.getElementById('date-filter').value; document.getElementById('data-list').innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `<div class="card p-5 flex justify-between items-center active:scale-95" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex gap-4 items-center"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold uppercase">Data Kosong</p>'; }
         
-        // --- STREAMING_CHUNK:Finalizing cloud sync and persistence... ---
+        function renderData() { const f = document.getElementById('date-filter').value; document.getElementById('data-list').innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `<div class="card p-5 flex justify-between items-center active:scale-95" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex gap-4 items-center"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold uppercase">Data Kosong</p>'; }
+        function renderDebts() { document.getElementById('debt-count-label').innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG"; document.getElementById('debt-list').innerHTML = debts.slice().reverse().map(d => `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 transition-all ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black dark:text-slate-100">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black ${d.status === 'LUNAS' ? 'text-emerald-500' : 'text-rose-500'}">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join('') || '<p class="text-center py-20 opacity-30 text-xs font-bold uppercase tracking-widest">Buku Hutang Kosong</p>'; }
+        function openDebtDetail(id) { const d = debts.find(x => x.id === id); currentDebtId = id; document.getElementById('det-debt-name').innerText = d.customer; document.getElementById('det-debt-id').innerText = d.id; document.getElementById('det-debt-total').innerText = formatIDR(d.total); document.getElementById('det-debt-paid').innerText = formatIDR(d.paid); document.getElementById('det-debt-rem').innerText = formatIDR(d.balance); document.getElementById('debt-pay-input').classList.toggle('hidden', d.status === 'LUNAS'); openModal('modal-debt-detail'); }
+        async function payInstallment() { const amt = Number(document.getElementById('ins-amt').value); if(!amt || amt <= 0) return showToast("Nominal Salah!"); const d = debts.find(x => x.id === currentDebtId); if(amt > d.balance) return showToast("Kelebihan!"); d.paid += amt; d.balance = d.total - d.paid; if(d.balance <= 0) d.status = 'LUNAS'; logs.push({ id: "INC-"+Date.now(), type: 'income', category: 'Cicilan', amount: amt, note: `Cicilan ${d.customer}`, date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() }); saveStorage(); closeModal('modal-debt-detail'); renderDebts(); renderHome(); showToast("OK!"); await syncCloud({ type: 'debt_record', ...d }); }
+
+        // --- CLOUD SYNC ---
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); document.getElementById('cloud-dot').className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"; } catch(e){} }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); localStorage.setItem('dk_debts', JSON.stringify(debts)); }
     </script>
