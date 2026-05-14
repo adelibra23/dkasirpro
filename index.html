@@ -159,7 +159,7 @@
     </div>
 
     <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="bg-white dark:bg-slate-800 w-full max-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
             <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Detail Keranjang</h3>
             <div id="cart-items-list" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6">
@@ -175,7 +175,8 @@
 
     <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
         <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl">
-            <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Pembayaran</h3>
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-6"></div>
+            <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Konfirmasi Bayar</h3>
             <div class="space-y-4">
                 <div class="flex justify-between font-black text-2xl border-b dark:border-slate-700 pb-4"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
                 <div class="grid grid-cols-2 gap-2 bg-slate-100 dark:bg-slate-900 p-1 rounded-2xl">
@@ -184,14 +185,14 @@
                 </div>
                 <div id="pay-cash-area" class="space-y-4">
                     <div class="grid grid-cols-2 gap-3">
-                        <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 uppercase ml-2">Uang Tunai</label><input type="number" id="pay-amt-cash" oninput="calcChange()" class="w-full p-4 bg-slate-50 dark:bg-slate-900 text-emerald-600 font-black rounded-2xl outline-none border"></div>
-                        <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 uppercase ml-2">Transfer/QRIS</label><input type="number" id="pay-amt-qris" oninput="calcChange()" class="w-full p-4 bg-slate-50 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl outline-none border"></div>
+                        <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 uppercase ml-2">Uang Tunai</label><input type="number" id="pay-amt-cash" oninput="calcChange()" class="w-full p-4 bg-slate-50 dark:bg-slate-900 text-emerald-600 font-black rounded-2xl outline-none border border-slate-200 dark:border-slate-700"></div>
+                        <div class="space-y-1"><label class="text-[8px] font-black text-slate-400 uppercase ml-2">Transfer/QRIS</label><input type="number" id="pay-amt-qris" oninput="calcChange()" class="w-full p-4 bg-slate-50 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl outline-none border border-slate-200 dark:border-slate-700"></div>
                     </div>
                     <div class="flex justify-between items-center px-6 py-4 bg-slate-50 dark:bg-slate-900 rounded-2xl"><span class="text-xs font-bold text-slate-400 uppercase">Kembalian</span><span id="pay-change" class="text-xl font-black">Rp 0</span></div>
                 </div>
                 <div id="pay-debt-area" class="hidden space-y-4">
-                    <input type="text" id="debt-customer" placeholder="Nama Pelanggan" class="w-full p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-600 font-bold rounded-2xl outline-none border">
-                    <div class="flex items-center gap-3 px-4"><label class="text-[9px] font-black text-slate-400 uppercase w-24">Jatuh Tempo</label><input type="date" id="debt-due" class="flex-1 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs outline-none border"></div>
+                    <input type="text" id="debt-customer" placeholder="Nama Pelanggan" class="w-full p-4 bg-rose-50 dark:bg-rose-900/20 text-rose-600 font-bold rounded-2xl outline-none border border-rose-200 dark:border-rose-800">
+                    <div class="flex items-center gap-3 px-4"><label class="text-[9px] font-black text-slate-400 uppercase w-24">Jatuh Tempo</label><input type="date" id="debt-due" class="flex-1 p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-xs outline-none border border-slate-200 dark:border-slate-700"></div>
                 </div>
                 <button onclick="finishCheckout()" class="w-full py-6 premium-gradient text-white rounded-[30px] font-black text-sm uppercase shadow-xl active:scale-95 transition-all">Selesaikan Transaksi</button>
                 <button onclick="closeModal('modal-checkout')" class="w-full py-2 text-slate-400 font-bold text-[10px] uppercase text-center">Batal</button>
@@ -237,7 +238,7 @@
             </div>
             <div id="debt-pay-input" class="space-y-3 mb-6">
                 <input type="number" id="ins-amt" placeholder="Nominal Cicilan" class="w-full p-4 bg-slate-50 rounded-2xl text-sm font-bold outline-none border">
-                <button onclick="payInstallment()" class="w-full py-4 bg-emerald-50 text-white rounded-2xl font-bold text-xs uppercase shadow-lg">Bayar Cicilan</button>
+                <button onclick="payInstallment()" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold text-xs uppercase shadow-lg">Bayar Cicilan</button>
             </div>
             <button onclick="closeModal('modal-debt-detail')" class="w-full text-slate-400 font-bold text-[10px] uppercase">Tutup</button>
         </div>
@@ -464,7 +465,7 @@
                 cart.push({...it, qty: 1});
             }
             updateCartUI();
-            renderPos(); // Update indicators
+            renderPos(); 
         }
 
         function updateCartItem(id, change) {
@@ -519,13 +520,39 @@
         function openCheckout() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             document.getElementById('co-grandtotal').innerText = formatIDR(total);
+            
+            // Reset Fields
             document.getElementById('pay-amt-cash').value = '';
             document.getElementById('pay-amt-qris').value = '';
+            document.getElementById('debt-customer').value = '';
+            document.getElementById('debt-due').value = '';
             document.getElementById('pay-change').innerText = 'Rp 0';
-            setPayMethod('cash'); openModal('modal-checkout');
+            
+            setPayMethod('cash'); 
+            openModal('modal-checkout');
+        }
+
+        function setPayMethod(m) {
+            payMethod = m;
+            const btnCash = document.getElementById('m-cash');
+            const btnDebt = document.getElementById('m-debt');
+            const areaCash = document.getElementById('pay-cash-area');
+            const areaDebt = document.getElementById('pay-debt-area');
+            
+            if(btnCash) btnCash.className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
+            if(btnDebt) btnDebt.className = m === 'debt' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-rose-500 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
+            
+            if(areaCash) areaCash.classList.toggle('hidden', m !== 'cash');
+            if(areaDebt) areaDebt.classList.toggle('hidden', m !== 'debt');
+            
+            calcChange();
         }
 
         function calcChange() {
+            if(payMethod !== 'cash') {
+                document.getElementById('pay-change').innerText = 'Rp 0';
+                return;
+            }
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             const cash = Number(document.getElementById('pay-amt-cash').value) || 0;
             const qris = Number(document.getElementById('pay-amt-qris').value) || 0;
@@ -534,24 +561,63 @@
 
         async function finishCheckout() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
-            const cash = Number(document.getElementById('pay-amt-cash').value) || 0;
-            const qris = Number(document.getElementById('pay-amt-qris').value) || 0;
-            if(payMethod === 'cash' && (cash+qris) < total) return showToast("Uang Kurang!");
+            let cash = Number(document.getElementById('pay-amt-cash').value) || 0;
+            let qris = Number(document.getElementById('pay-amt-qris').value) || 0;
+            let change = Math.max(0, (cash + qris) - total);
+
+            if(payMethod === 'cash' && (cash + qris) < total) return showToast("Uang Kurang!");
             
-            const tid = "T-" + Date.now();
-            const log = { id: tid, items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), amount: total, total_cost: cart.reduce((a,c) => a+((Number(c.cost)||0)*c.qty), 0), pay_cash: cash, pay_qris: qris, change: (cash+qris)-total, method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
-            
+            // Jika metode hutang, pastikan input tunai diabaikan dalam pencatatan log utama
             if(payMethod === 'debt') {
                 const customer = document.getElementById('debt-customer').value;
-                if(!customer) return showToast("Isi Nama!");
-                const d = { id: "D-"+Date.now(), customer, transactionId: tid, total, paid: 0, balance: total, dueDate: document.getElementById('debt-due').value || '-', status: 'BELUM LUNAS' };
-                debts.push(d); await syncCloud({...d, type: 'debt_record'});
+                if(!customer) return showToast("Isi Nama Pelanggan!");
+                cash = 0; qris = 0; change = 0;
+            }
+
+            const tid = "T-" + Date.now();
+            const log = { 
+                id: tid, 
+                items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), 
+                amount: total, 
+                total_cost: cart.reduce((a,c) => a + ((Number(c.cost)||0) * c.qty), 0), 
+                pay_cash: cash, 
+                pay_qris: qris, 
+                change: change, 
+                method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', 
+                date: new Date().toISOString().split('T')[0], 
+                created_at: new Date().toISOString() 
+            };
+            
+            if(payMethod === 'debt') {
+                const d = { 
+                    id: "D-" + Date.now(), 
+                    customer: document.getElementById('debt-customer').value, 
+                    transactionId: tid, 
+                    total: total, 
+                    paid: 0, 
+                    balance: total, 
+                    dueDate: document.getElementById('debt-due').value || '-', 
+                    status: 'BELUM LUNAS' 
+                };
+                debts.push(d); 
+                await syncCloud({...d, type: 'debt_record'});
             }
             
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
-            logs.push(log); saveStorage(); closeModal('modal-checkout');
-            successSound.currentTime = 0; successSound.play();
-            showReceipt(log); resetCart(); renderHome(); renderPos(); await syncCloud(log);
+            
+            logs.push(log); 
+            saveStorage(); 
+            closeModal('modal-checkout');
+            
+            // Audio Feedback
+            successSound.currentTime = 0; 
+            successSound.play().catch(e => console.log("Audio play blocked"));
+            
+            showReceipt(log); 
+            resetCart(); 
+            renderHome(); 
+            renderPos(); 
+            await syncCloud(log);
         }
 
         function showReceipt(d) {
@@ -563,7 +629,17 @@
             document.getElementById('rec-id').innerText = "TRX: " + d.id;
             document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
             document.getElementById('rec-total').innerText = formatIDR(d.amount);
-            document.getElementById('rec-payment-details').innerHTML = `<div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div><div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>`;
+            
+            const detailArea = document.getElementById('rec-payment-details');
+            if(d.method === 'Debt') {
+                detailArea.innerHTML = `<div class="flex justify-between font-bold text-rose-600"><span>METODE</span><span>HUTANG (BON)</span></div>`;
+            } else {
+                detailArea.innerHTML = `
+                    <div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div>
+                    <div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>
+                `;
+            }
+            
             document.getElementById('rec-change').innerText = formatIDR(d.change);
             if(config.logo) document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10">`;
             openModal('modal-receipt');
@@ -580,9 +656,10 @@
                 const found = items.find(i => String(i.barcode) === String(text));
                 if(found && found.stock > 0) {
                     addToCart(found.id); lastScannedCode = text; lastScannedTime = now;
-                    document.getElementById('scan-feedback').innerText = `+ ${found.name}`; 
-                    document.getElementById('scan-feedback').classList.remove('hidden');
-                    setTimeout(() => document.getElementById('scan-feedback').classList.add('hidden'), 2000);
+                    const feedback = document.getElementById('scan-feedback');
+                    feedback.innerText = `+ ${found.name}`; 
+                    feedback.classList.remove('hidden');
+                    setTimeout(() => feedback.classList.add('hidden'), 2000);
                 }
             }).catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
         }
@@ -669,7 +746,7 @@
             document.getElementById('data-list').innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `<div class="card p-5 flex justify-between items-center" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex items-center gap-4"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div>`).join('');
         }
 
-        // Bluetooth Dummy (to prevent error)
+        // Bluetooth Dummy
         function connectPrinter() { showToast("Gunakan di HTTPS (Vercel)"); }
         function printBluetoothReceipt() { showToast("Gunakan di HTTPS (Vercel)"); }
         function shareWhatsApp() { if(!lastReceiptData) return; let m = `*${config.storeName}*\n${new Date(lastReceiptData.created_at).toLocaleString()}\n----------------\n`; lastReceiptData.items.forEach(i => m += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); m += `----------------\n*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank'); }
