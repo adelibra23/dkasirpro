@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir Platinum v24.8 - Ultimate Business Engine</title>
+    <title>DheKasir Platinum v24.9 - Ultimate Business Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -45,7 +45,7 @@
                 <div id="app-logo" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/20 text-white font-black text-lg">D</div>
                 <div>
                     <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v24.8 PLATINUM</span></div>
+                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v24.9 PLATINUM</span></div>
                 </div>
             </div>
             <button onclick="openScanner()" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20"><i class="fa-solid fa-barcode text-xl"></i></button>
@@ -292,12 +292,12 @@
         </div>
     </div>
 
-    <!-- MODAL ABOUT (Updated Content) -->
+    <!-- MODAL ABOUT -->
     <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-10 animate-pop shadow-2xl text-center">
             <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-6 shadow-xl">D</div>
             <h3 class="font-black text-xl mb-2">DheKasir Platinum</h3>
-            <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 24.8 STABLE</p>
+            <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 24.9 STABLE</p>
             <div class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mb-8 space-y-3 text-justify">
                 <p><strong>DheKasir Platinum</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
                 <p>Aplikasi ini menggabungkan teknologi Cloud Sync real-time, Pemindaian Barcode berkecepatan tinggi, dan sistem manajemen inventaris yang akurat dalam satu genggaman mobile.</p>
@@ -307,7 +307,7 @@
         </div>
     </div>
 
-    <!-- MODAL PRIVACY (Updated Content) -->
+    <!-- MODAL PRIVACY -->
     <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
             <h3 class="font-black text-lg mb-4 text-center">Kebijakan Privasi</h3>
@@ -334,7 +334,7 @@
         </div>
     </div>
 
-    <!-- MODAL HUBUNGI KAMI (New Feature) -->
+    <!-- MODAL HUBUNGI KAMI -->
     <div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl">
             <h3 class="font-black text-lg mb-6 text-center">Hubungi Kami</h3>
@@ -376,14 +376,12 @@
         let activePosCategory = 'Semua';
         let mainChart = null;
         let html5QrCode = null;
-        let printCharacteristic = null;
         let lastReceiptData = null;
         let lastScannedCode = "";
         let lastScannedTime = 0;
         let currentDebtId = null;
         const SCAN_COOLDOWN = 2500;
         const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        // Mendefinisikan suara beep untuk scan barcode
         const scanBeep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
 
         function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n || 0); }
@@ -409,6 +407,93 @@
             if(t === 'debts') renderDebts();
         }
 
+        // --- HELPER UNTUK FILTER DATA ---
+        function getFilteredLogs() {
+            const fInput = document.getElementById('date-filter');
+            const f = fInput ? fInput.value : "";
+            return logs.filter(l => !f || l.date === f);
+        }
+
+        // --- UPGRADED EXCEL EXPORT ---
+        function exportExcel() {
+            const filtered = getFilteredLogs();
+            if(filtered.length === 0) return showToast("Tidak ada data untuk diekspor");
+            
+            const data = filtered.map((l, index) => ({
+                "No": index + 1,
+                "ID Transaksi": l.id,
+                "Tanggal": l.date,
+                "Jam": new Date(l.created_at).toLocaleTimeString('id-ID'),
+                "Metode": l.method,
+                "Daftar Produk": l.items ? l.items.map(i => `${i.name} (${i.qty})`).join(", ") : "-",
+                "Total Penjualan (Rp)": l.amount
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Laporan Penjualan");
+            const fileName = `Laporan_DheKasir_${new Date().toISOString().split('T')[0]}.xlsx`;
+            XLSX.writeFile(wb, fileName);
+            showToast("Excel Berhasil Diunduh");
+        }
+
+        // --- UPGRADED PDF EXPORT ---
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const filtered = getFilteredLogs();
+            if(filtered.length === 0) return showToast("Tidak ada data untuk diekspor");
+
+            const storeName = config.storeName || "DheKasir Platinum";
+            const dateFilter = document.getElementById('date-filter').value || "Semua Tanggal";
+
+            // Header Laporan
+            doc.setFontSize(22);
+            doc.setTextColor(79, 70, 229); // Indigo
+            doc.text(storeName.toUpperCase(), 14, 22);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100, 116, 139);
+            doc.text(config.storeAddress || "Alamat Toko Belum Diatur", 14, 28);
+            doc.text(`Periode Laporan: ${dateFilter}`, 14, 34);
+            doc.text(`Waktu Cetak: ${new Date().toLocaleString('id-ID')}`, 14, 40);
+            
+            const tableData = filtered.map(l => [
+                l.date,
+                l.id,
+                l.items ? l.items.map(i => i.name).join(", ") : "-",
+                l.method,
+                formatIDR(l.amount)
+            ]);
+            
+            doc.autoTable({
+                startY: 46,
+                head: [['Tanggal', 'ID Transaksi', 'Daftar Produk', 'Metode', 'Total']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                styles: { fontSize: 8, cellPadding: 3 },
+                columnStyles: { 2: { cellWidth: 60 } } // Kolom produk lebih lebar
+            });
+            
+            const finalY = doc.lastAutoTable.finalY || 46;
+            const totalRevenue = filtered.reduce((a, b) => a + b.amount, 0);
+            
+            // Summary Section
+            doc.setFontSize(12);
+            doc.setTextColor(30, 41, 59);
+            doc.text(`RINGKASAN LAPORAN:`, 14, finalY + 15);
+            doc.setFontSize(10);
+            doc.text(`Total Transaksi: ${filtered.length}`, 14, finalY + 22);
+            doc.setFontSize(11);
+            doc.setFont("helvetica", "bold");
+            doc.text(`TOTAL PENDAPATAN: ${formatIDR(totalRevenue)}`, 14, finalY + 29);
+            
+            doc.save(`Laporan_DheKasir_${Date.now()}.pdf`);
+            showToast("PDF Berhasil Diunduh");
+        }
+
+        // --- CORE FUNCTIONS (SCANNER, POS, ITEMS) ---
         function renderCategoryOptions() {
             const select = document.getElementById('p-category');
             if(!select) return;
@@ -425,97 +510,38 @@
             `).join('');
         }
 
-        function setPosCategory(c) {
-            activePosCategory = c;
-            renderPosCategoryChips();
-            renderPos();
-        }
-
-        function renderCategoryList() {
-            const list = document.getElementById('category-list');
-            list.innerHTML = categories.filter(c => c !== 'Semua').map((c, i) => `
-                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-                    <span class="text-sm font-bold">${c}</span>
-                    ${c !== 'Umum' ? `<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>` : ''}
-                </div>
-            `).join('');
-        }
-
-        function openCategoryModal() { renderCategoryList(); openModal('modal-category'); }
-
-        function addCategory() {
-            const input = document.getElementById('new-cat-name');
-            const val = input.value.trim();
-            if(!val) return showToast("Isi Nama!");
-            if(categories.includes(val)) return showToast("Sudah Ada!");
-            categories.push(val);
-            input.value = '';
-            saveCategories();
-            renderCategoryList();
-            renderCategoryOptions();
-            renderPosCategoryChips();
-            showToast("Berhasil!");
-        }
-
-        function deleteCategory(name) {
-            categories = categories.filter(c => c !== name);
-            saveCategories();
-            renderCategoryList();
-            renderCategoryOptions();
-            renderPosCategoryChips();
-        }
-
+        function setPosCategory(c) { activePosCategory = c; renderPosCategoryChips(); renderPos(); }
         function saveCategories() { localStorage.setItem('dk_categories', JSON.stringify(categories)); }
-
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
             const grid = document.getElementById('pos-grid');
             if(!grid) return;
-            
             const filtered = items.filter(i => {
                 const matchSearch = i.name.toLowerCase().includes(q) || String(i.barcode).includes(q);
                 const matchCat = (activePosCategory === 'Semua') || (i.category === activePosCategory);
                 return matchSearch && matchCat;
             });
-
             grid.innerHTML = filtered.map(i => {
                 const inCart = cart.find(c => c.id == i.id);
-                return `
-                <div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 relative active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">
-                    ${inCart ? `<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>` : ''}
-                    <div class="w-full aspect-square bg-slate-50 dark:bg-slate-900 rounded-[22px] flex items-center justify-center text-3xl mb-3 text-indigo-200">📦</div>
-                    <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
-                    <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
-                    <p class="text-[8px] font-black text-slate-400 mt-1">Stok: ${i.stock}</p>
-                </div>`;
+                return `<div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 relative active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">${inCart ? `<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>` : ''}<div class="w-full aspect-square bg-slate-50 dark:bg-slate-900 rounded-[22px] flex items-center justify-center text-3xl mb-3 text-indigo-200">📦</div><p class="text-[11px] font-bold line-clamp-1">${i.name}</p><p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p><p class="text-[8px] font-black text-slate-400 mt-1">Stok: ${i.stock}</p></div>`;
             }).join('');
         }
 
         function addToCart(id) {
             const it = items.find(i => i.id == id);
             const inC = cart.find(c => c.id == id);
-            if(inC) { 
-                if(inC.qty >= it.stock) return showToast("Stok Habis!"); 
-                inC.qty++; 
-            } else {
-                cart.push({...it, qty: 1});
-            }
-            updateCartUI();
-            renderPos(); 
+            if(inC) { if(inC.qty >= it.stock) return showToast("Stok Habis!"); inC.qty++; } else { cart.push({...it, qty: 1}); }
+            updateCartUI(); renderPos(); 
         }
 
         function updateCartItem(id, change) {
             const idx = cart.findIndex(c => c.id == id);
             if(idx === -1) return;
             const originalItem = items.find(i => i.id == id);
-            
             cart[idx].qty += change;
             if(cart[idx].qty > originalItem.stock) { cart[idx].qty = originalItem.stock; showToast("Maksimal!"); }
             if(cart[idx].qty <= 0) cart.splice(idx, 1);
-            
-            updateCartUI();
-            renderCartDetails();
-            renderPos();
+            updateCartUI(); renderCartDetails(); renderPos();
         }
 
         function updateCartUI() {
@@ -526,131 +552,36 @@
             document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0);
         }
 
-        function openCartDetails() {
-            renderCartDetails();
-            openModal('modal-cart-details');
-        }
-
         function renderCartDetails() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             document.getElementById('cart-detail-total').innerText = formatIDR(total);
             const list = document.getElementById('cart-items-list');
-            list.innerHTML = cart.map(c => `
-                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-                    <div class="flex-1">
-                        <p class="text-xs font-black">${c.name}</p>
-                        <p class="text-[10px] text-slate-400 font-bold">${formatIDR(c.price)}</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="updateCartItem(${c.id}, -1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-rose-500 shadow-sm"><i class="fa-solid fa-minus"></i></button>
-                        <span class="text-sm font-black w-4 text-center">${c.qty}</span>
-                        <button onclick="updateCartItem(${c.id}, 1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>
-            `).join('');
+            list.innerHTML = cart.map(c => `<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl"><div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-slate-400 font-bold">${formatIDR(c.price)}</p></div><div class="flex items-center gap-3"><button onclick="updateCartItem(${c.id}, -1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-rose-500 shadow-sm"><i class="fa-solid fa-minus"></i></button><span class="text-sm font-black w-4 text-center">${c.qty}</span><button onclick="updateCartItem(${c.id}, 1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><i class="fa-solid fa-plus"></i></button></div></div>`).join('');
             if(cart.length === 0) closeModal('modal-cart-details');
         }
 
+        function openCartDetails() { renderCartDetails(); openModal('modal-cart-details'); }
         function resetCart() { cart = []; updateCartUI(); renderPos(); }
-
-        function openCheckout() {
-            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
-            document.getElementById('co-grandtotal').innerText = formatIDR(total);
-            
-            document.getElementById('pay-amt-cash').value = '';
-            document.getElementById('pay-amt-qris').value = '';
-            document.getElementById('debt-customer').value = '';
-            document.getElementById('debt-due').value = '';
-            document.getElementById('pay-change').innerText = 'Rp 0';
-            
-            setPayMethod('cash'); 
-            openModal('modal-checkout');
-        }
-
-        function setPayMethod(m) {
-            payMethod = m;
-            const btnCash = document.getElementById('m-cash');
-            const btnDebt = document.getElementById('m-debt');
-            const areaCash = document.getElementById('pay-cash-area');
-            const areaDebt = document.getElementById('pay-debt-area');
-            
-            if(btnCash) btnCash.className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
-            if(btnDebt) btnDebt.className = m === 'debt' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-rose-500 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
-            
-            if(areaCash) areaCash.classList.toggle('hidden', m !== 'cash');
-            if(areaDebt) areaDebt.classList.toggle('hidden', m !== 'debt');
-            
-            calcChange();
-        }
-
-        function calcChange() {
-            if(payMethod !== 'cash') {
-                document.getElementById('pay-change').innerText = 'Rp 0';
-                return;
-            }
-            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
-            const cash = Number(document.getElementById('pay-amt-cash').value) || 0;
-            const qris = Number(document.getElementById('pay-amt-qris').value) || 0;
-            document.getElementById('pay-change').innerText = formatIDR(Math.max(0, (cash + qris) - total));
-        }
+        function openCheckout() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('co-grandtotal').innerText = formatIDR(total); document.getElementById('pay-amt-cash').value = ''; document.getElementById('pay-amt-qris').value = ''; document.getElementById('debt-customer').value = ''; document.getElementById('debt-due').value = ''; document.getElementById('pay-change').innerText = 'Rp 0'; setPayMethod('cash'); openModal('modal-checkout'); }
+        function setPayMethod(m) { payMethod = m; document.getElementById('m-cash').className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase'; document.getElementById('m-debt').className = m === 'debt' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-rose-500 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase'; document.getElementById('pay-cash-area').classList.toggle('hidden', m !== 'cash'); document.getElementById('pay-debt-area').classList.toggle('hidden', m !== 'debt'); calcChange(); }
+        function calcChange() { if(payMethod !== 'cash') { document.getElementById('pay-change').innerText = 'Rp 0'; return; } const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); const cash = Number(document.getElementById('pay-amt-cash').value) || 0; const qris = Number(document.getElementById('pay-amt-qris').value) || 0; document.getElementById('pay-change').innerText = formatIDR(Math.max(0, (cash + qris) - total)); }
 
         async function finishCheckout() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             let cash = Number(document.getElementById('pay-amt-cash').value) || 0;
             let qris = Number(document.getElementById('pay-amt-qris').value) || 0;
-            let change = Math.max(0, (cash + qris) - total);
-
             if(payMethod === 'cash' && (cash + qris) < total) return showToast("Uang Kurang!");
-            
-            if(payMethod === 'debt') {
-                const customer = document.getElementById('debt-customer').value;
-                if(!customer) return showToast("Isi Nama Pelanggan!");
-                cash = 0; qris = 0; change = 0;
-            }
-
+            if(payMethod === 'debt' && !document.getElementById('debt-customer').value) return showToast("Isi Nama Pelanggan!");
             const tid = "T-" + Date.now();
-            const log = { 
-                id: tid, 
-                items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), 
-                amount: total, 
-                total_cost: cart.reduce((a,c) => a + ((Number(c.cost)||0) * c.qty), 0), 
-                pay_cash: cash, 
-                pay_qris: qris, 
-                change: change, 
-                method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', 
-                date: new Date().toISOString().split('T')[0], 
-                created_at: new Date().toISOString() 
-            };
-            
+            const log = { id: tid, items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), amount: total, total_cost: cart.reduce((a,c) => a + ((Number(c.cost)||0) * c.qty), 0), pay_cash: cash, pay_qris: qris, change: Math.max(0, (cash + qris) - total), method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
             if(payMethod === 'debt') {
-                const d = { 
-                    id: "D-" + Date.now(), 
-                    customer: document.getElementById('debt-customer').value, 
-                    transactionId: tid, 
-                    total: total, 
-                    paid: 0, 
-                    balance: total, 
-                    dueDate: document.getElementById('debt-due').value || '-', 
-                    status: 'BELUM LUNAS' 
-                };
-                debts.push(d); 
-                await syncCloud({...d, type: 'debt_record'});
+                const d = { id: "D-" + Date.now(), customer: document.getElementById('debt-customer').value, transactionId: tid, total: total, paid: 0, balance: total, dueDate: document.getElementById('debt-due').value || '-', status: 'BELUM LUNAS' };
+                debts.push(d); await syncCloud({...d, type: 'debt_record'});
             }
-            
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
-            
-            logs.push(log); 
-            saveStorage(); 
-            closeModal('modal-checkout');
-            
-            successSound.currentTime = 0; 
-            successSound.play().catch(e => console.log("Audio play blocked"));
-            
-            showReceipt(log); 
-            resetCart(); 
-            renderHome(); 
-            renderPos(); 
-            await syncCloud(log);
+            logs.push(log); saveStorage(); closeModal('modal-checkout');
+            successSound.currentTime = 0; successSound.play().catch(e => {});
+            showReceipt(log); resetCart(); renderHome(); renderPos(); await syncCloud(log);
         }
 
         function showReceipt(d) {
@@ -662,17 +593,9 @@
             document.getElementById('rec-id').innerText = "TRX: " + d.id;
             document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
             document.getElementById('rec-total').innerText = formatIDR(d.amount);
-            
             const detailArea = document.getElementById('rec-payment-details');
-            if(d.method === 'Debt') {
-                detailArea.innerHTML = `<div class="flex justify-between font-bold text-rose-600"><span>METODE</span><span>HUTANG (BON)</span></div>`;
-            } else {
-                detailArea.innerHTML = `
-                    <div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div>
-                    <div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>
-                `;
-            }
-            
+            if(d.method === 'Debt') detailArea.innerHTML = `<div class="flex justify-between font-bold text-rose-600"><span>METODE</span><span>HUTANG (BON)</span></div>`;
+            else detailArea.innerHTML = `<div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div><div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>`;
             document.getElementById('rec-change').innerText = formatIDR(d.change);
             if(config.logo) document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10 mx-auto">`;
             openModal('modal-receipt');
@@ -687,28 +610,16 @@
                 if (text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
                 const found = items.find(i => String(i.barcode) === String(text));
                 if(found && found.stock > 0) {
-                    addToCart(found.id); 
-                    lastScannedCode = text; 
-                    lastScannedTime = now;
-
-                    // Fitur Baru: Memberikan getaran pada HP (100ms)
-                    if (window.navigator && window.navigator.vibrate) {
-                        window.navigator.vibrate(100);
-                    }
-
-                    // Fitur Baru: Memutar suara Beep saat scan berhasil
-                    scanBeep.currentTime = 0;
-                    scanBeep.play().catch(e => console.log("Audio play blocked by browser policy"));
-
+                    addToCart(found.id); lastScannedCode = text; lastScannedTime = now;
+                    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(100);
+                    scanBeep.currentTime = 0; scanBeep.play().catch(e => {});
                     const feedback = document.getElementById('scan-feedback');
-                    feedback.innerText = `+ ${found.name}`; 
-                    feedback.classList.remove('hidden');
+                    feedback.innerText = `+ ${found.name}`; feedback.classList.remove('hidden');
                     setTimeout(() => feedback.classList.add('hidden'), 2000);
-                } else if(found && found.stock <= 0) {
-                    showToast("Stok Habis!");
-                }
+                } else if(found && found.stock <= 0) showToast("Stok Habis!");
             }).catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
         }
+
         async function closeScanner() { if(html5QrCode) await html5QrCode.stop(); closeModal('modal-scanner'); }
 
         function renderHome() {
@@ -722,17 +633,14 @@
                 if(l.items) l.items.forEach(it => best[it.name] = (best[it.name] || 0) + it.qty);
             });
             debts.forEach(d => { if(d.status !== 'LUNAS') debtT += (Number(d.balance) || 0); });
-            
             const elProfit = document.getElementById('dash-profit');
             const elOmzet = document.getElementById('dash-omzet');
             const elDebt = document.getElementById('dash-debt');
             const elLow = document.getElementById('dash-low-stock');
-            
             if(elProfit) elProfit.innerText = formatIDR(profit);
             if(elOmzet) elOmzet.innerText = formatIDR(omzet);
             if(elDebt) elDebt.innerText = formatIDR(debtT);
             if(elLow) elLow.innerText = items.filter(i => i.stock < 5).length + " Item Menipis";
-            
             const top = Object.entries(best).sort((a,b) => b[1]-a[1]).slice(0,3);
             const elTop = document.getElementById('top-products');
             if(elTop) elTop.innerHTML = top.map(([n, q]) => `<div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl font-bold text-[10px]"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') || '<p class="text-center opacity-30 text-[10px]">No Data</p>';
@@ -770,111 +678,53 @@
                 if(profilePreview) profilePreview.innerHTML = img;
             }
         }
+
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; loadSettings(); }; r.readAsDataURL(input.files[0]); } }
-        
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); const dot = document.getElementById('cloud-dot'); if(dot) dot.className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"; } catch(e){} }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); localStorage.setItem('dk_debts', JSON.stringify(debts)); }
-
         function renderItems() {
             const searchVal = document.getElementById('item-search');
             const q = searchVal ? searchVal.value.toLowerCase() : "";
             const list = document.getElementById('item-list');
             if(!list) return;
-            list.innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `
-                <div class="card p-5 flex justify-between items-center">
-                    <div>
-                        <p class="text-xs font-black">${i.name}</p>
-                        <p class="text-[9px] text-slate-400 uppercase">${i.category || 'Umum'} • ${formatIDR(i.price)}</p>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="openProductModal(${i.id})" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-edit text-xs"></i></button>
-                        <button onclick="deleteProduct(${i.id})" class="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button>
-                    </div>
-                </div>`).join('');
+            list.innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `<div class="card p-5 flex justify-between items-center"><div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] text-slate-400 uppercase">${i.category || 'Umum'} • ${formatIDR(i.price)}</p></div><div class="flex gap-2"><button onclick="openProductModal(${i.id})" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-edit text-xs"></i></button><button onclick="deleteProduct(${i.id})" class="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
         }
 
         function deleteProduct(id) { items = items.filter(x => x.id !== id); saveStorage(); renderItems(); renderPos(); showToast("Produk Dihapus"); }
-
         function openProductModal(id = null) {
-            if(id) { 
-                const i = items.find(x => x.id == id); 
-                document.getElementById('p-id').value = i.id; 
-                document.getElementById('p-barcode').value = i.barcode || ''; 
-                document.getElementById('p-name').value = i.name; 
-                document.getElementById('p-cost').value = i.cost || 0; 
-                document.getElementById('p-price').value = i.price; 
-                document.getElementById('p-stock').value = i.stock; 
-                document.getElementById('p-category').value = i.category || 'Umum'; 
-            } else { 
-                document.getElementById('p-id').value = ''; 
-                document.getElementById('p-barcode').value = ''; 
-                document.getElementById('p-name').value = ''; 
-                document.getElementById('p-cost').value = ''; 
-                document.getElementById('p-price').value = ''; 
-                document.getElementById('p-stock').value = ''; 
-            }
+            if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost || 0; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; document.getElementById('p-category').value = i.category || 'Umum'; }
+            else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; }
             openModal('modal-product');
         }
 
         async function saveProduct() {
             const idIn = document.getElementById('p-id').value;
-            const d = { 
-                id: idIn ? Number(idIn) : Date.now(), 
-                barcode: document.getElementById('p-barcode').value, 
-                name: document.getElementById('p-name').value, 
-                cost: Number(document.getElementById('p-cost').value), 
-                price: Number(document.getElementById('p-price').value), 
-                stock: Number(document.getElementById('p-stock').value), 
-                category: document.getElementById('p-category').value 
-            };
+            const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), category: document.getElementById('p-category').value };
             if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d);
             saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("Simpan Berhasil!"); await syncCloud(d);
         }
 
         function renderData() {
-            const fInput = document.getElementById('date-filter');
-            const f = fInput ? fInput.value : "";
+            const filtered = getFilteredLogs();
             const list = document.getElementById('data-list');
             if(!list) return;
-            list.innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `
-                <div class="card p-5 flex justify-between items-center active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'>
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div>
-                        <div>
-                            <p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p>
-                            <p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
-                        <button onclick="event.stopPropagation(); deleteLog('${l.id}')" class="text-rose-300 p-1"><i class="fa-solid fa-xmark"></i></button>
-                    </div>
-                </div>`).join('') || '<p class="text-center opacity-30 py-10">Data Kosong</p>';
+            list.innerHTML = filtered.reverse().map(l => `<div class="card p-5 flex justify-between items-center active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex items-center gap-4"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><div class="flex items-center gap-3"><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p><button onclick="event.stopPropagation(); deleteLog('${l.id}')" class="text-rose-300 p-1"><i class="fa-solid fa-xmark"></i></button></div></div>`).join('') || '<p class="text-center opacity-30 py-10">Data Kosong</p>';
         }
 
         function deleteLog(id) { logs = logs.filter(l => l.id !== id); saveStorage(); renderData(); showToast("Log Dihapus"); }
-
         function renderDebts() {
-            const label = document.getElementById('debt-count-label');
-            if(label) label.innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG";
-            const list = document.getElementById('debt-list');
-            if(!list) return;
-            list.innerHTML = debts.slice().reverse().map(d => `
-                <div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div>
-                        <div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div>
-                    </div>
-                    <div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div>
-                </div>`).join('') || '<p class="text-center opacity-30 py-10">Buku Hutang Kosong</p>';
+            const label = document.getElementById('debt-count-label'); if(label) label.innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG";
+            const list = document.getElementById('debt-list'); if(!list) return;
+            list.innerHTML = debts.slice().reverse().map(d => `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join('') || '<p class="text-center opacity-30 py-10">Buku Hutang Kosong</p>';
         }
 
         function openDebtDetail(id) { const d = debts.find(x => x.id === id); currentDebtId = id; document.getElementById('det-debt-name').innerText = d.customer; document.getElementById('det-debt-id').innerText = d.id; document.getElementById('det-debt-total').innerText = formatIDR(d.total); document.getElementById('det-debt-paid').innerText = formatIDR(d.paid); document.getElementById('det-debt-rem').innerText = formatIDR(d.balance); openModal('modal-debt-detail'); }
         async function payInstallment() { const amt = Number(document.getElementById('ins-amt').value); if(!amt || amt <= 0) return showToast("Isi Nominal!"); const d = debts.find(x => x.id === currentDebtId); d.paid += amt; d.balance = d.total - d.paid; if(d.balance <= 0) d.status = 'LUNAS'; saveStorage(); closeModal('modal-debt-detail'); renderDebts(); await syncCloud({ type: 'debt_record', ...d }); }
-
-        async function connectPrinter() { try { const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb', '0000ff00-0000-1000-8000-00805f9b34fb'] }); const server = await device.gatt.connect(); const services = await server.getPrimaryServices(); for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) { if (c.properties.write || c.properties.writeWithoutResponse) { printCharacteristic = c; break; } } if (printCharacteristic) break; } const status = document.getElementById('printer-status'); if(status) { status.innerText = "READY"; status.className = "text-[8px] font-black text-emerald-500 uppercase"; } showToast("Printer Terhubung!"); } catch (e) { showToast("Gagal Bluetooth!"); } }
-        async function printBluetoothReceipt() { if(!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!"); const enc = new TextEncoder(); const esc = '\x1b', gs = '\x1d'; let t = esc + '@' + esc + 'a' + '\x01' + config.storeName.toUpperCase() + '\n' + config.storeAddress + '\n--------------------------------\n' + esc + 'a' + '\x00'; lastReceiptData.items.forEach(i => t += `${i.name.substring(0,20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`); t += '--------------------------------\n' + `TOTAL: ${formatIDR(lastReceiptData.amount)}\n` + `KEMBALI: ${formatIDR(lastReceiptData.change)}\n\nTERIMA KASIH\n\n\n\n` + gs + 'V' + '\x42' + '\x00'; try { const chunks = []; for(let i=0; i<t.length; i+=16) chunks.push(t.substring(i, i+16)); for(const ch of chunks) { if (printCharacteristic.properties.writeWithoutResponse) await printCharacteristic.writeValueWithoutResponse(enc.encode(ch)); else await printCharacteristic.writeValue(enc.encode(ch)); await new Promise(r => setTimeout(r, 60)); } showToast("Berhasil Mencetak"); } catch (e) { showToast("Gagal Cetak!"); } }
+        async function connectPrinter() { try { const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] }); const server = await device.gatt.connect(); const services = await server.getPrimaryServices(); for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) { if (c.properties.write) { printCharacteristic = c; break; } } if (printCharacteristic) break; } const status = document.getElementById('printer-status'); if(status) { status.innerText = "READY"; status.className = "text-[8px] font-black text-emerald-500 uppercase"; } showToast("Printer Terhubung!"); } catch (e) { showToast("Gagal Bluetooth!"); } }
+        async function printBluetoothReceipt() { if(!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!"); const enc = new TextEncoder(); const esc = '\x1b', gs = '\x1d'; let t = esc + '@' + esc + 'a' + '\x01' + config.storeName.toUpperCase() + '\n' + config.storeAddress + '\n--------------------------------\n' + esc + 'a' + '\x00'; lastReceiptData.items.forEach(i => t += `${i.name.substring(0,20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`); t += '--------------------------------\n' + `TOTAL: ${formatIDR(lastReceiptData.amount)}\n` + `KEMBALI: ${formatIDR(lastReceiptData.change)}\n\nTERIMA KASIH\n\n\n\n` + gs + 'V' + '\x42' + '\x00'; try { const chunks = []; for(let i=0; i<t.length; i+=16) chunks.push(t.substring(i, i+16)); for(const ch of chunks) { await printCharacteristic.writeValue(enc.encode(ch)); await new Promise(r => setTimeout(r, 60)); } showToast("Berhasil Mencetak"); } catch (e) { showToast("Gagal Cetak!"); } }
         function shareWhatsApp() { if(!lastReceiptData) return; let m = `*${config.storeName}*\n${new Date(lastReceiptData.created_at).toLocaleString()}\n----------------\n`; lastReceiptData.items.forEach(i => m += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); m += `----------------\n*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank'); }
+
+        window.onload = () => { loadSettings(); const savedTab = localStorage.getItem('dk_active_tab') || 'home'; switchTab(savedTab); renderCategoryOptions(); renderPosCategoryChips(); };
     </script>
 </body>
 </html>
