@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DheKasir Platinum v25.1 - Business Suite</title>
+    <title>DheKasir Platinum - Business Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -45,10 +45,11 @@
                 <div id="app-logo" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/20 text-white font-black text-lg">D</div>
                 <div>
                     <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v25.1</span></div>
+                    <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v2.1 PLATINUM</span></div>
                 </div>
             </div>
-            <button onclick="openScanner('pos')" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20"><i class="fa-solid fa-barcode text-xl"></i></button>
+            <!-- Scanner for POS/Cart -->
+            <button onclick="openScanner('cart')" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20"><i class="fa-solid fa-barcode text-xl"></i></button>
         </header>
 
         <main class="flex-1 px-5 pt-4">
@@ -127,7 +128,7 @@
         </main>
 
         <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t border-slate-100 bg-white/95 backdrop-blur-xl p-4 flex justify-around items-center z-50 rounded-t-[35px] shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
-            <button onclick="switchTab('home')" class="nav-btn text-slate-300 flex flex-col items-center gap-1" id="n-home"><i class="fa-solid fa-house text-lg"></i><span class="text-[8px] font-bold uppercase">Home</span></button>
+            <button onclick="switchTab('home')" class="nav-btn text-slate-300 flex flex-col items-center gap-1" id="n-home"><i class="fa-solid fa-home text-lg"></i><span class="text-[8px] font-bold uppercase">Home</span></button>
             <button onclick="switchTab('pos')" class="nav-btn text-slate-300 flex flex-col items-center gap-1" id="n-pos"><i class="fa-solid fa-cash-register text-lg"></i><span class="text-[8px] font-bold uppercase">Kasir</span></button>
             <button onclick="switchTab('items')" class="nav-btn text-slate-300 flex flex-col items-center gap-1" id="n-items"><i class="fa-solid fa-box text-lg"></i><span class="text-[8px] font-bold uppercase">Stok</span></button>
             <button onclick="switchTab('debts')" class="nav-btn text-slate-300 flex flex-col items-center gap-1" id="n-debts"><i class="fa-solid fa-user-clock text-lg"></i><span class="text-[8px] font-bold uppercase">Hutang</span></button>
@@ -152,11 +153,12 @@
         <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
     </div>
 
+    <!-- Scanner Modal -->
     <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6 backdrop-blur-md">
         <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
         <div class="w-full max-w-sm"><div id="reader"></div></div>
         <div id="scan-feedback" class="mt-8 p-4 bg-white/10 rounded-2xl text-white font-bold hidden animate-pop text-center"></div>
-        <p id="scan-caption" class="text-white/40 text-[10px] font-bold mt-6 tracking-widest uppercase text-center">Auto-detect Aktif<br>Jeda 2.5 Detik per Produk</p>
+        <p class="text-white/40 text-[10px] font-bold mt-6 tracking-widest uppercase text-center">Scanner Aktif<br>Pindai Kode Barcode Produk</p>
     </div>
 
     <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
@@ -244,12 +246,10 @@
             <h3 class="text-xl font-black mb-6">Master Produk</h3>
             <input type="hidden" id="p-id">
             <div class="space-y-4">
-                <div class="relative">
-                    <label class="text-[8px] font-bold text-slate-400 uppercase ml-2">Barcode SKU</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="p-barcode" placeholder="Ketik atau Scan..." class="flex-1 p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl text-sm font-bold text-indigo-600 outline-none">
-                        <button onclick="openScanner('field')" class="w-12 h-12 bg-indigo-50 dark:bg-slate-700 text-indigo-600 rounded-2xl flex items-center justify-center shadow-sm active:scale-90 transition-all"><i class="fa-solid fa-camera"></i></button>
-                    </div>
+                <!-- Barcode Input with Scan Button -->
+                <div class="flex gap-2">
+                    <input type="text" id="p-barcode" placeholder="Barcode SKU" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl text-sm font-bold text-indigo-600 outline-none">
+                    <button onclick="openScanner('sku')" class="w-14 h-14 bg-indigo-50 text-indigo-600 border border-indigo-100 rounded-2xl flex items-center justify-center shadow-sm active:scale-95 transition-all"><i class="fa-solid fa-camera"></i></button>
                 </div>
                 <input type="text" id="p-name" placeholder="Nama Produk" class="w-full p-4 bg-slate-50 dark:bg-slate-900 border rounded-2xl text-sm font-bold outline-none">
                 <div class="space-y-1">
@@ -269,7 +269,7 @@
 
     <div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
         <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-4">
-            <h3 class="font-black text-lg">Kelola Kategori</h3>
+            <h3 class="font-black text-lg text-center uppercase tracking-widest">Kelola Kategori</h3>
             <div class="flex gap-2">
                 <input type="text" id="new-cat-name" placeholder="Kategori Baru" class="flex-1 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl text-sm outline-none border">
                 <button onclick="addCategory()" class="w-12 h-12 premium-gradient text-white rounded-2xl flex items-center justify-center shadow-lg"><i class="fa-solid fa-plus"></i></button>
@@ -298,6 +298,53 @@
         </div>
     </div>
 
+    <!-- MODALS ABOUT, PRIVACY, CONTACT -->
+    <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-10 animate-pop shadow-2xl text-center">
+            <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-6 shadow-xl">D</div>
+            <h3 class="font-black text-xl mb-2">DheKasir</h3>
+            <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 2.1 Platinum</p>
+            <div class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mb-8 space-y-3 text-justify">
+                <p><strong>DheKasir Platinum</strong> adalah sistem kasir modern yang dirancang untuk mempercepat operasional UMKM dengan fitur retail profesional.</p>
+                <p>Mendukung manajemen stok, piutang, laporan laba rugi otomatis, serta integrasi printer thermal Bluetooth dan scanner barcode retail.</p>
+            </div>
+            <button onclick="closeModal('modal-about')" class="w-full py-4 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase">Tutup</button>
+        </div>
+    </div>
+
+    <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+            <h3 class="font-black text-lg mb-4 text-center">Kebijakan Privasi</h3>
+            <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 space-y-4">
+                <p>1. Data disimpan secara lokal di perangkat Anda (LocalStorage).</p>
+                <p>2. Data disinkronkan ke Google Sheets pribadi Anda jika fitur Cloud diaktifkan.</p>
+                <p>3. Izin kamera digunakan murni untuk pemindaian barcode produk.</p>
+            </div>
+            <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-6 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase">Saya Setuju</button>
+        </div>
+    </div>
+
+    <div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl">
+            <h3 class="font-black text-lg mb-6 text-center">Hubungi Kami</h3>
+            <div class="space-y-5 mb-8">
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl flex items-center justify-center text-indigo-600 shrink-0"><i class="fa-solid fa-envelope"></i></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Email</p><p class="text-sm font-bold">support@dhekasir.app</p></div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-sky-50 dark:bg-sky-900/30 rounded-xl flex items-center justify-center text-sky-500 shrink-0"><i class="fa-brands fa-x-twitter"></i></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">X (Twitter)</p><p class="text-sm font-bold">@DheKasirApp</p></div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 bg-rose-50 dark:bg-rose-900/30 rounded-xl flex items-center justify-center text-rose-500 shrink-0"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Alamat</p><p class="text-xs font-bold leading-relaxed">Jl. Babul Huda Sekeladi, Tanah Putih, Rohil, Riau.</p></div>
+                </div>
+            </div>
+            <button onclick="closeModal('modal-contact')" class="w-full py-4 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase">Tutup</button>
+        </div>
+    </div>
+
     <script>
         let items = JSON.parse(localStorage.getItem('dk_items')) || [];
         let logs = JSON.parse(localStorage.getItem('dk_logs')) || [];
@@ -314,19 +361,8 @@
         let lastScannedCode = "";
         let lastScannedTime = 0;
         let currentDebtId = null;
-        
-        let scannerMode = 'pos'; // 'pos' (add to cart) or 'field' (fill SKU field)
         const SCAN_COOLDOWN = 2500;
         const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3');
-        const scanBeep = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
-
-        window.onload = () => { 
-            loadSettings(); 
-            const savedTab = localStorage.getItem('dk_active_tab') || 'home';
-            switchTab(savedTab); 
-            renderCategoryOptions();
-            renderPosCategoryChips();
-        };
 
         function formatIDR(n) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n || 0); }
         function showToast(m) { const t = document.getElementById('toast'); if(!t) return; t.innerText = m; t.classList.remove('opacity-0'); t.classList.add('opacity-100'); setTimeout(() => { t.classList.remove('opacity-100'); t.classList.add('opacity-0'); }, 2000); }
@@ -351,57 +387,45 @@
             if(t === 'debts') renderDebts();
         }
 
-        // --- SCANNER LOGIC UPDATED v25.1 ---
-        async function openScanner(mode = 'pos') {
+        // --- SCANNER WITH MODES ---
+        async function openScanner(mode = 'cart') {
             if (location.protocol !== 'https:' && location.hostname !== 'localhost') return showToast("Wajib HTTPS!");
-            scannerMode = mode;
-            
-            // Adjust caption based on mode
-            const cap = document.getElementById('scan-caption');
-            if(mode === 'field') {
-                cap.innerHTML = "Mode Pengisian SKU Aktif<br>Scan satu produk untuk mengisi field.";
-            } else {
-                cap.innerHTML = "Auto-detect Aktif<br>Jeda 2.5 Detik per Produk";
-            }
-
             openModal('modal-scanner');
             if(!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 24, qrbox: { width: 280, height: 160 } }, onScanSuccess)
-            .catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
-        }
-
-        function onScanSuccess(text) {
-            const now = Date.now();
             
-            if(scannerMode === 'field') {
-                // Just fill the field and close
-                document.getElementById('p-barcode').value = text;
-                scanBeep.currentTime = 0; scanBeep.play().catch(e => {});
+            html5QrCode.start({ facingMode: "environment" }, { fps: 24, qrbox: { width: 280, height: 160 } }, (text) => {
+                // Haptic feedback & sound
                 if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(100);
-                showToast("Barcode Terdeteksi!");
-                closeScanner();
-                return;
-            }
+                
+                if (mode === 'sku') {
+                    // Registration Mode
+                    document.getElementById('p-barcode').value = text;
+                    showToast("Barcode SKU Terinput!");
+                    closeScanner();
+                    return;
+                }
 
-            // Mode POS (Existing Logic)
-            if (text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
-            const found = items.find(i => String(i.barcode) === String(text));
-            if(found) {
-                if(found.stock > 0) {
-                    addToCart(found.id);
-                    lastScannedCode = text; lastScannedTime = now;
-                    scanBeep.currentTime = 0; scanBeep.play().catch(e => {});
-                    if (window.navigator && window.navigator.vibrate) window.navigator.vibrate(100);
+                // POS Mode
+                const now = Date.now();
+                if (text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
+                const found = items.find(i => String(i.barcode) === String(text));
+                if(found && found.stock > 0) {
+                    addToCart(found.id); 
+                    lastScannedCode = text; 
+                    lastScannedTime = now;
                     const feedback = document.getElementById('scan-feedback');
-                    feedback.innerText = `+ ${found.name}`; feedback.classList.remove('hidden');
+                    feedback.innerText = `+ ${found.name}`; 
+                    feedback.classList.remove('hidden');
                     setTimeout(() => feedback.classList.add('hidden'), 2000);
-                } else showToast("Stok Habis!");
-            } else showToast("Kode Tidak Dikenal!");
+                } else if(found && found.stock <= 0) {
+                    showToast("Stok Habis!");
+                }
+            }).catch(e => { showToast("Gagal Kamera!"); closeScanner(); });
         }
 
         async function closeScanner() { if(html5QrCode) await html5QrCode.stop(); closeModal('modal-scanner'); }
 
-        // --- PREVIOUS REFINED FUNCTIONS (HPP, CATEGORIES, EXPORT, ETC) ---
+        // --- CORE FUNCTIONS ---
         function renderCategoryOptions() {
             const select = document.getElementById('p-category');
             if(!select) return;
@@ -419,17 +443,7 @@
         }
 
         function setPosCategory(c) { activePosCategory = c; renderPosCategoryChips(); renderPos(); }
-        function saveCategories() { localStorage.setItem('dk_categories', JSON.stringify(categories)); }
-        function openCategoryModal() { renderCategoryList(); openModal('modal-category'); }
-        function renderCategoryList() {
-            const list = document.getElementById('category-list');
-            if(!list) return;
-            list.innerHTML = categories.filter(c => c !== 'Semua').map(c => `<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-[22px]"><span>${c}</span>${c !== 'Umum' ? `<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>` : ''}</div>`).join('');
-        }
-        function addCategory() { const val = document.getElementById('new-cat-name').value.trim(); if(!val) return; if(categories.includes(val)) return showToast("Sudah Ada"); categories.push(val); document.getElementById('new-cat-name').value = ''; saveCategories(); renderCategoryList(); renderCategoryOptions(); renderPosCategoryChips(); showToast("Berhasil!"); }
-        function deleteCategory(name) { categories = categories.filter(c => c !== name); items.forEach(i => { if(i.category === name) i.category = 'Umum'; }); saveCategories(); saveStorage(); renderCategoryList(); renderCategoryOptions(); renderPosCategoryChips(); }
 
-        // --- POS & DATA RENDER ---
         function renderPos() {
             const q = document.getElementById('pos-search').value.toLowerCase();
             const grid = document.getElementById('pos-grid');
@@ -437,52 +451,111 @@
             const filtered = items.filter(i => (i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)) && (activePosCategory === 'Semua' || i.category === activePosCategory));
             grid.innerHTML = filtered.map(i => {
                 const inCart = cart.find(c => c.id == i.id);
-                return `<div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 relative active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">${inCart ? `<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>` : ''}<div class="w-full aspect-square bg-slate-50 dark:bg-slate-900 rounded-[22px] flex items-center justify-center text-3xl mb-3 text-indigo-200">📦</div><p class="text-[11px] font-bold line-clamp-1">${i.name}</p><p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p><p class="text-[8px] font-black text-slate-400 mt-1 uppercase">Stok: ${i.stock}</p></div>`;
+                return `<div onclick="${i.stock > 0 ? `addToCart(${i.id})` : ''}" class="card p-4 relative active:scale-95 transition-all ${i.stock <= 0 ? 'opacity-40 grayscale' : ''}">${inCart ? `<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>` : ''}<div class="w-full aspect-square bg-slate-50 dark:bg-slate-900 rounded-[22px] flex items-center justify-center text-3xl mb-3 text-indigo-200">📦</div><p class="text-[11px] font-bold line-clamp-1">${i.name}</p><p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p><p class="text-[8px] font-black text-slate-400 mt-1">Stok: ${i.stock}</p></div>`;
             }).join('');
         }
 
-        function addToCart(id) { const it = items.find(i => i.id == id); const inC = cart.find(c => c.id == id); if(inC) { if(inC.qty >= it.stock) return showToast("Habis!"); inC.qty++; } else cart.push({...it, qty: 1}); updateCartUI(); renderPos(); }
-        function updateCartUI() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('cart-count').innerText = cart.reduce((a,b) => a + b.qty, 0); document.getElementById('cart-total').innerText = formatIDR(total); document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0); }
-        function resetCart() { cart = []; updateCartUI(); renderPos(); }
+        function addToCart(id) {
+            const it = items.find(i => i.id == id);
+            const inC = cart.find(c => c.id == id);
+            if(inC) { if(inC.qty >= it.stock) return showToast("Stok Habis!"); inC.qty++; } else { cart.push({...it, qty: 1}); }
+            updateCartUI(); renderPos(); 
+        }
+
+        function updateCartUI() {
+            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            const count = cart.reduce((a,b) => a + b.qty, 0);
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = formatIDR(total);
+            document.getElementById('cart-float').classList.toggle('hidden', cart.length === 0);
+        }
+
         function openCartDetails() { renderCartDetails(); openModal('modal-cart-details'); }
+
         function renderCartDetails() {
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             document.getElementById('cart-detail-total').innerText = formatIDR(total);
-            document.getElementById('cart-items-list').innerHTML = cart.map(c => `
-                <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl">
-                    <div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-slate-400 font-bold">${formatIDR(c.price)}</p></div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="updateCartItem(${c.id}, -1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-rose-500 shadow-sm"><i class="fa-solid fa-minus"></i></button>
-                        <span class="text-sm font-black w-4 text-center">${c.qty}</span>
-                        <button onclick="updateCartItem(${c.id}, 1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><i class="fa-solid fa-plus"></i></button>
-                    </div>
-                </div>`).join('');
+            const list = document.getElementById('cart-items-list');
+            list.innerHTML = cart.map(c => `<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl"><div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-slate-400 font-bold">${formatIDR(c.price)}</p></div><div class="flex items-center gap-3"><button onclick="updateCartItem(${c.id}, -1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-rose-500 shadow-sm"><i class="fa-solid fa-minus"></i></button><span class="text-sm font-black w-4 text-center">${c.qty}</span><button onclick="updateCartItem(${c.id}, 1)" class="w-8 h-8 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm"><i class="fa-solid fa-plus"></i></button></div></div>`).join('');
             if(cart.length === 0) closeModal('modal-cart-details');
         }
-        function updateCartItem(id, change) { const idx = cart.findIndex(c => c.id == id); if(idx === -1) return; const originalItem = items.find(i => i.id == id); cart[idx].qty += change; if(cart[idx].qty > originalItem.stock) { cart[idx].qty = originalItem.stock; showToast("Maksimal!"); } if(cart[idx].qty <= 0) cart.splice(idx, 1); updateCartUI(); renderCartDetails(); renderPos(); }
 
-        // --- CHECKOUT ---
-        function setPayMethod(m) { payMethod = m; document.getElementById('m-cash').className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm' : 'py-3 rounded-xl font-black text-[10px] text-slate-400'; document.getElementById('m-debt').className = m === 'debt' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-rose-500 shadow-sm' : 'py-3 rounded-xl font-black text-[10px] text-slate-400'; document.getElementById('pay-cash-area').classList.toggle('hidden', m !== 'cash'); document.getElementById('pay-debt-area').classList.toggle('hidden', m !== 'debt'); calcChange(); }
-        function openCheckout() { const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); document.getElementById('co-grandtotal').innerText = formatIDR(total); document.getElementById('pay-amt-cash').value = ''; document.getElementById('pay-amt-qris').value = ''; document.getElementById('pay-change').innerText = 'Rp 0'; setPayMethod('cash'); openModal('modal-checkout'); }
-        function calcChange() { if(payMethod !== 'cash') { document.getElementById('pay-change').innerText = 'Rp 0'; return; } const total = cart.reduce((a,b) => a + (b.price * b.qty), 0); const cash = Number(document.getElementById('pay-amt-cash').value) || 0; const qris = Number(document.getElementById('pay-amt-qris').value) || 0; document.getElementById('pay-change').innerText = formatIDR(Math.max(0, (cash + qris) - total)); }
+        function updateCartItem(id, change) {
+            const idx = cart.findIndex(c => c.id == id);
+            if(idx === -1) return;
+            const originalItem = items.find(i => i.id == id);
+            cart[idx].qty += change;
+            if(cart[idx].qty > originalItem.stock) { cart[idx].qty = originalItem.stock; showToast("Maksimal!"); }
+            if(cart[idx].qty <= 0) cart.splice(idx, 1);
+            updateCartUI(); renderCartDetails(); renderPos();
+        }
 
-        async function finishCheckout() {
+        function resetCart() { cart = []; updateCartUI(); renderPos(); }
+
+        function openCheckout() {
+            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            document.getElementById('co-grandtotal').innerText = formatIDR(total);
+            document.getElementById('pay-amt-cash').value = '';
+            document.getElementById('pay-amt-qris').value = '';
+            document.getElementById('debt-customer').value = '';
+            document.getElementById('debt-due').value = '';
+            document.getElementById('pay-change').innerText = 'Rp 0';
+            setPayMethod('cash'); openModal('modal-checkout');
+        }
+
+        function setPayMethod(m) {
+            payMethod = m;
+            document.getElementById('m-cash').className = m === 'cash' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-indigo-600 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
+            document.getElementById('m-debt').className = m === 'debt' ? 'py-3 rounded-xl font-black text-[10px] bg-white text-rose-500 shadow-sm uppercase' : 'py-3 rounded-xl font-black text-[10px] text-slate-400 uppercase';
+            document.getElementById('pay-cash-area').classList.toggle('hidden', m !== 'cash');
+            document.getElementById('pay-debt-area').classList.toggle('hidden', m !== 'debt');
+            calcChange();
+        }
+
+        function calcChange() {
+            if(payMethod !== 'cash') { document.getElementById('pay-change').innerText = 'Rp 0'; return; }
             const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
             const cash = Number(document.getElementById('pay-amt-cash').value) || 0;
             const qris = Number(document.getElementById('pay-amt-qris').value) || 0;
-            const customer = document.getElementById('debt-customer').value;
-            if(payMethod === 'cash' && (cash + qris) < total) return showToast("Bayar Kurang!");
-            if(payMethod === 'debt' && !customer) return showToast("Isi Nama Pelanggan!");
+            document.getElementById('pay-change').innerText = formatIDR(Math.max(0, (cash + qris) - total));
+        }
+
+        async function finishCheckout() {
+            const total = cart.reduce((a,b) => a + (b.price * b.qty), 0);
+            let cash = Number(document.getElementById('pay-amt-cash').value) || 0;
+            let qris = Number(document.getElementById('pay-amt-qris').value) || 0;
+            if(payMethod === 'cash' && (cash + qris) < total) return showToast("Uang Kurang!");
+            if(payMethod === 'debt' && !document.getElementById('debt-customer').value) return showToast("Isi Nama Pelanggan!");
             
-            const logId = "T-" + Date.now();
-            const log = { id: logId, items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), amount: total, total_cost: cart.reduce((a,c) => a+((Number(c.cost)||0)*c.qty), 0), pay_cash: cash, pay_qris: qris, change: (cash + qris) - total, method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
+            const tid = "T-" + Date.now();
+            const log = { id: tid, items: cart.map(c => ({ name: c.name, qty: c.qty, price: c.price, cost: c.cost || 0 })), amount: total, total_cost: cart.reduce((a,c) => a + ((Number(c.cost)||0) * c.qty), 0), pay_cash: cash, pay_qris: qris, change: Math.max(0, (cash + qris) - total), method: payMethod === 'cash' ? 'Cash/QRIS' : 'Debt', date: new Date().toISOString().split('T')[0], created_at: new Date().toISOString() };
             
             if(payMethod === 'debt') {
-                const d = { id: "D-" + Date.now(), customer, transactionId: logId, total, paid: 0, balance: total, dueDate: document.getElementById('debt-due').value || '-', status: 'BELUM LUNAS' };
+                const d = { id: "D-" + Date.now(), customer: document.getElementById('debt-customer').value, transactionId: tid, total: total, paid: 0, balance: total, dueDate: document.getElementById('debt-due').value || '-', status: 'BELUM LUNAS' };
                 debts.push(d); await syncCloud({...d, type: 'debt_record'});
             }
+            
             for (const c of cart) { const i = items.find(x => x.id == c.id); if(i) { i.stock -= c.qty; syncCloud(i); } }
-            logs.push(log); saveStorage(); closeModal('modal-checkout'); showReceipt(log); successSound.play().catch(e => {}); resetCart(); renderHome(); renderPos(); showToast("Berhasil!"); await syncCloud(log);
+            logs.push(log); saveStorage(); closeModal('modal-checkout');
+            successSound.currentTime = 0; successSound.play().catch(e => {});
+            showReceipt(log); resetCart(); renderHome(); renderPos(); await syncCloud(log);
+        }
+
+        function showReceipt(d) {
+            lastReceiptData = d;
+            document.getElementById('rec-store-name').innerText = config.storeName;
+            document.getElementById('rec-store-addr').innerText = config.storeAddress;
+            document.getElementById('rec-store-phone').innerText = config.storePhone;
+            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString('id-ID');
+            document.getElementById('rec-id').innerText = "TRX: " + d.id;
+            document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
+            document.getElementById('rec-total').innerText = formatIDR(d.amount);
+            const detailArea = document.getElementById('rec-payment-details');
+            if(d.method === 'Debt') detailArea.innerHTML = `<div class="flex justify-between font-bold text-rose-600"><span>METODE</span><span>HUTANG (BON)</span></div>`;
+            else detailArea.innerHTML = `<div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div><div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>`;
+            document.getElementById('rec-change').innerText = formatIDR(d.change);
+            if(config.logo) document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10 mx-auto">`;
+            openModal('modal-receipt');
         }
 
         // --- DASHBOARD ---
@@ -502,16 +575,23 @@
             document.getElementById('dash-debt').innerText = formatIDR(debtT);
             document.getElementById('dash-low-stock').innerText = items.filter(i => i.stock < 5).length + " Item Menipis";
             const top = Object.entries(best).sort((a,b) => b[1]-a[1]).slice(0,3);
-            document.getElementById('top-products').innerHTML = top.map(([n, q]) => `<div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl font-bold text-[10px]"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') || '<p class="text-center opacity-30 text-[10px]">Belum ada data</p>';
+            document.getElementById('top-products').innerHTML = top.map(([n, q]) => `<div class="flex justify-between items-center bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl font-bold text-[10px]"><span>${n}</span><span class="text-indigo-600">${q} pcs</span></div>`).join('') || '<p class="text-center opacity-30 text-[10px]">No Data</p>';
             initChart(hourMap);
         }
 
         function initChart(data) {
-            const canvas = document.getElementById('hourChart'); if(!canvas) return; const ctx = canvas.getContext('2d'); if (mainChart) mainChart.destroy();
+            const canvas = document.getElementById('hourChart');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            if (mainChart) mainChart.destroy();
             mainChart = new Chart(ctx, { type: 'bar', data: { labels: Array.from({length:24}, (_,i) => i+':00'), datasets: [{ data, backgroundColor: '#4f46e5', borderRadius: 4 }] }, options: { plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false }, ticks: { font: { size: 7 } } } } } });
         }
 
-        // --- SETTINGS & DATA ---
+        // --- SETTINGS ---
+        function toggleDarkMode() { config.darkMode = document.getElementById('dark-mode-toggle').checked; document.body.classList.toggle('dark', config.darkMode); localStorage.setItem('dk_config', JSON.stringify(config)); }
+        function openStoreSettings() { openModal('modal-store-cfg'); document.getElementById('cfg-name').value = config.storeName; document.getElementById('cfg-address').value = config.storeAddress; document.getElementById('cfg-phone').value = config.storePhone; document.getElementById('cfg-url').value = config.url; }
+        async function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); loadSettings(); closeModal('modal-store-cfg'); showToast("Simpan Berhasil!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
+        
         function loadSettings() {
             const s = config;
             document.getElementById('dark-mode-toggle').checked = s.darkMode;
@@ -519,54 +599,76 @@
             document.getElementById('store-name-display').innerText = s.storeName;
             document.getElementById('profile-name').innerText = s.storeName;
             document.getElementById('profile-address-display').innerText = s.storeAddress;
-            if(s.logo) { const img = `<img src="${s.logo}" class="w-full h-full object-cover">`; document.getElementById('app-logo').innerHTML = img; document.getElementById('profile-logo-preview').innerHTML = img; }
+            if(s.logo) {
+                const img = `<img src="${s.logo}" class="w-full h-full object-cover">`;
+                document.getElementById('app-logo').innerHTML = img;
+                document.getElementById('profile-logo-preview').innerHTML = img;
+            }
         }
-        function saveSettings() { config = { ...config, storeName: document.getElementById('cfg-name').value, storeAddress: document.getElementById('cfg-address').value, storePhone: document.getElementById('cfg-phone').value, url: document.getElementById('cfg-url').value }; localStorage.setItem('dk_config', JSON.stringify(config)); loadSettings(); closeModal('modal-store-cfg'); showToast("Disimpan!"); syncCloud({ type: 'settings', id: 'app_cfg', data: config }); }
-        function toggleDarkMode() { config.darkMode = document.getElementById('dark-mode-toggle').checked; document.body.classList.toggle('dark', config.darkMode); localStorage.setItem('dk_config', JSON.stringify(config)); }
+
         function handleLogoUpload(input) { if (input.files && input.files[0]) { const r = new FileReader(); r.onload = (e) => { config.logo = e.target.result; loadSettings(); }; r.readAsDataURL(input.files[0]); } }
         async function syncCloud(d) { if(!config.url) return; try { await fetch(config.url, { method: 'POST', mode: 'no-cors', body: JSON.stringify(d) }); document.getElementById('cloud-dot').className = "w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"; } catch(e){} }
         function saveStorage() { localStorage.setItem('dk_items', JSON.stringify(items)); localStorage.setItem('dk_logs', JSON.stringify(logs)); localStorage.setItem('dk_debts', JSON.stringify(debts)); }
 
+        // --- INVENTORY ---
         function renderItems() {
             const q = document.getElementById('item-search').value.toLowerCase();
-            document.getElementById('item-list').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `<div class="card p-5 flex justify-between items-center shadow-sm"><div><p class="text-xs font-black dark:text-slate-100">${i.name}</p><p class="text-[9px] text-slate-400 uppercase">Hrg: ${formatIDR(i.price)} • Stok: ${i.stock}</p></div><div class="flex gap-2"><button onclick="openProductModal(${i.id})" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-edit text-xs"></i></button><button onclick="deleteProduct(${i.id})" class="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
+            document.getElementById('item-list').innerHTML = items.filter(i => i.name.toLowerCase().includes(q) || String(i.barcode).includes(q)).map(i => `<div class="card p-5 flex justify-between items-center"><div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] text-slate-400 uppercase">${i.category || 'Umum'} • ${formatIDR(i.price)}</p></div><div class="flex gap-2"><button onclick="openProductModal(${i.id})" class="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-edit text-xs"></i></button><button onclick="deleteProduct(${i.id})" class="w-10 h-10 bg-rose-50 text-rose-500 rounded-xl flex items-center justify-center"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`).join('');
         }
-        function deleteProduct(id) { items = items.filter(x => x.id !== id); saveStorage(); renderItems(); renderPos(); showToast("Dihapus"); }
+
+        function deleteProduct(id) { items = items.filter(x => x.id !== id); saveStorage(); renderItems(); renderPos(); showToast("Produk Dihapus"); }
+
         function openProductModal(id = null) {
-            if(id) { const i = items.find(x => x.id == id); document.getElementById('p-id').value = i.id; document.getElementById('p-barcode').value = i.barcode || ''; document.getElementById('p-name').value = i.name; document.getElementById('p-cost').value = i.cost || 0; document.getElementById('p-price').value = i.price; document.getElementById('p-stock').value = i.stock; document.getElementById('p-category').value = i.category || 'Umum'; }
-            else { document.getElementById('p-id').value = ''; document.getElementById('p-barcode').value = ''; document.getElementById('p-name').value = ''; document.getElementById('p-cost').value = ''; document.getElementById('p-price').value = ''; document.getElementById('p-stock').value = ''; }
+            if(id) { 
+                const i = items.find(x => x.id == id); 
+                document.getElementById('p-id').value = i.id; 
+                document.getElementById('p-barcode').value = i.barcode || ''; 
+                document.getElementById('p-name').value = i.name; 
+                document.getElementById('p-cost').value = i.cost || 0; 
+                document.getElementById('p-price').value = i.price; 
+                document.getElementById('p-stock').value = i.stock; 
+                document.getElementById('p-category').value = i.category || 'Umum'; 
+            } else { 
+                document.getElementById('p-id').value = ''; 
+                document.getElementById('p-barcode').value = ''; 
+                document.getElementById('p-name').value = ''; 
+                document.getElementById('p-cost').value = ''; 
+                document.getElementById('p-price').value = ''; 
+                document.getElementById('p-stock').value = ''; 
+            }
             openModal('modal-product');
         }
-        async function saveProduct() { const idIn = document.getElementById('p-id').value; const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), category: document.getElementById('p-category').value }; if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d); saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("Berhasil!"); await syncCloud(d); }
-        
-        function renderData() { const f = document.getElementById('date-filter').value; document.getElementById('data-list').innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `<div class="card p-5 flex justify-between items-center shadow-sm active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex gap-4 items-center"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><div class="flex items-center gap-3"><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p><button onclick="event.stopPropagation(); deleteLog('${l.id}')" class="text-rose-300 p-1"><i class="fa-solid fa-xmark"></i></button></div></div>`).join(''); }
-        function deleteLog(id) { logs = logs.filter(l => l.id !== id); saveStorage(); renderData(); showToast("Dihapus"); }
-        function renderDebts() { document.getElementById('debt-count-label').innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG"; document.getElementById('debt-list').innerHTML = debts.slice().reverse().map(d => `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join(''); }
-        function openDebtDetail(id) { const d = debts.find(x => x.id === id); currentDebtId = id; document.getElementById('det-debt-name').innerText = d.customer; document.getElementById('det-debt-id').innerText = d.id; document.getElementById('det-debt-total').innerText = formatIDR(d.total); document.getElementById('det-debt-paid').innerText = formatIDR(d.paid); document.getElementById('det-debt-rem').innerText = formatIDR(d.balance); openModal('modal-debt-detail'); }
-        async function payInstallment() { const amt = Number(document.getElementById('ins-amt').value); if(!amt || amt <= 0) return showToast("Isi Nominal!"); const d = debts.find(x => x.id === currentDebtId); d.paid += amt; d.balance = d.total - d.paid; if(d.balance <= 0) d.status = 'LUNAS'; saveStorage(); closeModal('modal-debt-detail'); renderDebts(); await syncCloud({ type: 'debt_record', ...d }); }
 
-        function showReceipt(d) {
-            lastReceiptData = d;
-            document.getElementById('rec-store-name').innerText = config.storeName;
-            document.getElementById('rec-store-addr').innerText = config.storeAddress;
-            document.getElementById('rec-store-phone').innerText = config.storePhone;
-            document.getElementById('rec-date').innerText = new Date(d.created_at).toLocaleString('id-ID');
-            document.getElementById('rec-id').innerText = "TRX: " + d.id;
-            document.getElementById('rec-items').innerHTML = (d.items || []).map(i => `<div class="flex justify-between"><span>${i.name} x${i.qty}</span><span>${formatIDR(i.price * i.qty)}</span></div>`).join('');
-            document.getElementById('rec-total').innerText = formatIDR(d.amount);
-            const detailArea = document.getElementById('rec-payment-details');
-            if(d.method === 'Debt') detailArea.innerHTML = `<div class="flex justify-between font-bold text-rose-600"><span>METODE</span><span>HUTANG (BON)</span></div>`;
-            else detailArea.innerHTML = `<div class="flex justify-between"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div><div class="flex justify-between"><span>QRIS</span><span>${formatIDR(d.pay_qris)}</span></div>`;
-            document.getElementById('rec-change').innerText = formatIDR(d.change);
-            if(config.logo) document.getElementById('rec-logo-box').innerHTML = `<img src="${config.logo}" class="h-10 mx-auto">`;
-            openModal('modal-receipt');
+        async function saveProduct() {
+            const idIn = document.getElementById('p-id').value;
+            const d = { id: idIn ? Number(idIn) : Date.now(), barcode: document.getElementById('p-barcode').value, name: document.getElementById('p-name').value, cost: Number(document.getElementById('p-cost').value), price: Number(document.getElementById('p-price').value), stock: Number(document.getElementById('p-stock').value), category: document.getElementById('p-category').value };
+            if(idIn) { const idx = items.findIndex(x => x.id == idIn); items[idx] = d; } else items.push(d);
+            saveStorage(); closeModal('modal-product'); renderItems(); renderPos(); showToast("Simpan Berhasil!"); await syncCloud(d);
         }
 
-        async function connectPrinter() { try { const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] }); const server = await device.gatt.connect(); const services = await server.getPrimaryServices(); for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) { if (c.properties.write || c.properties.writeWithoutResponse) { printCharacteristic = c; break; } } if (printCharacteristic) break; } document.getElementById('printer-status').innerText = "READY"; document.getElementById('printer-status').className = "text-[8px] font-black text-emerald-500 uppercase"; showToast("Printer Konek!"); } catch (e) { showToast("Gagal Bluetooth!"); } }
-        async function printBluetoothReceipt() { if(!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!"); const enc = new TextEncoder(); const esc = '\x1b', gs = '\x1d'; let t = esc + '@' + esc + 'a' + '\x01' + config.storeName.toUpperCase() + '\n' + config.storeAddress + '\n--------------------------------\n' + esc + 'a' + '\x00'; lastReceiptData.items.forEach(i => t += `${i.name.substring(0,20)}\n  ${i.qty} x ${i.price.toLocaleString()} = ${formatIDR(i.price * i.qty)}\n`); t += '--------------------------------\n' + `TOTAL: ${formatIDR(lastReceiptData.amount)}\n` + `KEMBALI: ${formatIDR(lastReceiptData.change)}\n\nTERIMA KASIH\n\n\n\n` + gs + 'V' + '\x42' + '\x00'; try { const chunks = []; for(let i=0; i<t.length; i+=16) chunks.push(t.substring(i, i+16)); for(const ch of chunks) { if (printCharacteristic.properties.writeWithoutResponse) await printCharacteristic.writeValueWithoutResponse(enc.encode(ch)); else await printCharacteristic.writeValue(enc.encode(ch)); await new Promise(r => setTimeout(r, 60)); } showToast("Berhasil Mencetak"); } catch (e) { showToast("Gagal Cetak!"); } }
-        function shareWhatsApp() { if(!lastReceiptData) return; let m = `*${config.storeName}*\n${new Date(lastReceiptData.created_at).toLocaleString()}\n----------------\n`; lastReceiptData.items.forEach(i => m += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); m += `----------------\n*TOTAL: ${formatIDR(lastReceiptData.amount)}*\nTerima Kasih!`; window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank'); }
-        function exportExcel() { const filtered = logs; if(filtered.length === 0) return showToast("Kosong"); const data = filtered.map(l => ({ ID: l.id, Tanggal: l.date, Total: l.amount, Produk: l.items ? l.items.map(i => i.name).join(', ') : '-' })); const ws = XLSX.utils.json_to_sheet(data); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Laporan"); XLSX.writeFile(wb, `Laporan_DheKasir.xlsx`); }
-        function exportPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text(config.storeName, 14, 15); doc.autoTable({ head: [['Tgl', 'ID', 'Items', 'Total']], body: logs.map(l => [l.date, l.id, l.items ? l.items.map(i => i.name).join(', ') : '-', formatIDR(l.amount)]) }); doc.save(`Laporan_DheKasir.pdf`); }
+        function openCategoryModal() { renderCategoryList(); openModal('modal-category'); }
+        function renderCategoryList() { document.getElementById('category-list').innerHTML = categories.filter(c => c !== 'Semua').map(c => `<div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl"><span class="text-sm font-bold">${c}</span>${c !== 'Umum' ? `<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>` : ''}</div>`).join(''); }
+        function addCategory() { const val = document.getElementById('new-cat-name').value.trim(); if(!val) return; categories.push(val); document.getElementById('new-cat-name').value = ''; saveCategories(); renderCategoryList(); renderCategoryOptions(); renderPosCategoryChips(); }
+        function deleteCategory(n) { categories = categories.filter(c => c !== n); saveCategories(); renderCategoryList(); renderCategoryOptions(); renderPosCategoryChips(); }
+        function saveCategories() { localStorage.setItem('dk_categories', JSON.stringify(categories)); }
+
+        // --- DATA & REPORTS ---
+        function renderData() { const f = document.getElementById('date-filter').value; document.getElementById('data-list').innerHTML = logs.filter(l => !f || l.date === f).reverse().map(l => `<div class="card p-5 flex justify-between items-center active:scale-95 transition-all" onclick='showReceipt(${JSON.stringify(l)})'><div class="flex items-center gap-4"><div class="w-10 h-10 bg-indigo-50 text-indigo-500 rounded-xl flex items-center justify-center text-xs"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items ? l.items.map(i => i.name).join(', ') : 'Manual'}</p><p class="text-[8px] text-slate-400 uppercase">${l.date} • ${l.method}</p></div></div><div class="flex items-center gap-3"><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p><button onclick="event.stopPropagation(); deleteLog('${l.id}')" class="text-rose-300 p-1"><i class="fa-solid fa-xmark"></i></button></div></div>`).join('') || '<p class="text-center opacity-30 py-10">Data Kosong</p>'; }
+        function deleteLog(id) { logs = logs.filter(l => l.id !== id); saveStorage(); renderData(); showToast("Log Dihapus"); }
+        function exportExcel() { const ws = XLSX.utils.json_to_sheet(logs); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Logs"); XLSX.writeFile(wb, "Laporan_DheKasir.xlsx"); }
+        function exportPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF(); doc.text(config.storeName, 14, 20); doc.autoTable({ startY: 30, head: [['Tanggal', 'ID', 'Produk', 'Total']], body: logs.map(l => [l.date, l.id, l.items ? l.items.map(i => i.name).join(", ") : "-", formatIDR(l.amount)]) }); doc.save("Laporan_DheKasir.pdf"); }
+
+        // --- DEBTS ---
+        function renderDebts() { document.getElementById('debt-count-label').innerText = debts.filter(d => d.status !== 'LUNAS').length + " ORANG"; document.getElementById('debt-list').innerHTML = debts.slice().reverse().map(d => `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 ${d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== 'LUNAS' ? 'border-rose-500 bg-rose-50' : ''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status === 'LUNAS' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] text-slate-400 uppercase">Tempo: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join(''); }
+        function openDebtDetail(id) { const d = debts.find(x => x.id === id); currentDebtId = id; document.getElementById('det-debt-name').innerText = d.customer; document.getElementById('det-debt-id').innerText = d.id; document.getElementById('det-debt-total').innerText = formatIDR(d.total); document.getElementById('det-debt-paid').innerText = formatIDR(d.paid); document.getElementById('det-debt-rem').innerText = formatIDR(d.balance); openModal('modal-debt-detail'); }
+        async function payInstallment() { const amt = Number(document.getElementById('ins-amt').value); if(!amt || amt <= 0) return; const d = debts.find(x => x.id === currentDebtId); d.paid += amt; d.balance = d.total - d.paid; if(d.balance <= 0) d.status = 'LUNAS'; saveStorage(); closeModal('modal-debt-detail'); renderDebts(); await syncCloud({ type: 'debt_record', ...d }); }
+
+        // --- PRINTER ---
+        async function connectPrinter() { try { const device = await navigator.bluetooth.requestDevice({ acceptAllDevices: true, optionalServices: ['000018f0-0000-1000-8000-00805f9b34fb'] }); const server = await device.gatt.connect(); const services = await server.getPrimaryServices(); for (const s of services) { const chars = await s.getCharacteristics(); for (const c of chars) if (c.properties.write) printCharacteristic = c; } document.getElementById('printer-status').innerText = "READY"; showToast("Printer Terhubung!"); } catch (e) { showToast("Gagal Bluetooth!"); } }
+        async function printBluetoothReceipt() { if(!printCharacteristic || !lastReceiptData) return showToast("Hubungkan Printer!"); const enc = new TextEncoder(); let t = `${config.storeName}\n----------------\n`; lastReceiptData.items.forEach(i => t += `${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`); t += `----------------\nTOTAL: ${formatIDR(lastReceiptData.amount)}\nTERIMA KASIH`; try { await printCharacteristic.writeValue(enc.encode(t)); showToast("Berhasil Mencetak"); } catch (e) { showToast("Gagal Cetak!"); } }
+        function shareWhatsApp() { if(!lastReceiptData) return; let m = `*${config.storeName}*\nTOTAL: ${formatIDR(lastReceiptData.amount)}`; window.open(`https://wa.me/?text=${encodeURIComponent(m)}`, '_blank'); }
+
+        window.onload = () => { loadSettings(); const savedTab = localStorage.getItem('dk_active_tab') || 'home'; switchTab(savedTab); renderCategoryOptions(); renderPosCategoryChips(); };
     </script>
 </body>
 </html>
