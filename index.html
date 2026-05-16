@@ -87,6 +87,10 @@
         #flash-btn .flash-label { font-size:9px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6; transition:opacity 0.2s; }
         #flash-btn.flash-on .flash-label { opacity:1; }
         #flash-btn:disabled { opacity:0.25; pointer-events:none; }
+
+        /* ── Printer Status Indicator ────────────────────────────── */
+        .printer-ready { color: #10b981 !important; }
+        .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -98,11 +102,10 @@
             <div id="app-logo" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/20 text-white font-black text-lg">D</div>
             <div>
                 <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v1.3</span></div>
+                <div class="flex items-center gap-1.5"><div id="cloud-dot" class="w-1.5 h-1.5 bg-slate-300 rounded-full"></div><span class="text-[8px] font-black text-slate-400 uppercase tracking-widest">v1.4</span></div>
             </div>
         </div>
         <div class="flex items-center gap-2">
-            <!-- Notification Bell -->
             <button onclick="openNotifPanel()" id="notif-bell" class="relative w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-2xl flex items-center justify-center text-slate-500">
                 <i class="fa-solid fa-bell text-base"></i>
                 <span id="notif-count-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-[9px] font-black flex items-center justify-center hidden">0</span>
@@ -161,14 +164,12 @@
             <div id="item-list" class="space-y-3"></div>
         </section>
 
-        <!-- ── STOCK MANAGEMENT (NEW) ── -->
+        <!-- ── STOCK MANAGEMENT ── -->
         <section id="tab-stock" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="text-xl font-black">Manajemen Stok</h2>
                 <div id="stock-alert-badge" class="hidden bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[10px] font-black"></div>
             </div>
-
-            <!-- Quick Action Buttons -->
             <div class="grid grid-cols-3 gap-3">
                 <button onclick="openStockModal('in')" class="flex flex-col items-center gap-2 p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-[22px] active:scale-95 transition-all">
                     <div class="w-10 h-10 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-down text-sm"></i></div>
@@ -183,8 +184,6 @@
                     <span class="text-[9px] font-black text-indigo-700 dark:text-indigo-400 uppercase">Opname</span>
                 </button>
             </div>
-
-            <!-- Status Overview Cards -->
             <div class="grid grid-cols-3 gap-3">
                 <div class="card p-4 text-center shadow-sm">
                     <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Produk</p>
@@ -199,8 +198,6 @@
                     <p class="text-2xl font-black text-red-500" id="stat-empty-stock">0</p>
                 </div>
             </div>
-
-            <!-- Stock List with Status -->
             <div class="flex items-center justify-between">
                 <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Status Per Produk</h3>
                 <select id="stock-filter" onchange="renderStockList()" class="text-[9px] font-black uppercase bg-slate-100 dark:bg-slate-700 border-0 rounded-xl px-3 py-2 outline-none">
@@ -211,8 +208,6 @@
                 </select>
             </div>
             <div id="stock-product-list" class="space-y-3"></div>
-
-            <!-- History Tab -->
             <div class="flex items-center justify-between mt-4">
                 <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Riwayat Stok</h3>
                 <button onclick="clearStockHistory()" class="text-[9px] font-black text-red-400 uppercase">Hapus</button>
@@ -418,20 +413,15 @@
     </div>
 </div>
 
-<!-- ═══════════════ RECEIPT (IMPROVED) ═══════════════ -->
+<!-- RECEIPT -->
 <div id="modal-receipt" class="fixed inset-0 z-[130] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-xs rounded-[40px] overflow-hidden animate-pop shadow-2xl flex flex-col max-h-[90vh]">
-        <!-- Title bar -->
         <div class="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100 shrink-0">
             <h4 class="font-black text-sm uppercase tracking-widest text-slate-700">Struk Belanja</h4>
             <span class="text-[8px] font-black text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">Preview</span>
         </div>
-
-        <!-- Receipt Paper -->
         <div class="flex-1 overflow-y-auto hide-scrollbar px-4 py-4 bg-slate-50">
             <div id="receipt-area" class="receipt-paper bg-white rounded-2xl shadow-sm p-5">
-
-                <!-- Header -->
                 <div class="rec-header">
                     <div class="rec-logo" id="rec-logo-box"></div>
                     <h4 class="rec-storename" id="rec-store-name">-</h4>
@@ -440,12 +430,8 @@
                     <p class="rec-meta" id="rec-date">-</p>
                     <p class="rec-meta" style="margin-top:2px;font-size:8px;letter-spacing:0.06em;" id="rec-id">-</p>
                 </div>
-
-                <!-- Items -->
                 <p class="rec-section-title">ITEM PEMBELIAN</p>
                 <div id="rec-items"></div>
-
-                <!-- Totals -->
                 <hr class="rec-divider">
                 <div class="rec-total-row">
                     <span>TOTAL</span>
@@ -456,17 +442,13 @@
                     <span>Kembalian</span>
                     <span id="rec-change">Rp 0</span>
                 </div>
-
-                <!-- Footer -->
                 <div class="rec-footer" id="rec-footer">
                     <p>Terima kasih atas kunjungan Anda!</p>
                     <p style="margin-top:3px;">Barang yang sudah dibeli tidak dapat ditukar.</p>
-                    <p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.3 ★</p>
+                    <p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.4 ★</p>
                 </div>
             </div>
         </div>
-
-        <!-- Buttons -->
         <div class="px-6 py-4 border-t border-slate-100 space-y-2 shrink-0">
             <button onclick="printBluetoothReceipt()" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wide flex items-center justify-center gap-2"><i class="fa-solid fa-print"></i> Print Bluetooth</button>
             <div class="grid grid-cols-2 gap-2">
@@ -549,15 +531,15 @@
     </div>
 </div>
 
-<!-- ABOUT / PRIVACY / CONTACT -->
+<!-- ABOUT -->
 <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="bg-white dark:bg-slate-800 w-full max-w-sm rounded-[40px] p-10 animate-pop shadow-2xl text-center">
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-6 shadow-xl">D</div>
         <h3 class="font-black text-xl mb-2">DheKasir</h3>
-        <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 1.3</p>
+        <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase tracking-widest">Version 1.4</p>
         <div class="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 mb-8 space-y-3 text-justify">
             <p><strong>DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v1.3: Manajemen Stok lengkap — Stok Masuk, Stok Keluar, Stok Opname, Riwayat Stok, Notifikasi Stok Habis, dan Minimum Stok.</p>
+            <p>Fitur baru v1.4: Fix Bluetooth Print (universal service discovery), Audio Feedback — beep saat scan produk & chime saat transaksi selesai.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 bg-slate-100 dark:bg-slate-900 text-indigo-600 font-black rounded-2xl text-xs uppercase">Tutup</button>
     </div>
@@ -599,7 +581,13 @@ let payMethod = 'cash';
 let activePosCategory = 'Semua';
 let mainChart = null;
 let html5QrCode = null;
-let printCharacteristic = null;
+
+// ── Bluetooth Printer State (FIXED) ────────────────────────────────────
+let btDevice = null;           // Store device reference for reconnect
+let btCharacteristic = null;   // Active writable characteristic
+let btConnected = false;
+
+// ── Other State ────────────────────────────────────────────────────────
 let lastReceiptData = null;
 let lastScannedCode = "";
 let lastScannedTime = 0;
@@ -609,6 +597,97 @@ let flashTrack = null;
 let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
+
+// ══════════════════════════════════════════════════════════════════════
+// ── WEB AUDIO — SOUND EFFECTS ─────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+
+let audioCtx = null;
+
+function getAudioCtx() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    // Resume if suspended (browser policy)
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+}
+
+/**
+ * beepScan() — Pendek, tajam, konfirmasi scan produk berhasil
+ * Frekuensi 880Hz → 1100Hz, durasi 80ms
+ */
+function beepScan() {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.06);
+
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.1);
+    } catch(e) { /* audio tidak tersedia */ }
+}
+
+/**
+ * beepError() — Nada rendah peringatan, stok habis / gagal
+ * Frekuensi 300Hz turun, durasi 200ms
+ */
+function beepError() {
+    try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(350, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.2);
+
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.22);
+    } catch(e) {}
+}
+
+/**
+ * chimeSuccess() — Arpeggio naik 4 nada saat transaksi selesai
+ * Do–Mi–Sol–Do tinggi, masing-masing 110ms
+ */
+function chimeSuccess() {
+    try {
+        const ctx = getAudioCtx();
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+        notes.forEach((freq, i) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+            const t = ctx.currentTime + i * 0.11;
+            gain.gain.setValueAtTime(0, t);
+            gain.gain.linearRampToValueAtTime(0.22, t + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+
+            osc.start(t);
+            osc.stop(t + 0.2);
+        });
+    } catch(e) {}
+}
 
 // ── Helpers ────────────────────────────────────────────────────────────
 function formatIDR(n) { return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0); }
@@ -682,7 +761,7 @@ function renderPos(){
 }
 function addToCart(id){
     const it=items.find(i=>i.id==id); const inC=cart.find(c=>c.id==id);
-    if(inC){if(inC.qty>=it.stock)return showToast("Stok Habis!"); inC.qty++;}
+    if(inC){if(inC.qty>=it.stock){beepError();return showToast("Stok Habis!");} inC.qty++;}
     else{cart.push({...it,qty:1});}
     updateCartUI(); renderPos();
 }
@@ -690,7 +769,7 @@ function updateCartItem(id,change){
     const idx=cart.findIndex(c=>c.id==id); if(idx===-1)return;
     const orig=items.find(i=>i.id==id);
     cart[idx].qty+=change;
-    if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;showToast("Maksimal!");}
+    if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast("Maksimal!");}
     if(cart[idx].qty<=0) cart.splice(idx,1);
     updateCartUI(); renderCartDetails(); renderPos();
 }
@@ -748,15 +827,14 @@ async function finishCheckout(){
     let cash=Number(document.getElementById('pay-amt-cash').value)||0;
     let qris=Number(document.getElementById('pay-amt-qris').value)||0;
     let change=Math.max(0,(cash+qris)-total);
-    if(payMethod==='cash'&&(cash+qris)<total)return showToast("Uang Kurang!");
-    if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer)return showToast("Isi Nama!");cash=0;qris=0;change=0;}
+    if(payMethod==='cash'&&(cash+qris)<total){beepError();return showToast("Uang Kurang!");}
+    if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer){beepError();return showToast("Isi Nama!");}cash=0;qris=0;change=0;}
     const tid="T-"+Date.now();
     const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString()};
     if(payMethod==='debt'){
         const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:'BELUM LUNAS'};
         debts.push(d); await syncCloud({...d,type:'debt_record'});
     }
-    // Kurangi stok dan catat riwayat
     for(const c of cart){
         const i=items.find(x=>x.id==c.id);
         if(i){
@@ -766,18 +844,21 @@ async function finishCheckout(){
         }
     }
     logs.push(log); saveStorage(); closeModal('modal-checkout');
+    
+    // ── AUDIO: Chime sukses transaksi ──────────────────────────────
+    chimeSuccess();
+    
     showReceipt(log); resetCart(); renderHome(); renderPos();
     checkStockAlerts();
     await syncCloud(log);
 }
 
-// ── Receipt (IMPROVED) ────────────────────────────────────────────────
+// ── Receipt ────────────────────────────────────────────────────────────
 function showReceipt(d){
     lastReceiptData=d;
     const sname=config.storeName||'DheKasir';
     const saddr=config.storeAddress||'';
     const sphone=config.storePhone||'';
-    // Logo
     const logoBox=document.getElementById('rec-logo-box');
     if(config.logo){
         logoBox.innerHTML=`<img src="${config.logo}" alt="Logo">`;
@@ -791,8 +872,6 @@ function showReceipt(d){
     document.getElementById('rec-store-phone').style.display=sphone?'':'none';
     document.getElementById('rec-date').innerText=new Date(d.created_at||Date.now()).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});
     document.getElementById('rec-id').innerText='No: '+d.id;
-
-    // Items
     document.getElementById('rec-items').innerHTML=(d.items||[]).map(item=>`
         <div class="rec-item-row">
             <span class="rec-item-name">${item.name}</span>
@@ -800,10 +879,7 @@ function showReceipt(d){
         </div>
         <div class="rec-item-detail">${item.qty} × ${formatIDR(item.price)}</div>
     `).join('');
-
     document.getElementById('rec-total').innerText=formatIDR(d.amount);
-
-    // Payment details
     const pd=document.getElementById('rec-payment-details');
     if(d.method==='Hutang'||d.method==='Debt'){
         pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">⚠ HUTANG / BON</span></div>`;
@@ -826,17 +902,25 @@ async function openScanner(mode='cart'){
     if(!html5QrCode) html5QrCode=new Html5Qrcode("reader");
     html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{
         if(navigator.vibrate) navigator.vibrate(100);
-        if(mode==='sku'){document.getElementById('p-barcode').value=text;showToast("SKU Terisi!");closeScanner();return;}
+        if(mode==='sku'){document.getElementById('p-barcode').value=text;beepScan();showToast("SKU Terisi!");closeScanner();return;}
         if(mode==='stock-product'){document.getElementById('sm-product').value=text;updateSmCurrentStock();return;}
         const now=Date.now();
         if(text===lastScannedCode&&(now-lastScannedTime)<SCAN_COOLDOWN)return;
         const found=items.find(i=>String(i.barcode)===String(text));
         if(found&&found.stock>0){
             addToCart(found.id); lastScannedCode=text; lastScannedTime=now;
+            // ── AUDIO: Beep scan berhasil ──────────────────────────
+            beepScan();
             const sfb=document.getElementById('scan-feedback');
             sfb.innerText='+ '+found.name; sfb.classList.remove('hidden');
             setTimeout(()=>sfb.classList.add('hidden'),2000);
-        } else if(found) showToast("Stok Habis!");
+        } else if(found) {
+            beepError();
+            showToast("Stok Habis!");
+        } else {
+            beepError();
+            showToast("Produk tidak ditemukan!");
+        }
     }).then(()=>{
         try{
             const video=document.querySelector('#reader video');
@@ -924,10 +1008,8 @@ function checkStockAlerts(){
     const critical=items.filter(i=>i.stock<=0);
     const low=items.filter(i=>i.stock>0&&i.stock<=config.minStock);
     const total=critical.length+low.length;
-    // Nav dot
     const dot=document.getElementById('nav-stock-dot');
     if(dot) dot.classList.toggle('hidden',total===0);
-    // Bell badge
     const badge=document.getElementById('notif-count-badge');
     if(badge){badge.innerText=total;badge.classList.toggle('hidden',total===0);}
     return {critical,low};
@@ -963,12 +1045,10 @@ function renderStockTab(){
     const critical=items.filter(i=>i.stock<=0).length;
     const low=items.filter(i=>i.stock>0&&i.stock<=minS).length;
     const total=items.length;
-
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
     set('stat-total-products',total);
     set('stat-low-stock',low);
     set('stat-empty-stock',critical);
-
     const alertBadge=document.getElementById('stock-alert-badge');
     if(alertBadge){
         const n=critical+low;
@@ -1052,7 +1132,6 @@ function clearStockHistory(){
     stockHistory=[]; saveStorage(); renderStockHistory(); showToast("Riwayat Dihapus");
 }
 
-// Stock Move (In / Out)
 function openStockModal(type, preSelectId=null){
     currentStockMoveType=type;
     const title=document.getElementById('stock-move-title');
@@ -1064,7 +1143,6 @@ function openStockModal(type, preSelectId=null){
         title.innerText='Stok Keluar'; title.className='text-xl font-black text-rose-600';
         if(btn){btn.className='w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl';}
     }
-    // Populate product select
     const sel=document.getElementById('sm-product');
     sel.innerHTML=items.map(i=>`<option value="${i.id}">${i.name} (Stok: ${i.stock})</option>`).join('');
     if(preSelectId) sel.value=preSelectId;
@@ -1088,7 +1166,6 @@ function submitStockMove(){
     const item=items.find(i=>String(i.id)===String(id));
     if(!item)return showToast("Produk tidak ditemukan!");
     if(currentStockMoveType==='out'&&qty>item.stock)return showToast("Stok tidak cukup!");
-    const oldStock=item.stock;
     if(currentStockMoveType==='in') item.stock+=qty;
     else item.stock-=qty;
     addStockHistory(item.id,item.name,currentStockMoveType,qty,note||`${currentStockMoveType==='in'?'Stok masuk':'Stok keluar'} manual`);
@@ -1098,7 +1175,6 @@ function submitStockMove(){
     renderStockTab(); renderItems(); renderPos(); checkStockAlerts();
 }
 
-// Stock Opname
 function openOpnameModal(){
     opnameData={};
     const list=document.getElementById('opname-list');
@@ -1138,7 +1214,6 @@ function submitOpname(){
     renderStockTab(); renderItems(); renderPos(); checkStockAlerts();
 }
 
-// Min Stock Settings
 function openMinStockSettings(){
     document.getElementById('min-stock-input').value=config.minStock||5;
     openModal('modal-minstock');
@@ -1289,7 +1364,7 @@ function exportPDF(){
         doc.addPage();hdr(doc.internal.getNumberOfPages());
         doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,10,3,3,'F');doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('INVENTARIS & STATUS STOK',M+4,33);
         doc.autoTable({head:[["Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]],body:items.map(i=>[i.name,i.category||'Umum',formatIDR(i.cost),formatIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',formatIDR(rawIDR(i.cost)*i.stock)]),startY:40,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didParseCell:(d)=>{if(d.section==='body'&&d.column.index===5){const s=d.cell.raw;if(s==='Habis'){d.cell.styles.textColor=dc;d.cell.styles.fontStyle='bold';}else if(s==='Menipis'){d.cell.styles.textColor=[217,119,6];d.cell.styles.fontStyle='bold';}else{d.cell.styles.textColor=sc;}}},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});
-        const tp=doc.internal.getNumberOfPages();for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(160,160,180);doc.text(`© ${sn} — DheKasir v1.3`,PW/2,PH-6,{align:'center'});doc.line(M,PH-9,PW-M,PH-9);}
+        const tp=doc.internal.getNumberOfPages();for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(160,160,180);doc.text(`© ${sn} — DheKasir v1.4`,PW/2,PH-6,{align:'center'});doc.line(M,PH-9,PW-M,PH-9);}
         doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast("PDF Berhasil Diunduh!");
     }catch(e){console.error(e);showToast("Gagal Export PDF!");}
 }
@@ -1310,37 +1385,330 @@ function renderDebts(){
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast("Isi Nominal!");const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status='LUNAS';saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
-// ── Bluetooth Printer ──────────────────────────────────────────────────
-async function connectPrinter(){try{const device=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['000018f0-0000-1000-8000-00805f9b34fb']});const server=await device.gatt.connect();const services=await server.getPrimaryServices();for(const s of services){const chars=await s.getCharacteristics();for(const c of chars)if(c.properties.write)printCharacteristic=c;}document.getElementById('printer-status').innerText="READY";showToast("Printer Terhubung!");}catch(e){showToast("Gagal Bluetooth!");}}
-async function printBluetoothReceipt(){
-    if(!printCharacteristic||!lastReceiptData)return showToast("Hubungkan Printer!");
-    const enc=new TextEncoder();
-    const d=lastReceiptData;
-    const LINE='--------------------------------\n';
-    const center=(s,w=32)=>{const pad=Math.max(0,Math.floor((w-s.length)/2));return ' '.repeat(pad)+s+'\n';};
-    let t='';
-    t+=center(config.storeName.toUpperCase());
-    if(config.storeAddress&&config.storeAddress!=='-') t+=center(config.storeAddress);
-    if(config.storePhone) t+=center(config.storePhone);
-    t+=LINE;
-    t+=`Tgl: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n`;
-    t+=`No : ${d.id}\n`;
-    t+=LINE;
-    (d.items||[]).forEach(i=>{
-        t+=`${i.name}\n`;
-        t+=`  ${i.qty} x ${formatIDR(i.price)}`.padEnd(30)+formatIDR(i.price*i.qty)+'\n';
-    });
-    t+=LINE;
-    t+='TOTAL'.padEnd(20)+formatIDR(d.amount)+'\n';
-    if(d.method==='Hutang'||d.method==='Debt'){t+='PEMBAYARAN: HUTANG/BON\n';}
-    else{if(d.pay_cash>0)t+='Tunai'.padEnd(20)+formatIDR(d.pay_cash)+'\n';if(d.pay_qris>0)t+='QRIS'.padEnd(20)+formatIDR(d.pay_qris)+'\n';}
-    t+='Kembali'.padEnd(20)+formatIDR(d.change)+'\n';
-    t+=LINE;
-    t+=center('Terima kasih!');
-    t+='\n\n\n';
-    try{const buf=enc.encode(t);for(let i=0;i<buf.length;i+=512)await printCharacteristic.writeValue(buf.slice(i,Math.min(i+512,buf.length)));showToast("Berhasil Mencetak");}catch(e){showToast("Gagal Cetak!");}
+// ══════════════════════════════════════════════════════════════════════
+// ── BLUETOOTH PRINTER (FIXED v1.4) ───────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════
+// 
+// Perbaikan utama:
+// 1. Scan semua primary services (tidak hardcode UUID tertentu)
+// 2. Simpan referensi device untuk reconnect otomatis
+// 3. Tambah ESC/POS init command & paper cut
+// 4. Gunakan writeValueWithoutResponse jika write gagal
+// 5. Chunk 20 byte (BLE MTU minimum) agar tidak putus di tengah
+//
+
+/**
+ * Cari karakteristik Bluetooth yang bisa ditulis (writable characteristic).
+ * Mendukung semua merk printer thermal Bluetooth: Xprinter, Epson, ZJ, etc.
+ */
+async function findWritableCharacteristic(server) {
+    // Daftar UUID service printer thermal yang umum
+    const knownServiceUUIDs = [
+        '000018f0-0000-1000-8000-00805f9b34fb', // Generic (banyak printer China)
+        '49535343-fe7d-4ae5-8fa9-9fafd205e455', // ISSC Transparent UART
+        '6e400001-b5a3-f393-e0a9-e50e24dcca9e', // Nordic UART (NUS)
+        '0000ff00-0000-1000-8000-00805f9b34fb', // Custom (Xprinter, ZJ)
+        '0000ffe0-0000-1000-8000-00805f9b34fb', // HM-10 BLE Module
+        '0000fff0-0000-1000-8000-00805f9b34fb', // Generic BLE SPP
+        '000003f3-0000-1000-8000-00805f9b34fb', // Some Epson BT
+    ];
+
+    // Coba ambil semua service yang tersedia
+    let services = [];
+    try {
+        services = await server.getPrimaryServices();
+    } catch(e) {
+        // Fallback: coba satu per satu UUID yang diketahui
+        for (const uuid of knownServiceUUIDs) {
+            try {
+                const svc = await server.getPrimaryService(uuid);
+                if (svc) { services = [svc]; break; }
+            } catch(e2) { /* lanjut */ }
+        }
+    }
+
+    // Iterasi semua service, cari karakteristik yang writable
+    for (const service of services) {
+        let characteristics = [];
+        try {
+            characteristics = await service.getCharacteristics();
+        } catch(e) { continue; }
+
+        for (const char of characteristics) {
+            const p = char.properties;
+            if (p.write || p.writeWithoutResponse) {
+                return char;
+            }
+        }
+    }
+    return null;
 }
-function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
+
+/**
+ * Hubungkan ke printer Bluetooth thermal.
+ * Menyimpan referensi device untuk reconnect.
+ */
+async function connectPrinter() {
+    const statusEl = document.getElementById('printer-status');
+    if (statusEl) { statusEl.innerText = 'CONNECTING...'; statusEl.className = 'text-[8px] font-black printer-connecting uppercase'; }
+
+    try {
+        // Jika sudah ada device sebelumnya dan masih terkoneksi
+        if (btDevice && btDevice.gatt.connected) {
+            showToast("Printer sudah terhubung!");
+            if (statusEl) { statusEl.innerText = 'READY ✓'; statusEl.className = 'text-[8px] font-black printer-ready uppercase'; }
+            return;
+        }
+
+        // Request Bluetooth device — scan semua device
+        btDevice = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: [
+                '000018f0-0000-1000-8000-00805f9b34fb',
+                '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+                '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+                '0000ff00-0000-1000-8000-00805f9b34fb',
+                '0000ffe0-0000-1000-8000-00805f9b34fb',
+                '0000fff0-0000-1000-8000-00805f9b34fb',
+                '000003f3-0000-1000-8000-00805f9b34fb',
+            ]
+        });
+
+        // Handle disconnect otomatis
+        btDevice.addEventListener('gattserverdisconnected', () => {
+            btConnected = false;
+            btCharacteristic = null;
+            const s = document.getElementById('printer-status');
+            if (s) { s.innerText = 'OFFLINE'; s.className = 'text-[8px] font-black text-slate-300 uppercase'; }
+            showToast("Printer terputus");
+        });
+
+        const server = await btDevice.gatt.connect();
+        btCharacteristic = await findWritableCharacteristic(server);
+
+        if (!btCharacteristic) {
+            throw new Error("Tidak ditemukan karakteristik writable. Pastikan printer dalam mode print.");
+        }
+
+        btConnected = true;
+        if (statusEl) { statusEl.innerText = 'READY ✓'; statusEl.className = 'text-[8px] font-black printer-ready uppercase'; }
+        showToast(`✓ Printer "${btDevice.name || 'Unknown'}" terhubung!`);
+
+    } catch(e) {
+        btConnected = false;
+        btCharacteristic = null;
+        if (statusEl) { statusEl.innerText = 'OFFLINE'; statusEl.className = 'text-[8px] font-black text-slate-300 uppercase'; }
+        if (e.name !== 'NotFoundError') { // User cancel tidak perlu toast error
+            showToast("Gagal: " + (e.message || "Bluetooth error"));
+            console.error('[BT]', e);
+        }
+    }
+}
+
+/**
+ * Kirim data ke printer via BLE dalam chunks kecil.
+ * BLE minimum MTU = 20 byte, tapi sebagian besar printer support 512.
+ * Kita pakai 512 dengan fallback ke 20 jika gagal.
+ */
+async function btWrite(data) {
+    if (!btCharacteristic) throw new Error("Tidak ada karakteristik printer");
+
+    // Jika device disconnected, coba reconnect
+    if (btDevice && !btDevice.gatt.connected) {
+        showToast("Reconnecting printer...");
+        try {
+            const server = await btDevice.gatt.connect();
+            btCharacteristic = await findWritableCharacteristic(server);
+            if (!btCharacteristic) throw new Error("Reconnect gagal");
+        } catch(e) {
+            throw new Error("Printer terputus, hubungkan ulang!");
+        }
+    }
+
+    const CHUNK = 512;
+    const useWithoutResponse = !btCharacteristic.properties.write && btCharacteristic.properties.writeWithoutResponse;
+
+    for (let offset = 0; offset < data.length; offset += CHUNK) {
+        const chunk = data.slice(offset, offset + CHUNK);
+        try {
+            if (useWithoutResponse) {
+                await btCharacteristic.writeValueWithoutResponse(chunk);
+            } else {
+                await btCharacteristic.writeValue(chunk);
+            }
+        } catch(e) {
+            // Fallback chunk kecil
+            if (CHUNK > 20) {
+                for (let i = 0; i < chunk.length; i += 20) {
+                    const mini = chunk.slice(i, i + 20);
+                    try { await btCharacteristic.writeValueWithoutResponse(mini); }
+                    catch(e2) { await btCharacteristic.writeValue(mini); }
+                    await new Promise(r => setTimeout(r, 5)); // Delay antar mini-chunk
+                }
+            } else {
+                throw e;
+            }
+        }
+        // Delay antar chunk utama agar printer tidak buffer overflow
+        if (data.length > CHUNK) await new Promise(r => setTimeout(r, 30));
+    }
+}
+
+/**
+ * Build ESC/POS byte array untuk struk.
+ * Support printer thermal 58mm dan 80mm.
+ */
+function buildEscPosReceipt(d) {
+    const enc = new TextEncoder();
+    const bytes = [];
+
+    // Konstanta ESC/POS
+    const ESC = 0x1B;
+    const GS  = 0x1D;
+    const LF  = 0x0A;
+    const NUL = 0x00;
+
+    function cmd(...args) { bytes.push(...args); }
+    function text(s) {
+        // Encode teks — ganti karakter non-ASCII dengan fallback
+        const safe = s.replace(/[^\x00-\x7F]/g, c => {
+            const map = {
+                'Rp': 'Rp', '×': 'x', '★': '*', '→': '->', '✓': 'v',
+                'é': 'e', 'è': 'e', 'ê': 'e', 'à': 'a', 'â': 'a',
+                '\u2014': '-', '\u2013': '-', '\u201c': '"', '\u201d': '"',
+            };
+            return map[c] || '?';
+        });
+        const encoded = enc.encode(safe);
+        bytes.push(...encoded);
+    }
+    function lf(n=1) { for(let i=0;i<n;i++) bytes.push(LF); }
+
+    const sname = config.storeName || 'DheKasir';
+    const saddr = config.storeAddress || '';
+    const sphone = config.storePhone || '';
+
+    // ── ESC/POS Init ─────────────────────────────────────────────────
+    cmd(ESC, 0x40);                    // Initialize printer
+    cmd(ESC, 0x74, 0x00);             // Character code table: PC437
+
+    // ── Header: Nama Toko (Bold + Center) ────────────────────────────
+    cmd(ESC, 0x61, 0x01);             // Align Center
+    cmd(ESC, 0x45, 0x01);             // Bold ON
+    cmd(GS, 0x21, 0x11);              // Double height+width
+    text(sname.toUpperCase()); lf();
+    cmd(GS, 0x21, 0x00);              // Normal size
+    cmd(ESC, 0x45, 0x00);             // Bold OFF
+
+    if (saddr && saddr !== '-') { text(saddr); lf(); }
+    if (sphone) { text('Telp: ' + sphone); lf(); }
+
+    // Tanggal & No. Transaksi
+    const dt = new Date(d.created_at || Date.now());
+    const dtStr = dt.toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'})
+                + ' ' + dt.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
+    text(dtStr); lf();
+    text('No: ' + d.id); lf();
+
+    // ── Divider ───────────────────────────────────────────────────────
+    cmd(ESC, 0x61, 0x00);             // Align Left
+    text('--------------------------------'); lf();
+
+    // ── Items ─────────────────────────────────────────────────────────
+    text('ITEM PEMBELIAN'); lf();
+    (d.items || []).forEach(item => {
+        // Nama produk
+        text(item.name); lf();
+        // Qty x Harga .............. Subtotal (32 char line)
+        const left = `  ${item.qty} x ${formatIDRRaw(item.price)}`;
+        const right = formatIDRRaw(item.price * item.qty);
+        const dots = '.'.repeat(Math.max(1, 32 - left.length - right.length));
+        text(left + dots + right); lf();
+    });
+
+    // ── Total ─────────────────────────────────────────────────────────
+    text('--------------------------------'); lf();
+    cmd(ESC, 0x45, 0x01);             // Bold ON
+    const totalLeft = 'TOTAL';
+    const totalRight = formatIDRRaw(d.amount);
+    const totalSpaces = ' '.repeat(Math.max(1, 32 - totalLeft.length - totalRight.length));
+    text(totalLeft + totalSpaces + totalRight); lf();
+    cmd(ESC, 0x45, 0x00);             // Bold OFF
+
+    // ── Pembayaran ────────────────────────────────────────────────────
+    if (d.method === 'Hutang' || d.method === 'Debt') {
+        text('*** HUTANG / BON ***'); lf();
+    } else {
+        if (d.pay_cash > 0) {
+            const l = 'Tunai', r = formatIDRRaw(d.pay_cash);
+            text(l + ' '.repeat(Math.max(1,32-l.length-r.length)) + r); lf();
+        }
+        if (d.pay_qris > 0) {
+            const l = 'QRIS/Transfer', r = formatIDRRaw(d.pay_qris);
+            text(l + ' '.repeat(Math.max(1,32-l.length-r.length)) + r); lf();
+        }
+    }
+    const cL = 'Kembalian', cR = formatIDRRaw(d.change);
+    text(cL + ' '.repeat(Math.max(1,32-cL.length-cR.length)) + cR); lf();
+
+    // ── Footer ────────────────────────────────────────────────────────
+    text('--------------------------------'); lf();
+    cmd(ESC, 0x61, 0x01);             // Align Center
+    text('Terima kasih atas kunjungan Anda!'); lf();
+    text('Barang dibeli tidak dapat ditukar.'); lf();
+    text('* DheKasir v1.4 *'); lf();
+    cmd(ESC, 0x61, 0x00);             // Align Left
+
+    // ── Feed + Cut ────────────────────────────────────────────────────
+    lf(4);                             // Feed 4 baris sebelum cut
+    cmd(GS, 0x56, 0x42, 0x00);       // Full cut (GS V B 0)
+
+    return new Uint8Array(bytes);
+}
+
+/** Format IDR tanpa simbol Rupiah untuk printer (ASCII-safe) */
+function formatIDRRaw(n) {
+    return 'Rp' + Number(n||0).toLocaleString('id-ID');
+}
+
+/**
+ * Print struk ke printer Bluetooth thermal.
+ */
+async function printBluetoothReceipt() {
+    if (!lastReceiptData) return showToast("Tidak ada data struk!");
+
+    // Jika belum ada printer, minta connect dulu
+    if (!btCharacteristic && !btDevice) {
+        showToast("Hubungkan printer dulu di Pengaturan!");
+        return;
+    }
+
+    showToast("Mengirim ke printer...");
+    try {
+        const data = buildEscPosReceipt(lastReceiptData);
+        await btWrite(data);
+        showToast("✓ Struk berhasil dicetak!");
+        beepScan(); // Feedback audio
+    } catch(e) {
+        console.error('[Print]', e);
+        showToast("Gagal cetak: " + (e.message || "Error"));
+        // Reset karakteristik agar bisa reconnect
+        btCharacteristic = null;
+        btConnected = false;
+        const s = document.getElementById('printer-status');
+        if(s) { s.innerText = 'ERROR'; s.className = 'text-[8px] font-black text-rose-400 uppercase'; }
+    }
+}
+
+function shareWhatsApp(){
+    if(!lastReceiptData)return;
+    const d=lastReceiptData;
+    let m=`*${config.storeName}*\n`;
+    m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;
+    (d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});
+    m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');
+}
 
 // ── Init ───────────────────────────────────────────────────────────────
 window.onload=()=>{
