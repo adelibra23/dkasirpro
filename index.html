@@ -88,447 +88,127 @@
             transform: scale(1.05);
             pointer-events: none;
         }
-        /* Ketika splash di-skip langsung (sudah pernah dibuka), sembunyikan tanpa animasi */
         #splash-screen.skip-instant {
             display: none !important;
         }
 
-        /* Animated background circles */
         .splash-orb {
             position: absolute;
             border-radius: 50%;
             filter: blur(60px);
             animation: orbFloat 6s ease-in-out infinite;
         }
-        .splash-orb-1 {
-            width: 300px; height: 300px;
-            background: rgba(167, 139, 250, 0.25);
-            top: -80px; right: -60px;
-            animation-delay: 0s;
-        }
-        .splash-orb-2 {
-            width: 200px; height: 200px;
-            background: rgba(99, 102, 241, 0.3);
-            bottom: 20px; left: -50px;
-            animation-delay: 2s;
-        }
-        .splash-orb-3 {
-            width: 150px; height: 150px;
-            background: rgba(236, 72, 153, 0.15);
-            top: 50%; left: 20%;
-            animation-delay: 4s;
-        }
-        @keyframes orbFloat {
-            0%, 100% { transform: translateY(0px) scale(1); }
-            50% { transform: translateY(-20px) scale(1.05); }
-        }
+        .splash-orb-1 { width: 300px; height: 300px; background: rgba(167, 139, 250, 0.25); top: -80px; right: -60px; animation-delay: 0s; }
+        .splash-orb-2 { width: 200px; height: 200px; background: rgba(99, 102, 241, 0.3); bottom: 20px; left: -50px; animation-delay: 2s; }
+        .splash-orb-3 { width: 150px; height: 150px; background: rgba(236, 72, 153, 0.15); top: 50%; left: 20%; animation-delay: 4s; }
+        @keyframes orbFloat { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
 
-        /* Grid pattern overlay */
         .splash-grid {
-            position: absolute;
-            inset: 0;
-            background-image: 
-                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
             background-size: 32px 32px;
         }
 
-        /* Logo container */
-        .splash-logo-wrap {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0;
-        }
+        .splash-logo-wrap { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0; }
 
-        /* Outer ring animation */
-        .splash-ring {
-            position: absolute;
-            border-radius: 50%;
-            border: 1.5px solid rgba(255,255,255,0.15);
-            animation: ringPulse 2s ease-in-out infinite;
-        }
+        .splash-ring { position: absolute; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.15); animation: ringPulse 2s ease-in-out infinite; }
         .splash-ring-1 { width: 100px; height: 100px; animation-delay: 0s; }
         .splash-ring-2 { width: 130px; height: 130px; animation-delay: 0.3s; }
         .splash-ring-3 { width: 165px; height: 165px; animation-delay: 0.6s; }
-        @keyframes ringPulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.15; transform: scale(1.04); }
-        }
+        @keyframes ringPulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.15; transform: scale(1.04); } }
 
-        /* Main logo box */
         .splash-logo-box {
-            position: relative;
-            width: 80px; height: 80px;
-            background: rgba(255,255,255,0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1.5px solid rgba(255,255,255,0.25);
-            border-radius: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow:
-                0 0 0 1px rgba(255,255,255,0.1),
-                0 20px 60px rgba(0,0,0,0.3),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: logoAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
-            z-index: 2;
+            position: relative; width: 80px; height: 80px;
+            background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(255,255,255,0.25); border-radius: 28px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: logoAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; z-index: 2;
         }
-        @keyframes logoAppear {
-            0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
-            100% { opacity: 1; transform: scale(1) rotate(0deg); }
-        }
+        @keyframes logoAppear { 0% { opacity: 0; transform: scale(0.5) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
 
-        .splash-logo-letter {
-            font-size: 36px;
-            font-weight: 900;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            line-height: 1;
-        }
+        .splash-logo-letter { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); line-height: 1; }
 
-        /* Sparkle dots */
-        .splash-sparkle {
-            position: absolute;
-            width: 5px; height: 5px;
-            background: rgba(255,255,255,0.8);
-            border-radius: 50%;
-            animation: sparkleAnim 1.8s ease-in-out infinite;
-        }
+        .splash-sparkle { position: absolute; width: 5px; height: 5px; background: rgba(255,255,255,0.8); border-radius: 50%; animation: sparkleAnim 1.8s ease-in-out infinite; }
         .sp1 { top: -4px; right: 14px; animation-delay: 0s; }
         .sp2 { bottom: 10px; right: -5px; animation-delay: 0.6s; width: 4px; height: 4px; }
         .sp3 { top: 18px; left: -5px; animation-delay: 1.2s; width: 3px; height: 3px; }
-        @keyframes sparkleAnim {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
-        }
+        @keyframes sparkleAnim { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1); } }
 
-        /* App name */
-        .splash-app-name {
-            margin-top: 28px;
-            font-size: 30px;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: -0.5px;
-            text-align: center;
-            animation: textSlideUp 0.6s ease 0.6s both;
-        }
-        .splash-tagline {
-            margin-top: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            color: rgba(255,255,255,0.55);
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            text-align: center;
-            animation: textSlideUp 0.6s ease 0.75s both;
-        }
-        @keyframes textSlideUp {
-            0% { opacity: 0; transform: translateY(16px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        .splash-app-name { margin-top: 28px; font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.5px; text-align: center; animation: textSlideUp 0.6s ease 0.6s both; }
+        .splash-tagline { margin-top: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0.15em; text-transform: uppercase; text-align: center; animation: textSlideUp 0.6s ease 0.75s both; }
+        @keyframes textSlideUp { 0% { opacity: 0; transform: translateY(16px); } 100% { opacity: 1; transform: translateY(0); } }
 
-        /* Progress bar area */
-        .splash-progress-area {
-            position: absolute;
-            bottom: 72px;
-            left: 0; right: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            padding: 0 48px;
-            animation: textSlideUp 0.6s ease 1s both;
-        }
-
-        .splash-progress-track {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.12);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .splash-progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,1));
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.25s ease;
-            box-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        .splash-status-text {
-            font-size: 10px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.45);
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            text-align: center;
-            min-height: 14px;
-            transition: opacity 0.3s;
-        }
-
-        /* Version badge */
-        .splash-version {
-            position: absolute;
-            bottom: 32px;
-            font-size: 9px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.25);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            text-align: center;
-        }
+        .splash-progress-area { position: absolute; bottom: 72px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 48px; animation: textSlideUp 0.6s ease 1s both; }
+        .splash-progress-track { width: 100%; height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+        .splash-progress-bar { height: 100%; background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,1)); border-radius: 2px; width: 0%; transition: width 0.25s ease; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .splash-status-text { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; min-height: 14px; transition: opacity 0.3s; }
+        .splash-version { position: absolute; bottom: 32px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
 
         /* ── Card ── */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            transition: background 0.3s, border-color 0.3s;
-        }
+        .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; transition: background 0.3s, border-color 0.3s; }
 
         #app-header {
-            position: sticky;
-            top: 0;
-            z-index: 40;
-            background: var(--header-bg);
-            border-bottom: 1px solid var(--card-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            padding: 0 16px;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            position: sticky; top: 0; z-index: 40;
+            background: var(--header-bg); border-bottom: 1px solid var(--card-border);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: 0 16px; height: 62px;
+            display: flex; align-items: center; justify-content: space-between;
             transition: background 0.3s, border-color 0.3s;
         }
 
-        #hamburger-btn {
-            width: 38px; height: 38px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: var(--card);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: all 0.15s;
-            flex-shrink: 0;
-        }
+        #hamburger-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
         #hamburger-btn:active { transform: scale(0.92); }
-        #hamburger-btn .bar {
-            display: block; width: 16px; height: 1.5px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-        }
+        #hamburger-btn .bar { display: block; width: 16px; height: 1.5px; background: var(--text); border-radius: 2px; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
         #hamburger-btn .bars { display: flex; flex-direction: column; gap: 4px; }
         #hamburger-btn.open .bar:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
         #hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
         #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
-        .header-brand {
-            display: flex; align-items: center; gap: 9px;
-            position: absolute; left: 50%; transform: translateX(-50%);
-        }
-        .header-logo {
-            width: 32px; height: 32px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 14px; font-weight: 900;
-            overflow: hidden;
-            flex-shrink: 0;
-        }
-        .header-title {
-            font-size: 15px; font-weight: 800;
-            color: var(--text);
-            max-width: 110px;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        }
+        .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
+        .header-logo { width: 32px; height: 32px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; overflow: hidden; flex-shrink: 0; }
+        .header-title { font-size: 15px; font-weight: 800; color: var(--text); max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .header-actions { display: flex; align-items: center; gap: 8px; }
-        .hdr-btn {
-            width: 38px; height: 38px;
-            border-radius: 12px;
-            border: 1px solid var(--card-border);
-            background: var(--card);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: all 0.15s;
-            color: var(--text-muted);
-            position: relative;
-        }
+        .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
         .hdr-btn:active { transform: scale(0.92); }
-        .hdr-btn.primary-action {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-color: transparent;
-            color: #fff;
-            width: 42px; height: 38px;
-            box-shadow: 0 3px 10px rgba(79,70,229,0.35);
-        }
+        .hdr-btn.primary-action { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-color: transparent; color: #fff; width: 42px; height: 38px; box-shadow: 0 3px 10px rgba(79,70,229,0.35); }
 
-        #sidebar-overlay {
-            position: fixed; inset: 0; z-index: 80;
-            background: var(--sidebar-overlay);
-            opacity: 0; pointer-events: none;
-            transition: opacity 0.3s;
-            backdrop-filter: blur(4px);
-        }
+        #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         #sidebar-overlay.open { opacity: 1; pointer-events: all; }
 
-        #sidebar {
-            position: fixed; top: 0; left: 0; bottom: 0;
-            width: 272px;
-            background: var(--sidebar-bg);
-            z-index: 90;
-            transform: translateX(-100%);
-            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-            display: flex; flex-direction: column;
-            border-right: 1px solid var(--card-border);
-        }
+        #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 272px; background: var(--sidebar-bg); z-index: 90; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; border-right: 1px solid var(--card-border); }
         #sidebar.open { transform: translateX(0); }
 
-        .sidebar-header {
-            padding: 52px 20px 20px;
-            border-bottom: 1px solid var(--card-border);
-        }
-        .sidebar-store-logo {
-            width: 52px; height: 52px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-radius: 16px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 22px; font-weight: 900;
-            overflow: hidden; margin-bottom: 12px;
-            box-shadow: 0 4px 14px rgba(79,70,229,0.35);
-        }
-        .sidebar-store-name {
-            font-size: 16px; font-weight: 800; margin-bottom: 2px;
-        }
-        .sidebar-store-addr {
-            font-size: 11px; color: var(--text-muted); font-weight: 500;
-        }
-        .sidebar-version {
-            display: inline-flex; align-items: center; gap: 4px;
-            margin-top: 8px;
-            background: var(--primary-soft);
-            color: var(--primary);
-            font-size: 9px; font-weight: 800;
-            letter-spacing: 0.08em; text-transform: uppercase;
-            padding: 3px 8px; border-radius: 6px;
-        }
+        .sidebar-header { padding: 52px 20px 20px; border-bottom: 1px solid var(--card-border); }
+        .sidebar-store-logo { width: 52px; height: 52px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+        .sidebar-store-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
+        .sidebar-store-addr { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .sidebar-version { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; background: var(--primary-soft); color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; }
 
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 12px; }
-        .sidebar-section-label {
-            font-size: 9px; font-weight: 900;
-            text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--text-muted);
-            padding: 12px 8px 6px;
-        }
-        .sidebar-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 11px 12px;
-            border-radius: 14px;
-            cursor: pointer;
-            transition: all 0.15s;
-            color: var(--text-muted);
-            font-size: 13px; font-weight: 600;
-            margin-bottom: 2px;
-        }
+        .sidebar-section-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 12px 8px 6px; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; cursor: pointer; transition: all 0.15s; color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 2px; }
         .sidebar-item:active { transform: scale(0.97); }
-        .sidebar-item.active {
-            background: var(--primary-soft);
-            color: var(--primary);
-            font-weight: 700;
-        }
-        .sidebar-item:not(.active):hover {
-            background: var(--surface);
-            color: var(--text);
-        }
-        .sidebar-icon {
-            width: 34px; height: 34px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
-            flex-shrink: 0;
-            background: var(--surface);
-            transition: background 0.15s;
-        }
-        .sidebar-item.active .sidebar-icon {
-            background: var(--primary);
-            color: #fff;
-        }
-        .sidebar-badge {
-            margin-left: auto;
-            background: #ef4444;
-            color: #fff;
-            font-size: 9px; font-weight: 800;
-            min-width: 18px; height: 18px;
-            border-radius: 9px;
-            display: flex; align-items: center; justify-content: center;
-            padding: 0 5px;
-        }
+        .sidebar-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+        .sidebar-item:not(.active):hover { background: var(--surface); color: var(--text); }
+        .sidebar-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: var(--surface); transition: background 0.15s; }
+        .sidebar-item.active .sidebar-icon { background: var(--primary); color: #fff; }
+        .sidebar-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
 
-        .sidebar-footer {
-            padding: 16px 20px;
-            border-top: 1px solid var(--card-border);
-        }
-        .sidebar-dark-toggle {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 12px;
-            border-radius: 14px;
-            background: var(--surface);
-            cursor: pointer;
-        }
-        .sidebar-dark-toggle span {
-            font-size: 12px; font-weight: 700; color: var(--text-muted);
-        }
-        .sidebar-dark-toggle .toggle-left {
-            display: flex; align-items: center; gap: 10px;
-        }
+        .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--card-border); }
+        .sidebar-dark-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 14px; background: var(--surface); cursor: pointer; }
+        .sidebar-dark-toggle span { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+        .sidebar-dark-toggle .toggle-left { display: flex; align-items: center; gap: 10px; }
 
-        #bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            max-width: 480px; margin: 0 auto;
-            background: var(--nav-bg);
-            border-top: 1px solid var(--card-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 50;
-            padding: 8px 8px 20px;
-            display: flex; align-items: center; justify-content: space-around;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 3px; padding: 6px 10px; border-radius: 14px;
-            cursor: pointer; transition: all 0.2s;
-            color: var(--text-muted);
-            font-size: 9px; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.04em;
-            min-width: 52px; position: relative;
-        }
+        #bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: var(--nav-bg); border-top: 1px solid var(--card-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 50; padding: 8px 8px 20px; display: flex; align-items: center; justify-content: space-around; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 10px; border-radius: 14px; cursor: pointer; transition: all 0.2s; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; min-width: 52px; position: relative; }
         .nav-item i { font-size: 18px; transition: all 0.2s; }
-        .nav-item.active {
-            color: var(--primary);
-        }
+        .nav-item.active { color: var(--primary); }
         .nav-item.active i { transform: translateY(-1px); }
-        .nav-item-pill {
-            position: absolute; bottom: -2px;
-            width: 20px; height: 3px;
-            border-radius: 2px;
-            background: var(--primary);
-            opacity: 0;
-            transition: opacity 0.2s, width 0.2s;
-        }
+        .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--primary); opacity: 0; transition: opacity 0.2s, width 0.2s; }
         .nav-item.active .nav-item-pill { opacity: 1; }
-        .nav-dot {
-            position: absolute; top: 4px; right: 8px;
-            width: 7px; height: 7px;
-            background: #ef4444; border-radius: 50%;
-            border: 1.5px solid var(--nav-bg);
-        }
+        .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
 
         .tab-content { display: none; padding: 16px 16px 110px; }
         .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
@@ -537,34 +217,20 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        input, select, textarea {
-            background: var(--input-bg) !important;
-            color: var(--text) !important;
-            border-color: var(--input-border) !important;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
-        }
+        input, select, textarea { background: var(--input-bg) !important; color: var(--text) !important; border-color: var(--input-border) !important; transition: background 0.3s, color 0.3s, border-color 0.3s; }
         input::placeholder, textarea::placeholder { color: var(--text-muted) !important; }
         select option { background: var(--card); color: var(--text); }
 
-        .modal-sheet {
-            background: var(--card) !important;
-            transition: background 0.3s;
-        }
-
+        .modal-sheet { background: var(--card) !important; transition: background 0.3s; }
         .surface { background: var(--surface) !important; transition: background 0.3s; }
         .surface-hover:hover { background: var(--surface-hover) !important; }
         .dk-divider { border-color: var(--card-border) !important; }
         .text-muted { color: var(--text-muted) !important; }
-
         .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
 
         #reader { border-radius: 24px; overflow: hidden; background: #000; border: none !important; }
 
-        .receipt-paper {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 12px; line-height: 1.55;
-            color: #111; background: #fff; width: 100%;
-        }
+        .receipt-paper { font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.55; color: #111; background: #fff; width: 100%; }
         .receipt-paper .rec-header { text-align:center; padding-bottom:8px; border-bottom:1px dashed #bbb; margin-bottom:8px; }
         .receipt-paper .rec-logo { display:flex; justify-content:center; align-items:center; margin-bottom:6px; }
         .receipt-paper .rec-logo img { max-height:52px; max-width:120px; object-fit:contain; }
@@ -584,10 +250,6 @@
         .receipt-paper .rec-change-row { display:flex; justify-content:space-between; font-size:12px; font-weight:700; border-top:1px dotted #bbb; padding:4px 0 0; margin-top:3px; }
         .receipt-paper .rec-footer { text-align:center; font-size:9px; color:#999; margin-top:8px; padding-top:6px; border-top:1px dashed #bbb; }
         .receipt-paper .rec-debt-badge { display:inline-block; background:#fef2f2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; font-size:11px; font-weight:700; padding:3px 12px; margin:4px auto; font-family:'Plus Jakarta Sans',sans-serif; text-align:center; }
-        @media print {
-            body > *:not(#print-area) { display:none !important; }
-            #print-area { display:block !important; position:fixed; top:0; left:0; width:80mm; }
-        }
 
         .stock-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; }
         .badge-in     { background:#d1fae5; color:#059669; }
@@ -626,107 +288,87 @@
         #flash-btn.flash-on .flash-label { opacity:1; }
         #flash-btn:disabled { opacity:0.25; pointer-events:none; }
 
-        .printer-ready { color:#10b981 !important; }
-        .printer-connecting { color:#f59e0b !important; animation:pulse-notif 1s infinite; }
+        /* ══════════════════════════════
+           PRINTER STATUS STYLES (ENHANCED)
+        ══════════════════════════════ */
+        .printer-ready    { color: #10b981 !important; }
+        .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; }
+        .printer-error    { color: #ef4444 !important; }
+        .printer-offline  { color: var(--text-muted) !important; }
 
-        .settings-row {
-            display:flex; align-items:center; justify-content:space-between;
-            padding:14px 12px; border-bottom:1px solid var(--card-border);
-            cursor:pointer; border-radius:12px; transition:background 0.2s;
+        /* Printer card in settings */
+        .printer-card {
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--card);
+            overflow: hidden;
+            transition: all 0.3s;
         }
+        .printer-status-bar {
+            height: 4px;
+            transition: background 0.4s;
+            border-radius: 0;
+        }
+        .printer-status-bar.ready      { background: linear-gradient(90deg, #10b981, #34d399); }
+        .printer-status-bar.connecting { background: linear-gradient(90deg, #f59e0b, #fbbf24); animation: shimmer 1s linear infinite; background-size: 200% 100%; }
+        .printer-status-bar.error      { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .printer-status-bar.offline    { background: var(--card-border); }
+        @keyframes shimmer { 0%{background-position:200% 0;}100%{background-position:-200% 0;} }
+
+        /* Printer modal */
+        .bt-device-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px 14px; border-radius: 16px;
+            cursor: pointer; border: 1.5px solid var(--card-border);
+            background: var(--surface); transition: all 0.2s;
+        }
+        .bt-device-item:hover { border-color: var(--primary); background: var(--primary-soft); }
+        .bt-device-item:active { transform: scale(0.97); }
+        .bt-device-item.selected { border-color: var(--primary); background: var(--primary-soft); }
+
+        .settings-row { display:flex; align-items:center; justify-content:space-between; padding:14px 12px; border-bottom:1px solid var(--card-border); cursor:pointer; border-radius:12px; transition:background 0.2s; }
         .settings-row:last-child { border-bottom:none; }
         .settings-row:active { background:var(--surface); }
         .settings-icon { width:38px; height:38px; background:var(--surface); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.3s; }
 
-        #cart-float {
-            background: var(--card) !important;
-            border-color: var(--card-border) !important;
-        }
-
+        #cart-float { background: var(--card) !important; border-color: var(--card-border) !important; }
         .cat-chip-active { background:#4f46e5 !important; color:#fff !important; }
         .cat-chip-inactive { background:var(--card) !important; color:var(--text-muted) !important; border:1px solid var(--card-border); }
+        .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
+        .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
 
-        .dk-section-label {
-            font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em;
-            color:var(--text-muted); padding:1.25rem 12px 0.5rem;
-        }
-
-        .page-title {
-            font-size: 22px; font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 0;
-        }
-
-        .dash-hero {
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
-            border-radius: 24px;
-            padding: 24px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(79,70,229,0.3);
-        }
-        .dash-hero::before {
-            content: '';
-            position: absolute;
-            top: -40px; right: -40px;
-            width: 140px; height: 140px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-        }
-        .dash-hero::after {
-            content: '';
-            position: absolute;
-            bottom: -30px; left: -20px;
-            width: 100px; height: 100px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.04);
-        }
+        .dash-hero { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%); border-radius: 24px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(79,70,229,0.3); }
+        .dash-hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.06); }
+        .dash-hero::after { content: ''; position: absolute; bottom: -30px; left: -20px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.04); }
     </style>
 </head>
 <body class="hide-scrollbar">
 
-<!-- ══════════════════════════════
-     SPLASH SCREEN
-══════════════════════════════ -->
+<!-- SPLASH SCREEN -->
 <div id="splash-screen">
-    <!-- Animated orbs -->
     <div class="splash-orb splash-orb-1"></div>
     <div class="splash-orb splash-orb-2"></div>
     <div class="splash-orb splash-orb-3"></div>
-
-    <!-- Grid overlay -->
     <div class="splash-grid"></div>
-
-    <!-- Center content -->
     <div class="splash-logo-wrap">
-        <!-- Pulsing rings behind logo -->
         <div class="splash-ring splash-ring-3"></div>
         <div class="splash-ring splash-ring-2"></div>
         <div class="splash-ring splash-ring-1"></div>
-
-        <!-- Main logo -->
         <div class="splash-logo-box">
             <span class="splash-logo-letter" id="splash-logo-letter">D</span>
-            <!-- Sparkles -->
             <div class="splash-sparkle sp1"></div>
             <div class="splash-sparkle sp2"></div>
             <div class="splash-sparkle sp3"></div>
         </div>
-
-        <!-- App name & tagline -->
         <div class="splash-app-name" id="splash-app-name">DheKasir</div>
         <div class="splash-tagline">Sistem Kasir Digital UMKM</div>
     </div>
-
-    <!-- Progress bar -->
     <div class="splash-progress-area">
         <div class="splash-status-text" id="splash-status">Memuat sistem...</div>
         <div class="splash-progress-track">
             <div class="splash-progress-bar" id="splash-progress"></div>
         </div>
     </div>
-
-    <!-- Version -->
     <div class="splash-version">DheKasir v1.4 • © 2025</div>
 </div>
 
@@ -741,7 +383,6 @@
             <div class="sidebar-store-addr" id="sb-store-addr">Alamat belum diatur</div>
             <div class="sidebar-version"><i class="fa-solid fa-circle-check" style="font-size:8px;"></i> v1.4 Aktif</div>
         </div>
-
         <div class="sidebar-nav hide-scrollbar">
             <div class="sidebar-section-label">Menu Utama</div>
             <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()">
@@ -756,7 +397,6 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-box" style="font-size:13px;"></i></div>
                 <span>Inventaris</span>
             </div>
-
             <div class="sidebar-section-label">Operasional</div>
             <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-warehouse" style="font-size:13px;"></i></div>
@@ -771,7 +411,6 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div>
                 <span>Laporan & Data</span>
             </div>
-
             <div class="sidebar-section-label">Akun</div>
             <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div>
@@ -782,7 +421,6 @@
                 <span>Tentang Aplikasi</span>
             </div>
         </div>
-
         <div class="sidebar-footer">
             <div class="sidebar-dark-toggle" onclick="document.getElementById('dark-mode-toggle').click()">
                 <div class="toggle-left">
@@ -805,12 +443,10 @@
                 <span class="bar"></span>
             </div>
         </button>
-
         <div class="header-brand">
             <div id="app-logo" class="header-logo">D</div>
             <span class="header-title" id="store-name-display">DheKasir</span>
         </div>
-
         <div class="header-actions">
             <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" aria-label="Notifikasi">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
@@ -989,12 +625,21 @@
                     </div>
                     <span id="min-stock-display" class="text-[10px] font-black text-muted">5</span>
                 </div>
-                <div onclick="connectPrinter()" class="settings-row">
+                <!-- PRINTER ROW — redesigned -->
+                <div onclick="openPrinterModal()" class="settings-row">
                     <div class="flex items-center gap-3">
-                        <div class="settings-icon text-muted"><i class="fa-solid fa-print text-sm"></i></div>
-                        <span class="text-sm font-bold">Printer Thermal</span>
+                        <div class="settings-icon" id="printer-icon-wrap" style="color:var(--text-muted)">
+                            <i class="fa-solid fa-print text-sm"></i>
+                        </div>
+                        <div>
+                            <span class="text-sm font-bold block">Printer Thermal</span>
+                            <span id="printer-device-name" class="text-[9px] text-muted font-semibold">Belum terhubung</span>
+                        </div>
                     </div>
-                    <span id="printer-status" class="text-[8px] font-black text-muted uppercase">OFFLINE</span>
+                    <div class="flex items-center gap-2">
+                        <span id="printer-status" class="text-[8px] font-black printer-offline uppercase">OFFLINE</span>
+                        <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
+                    </div>
                 </div>
                 <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row">
@@ -1074,7 +719,7 @@
     <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
 </div>
 
-<!-- ═══════════════════════════════════════ MODALS ═══ -->
+<!-- ═══════════════════ MODALS ═══════════════════ -->
 
 <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6">
     <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
@@ -1097,6 +742,75 @@
             <button onclick="closeModal('modal-notif')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <div id="notif-list" class="flex-1 overflow-y-auto space-y-3 hide-scrollbar"></div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     PRINTER MODAL — REDESIGNED (v1.4+)
+     Fitur: connect, reconnect, auto-reconnect,
+     test print, disconnect, status bar.
+══════════════════════════════════════════════ -->
+<div id="modal-printer" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-5">
+        <div class="w-10 h-1.5 rounded-full mx-auto" style="background:var(--card-border)"></div>
+
+        <!-- Status bar strip -->
+        <div class="printer-card overflow-hidden">
+            <div id="printer-modal-bar" class="printer-status-bar offline"></div>
+            <div class="p-4 flex items-center gap-4">
+                <div id="printer-modal-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0" style="background:var(--surface);color:var(--text-muted);">
+                    <i class="fa-solid fa-print"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-black" id="printer-modal-name">Printer Thermal</p>
+                    <p class="text-[10px] font-semibold text-muted" id="printer-modal-desc">Belum ada perangkat terhubung</p>
+                    <p class="text-[9px] font-black uppercase mt-1" id="printer-modal-status-text" style="color:var(--text-muted);">OFFLINE</p>
+                </div>
+                <!-- Signal strength dots -->
+                <div id="printer-signal" class="hidden flex items-end gap-0.5 shrink-0">
+                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:6px"></div>
+                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:10px"></div>
+                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:14px"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auto-reconnect toggle -->
+        <div class="flex items-center justify-between p-4 rounded-2xl surface">
+            <div>
+                <p class="text-xs font-black">Auto-Reconnect</p>
+                <p class="text-[9px] text-muted">Sambung otomatis saat halaman dibuka</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="printer-auto-reconnect" onchange="savePrinterPrefs()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Action buttons -->
+        <div id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()">
+            <i class="fa-brands fa-bluetooth mr-2"></i> Hubungkan Printer
+        </div>
+
+        <div id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()">
+            <i class="fa-solid fa-rotate mr-2"></i> Sambung Ulang
+        </div>
+
+        <div id="printer-btn-actions" class="hidden grid grid-cols-2 gap-3">
+            <button onclick="btTestPrint()" class="py-4 bg-emerald-600 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all">
+                <i class="fa-solid fa-file-lines mr-1"></i> Test Print
+            </button>
+            <button onclick="btDisconnect()" class="py-4 bg-rose-50 text-rose-600 rounded-2xl font-bold text-[10px] uppercase shadow-sm active:scale-95 transition-all border border-rose-200">
+                <i class="fa-solid fa-link-slash mr-1"></i> Putuskan
+            </button>
+        </div>
+
+        <!-- Help note -->
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed">
+            <strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>. Jika printer sering terputus, aktifkan <strong>Auto-Reconnect</strong>.
+        </div>
+
+        <button onclick="closeModal('modal-printer')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Tutup</button>
     </div>
 </div>
 
@@ -1228,7 +942,11 @@
             </div>
         </div>
         <div class="px-6 py-4 border-t border-slate-100 space-y-2 shrink-0 bg-white">
-            <button onclick="printBluetoothReceipt()" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wide flex items-center justify-center gap-2"><i class="fa-solid fa-print"></i> Print Bluetooth</button>
+            <button onclick="printBluetoothReceipt()" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wide flex items-center justify-center gap-2">
+                <i class="fa-solid fa-print"></i>
+                <span id="print-btn-label">Print Bluetooth</span>
+                <span id="print-bt-status" class="ml-1 text-[8px] opacity-60"></span>
+            </button>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="shareWhatsApp()" class="py-3 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase flex items-center justify-center gap-1"><i class="fa-brands fa-whatsapp"></i> WA</button>
                 <button onclick="closeModal('modal-receipt')" class="py-3 bg-slate-100 text-slate-500 rounded-2xl font-bold text-[10px] uppercase">Tutup</button>
@@ -1315,7 +1033,7 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v1.4: Fix Bluetooth Print (universal service discovery), Audio Feedback — beep saat scan produk & chime saat transaksi selesai.</p>
+            <p>Fitur baru v1.4: Fix Bluetooth Print (auto-reconnect, persistent state, universal service discovery), Audio Feedback — beep saat scan produk & chime saat transaksi selesai.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1350,12 +1068,10 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════════════════ SCRIPTS ═══ -->
+<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
 <script>
 // ══════════════════════════════
 // SPLASH SCREEN LOGIC
-// Hanya tampil SEKALI per sesi browser (sessionStorage).
-// Jika sudah pernah tampil di sesi ini, langsung skip tanpa animasi.
 // ══════════════════════════════
 (function() {
     const SPLASH_KEY = 'dk_splash_shown';
@@ -1364,10 +1080,6 @@
     const progressBar = document.getElementById('splash-progress');
     const statusText  = document.getElementById('splash-status');
 
-    // ── Cek apakah splash sudah ditampilkan di sesi ini ──
-    const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
-
-    // Terapkan dark mode & nama toko dari config (dilakukan selalu, sebelum apapun)
     try {
         const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
         const storeName = cfg.storeName || 'DheKasir';
@@ -1379,15 +1091,15 @@
         if (cfg.darkMode) document.body.classList.add('dark');
     } catch(e) {}
 
-    // ── Jika sudah pernah tampil di sesi ini → langsung sembunyikan splash ──
+    const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
+
     if (alreadyShown) {
-        splash.classList.add('skip-instant');   // display:none seketika
-        app.style.opacity = '1';                // langsung tampilkan app
+        splash.classList.add('skip-instant');
+        app.style.opacity = '1';
         app.style.transition = 'none';
-        return; // selesai, tidak perlu jalankan animasi
+        return;
     }
 
-    // ── Pertama kali di sesi ini → jalankan splash normal ──
     const steps = [
         { pct: 15, label: 'Memuat konfigurasi toko...' },
         { pct: 30, label: 'Mengambil data inventaris...' },
@@ -1399,23 +1111,16 @@
     ];
 
     let stepIdx = 0;
-
     function runStep() {
         if (stepIdx >= steps.length) {
-            // Tandai bahwa splash sudah ditampilkan di sesi ini
             sessionStorage.setItem(SPLASH_KEY, '1');
-
-            // Fade out splash, tampilkan app
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 app.style.opacity = '1';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                }, 650);
+                setTimeout(() => { splash.style.display = 'none'; }, 650);
             }, 300);
             return;
         }
-
         const step = steps[stepIdx];
         progressBar.style.width = step.pct + '%';
         statusText.style.opacity = '0';
@@ -1423,22 +1128,19 @@
             statusText.textContent = step.label;
             statusText.style.opacity = '1';
         }, 120);
-
         stepIdx++;
         const delays = [380, 320, 350, 280, 300, 250, 450];
         setTimeout(runStep, delays[stepIdx - 1] || 300);
     }
-
-    // Delay kecil agar splash terlihat sejenak sebelum progress mulai
     setTimeout(runStep, 500);
 })();
 
 // ── State ─────────────────────────────────────────────────────────────
-let items      = JSON.parse(localStorage.getItem('dk_items'))      || [];
-let logs       = JSON.parse(localStorage.getItem('dk_logs'))       || [];
-let debts      = JSON.parse(localStorage.getItem('dk_debts'))      || [];
-let categories = JSON.parse(localStorage.getItem('dk_categories')) || ['Semua','Umum','Makanan','Minuman'];
-let config     = JSON.parse(localStorage.getItem('dk_config'))     || { darkMode:false, storeName:'DheKasir', storeAddress:'-', storePhone:'', url:'', logo:null, minStock:5 };
+let items        = JSON.parse(localStorage.getItem('dk_items'))         || [];
+let logs         = JSON.parse(localStorage.getItem('dk_logs'))          || [];
+let debts        = JSON.parse(localStorage.getItem('dk_debts'))         || [];
+let categories   = JSON.parse(localStorage.getItem('dk_categories'))    || ['Semua','Umum','Makanan','Minuman'];
+let config       = JSON.parse(localStorage.getItem('dk_config'))        || { darkMode:false, storeName:'DheKasir', storeAddress:'-', storePhone:'', url:'', logo:null, minStock:5 };
 let stockHistory = JSON.parse(localStorage.getItem('dk_stock_history')) || [];
 
 let cart = [];
@@ -1446,10 +1148,6 @@ let payMethod = 'cash';
 let activePosCategory = 'Semua';
 let mainChart = null;
 let html5QrCode = null;
-
-let btDevice = null;
-let btCharacteristic = null;
-let btConnected = false;
 
 let lastReceiptData = null;
 let lastScannedCode = "";
@@ -1461,45 +1159,389 @@ let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
 
+// ══════════════════════════════
+// BLUETOOTH PRINTER — ENHANCED
+// Features:
+//   • Auto-reconnect on page load (uses navigator.bluetooth.getDevices())
+//   • Persistent device name saved to localStorage
+//   • Retry logic (up to 3 attempts) with exponential back-off
+//   • Disconnect detection + silent background reconnect
+//   • Chunked write with fallback micro-chunks
+//   • ESC/POS build unchanged
+// ══════════════════════════════
+
+const BT_PREFS_KEY  = 'dk_bt_prefs';    // { autoReconnect: bool, lastName: str }
+const BT_KNOWN_SERVICES = [
+    '000018f0-0000-1000-8000-00805f9b34fb',
+    '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+    '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+    '0000ff00-0000-1000-8000-00805f9b34fb',
+    '0000ffe0-0000-1000-8000-00805f9b34fb',
+    '0000fff0-0000-1000-8000-00805f9b34fb',
+    '000003f3-0000-1000-8000-00805f9b34fb'
+];
+const BT_MAX_RETRIES   = 3;
+const BT_RETRY_BASE_MS = 1500;  // doubles each retry
+
+let btDevice         = null;   // BluetoothDevice object
+let btCharacteristic = null;   // writable characteristic
+let btConnected      = false;  // live connection flag
+let btReconnectTimer = null;   // pending auto-reconnect timer
+let btPrefs          = JSON.parse(localStorage.getItem(BT_PREFS_KEY) || '{"autoReconnect":false,"lastName":""}');
+
+// ── Printer UI helpers ──────────────────────────────────────────────
+function _setPrinterUI(state, deviceName = '') {
+    // state: 'offline' | 'connecting' | 'ready' | 'error'
+    const statusEl   = document.getElementById('printer-status');
+    const iconWrap   = document.getElementById('printer-icon-wrap');
+    const devName    = document.getElementById('printer-device-name');
+    const modalBar   = document.getElementById('printer-modal-bar');
+    const modalIcon  = document.getElementById('printer-modal-icon');
+    const modalName  = document.getElementById('printer-modal-name');
+    const modalDesc  = document.getElementById('printer-modal-desc');
+    const modalStat  = document.getElementById('printer-modal-status-text');
+    const signal     = document.getElementById('printer-signal');
+    const btnConnect = document.getElementById('printer-btn-connect');
+    const btnReconn  = document.getElementById('printer-btn-reconnect');
+    const btnActions = document.getElementById('printer-btn-actions');
+    const printLbl   = document.getElementById('print-btn-label');
+    const printBtSt  = document.getElementById('print-bt-status');
+
+    const name = deviceName || btPrefs.lastName || 'Printer Thermal';
+
+    const map = {
+        offline:    { text:'OFFLINE',     cls:'printer-offline',    barCls:'offline',    iconColor:'var(--text-muted)', iconBg:'var(--surface)',     desc:'Belum ada perangkat terhubung' },
+        connecting: { text:'CONNECTING…', cls:'printer-connecting', barCls:'connecting', iconColor:'#f59e0b',           iconBg:'rgba(245,158,11,0.1)', desc:'Sedang menghubungkan...' },
+        ready:      { text:'READY ✓',     cls:'printer-ready',      barCls:'ready',      iconColor:'#10b981',           iconBg:'rgba(16,185,129,0.1)', desc:'Siap mencetak struk' },
+        error:      { text:'ERROR',       cls:'printer-error',      barCls:'error',      iconColor:'#ef4444',           iconBg:'rgba(239,68,68,0.1)', desc:'Gagal terhubung — coba lagi' }
+    };
+    const m = map[state] || map.offline;
+
+    if (statusEl)  { statusEl.className = `text-[8px] font-black uppercase ${m.cls}`; statusEl.innerText = m.text; }
+    if (iconWrap)  iconWrap.style.color = m.iconColor;
+    if (devName)   devName.innerText = state === 'offline' ? 'Belum terhubung' : name;
+    if (modalBar)  { modalBar.className = `printer-status-bar ${m.barCls}`; }
+    if (modalIcon) { modalIcon.style.color = m.iconColor; modalIcon.style.background = m.iconBg; }
+    if (modalName) modalName.innerText = state !== 'offline' ? name : 'Printer Thermal';
+    if (modalDesc) modalDesc.innerText = m.desc;
+    if (modalStat) { modalStat.style.color = m.iconColor; modalStat.innerText = m.text; }
+    if (signal)    signal.classList.toggle('hidden', state !== 'ready');
+
+    // Modal buttons
+    if (btnConnect)  btnConnect.classList.toggle('hidden',  state === 'ready');
+    if (btnReconn)   btnReconn.classList.toggle('hidden',   state !== 'error');
+    if (btnActions)  btnActions.classList.toggle('hidden',  state !== 'ready');
+
+    // Receipt print button hint
+    if (printLbl)  printLbl.innerText = 'Print Bluetooth';
+    if (printBtSt) printBtSt.innerText = state === 'ready' ? `(${name})` : '';
+
+    // Update auto-reconnect toggle to reflect saved pref
+    const arToggle = document.getElementById('printer-auto-reconnect');
+    if (arToggle && arToggle.checked !== btPrefs.autoReconnect) {
+        arToggle.checked = btPrefs.autoReconnect;
+    }
+}
+
+function savePrinterPrefs() {
+    const arToggle = document.getElementById('printer-auto-reconnect');
+    if (arToggle) btPrefs.autoReconnect = arToggle.checked;
+    localStorage.setItem(BT_PREFS_KEY, JSON.stringify(btPrefs));
+}
+
+function openPrinterModal() {
+    _setPrinterUI(btConnected ? 'ready' : (btDevice ? 'error' : 'offline'), btDevice?.name || '');
+    const arToggle = document.getElementById('printer-auto-reconnect');
+    if (arToggle) arToggle.checked = btPrefs.autoReconnect;
+    openModal('modal-printer');
+}
+
+// ── Core BT helpers ──────────────────────────────────────────────────
+async function _findWritableChar(server) {
+    let services = [];
+    try { services = await server.getPrimaryServices(); } catch(e) {
+        for (const uuid of BT_KNOWN_SERVICES) {
+            try { const s = await server.getPrimaryService(uuid); services = [s]; break; } catch(e2) {}
+        }
+    }
+    for (const svc of services) {
+        let chars = [];
+        try { chars = await svc.getCharacteristics(); } catch(e) { continue; }
+        for (const ch of chars) {
+            if (ch.properties.write || ch.properties.writeWithoutResponse) return ch;
+        }
+    }
+    return null;
+}
+
+async function _doConnect(device, retryCount = 0) {
+    _setPrinterUI('connecting', device.name);
+    try {
+        const server = await device.gatt.connect();
+        const char   = await _findWritableChar(server);
+        if (!char) throw new Error("Tidak ada karakteristik writable");
+
+        btDevice         = device;
+        btCharacteristic = char;
+        btConnected      = true;
+        btPrefs.lastName = device.name || btPrefs.lastName;
+        savePrinterPrefs();
+
+        _setPrinterUI('ready', device.name);
+        return true;
+    } catch(e) {
+        if (retryCount < BT_MAX_RETRIES - 1) {
+            const wait = BT_RETRY_BASE_MS * Math.pow(2, retryCount);
+            showToast(`Coba ulang (${retryCount+1}/${BT_MAX_RETRIES})...`);
+            await new Promise(r => setTimeout(r, wait));
+            return _doConnect(device, retryCount + 1);
+        }
+        btConnected      = false;
+        btCharacteristic = null;
+        _setPrinterUI('error', device.name);
+        throw e;
+    }
+}
+
+function _onDisconnected() {
+    btConnected      = false;
+    btCharacteristic = null;
+    _setPrinterUI(btDevice ? 'error' : 'offline', btDevice?.name || '');
+    showToast("⚠ Printer terputus");
+
+    if (btPrefs.autoReconnect && btDevice) {
+        clearTimeout(btReconnectTimer);
+        btReconnectTimer = setTimeout(async () => {
+            if (!btConnected) {
+                showToast("🔄 Auto-reconnect...");
+                try { await _doConnect(btDevice); showToast("✓ Printer tersambung kembali!"); }
+                catch(e) { /* silent, UI already shows error */ }
+            }
+        }, 3000);
+    }
+}
+
+// ── Public BT API ────────────────────────────────────────────────────
+
+/** Called from the "Hubungkan Printer" button — shows OS picker */
+async function btConnect() {
+    _setPrinterUI('connecting');
+    try {
+        const device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: BT_KNOWN_SERVICES
+        });
+        device.addEventListener('gattserverdisconnected', _onDisconnected);
+        await _doConnect(device);
+        showToast(`✓ "${device.name || 'Printer'}" terhubung!`);
+    } catch(e) {
+        if (e.name !== 'NotFoundError') {
+            _setPrinterUI('error', btDevice?.name || '');
+            showToast("Gagal: " + (e.message || "Bluetooth error"));
+        } else {
+            _setPrinterUI(btDevice ? 'error' : 'offline');
+        }
+    }
+}
+
+/** Called from "Sambung Ulang" button or after disconnect */
+async function btReconnect() {
+    if (!btDevice) return btConnect();
+    _setPrinterUI('connecting', btDevice.name);
+    try {
+        await _doConnect(btDevice);
+        showToast(`✓ "${btDevice.name || 'Printer'}" tersambung kembali!`);
+    } catch(e) {
+        showToast("Gagal reconnect: " + (e.message || 'Error'));
+    }
+}
+
+/** Called from the "Putuskan" button */
+function btDisconnect() {
+    clearTimeout(btReconnectTimer);
+    if (btDevice?.gatt?.connected) {
+        try { btDevice.gatt.disconnect(); } catch(e) {}
+    }
+    btDevice         = null;
+    btCharacteristic = null;
+    btConnected      = false;
+    btPrefs.lastName = '';
+    savePrinterPrefs();
+    _setPrinterUI('offline');
+    showToast("Printer diputuskan");
+}
+
+/** Called on page load — silently re-attach to previously paired device */
+async function btAutoReconnectOnLoad() {
+    if (!btPrefs.autoReconnect) return;
+    if (!navigator.bluetooth || typeof navigator.bluetooth.getDevices !== 'function') return;
+    try {
+        const devices = await navigator.bluetooth.getDevices();
+        if (!devices || devices.length === 0) return;
+
+        // Prefer the last-known device by name
+        let target = devices.find(d => d.name === btPrefs.lastName) || devices[0];
+        if (!target) return;
+
+        target.addEventListener('gattserverdisconnected', _onDisconnected);
+        _setPrinterUI('connecting', target.name);
+        await _doConnect(target);
+        showToast(`✓ Auto-connect: "${target.name || 'Printer'}" siap!`);
+    } catch(e) {
+        // Silent — auto-reconnect is best-effort
+        _setPrinterUI('offline');
+    }
+}
+
+/** Chunked BT write with micro-chunk fallback */
+async function btWrite(data) {
+    // Ensure connection is alive; try once to recover
+    if (!btCharacteristic) throw new Error("Printer tidak terhubung");
+    if (btDevice && !btDevice.gatt.connected) {
+        showToast("Reconnecting printer...");
+        await _doConnect(btDevice);
+        if (!btCharacteristic) throw new Error("Reconnect gagal");
+    }
+
+    const CHUNK = 512;
+    const useWithout = !btCharacteristic.properties.write && btCharacteristic.properties.writeWithoutResponse;
+
+    for (let offset = 0; offset < data.length; offset += CHUNK) {
+        const chunk = data.slice(offset, offset + CHUNK);
+        try {
+            if (useWithout) await btCharacteristic.writeValueWithoutResponse(chunk);
+            else            await btCharacteristic.writeValue(chunk);
+        } catch(e) {
+            // Fallback: micro-chunks of 20 bytes
+            for (let i = 0; i < chunk.length; i += 20) {
+                const mini = chunk.slice(i, i + 20);
+                try { await btCharacteristic.writeValueWithoutResponse(mini); }
+                catch(e2) { await btCharacteristic.writeValue(mini); }
+                await new Promise(r => setTimeout(r, 5));
+            }
+        }
+        if (data.length > CHUNK) await new Promise(r => setTimeout(r, 30));
+    }
+}
+
+/** Test print from inside printer modal */
+async function btTestPrint() {
+    const testData = {
+        id: 'TEST-' + Date.now(),
+        items: [{ name: 'Test Item', qty: 1, price: 10000, cost: 0 }],
+        amount: 10000,
+        total_cost: 0,
+        pay_cash: 10000,
+        pay_qris: 0,
+        change: 0,
+        method: 'Cash/QRIS',
+        created_at: new Date().toISOString()
+    };
+    showToast("Mengirim test print...");
+    try {
+        const data = buildEscPosReceipt(testData);
+        await btWrite(data);
+        showToast("✓ Test print berhasil!");
+        beepScan();
+    } catch(e) {
+        showToast("Gagal test print: " + (e.message || 'Error'));
+        _setPrinterUI('error', btDevice?.name || '');
+    }
+}
+
+/** Main print from receipt modal */
+async function printBluetoothReceipt() {
+    if (!lastReceiptData) return showToast("Tidak ada data struk!");
+    if (!btCharacteristic && !btDevice) {
+        showToast("Hubungkan printer dulu di Pengaturan!");
+        return;
+    }
+    if (!btConnected) {
+        showToast("Printer terputus — mencoba reconnect...");
+        try { await btReconnect(); }
+        catch(e) { return showToast("Gagal reconnect printer!"); }
+    }
+    showToast("Mengirim ke printer...");
+    try {
+        const data = buildEscPosReceipt(lastReceiptData);
+        await btWrite(data);
+        showToast("✓ Struk berhasil dicetak!");
+        beepScan();
+    } catch(e) {
+        showToast("Gagal cetak: " + (e.message || 'Error'));
+        btCharacteristic = null;
+        btConnected = false;
+        _setPrinterUI('error', btDevice?.name || '');
+    }
+}
+
+/** ESC/POS byte builder */
+function buildEscPosReceipt(d) {
+    const enc = new TextEncoder();
+    const bytes = [];
+    const ESC = 0x1B, GS = 0x1D, LF = 0x0A;
+    function cmd(...args){ bytes.push(...args); }
+    function text(s){ const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe)); }
+    function lf(n=1){ for(let i=0;i<n;i++)bytes.push(LF); }
+
+    const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';
+    cmd(ESC,0x40);
+    cmd(ESC,0x74,0x00);
+    cmd(ESC,0x61,0x01);
+    cmd(ESC,0x45,0x01);
+    cmd(GS,0x21,0x11); text(sname.toUpperCase()); lf();
+    cmd(GS,0x21,0x00); cmd(ESC,0x45,0x00);
+    if(saddr&&saddr!=='-'){text(saddr);lf();}
+    if(sphone){text('Telp: '+sphone);lf();}
+    const dt=new Date(d.created_at||Date.now());
+    text(dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));lf();
+    text('No: '+d.id);lf();
+    cmd(ESC,0x61,0x00);
+    text('--------------------------------');lf();
+    text('ITEM PEMBELIAN');lf();
+    (d.items||[]).forEach(item=>{
+        text(item.name);lf();
+        const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;
+        const right=formatIDRRaw(item.price*item.qty);
+        text(left+'.'.repeat(Math.max(1,32-left.length-right.length))+right);lf();
+    });
+    text('--------------------------------');lf();
+    cmd(ESC,0x45,0x01);
+    const tl='TOTAL',tr=formatIDRRaw(d.amount);
+    text(tl+' '.repeat(Math.max(1,32-tl.length-tr.length))+tr);lf();
+    cmd(ESC,0x45,0x00);
+    if(d.method==='Hutang'||d.method==='Debt'){text('*** HUTANG / BON ***');lf();}
+    else{
+        if(d.pay_cash>0){const l='Tunai',r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}
+        if(d.pay_qris>0){const l='QRIS/Transfer',r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}
+    }
+    const cl='Kembalian',cr=formatIDRRaw(d.change);
+    text(cl+' '.repeat(Math.max(1,32-cl.length-cr.length))+cr);lf();
+    text('--------------------------------');lf();
+    cmd(ESC,0x61,0x01);
+    text('Terima kasih atas kunjungan Anda!');lf();
+    text('Barang dibeli tidak dapat ditukar.');lf();
+    text('* DheKasir v1.4 *');lf();
+    cmd(ESC,0x61,0x00);lf(4);
+    cmd(GS,0x56,0x42,0x00);
+    return new Uint8Array(bytes);
+}
+function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
+
+// ── END BLUETOOTH SECTION ─────────────────────────────────────────────
+
 // ── Scroll Lock ────────────────────────────────────────────────────────
 let _modalOpenCount = 0;
 let _scrollYBeforeLock = 0;
-
-function _lockBodyScroll() {
-    _modalOpenCount++;
-    if (_modalOpenCount === 1) {
-        _scrollYBeforeLock = window.scrollY;
-        document.body.classList.add('modal-open');
-        document.body.style.top = `-${_scrollYBeforeLock}px`;
-    }
-}
-
-function _unlockBodyScroll() {
-    _modalOpenCount = Math.max(0, _modalOpenCount - 1);
-    if (_modalOpenCount === 0) {
-        document.body.classList.remove('modal-open');
-        document.body.style.top = '';
-        window.scrollTo(0, _scrollYBeforeLock);
-    }
-}
+function _lockBodyScroll(){_modalOpenCount++;if(_modalOpenCount===1){_scrollYBeforeLock=window.scrollY;document.body.classList.add('modal-open');document.body.style.top=`-${_scrollYBeforeLock}px`;}}
+function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_modalOpenCount===0){document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,_scrollYBeforeLock);}}
 
 // ── Sidebar ────────────────────────────────────────────────────────────
-function toggleSidebar() {
-    const sb = document.getElementById('sidebar');
-    const ov = document.getElementById('sidebar-overlay');
-    const btn = document.getElementById('hamburger-btn');
-    const isOpen = sb.classList.contains('open');
-    if (isOpen) { closeSidebar(); }
-    else { sb.classList.add('open'); ov.classList.add('open'); btn.classList.add('open'); }
-}
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('open');
-    document.getElementById('hamburger-btn').classList.remove('open');
-}
+function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open')){closeSidebar();}else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');}}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');document.getElementById('hamburger-btn').classList.remove('open');}
 
 // ── Web Audio ──────────────────────────────────────────────────────────
-let audioCtx = null;
+let audioCtx=null;
 function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
 function beepScan(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='square';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(1100,ctx.currentTime+0.06);gain.gain.setValueAtTime(0.18,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.1);}catch(e){}}
 function beepError(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sawtooth';osc.frequency.setValueAtTime(350,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(200,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.22);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.22);}catch(e){}}
@@ -1510,59 +1552,33 @@ function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',cur
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const t=document.getElementById('toast');if(!t)return;t.innerText=m;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
 
-// ── Modal dengan Scroll Lock ───────────────────────────────────────────
-function openModal(id) {
-    const el = document.getElementById(id);
-    if (el && el.classList.contains('hidden')) {
-        el.classList.remove('hidden');
-        _lockBodyScroll();
-    }
-}
-
-function closeModal(id) {
-    const el = document.getElementById(id);
-    if (el && !el.classList.contains('hidden')) {
-        el.classList.add('hidden');
-        _unlockBodyScroll();
-    }
-}
+function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
+function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
 
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ── Tab Navigation ─────────────────────────────────────────────────────
-function switchTab(t) {
-    document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
-    const target = document.getElementById(`tab-${t}`);
-    if (target) target.classList.add('active');
-
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    const navBtn = document.getElementById(`n-${t}`);
-    if (navBtn) navBtn.classList.add('active');
-
-    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b => b.classList.remove('active'));
-    const sbBtn = document.getElementById(`sb-${t}`);
-    if (sbBtn) sbBtn.classList.add('active');
-
-    localStorage.setItem('dk_active_tab', t);
-    if (t === 'home')  renderHome();
-    if (t === 'data')  renderData();
-    if (t === 'items') renderItems();
-    if (t === 'pos')   renderPos();
-    if (t === 'debts') renderDebts();
-    if (t === 'stock') renderStockTab();
+function switchTab(t){
+    document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
+    const target=document.getElementById(`tab-${t}`);if(target)target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    const navBtn=document.getElementById(`n-${t}`);if(navBtn)navBtn.classList.add('active');
+    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
+    const sbBtn=document.getElementById(`sb-${t}`);if(sbBtn)sbBtn.classList.add('active');
+    localStorage.setItem('dk_active_tab',t);
+    if(t==='home')renderHome();
+    if(t==='data')renderData();
+    if(t==='items')renderItems();
+    if(t==='pos')renderPos();
+    if(t==='debts')renderDebts();
+    if(t==='stock')renderStockTab();
 }
 
 // ── Categories ─────────────────────────────────────────────────────────
 function renderCategoryOptions(){const s=document.getElementById('p-category');if(!s)return;s.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<option value="${c}">${c}</option>`).join('');}
-function renderPosCategoryChips(){
-    const c=document.getElementById('pos-category-chips');if(!c)return;
-    c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');
-}
+function renderPosCategoryChips(){const c=document.getElementById('pos-category-chips');if(!c)return;c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');}
 function setPosCategory(c){activePosCategory=c;renderPosCategoryChips();renderPos();}
-function renderCategoryList(){
-    const list=document.getElementById('category-list');
-    list.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><span class="text-sm font-bold">${c}</span>${c!=='Umum'?`<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>`:''}</div>`).join('');
-}
+function renderCategoryList(){const list=document.getElementById('category-list');list.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><span class="text-sm font-bold">${c}</span>${c!=='Umum'?`<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>`:''}</div>`).join('');}
 function openCategoryModal(){renderCategoryList();openModal('modal-category');}
 function addCategory(){const input=document.getElementById('new-cat-name');const val=input.value.trim();if(!val)return showToast("Isi Nama!");if(categories.includes(val))return showToast("Sudah Ada!");categories.push(val);input.value='';saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
 function deleteCategory(name){categories=categories.filter(c=>c!==name);saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
@@ -1662,6 +1678,9 @@ function showReceipt(d){
     if(d.method==='Hutang'||d.method==='Debt'){pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">⚠ HUTANG / BON</span></div>`;}
     else{let rows='';if(d.pay_cash>0)rows+=`<div class="rec-pay-row"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div>`;if(d.pay_qris>0)rows+=`<div class="rec-pay-row"><span>QRIS/Transfer</span><span>${formatIDR(d.pay_qris)}</span></div>`;pd.innerHTML=rows;}
     document.getElementById('rec-change').innerText=formatIDR(d.change);
+    // Update print button hint based on current BT state
+    const printBtSt=document.getElementById('print-bt-status');
+    if(printBtSt)printBtSt.innerText=btConnected?(btDevice?.name?`(${btDevice.name})`:'(Ready)'):'(Offline)';
     openModal('modal-receipt');
 }
 
@@ -1670,11 +1689,8 @@ async function openScanner(mode='cart'){
     if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast("Wajib HTTPS!");
     flashOn=false;flashTrack=null;
     const fb=document.getElementById('flash-btn');if(fb){fb.disabled=true;fb.classList.remove('flash-on');}
-    const scannerEl = document.getElementById('modal-scanner');
-    if (scannerEl && scannerEl.classList.contains('hidden')) {
-        scannerEl.classList.remove('hidden');
-        _lockBodyScroll();
-    }
+    const scannerEl=document.getElementById('modal-scanner');
+    if(scannerEl&&scannerEl.classList.contains('hidden')){scannerEl.classList.remove('hidden');_lockBodyScroll();}
     if(!html5QrCode)html5QrCode=new Html5Qrcode("reader");
     html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{
         if(navigator.vibrate)navigator.vibrate(100);
@@ -1694,11 +1710,8 @@ async function closeScanner(){
     if(flashTrack&&flashOn){try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}}
     flashOn=false;flashTrack=null;
     if(html5QrCode){try{await html5QrCode.stop();}catch(e){}}
-    const scannerEl = document.getElementById('modal-scanner');
-    if (scannerEl && !scannerEl.classList.contains('hidden')) {
-        scannerEl.classList.add('hidden');
-        _unlockBodyScroll();
-    }
+    const scannerEl=document.getElementById('modal-scanner');
+    if(scannerEl&&!scannerEl.classList.contains('hidden')){scannerEl.classList.add('hidden');_unlockBodyScroll();}
 }
 async function toggleFlash(){if(!flashTrack)return showToast("Flash tidak tersedia!");try{flashOn=!flashOn;await flashTrack.applyConstraints({advanced:[{torch:flashOn}]});const btn=document.getElementById('flash-btn');if(btn)btn.classList.toggle('flash-on',flashOn);showToast(flashOn?"⚡ Flash Nyala":"Flash Mati");}catch(e){flashOn=!flashOn;showToast("Flash gagal!");}}
 
@@ -1739,7 +1752,6 @@ function checkStockAlerts(){
     if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}
     return{critical,low};
 }
-
 function openNotifPanel(){
     const{critical,low}=checkStockAlerts();
     const list=document.getElementById('notif-list');let html='';
@@ -1748,7 +1760,6 @@ function openNotifPanel(){
     low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">Menipis • Sisa ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase">Isi</button></div>`;});
     list.innerHTML=html;openModal('modal-notif');
 }
-
 function renderStockTab(){
     const minS=config.minStock,critical=items.filter(i=>i.stock<=0).length,low=items.filter(i=>i.stock>0&&i.stock<=minS).length,total=items.length;
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
@@ -1843,12 +1854,7 @@ function openMinStockSettings(){document.getElementById('min-stock-input').value
 function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast("Minimum 1!");config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast("Batas Minimum Disimpan!");checkStockAlerts();}
 
 // ── Settings ───────────────────────────────────────────────────────────
-function toggleDarkMode(){
-    config.darkMode=document.getElementById('dark-mode-toggle').checked;
-    document.body.classList.toggle('dark',config.darkMode);
-    localStorage.setItem('dk_config',JSON.stringify(config));
-    renderHome();
-}
+function toggleDarkMode(){config.darkMode=document.getElementById('dark-mode-toggle').checked;document.body.classList.toggle('dark',config.darkMode);localStorage.setItem('dk_config',JSON.stringify(config));renderHome();}
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url;}
 async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast("Simpan Berhasil!");syncCloud({type:'settings',id:'app_cfg',data:config});}
 function loadSettings(){
@@ -1860,17 +1866,14 @@ function loadSettings(){
     set('profile-address-display',s.storeAddress);set('min-stock-display',s.minStock||5);
     set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||'Alamat belum diatur');
     const letter=(s.storeName||'D')[0].toUpperCase();
-    const updateLogo=(el,isImg)=>{
-        if(!el)return;
-        if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}
-        else{el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;}
-    };
+    const updateLogo=(el,isImg)=>{if(!el)return;if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}else{el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;}};
     updateLogo(document.getElementById('app-logo'),true);
     updateLogo(document.getElementById('sb-logo'),true);
-    const pp=document.getElementById('profile-logo-preview');
-    if(pp){if(s.logo){pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}}
-    const lpCfg=document.getElementById('logo-preview-cfg');
-    if(lpCfg){if(s.logo){lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}}
+    const pp=document.getElementById('profile-logo-preview');if(pp){if(s.logo){pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}}
+    const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg){if(s.logo){lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}}
+    // Restore last-known printer name in settings row
+    const devNameEl=document.getElementById('printer-device-name');
+    if(devNameEl)devNameEl.innerText=btConnected?(btDevice?.name||'Terhubung'):(btPrefs.lastName?`Terakhir: ${btPrefs.lastName}`:'Belum terhubung');
 }
 function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
@@ -1946,23 +1949,23 @@ function renderDebts(){
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast("Isi Nominal!");const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status='LUNAS';saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
-// ── Bluetooth Printer ──────────────────────────────────────────────────
-async function findWritableCharacteristic(server){const knownServiceUUIDs=['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb'];let services=[];try{services=await server.getPrimaryServices();}catch(e){for(const uuid of knownServiceUUIDs){try{const svc=await server.getPrimaryService(uuid);if(svc){services=[svc];break;}}catch(e2){}}}for(const service of services){let characteristics=[];try{characteristics=await service.getCharacteristics();}catch(e){continue;}for(const char of characteristics){const p=char.properties;if(p.write||p.writeWithoutResponse)return char;}}return null;}
-async function connectPrinter(){const statusEl=document.getElementById('printer-status');if(statusEl){statusEl.innerText='CONNECTING...';statusEl.className='text-[8px] font-black printer-connecting uppercase';}try{if(btDevice&&btDevice.gatt.connected){showToast("Printer sudah terhubung!");if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}return;}btDevice=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb']});btDevice.addEventListener('gattserverdisconnected',()=>{btConnected=false;btCharacteristic=null;const s=document.getElementById('printer-status');if(s){s.innerText='OFFLINE';s.className='text-[8px] font-black text-muted uppercase';}showToast("Printer terputus");});const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Tidak ditemukan karakteristik writable.");btConnected=true;if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}showToast(`✓ Printer "${btDevice.name||'Unknown'}" terhubung!`);}catch(e){btConnected=false;btCharacteristic=null;if(statusEl){statusEl.innerText='OFFLINE';statusEl.className='text-[8px] font-black text-muted uppercase';}if(e.name!=='NotFoundError'){showToast("Gagal: "+(e.message||"Bluetooth error"));}}}
-async function btWrite(data){if(!btCharacteristic)throw new Error("Tidak ada karakteristik printer");if(btDevice&&!btDevice.gatt.connected){showToast("Reconnecting printer...");try{const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Reconnect gagal");}catch(e){throw new Error("Printer terputus, hubungkan ulang!");}}const CHUNK=512;const useWithoutResponse=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithoutResponse)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){if(CHUNK>20){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}else throw e;}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
-function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());const dtStr=dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});text(dtStr);lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text('ITEM PEMBELIAN');lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);const dots='.'.repeat(Math.max(1,32-left.length-right.length));text(left+dots+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const totalLeft='TOTAL';const totalRight=formatIDRRaw(d.amount);const totalSpaces=' '.repeat(Math.max(1,32-totalLeft.length-totalRight.length));text(totalLeft+totalSpaces+totalRight);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text('*** HUTANG / BON ***');lf();}else{if(d.pay_cash>0){const l='Tunai',r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l='QRIS/Transfer',r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cL='Kembalian',cR=formatIDRRaw(d.change);text(cL+' '.repeat(Math.max(1,32-cL.length-cR.length))+cR);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text('Terima kasih atas kunjungan Anda!');lf();text('Barang dibeli tidak dapat ditukar.');lf();text('* DheKasir v1.4 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
-function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
-async function printBluetoothReceipt(){if(!lastReceiptData)return showToast("Tidak ada data struk!");if(!btCharacteristic&&!btDevice){showToast("Hubungkan printer dulu di Pengaturan!");return;}showToast("Mengirim ke printer...");try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){showToast("Gagal cetak: "+(e.message||"Error"));btCharacteristic=null;btConnected=false;const s=document.getElementById('printer-status');if(s){s.innerText='ERROR';s.className='text-[8px] font-black text-rose-400 uppercase';}}}
+// ── WhatsApp share ─────────────────────────────────────────────────────
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
 // ── Init ───────────────────────────────────────────────────────────────
-window.onload = () => {
+window.onload = async () => {
     loadSettings();
     const saved = localStorage.getItem('dk_active_tab') || 'home';
     switchTab(saved);
     renderCategoryOptions();
     renderPosCategoryChips();
     checkStockAlerts();
+
+    // Apply initial printer UI state from saved prefs
+    _setPrinterUI('offline');
+
+    // Attempt silent auto-reconnect if pref is on
+    await btAutoReconnectOnLoad();
 };
 </script>
 </body>
