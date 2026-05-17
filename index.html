@@ -62,6 +62,16 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* ══════════════════════════════
+           SCROLL LOCK — saat modal aktif
+        ══════════════════════════════ */
+        body.modal-open {
+            overflow: hidden !important;
+            /* Mencegah scroll pada iOS Safari */
+            position: fixed;
+            width: 100%;
+        }
+
         /* ── Card ── */
         .card {
             background: var(--card);
@@ -1175,6 +1185,33 @@ let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
 
+// ── Scroll Lock ────────────────────────────────────────────────────────
+// Counter untuk melacak jumlah modal yang sedang terbuka
+// (bisa ada modal di atas modal, misal scanner di atas product modal)
+let _modalOpenCount = 0;
+// Simpan posisi scroll sebelum lock agar tidak loncat saat unlock
+let _scrollYBeforeLock = 0;
+
+function _lockBodyScroll() {
+    _modalOpenCount++;
+    if (_modalOpenCount === 1) {
+        _scrollYBeforeLock = window.scrollY;
+        document.body.classList.add('modal-open');
+        // Terapkan offset agar posisi konten tidak loncat
+        document.body.style.top = `-${_scrollYBeforeLock}px`;
+    }
+}
+
+function _unlockBodyScroll() {
+    _modalOpenCount = Math.max(0, _modalOpenCount - 1);
+    if (_modalOpenCount === 0) {
+        document.body.classList.remove('modal-open');
+        document.body.style.top = '';
+        // Kembalikan posisi scroll ke semula
+        window.scrollTo(0, _scrollYBeforeLock);
+    }
+}
+
 // ── Sidebar ────────────────────────────────────────────────────────────
 function toggleSidebar() {
     const sb = document.getElementById('sidebar');
@@ -1201,8 +1238,24 @@ function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const t=document.getElementById('toast');if(!t)return;t.innerText=m;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
-function openModal(id){const el=document.getElementById(id);if(el)el.classList.remove('hidden');}
-function closeModal(id){const el=document.getElementById(id);if(el)el.classList.add('hidden');}
+
+// ── Modal dengan Scroll Lock ───────────────────────────────────────────
+function openModal(id) {
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        _lockBodyScroll();
+    }
+}
+
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('hidden')) {
+        el.classList.add('hidden');
+        _unlockBodyScroll();
+    }
+}
+
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ── Tab Navigation ─────────────────────────────────────────────────────
@@ -1352,7 +1405,12 @@ async function openScanner(mode='cart'){
     if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast("Wajib HTTPS!");
     flashOn=false;flashTrack=null;
     const fb=document.getElementById('flash-btn');if(fb){fb.disabled=true;fb.classList.remove('flash-on');}
-    openModal('modal-scanner');
+    // Scanner pakai elemen sendiri — lock scroll manual
+    const scannerEl = document.getElementById('modal-scanner');
+    if (scannerEl && scannerEl.classList.contains('hidden')) {
+        scannerEl.classList.remove('hidden');
+        _lockBodyScroll();
+    }
     if(!html5QrCode)html5QrCode=new Html5Qrcode("reader");
     html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{
         if(navigator.vibrate)navigator.vibrate(100);
@@ -1368,7 +1426,17 @@ async function openScanner(mode='cart'){
         try{const video=document.querySelector('#reader video');if(video&&video.srcObject){const tracks=video.srcObject.getVideoTracks();if(tracks.length>0){const track=tracks[0];const caps=(typeof track.getCapabilities==='function')?track.getCapabilities():{};if(caps.torch){flashTrack=track;if(fb)fb.disabled=false;}}}}catch(e){}
     }).catch(()=>{showToast("Gagal Kamera!");closeScanner();});
 }
-async function closeScanner(){if(flashTrack&&flashOn){try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}}flashOn=false;flashTrack=null;if(html5QrCode){try{await html5QrCode.stop();}catch(e){}}closeModal('modal-scanner');}
+async function closeScanner(){
+    if(flashTrack&&flashOn){try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}}
+    flashOn=false;flashTrack=null;
+    if(html5QrCode){try{await html5QrCode.stop();}catch(e){}}
+    // Unlock scroll manual karena scanner tidak pakai openModal/closeModal standar
+    const scannerEl = document.getElementById('modal-scanner');
+    if (scannerEl && !scannerEl.classList.contains('hidden')) {
+        scannerEl.classList.add('hidden');
+        _unlockBodyScroll();
+    }
+}
 async function toggleFlash(){if(!flashTrack)return showToast("Flash tidak tersedia!");try{flashOn=!flashOn;await flashTrack.applyConstraints({advanced:[{torch:flashOn}]});const btn=document.getElementById('flash-btn');if(btn)btn.classList.toggle('flash-on',flashOn);showToast(flashOn?"⚡ Flash Nyala":"Flash Mati");}catch(e){flashOn=!flashOn;showToast("Flash gagal!");}}
 
 // ── Home / Dashboard ───────────────────────────────────────────────────
@@ -1528,9 +1596,7 @@ function loadSettings(){
     set('store-name-display',s.storeName);set('profile-name',s.storeName);
     set('profile-address-display',s.storeAddress);set('min-stock-display',s.minStock||5);
     set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||'Alamat belum diatur');
-    // First letter for logo text
     const letter=(s.storeName||'D')[0].toUpperCase();
-    // Update all logo elements
     const updateLogo=(el,isImg)=>{
         if(!el)return;
         if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}
