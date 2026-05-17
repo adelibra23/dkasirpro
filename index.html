@@ -4,45 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DheKasir</title>
-
-    <!-- ══ PWA META TAGS ══ -->
-    <meta name="application-name" content="DheKasir">
-    <meta name="description" content="Ekosistem kasir retail digital modern untuk UMKM Indonesia.">
-    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: light)">
-    <meta name="theme-color" content="#4f46e5" media="(prefers-color-scheme: dark)">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="DheKasir">
-    <meta name="msapplication-TileColor" content="#4f46e5">
-    <meta name="msapplication-TileImage" content="./icons/icon-144.png">
-    <meta name="msapplication-config" content="none">
-    <meta name="format-detection" content="telephone=no">
-
-    <!-- ══ Open Graph ══ -->
-    <meta property="og:title" content="DheKasir — Kasir Digital UMKM">
-    <meta property="og:description" content="Ekosistem kasir retail digital modern untuk UMKM Indonesia.">
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="./icons/icon-512.png">
-
-    <!-- ══ PWA MANIFEST ══ -->
-    <link rel="manifest" href="./manifest.json">
-
-    <!-- ══ Apple Touch Icons ══ -->
-    <link rel="apple-touch-icon" href="./icons/icon-192.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-192.png">
-    <link rel="apple-touch-icon" sizes="167x167" href="./icons/icon-192.png">
-
-    <!-- ══ Apple Splash Screens ══ -->
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-    <!-- ══ Favicon ══ -->
-    <link rel="icon" type="image/png" sizes="32x32" href="./icons/icon-96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./icons/icon-72.png">
-    <link rel="shortcut icon" href="./icons/icon-192.png">
-
-    <!-- ══ CDN Libraries ══ -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -91,6 +52,7 @@
         }
 
         * { box-sizing: border-box; }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
@@ -99,129 +61,225 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
+
         body.modal-open {
             overflow: hidden !important;
             position: fixed;
             width: 100%;
         }
 
-        /* ══ PWA SPLASH SCREEN ══ */
-        #pwa-splash {
-            position: fixed; inset: 0; z-index: 9999;
-            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            transition: opacity 0.5s ease, transform 0.5s ease;
+        /* ══════════════════════════════
+           SPLASH SCREEN
+        ══════════════════════════════ */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(145deg, #1e1b4b 0%, #312e81 30%, #4f46e5 65%, #7c3aed 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        #pwa-splash.hide {
-            opacity: 0; transform: scale(1.04); pointer-events: none;
+        #splash-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
         }
-        .splash-logo {
-            width: 88px; height: 88px;
-            background: rgba(255,255,255,0.15);
+
+        /* Animated background circles */
+        .splash-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            animation: orbFloat 6s ease-in-out infinite;
+        }
+        .splash-orb-1 {
+            width: 300px; height: 300px;
+            background: rgba(167, 139, 250, 0.25);
+            top: -80px; right: -60px;
+            animation-delay: 0s;
+        }
+        .splash-orb-2 {
+            width: 200px; height: 200px;
+            background: rgba(99, 102, 241, 0.3);
+            bottom: 20px; left: -50px;
+            animation-delay: 2s;
+        }
+        .splash-orb-3 {
+            width: 150px; height: 150px;
+            background: rgba(236, 72, 153, 0.15);
+            top: 50%; left: 20%;
+            animation-delay: 4s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        /* Grid pattern overlay */
+        .splash-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+
+        /* Logo container */
+        .splash-logo-wrap {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        /* Outer ring animation */
+        .splash-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            animation: ringPulse 2s ease-in-out infinite;
+        }
+        .splash-ring-1 { width: 100px; height: 100px; animation-delay: 0s; }
+        .splash-ring-2 { width: 130px; height: 130px; animation-delay: 0.3s; }
+        .splash-ring-3 { width: 165px; height: 165px; animation-delay: 0.6s; }
+        @keyframes ringPulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.15; transform: scale(1.04); }
+        }
+
+        /* Main logo box */
+        .splash-logo-box {
+            position: relative;
+            width: 80px; height: 80px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(255,255,255,0.25);
             border-radius: 28px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 42px; font-weight: 900; color: #fff;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: splashBounce 0.6s cubic-bezier(0.34,1.56,0.64,1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.1),
+                0 20px 60px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: logoAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+            z-index: 2;
         }
-        @keyframes splashBounce { 0%{transform:scale(0.3);opacity:0;} 100%{transform:scale(1);opacity:1;} }
-        .splash-title { color:#fff; font-size:28px; font-weight:900; letter-spacing:-0.5px; margin-bottom:4px; }
-        .splash-sub { color:rgba(255,255,255,0.65); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; }
-        .splash-loader { margin-top:48px; display:flex; gap:6px; }
-        .splash-dot {
-            width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.4);
-            animation: splashDot 1.2s ease-in-out infinite;
+        @keyframes logoAppear {
+            0% { opacity: 0; transform: scale(0.5) rotate(-10deg); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); }
         }
-        .splash-dot:nth-child(2) { animation-delay:0.2s; }
-        .splash-dot:nth-child(3) { animation-delay:0.4s; }
-        @keyframes splashDot { 0%,80%,100%{transform:scale(0.6);background:rgba(255,255,255,0.3);} 40%{transform:scale(1);background:#fff;} }
 
-        /* ══ PWA INSTALL BANNER ══ */
-        #pwa-install-banner {
-            position: fixed; bottom: 96px; left: 12px; right: 12px;
-            max-width: 456px; margin: 0 auto;
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 16px 18px;
-            z-index: 60;
-            box-shadow: 0 8px 32px rgba(79,70,229,0.18), 0 2px 8px rgba(0,0,0,0.08);
-            display: flex; align-items: center; gap: 14px;
-            transform: translateY(120%);
-            transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1);
-        }
-        #pwa-install-banner.show { transform: translateY(0); }
-        .install-icon {
-            width: 44px; height: 44px; flex-shrink: 0;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            color: #fff; font-size: 20px; font-weight: 900;
-            box-shadow: 0 3px 10px rgba(79,70,229,0.3);
-        }
-        .install-text { flex: 1; min-width: 0; }
-        .install-text h4 { font-size: 12px; font-weight: 800; margin-bottom: 2px; }
-        .install-text p { font-size: 10px; color: var(--text-muted); font-weight: 600; }
-        .install-actions { display: flex; gap: 8px; flex-shrink: 0; }
-        .install-btn {
-            padding: 8px 14px; border-radius: 12px;
-            font-size: 10px; font-weight: 800; text-transform: uppercase;
-            cursor: pointer; transition: all 0.15s;
-        }
-        .install-btn:active { transform: scale(0.93); }
-        .install-btn-primary {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: #fff; border: none;
-            box-shadow: 0 3px 10px rgba(79,70,229,0.35);
-        }
-        .install-btn-dismiss { background: var(--surface); color: var(--text-muted); border: none; }
-
-        /* ══ PWA OFFLINE BANNER ══ */
-        #pwa-offline-banner {
-            position: fixed; top: 62px; left: 0; right: 0;
-            background: #dc2626;
+        .splash-logo-letter {
+            font-size: 36px;
+            font-weight: 900;
             color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            line-height: 1;
+        }
+
+        /* Sparkle dots */
+        .splash-sparkle {
+            position: absolute;
+            width: 5px; height: 5px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            animation: sparkleAnim 1.8s ease-in-out infinite;
+        }
+        .sp1 { top: -4px; right: 14px; animation-delay: 0s; }
+        .sp2 { bottom: 10px; right: -5px; animation-delay: 0.6s; width: 4px; height: 4px; }
+        .sp3 { top: 18px; left: -5px; animation-delay: 1.2s; width: 3px; height: 3px; }
+        @keyframes sparkleAnim {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        /* App name */
+        .splash-app-name {
+            margin-top: 28px;
+            font-size: 30px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: -0.5px;
             text-align: center;
-            font-size: 10px; font-weight: 800;
-            text-transform: uppercase; letter-spacing: 0.08em;
-            padding: 8px 16px;
-            z-index: 55;
-            transform: translateY(-100%);
-            transition: transform 0.3s ease;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+            animation: textSlideUp 0.6s ease 0.6s both;
         }
-        #pwa-offline-banner.show { transform: translateY(0); }
-        #pwa-offline-banner.online { background: #059669; }
+        .splash-tagline {
+            margin-top: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.55);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            text-align: center;
+            animation: textSlideUp 0.6s ease 0.75s both;
+        }
+        @keyframes textSlideUp {
+            0% { opacity: 0; transform: translateY(16px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
-        /* ══ PWA UPDATE BANNER ══ */
-        #pwa-update-banner {
-            position: fixed; top: 62px; left: 12px; right: 12px;
-            max-width: 456px; margin: 0 auto;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: #fff;
-            border-radius: 16px;
-            padding: 12px 16px;
-            z-index: 56;
-            box-shadow: 0 4px 20px rgba(79,70,229,0.4);
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
-            transform: translateY(-200%);
-            transition: transform 0.4s cubic-bezier(0.34,1.2,0.64,1);
+        /* Progress bar area */
+        .splash-progress-area {
+            position: absolute;
+            bottom: 72px;
+            left: 0; right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 0 48px;
+            animation: textSlideUp 0.6s ease 1s both;
         }
-        #pwa-update-banner.show { transform: translateY(0); }
-        .update-text { font-size: 10px; font-weight: 700; flex: 1; }
-        .update-btn {
-            background: rgba(255,255,255,0.25);
-            color: #fff; border: 1px solid rgba(255,255,255,0.4);
-            padding: 6px 12px; border-radius: 10px;
-            font-size: 9px; font-weight: 800; text-transform: uppercase;
-            cursor: pointer; white-space: nowrap;
-            transition: all 0.15s;
-        }
-        .update-btn:active { transform: scale(0.93); }
 
-        /* ══ Card ══ */
+        .splash-progress-track {
+            width: 100%;
+            height: 3px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .splash-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,1));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.25s ease;
+            box-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        .splash-status-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-align: center;
+            min-height: 14px;
+            transition: opacity 0.3s;
+        }
+
+        /* Version badge */
+        .splash-version {
+            position: absolute;
+            bottom: 32px;
+            font-size: 9px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* ── Card ── */
         .card {
             background: var(--card);
             border: 1px solid var(--card-border);
@@ -229,33 +287,44 @@
             transition: background 0.3s, border-color 0.3s;
         }
 
-        /* ══ HEADER ══ */
         #app-header {
-            position: sticky; top: 0; z-index: 40;
+            position: sticky;
+            top: 0;
+            z-index: 40;
             background: var(--header-bg);
             border-bottom: 1px solid var(--card-border);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            padding: 0 16px; height: 62px;
-            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             transition: background 0.3s, border-color 0.3s;
         }
+
         #hamburger-btn {
-            width: 38px; height: 38px; border-radius: 12px;
-            border: 1px solid var(--card-border); background: var(--card);
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: var(--card);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
         }
         #hamburger-btn:active { transform: scale(0.92); }
         #hamburger-btn .bar {
             display: block; width: 16px; height: 1.5px;
-            background: var(--text); border-radius: 2px;
+            background: var(--text);
+            border-radius: 2px;
             transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
         }
         #hamburger-btn .bars { display: flex; flex-direction: column; gap: 4px; }
         #hamburger-btn.open .bar:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
         #hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
         #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
         .header-brand {
             display: flex; align-items: center; gap: 9px;
             position: absolute; left: 50%; transform: translateX(-50%);
@@ -266,46 +335,62 @@
             border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
             color: #fff; font-size: 14px; font-weight: 900;
-            overflow: hidden; flex-shrink: 0;
+            overflow: hidden;
+            flex-shrink: 0;
         }
         .header-title {
-            font-size: 15px; font-weight: 800; color: var(--text);
-            max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-size: 15px; font-weight: 800;
+            color: var(--text);
+            max-width: 110px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
+
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn {
-            width: 38px; height: 38px; border-radius: 12px;
-            border: 1px solid var(--card-border); background: var(--card);
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: var(--card);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.15s;
-            color: var(--text-muted); position: relative;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+            position: relative;
         }
         .hdr-btn:active { transform: scale(0.92); }
         .hdr-btn.primary-action {
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-color: transparent; color: #fff;
+            border-color: transparent;
+            color: #fff;
             width: 42px; height: 38px;
             box-shadow: 0 3px 10px rgba(79,70,229,0.35);
         }
 
-        /* ══ SIDEBAR ══ */
         #sidebar-overlay {
             position: fixed; inset: 0; z-index: 80;
             background: var(--sidebar-overlay);
             opacity: 0; pointer-events: none;
-            transition: opacity 0.3s; backdrop-filter: blur(4px);
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
         }
         #sidebar-overlay.open { opacity: 1; pointer-events: all; }
+
         #sidebar {
-            position: fixed; top: 0; left: 0; bottom: 0; width: 272px;
-            background: var(--sidebar-bg); z-index: 90;
+            position: fixed; top: 0; left: 0; bottom: 0;
+            width: 272px;
+            background: var(--sidebar-bg);
+            z-index: 90;
             transform: translateX(-100%);
             transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
             display: flex; flex-direction: column;
             border-right: 1px solid var(--card-border);
         }
         #sidebar.open { transform: translateX(0); }
-        .sidebar-header { padding: 52px 20px 20px; border-bottom: 1px solid var(--card-border); }
+
+        .sidebar-header {
+            padding: 52px 20px 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
         .sidebar-store-logo {
             width: 52px; height: 52px;
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -315,118 +400,167 @@
             overflow: hidden; margin-bottom: 12px;
             box-shadow: 0 4px 14px rgba(79,70,229,0.35);
         }
-        .sidebar-store-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
-        .sidebar-store-addr { font-size: 11px; color: var(--text-muted); font-weight: 500; }
+        .sidebar-store-name {
+            font-size: 16px; font-weight: 800; margin-bottom: 2px;
+        }
+        .sidebar-store-addr {
+            font-size: 11px; color: var(--text-muted); font-weight: 500;
+        }
         .sidebar-version {
-            display: inline-flex; align-items: center; gap: 4px; margin-top: 8px;
-            background: var(--primary-soft); color: var(--primary);
-            font-size: 9px; font-weight: 800; letter-spacing: 0.08em;
-            text-transform: uppercase; padding: 3px 8px; border-radius: 6px;
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-top: 8px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 9px; font-weight: 800;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 6px;
         }
-        /* PWA badge di sidebar */
-        .sidebar-pwa-badge {
-            display: inline-flex; align-items: center; gap: 4px; margin-top: 4px;
-            background: rgba(16,185,129,0.12); color: #059669;
-            font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
-            text-transform: uppercase; padding: 3px 8px; border-radius: 6px;
-        }
+
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 12px; }
         .sidebar-section-label {
-            font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em;
-            color: var(--text-muted); padding: 12px 8px 6px;
+            font-size: 9px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 12px 8px 6px;
         }
         .sidebar-item {
             display: flex; align-items: center; gap: 12px;
-            padding: 11px 12px; border-radius: 14px;
-            cursor: pointer; transition: all 0.15s;
-            color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 2px;
+            padding: 11px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+            font-size: 13px; font-weight: 600;
+            margin-bottom: 2px;
         }
         .sidebar-item:active { transform: scale(0.97); }
-        .sidebar-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
-        .sidebar-item:not(.active):hover { background: var(--surface); color: var(--text); }
+        .sidebar-item.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .sidebar-item:not(.active):hover {
+            background: var(--surface);
+            color: var(--text);
+        }
         .sidebar-icon {
-            width: 34px; height: 34px; border-radius: 10px;
+            width: 34px; height: 34px;
+            border-radius: 10px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 14px; flex-shrink: 0; background: var(--surface); transition: background 0.15s;
+            font-size: 14px;
+            flex-shrink: 0;
+            background: var(--surface);
+            transition: background 0.15s;
         }
-        .sidebar-item.active .sidebar-icon { background: var(--primary); color: #fff; }
+        .sidebar-item.active .sidebar-icon {
+            background: var(--primary);
+            color: #fff;
+        }
         .sidebar-badge {
-            margin-left: auto; background: #ef4444; color: #fff;
-            font-size: 9px; font-weight: 800; min-width: 18px; height: 18px;
-            border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px;
+            margin-left: auto;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px; font-weight: 800;
+            min-width: 18px; height: 18px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 5px;
         }
-        .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--card-border); }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--card-border);
+        }
         .sidebar-dark-toggle {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 12px; border-radius: 14px; background: var(--surface); cursor: pointer;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: var(--surface);
+            cursor: pointer;
         }
-        .sidebar-dark-toggle span { font-size: 12px; font-weight: 700; color: var(--text-muted); }
-        .sidebar-dark-toggle .toggle-left { display: flex; align-items: center; gap: 10px; }
+        .sidebar-dark-toggle span {
+            font-size: 12px; font-weight: 700; color: var(--text-muted);
+        }
+        .sidebar-dark-toggle .toggle-left {
+            display: flex; align-items: center; gap: 10px;
+        }
 
-        /* ══ BOTTOM NAV ══ */
         #bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             max-width: 480px; margin: 0 auto;
             background: var(--nav-bg);
             border-top: 1px solid var(--card-border);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            z-index: 50; padding: 8px 8px 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 50;
+            padding: 8px 8px 20px;
             display: flex; align-items: center; justify-content: space-around;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
             gap: 3px; padding: 6px 10px; border-radius: 14px;
             cursor: pointer; transition: all 0.2s;
-            color: var(--text-muted); font-size: 9px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.04em;
+            color: var(--text-muted);
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.04em;
             min-width: 52px; position: relative;
         }
         .nav-item i { font-size: 18px; transition: all 0.2s; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item.active {
+            color: var(--primary);
+        }
         .nav-item.active i { transform: translateY(-1px); }
         .nav-item-pill {
-            position: absolute; bottom: -2px; width: 20px; height: 3px;
-            border-radius: 2px; background: var(--primary);
-            opacity: 0; transition: opacity 0.2s, width 0.2s;
+            position: absolute; bottom: -2px;
+            width: 20px; height: 3px;
+            border-radius: 2px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s, width 0.2s;
         }
         .nav-item.active .nav-item-pill { opacity: 1; }
         .nav-dot {
             position: absolute; top: 4px; right: 8px;
-            width: 7px; height: 7px; background: #ef4444; border-radius: 50%;
+            width: 7px; height: 7px;
+            background: #ef4444; border-radius: 50%;
             border: 1.5px solid var(--nav-bg);
         }
 
-        /* ══ Tab content ══ */
         .tab-content { display: none; padding: 16px 16px 110px; }
         .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
-        @keyframes fadeUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-        /* ══ Scrollbar ══ */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* ══ Inputs ══ */
         input, select, textarea {
-            background: var(--input-bg) !important; color: var(--text) !important;
+            background: var(--input-bg) !important;
+            color: var(--text) !important;
             border-color: var(--input-border) !important;
             transition: background 0.3s, color 0.3s, border-color 0.3s;
         }
         input::placeholder, textarea::placeholder { color: var(--text-muted) !important; }
         select option { background: var(--card); color: var(--text); }
 
-        /* ══ Modal Sheets ══ */
-        .modal-sheet { background: var(--card) !important; transition: background 0.3s; }
+        .modal-sheet {
+            background: var(--card) !important;
+            transition: background 0.3s;
+        }
+
         .surface { background: var(--surface) !important; transition: background 0.3s; }
         .surface-hover:hover { background: var(--surface-hover) !important; }
         .dk-divider { border-color: var(--card-border) !important; }
         .text-muted { color: var(--text-muted) !important; }
+
         .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
 
-        /* ══ Scanner ══ */
         #reader { border-radius: 24px; overflow: hidden; background: #000; border: none !important; }
 
-        /* ══ Receipt ══ */
-        .receipt-paper { font-family:'Courier New',Courier,monospace; font-size:12px; line-height:1.55; color:#111; background:#fff; width:100%; }
+        .receipt-paper {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px; line-height: 1.55;
+            color: #111; background: #fff; width: 100%;
+        }
         .receipt-paper .rec-header { text-align:center; padding-bottom:8px; border-bottom:1px dashed #bbb; margin-bottom:8px; }
         .receipt-paper .rec-logo { display:flex; justify-content:center; align-items:center; margin-bottom:6px; }
         .receipt-paper .rec-logo img { max-height:52px; max-width:120px; object-fit:contain; }
@@ -446,29 +580,32 @@
         .receipt-paper .rec-change-row { display:flex; justify-content:space-between; font-size:12px; font-weight:700; border-top:1px dotted #bbb; padding:4px 0 0; margin-top:3px; }
         .receipt-paper .rec-footer { text-align:center; font-size:9px; color:#999; margin-top:8px; padding-top:6px; border-top:1px dashed #bbb; }
         .receipt-paper .rec-debt-badge { display:inline-block; background:#fef2f2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; font-size:11px; font-weight:700; padding:3px 12px; margin:4px auto; font-family:'Plus Jakarta Sans',sans-serif; text-align:center; }
+        @media print {
+            body > *:not(#print-area) { display:none !important; }
+            #print-area { display:block !important; position:fixed; top:0; left:0; width:80mm; }
+        }
 
-        /* ══ Stock Badges ══ */
         .stock-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; }
-        .badge-in { background:#d1fae5; color:#059669; }
-        .badge-out { background:#fee2e2; color:#dc2626; }
+        .badge-in     { background:#d1fae5; color:#059669; }
+        .badge-out    { background:#fee2e2; color:#dc2626; }
         .badge-opname { background:#e0e7ff; color:#4338ca; }
         .badge-critical { background:#fef2f2; color:#dc2626; }
-        .badge-low { background:#fffbeb; color:#d97706; }
-        .badge-ok { background:#f0fdf4; color:#16a34a; }
-        .dark .badge-in { background:#064e3b; color:#6ee7b7; }
-        .dark .badge-out { background:#450a0a; color:#fca5a5; }
+        .badge-low    { background:#fffbeb; color:#d97706; }
+        .badge-ok     { background:#f0fdf4; color:#16a34a; }
+        .dark .badge-in     { background:#064e3b; color:#6ee7b7; }
+        .dark .badge-out    { background:#450a0a; color:#fca5a5; }
         .dark .badge-opname { background:#1e1b4b; color:#a5b4fc; }
         .dark .badge-critical { background:#450a0a; color:#fca5a5; }
-        .dark .badge-low { background:#422006; color:#fcd34d; }
-        .dark .badge-ok { background:#052e16; color:#86efac; }
+        .dark .badge-low    { background:#422006; color:#fcd34d; }
+        .dark .badge-ok     { background:#052e16; color:#86efac; }
 
         .notif-dot { width:8px; height:8px; background:#ef4444; border-radius:50%; display:inline-block; animation:pulse-notif 1.4s infinite; }
         @keyframes pulse-notif { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(1.3);} }
+
         .btn-hover:active { transform:scale(0.93); transition:0.1s; }
         .animate-pop { animation:pop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
         @keyframes pop { 0%{transform:scale(0.9);opacity:0;}100%{transform:scale(1);opacity:1;} }
 
-        /* ══ Toggle Switch ══ */
         .switch { position:relative; display:inline-block; width:44px; height:24px; }
         .switch input { opacity:0; width:0; height:0; }
         .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#cbd5e1; transition:.4s; border-radius:34px; }
@@ -497,83 +634,110 @@
         .settings-row:active { background:var(--surface); }
         .settings-icon { width:38px; height:38px; background:var(--surface); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.3s; }
 
-        #cart-float { background: var(--card) !important; border-color: var(--card-border) !important; }
+        #cart-float {
+            background: var(--card) !important;
+            border-color: var(--card-border) !important;
+        }
+
         .cat-chip-active { background:#4f46e5 !important; color:#fff !important; }
         .cat-chip-inactive { background:var(--card) !important; color:var(--text-muted) !important; border:1px solid var(--card-border); }
-        .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
-        .page-title { font-size:22px; font-weight:800; letter-spacing:-0.5px; margin-bottom:0; }
 
-        /* ══ Dashboard Hero ══ */
+        .dk-section-label {
+            font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em;
+            color:var(--text-muted); padding:1.25rem 12px 0.5rem;
+        }
+
+        .page-title {
+            font-size: 22px; font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0;
+        }
+
         .dash-hero {
             background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
-            border-radius: 24px; padding: 24px; position: relative; overflow: hidden;
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
             box-shadow: 0 8px 32px rgba(79,70,229,0.3);
         }
-        .dash-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.06); }
-        .dash-hero::after { content:''; position:absolute; bottom:-30px; left:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.04); }
+        .dash-hero::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .dash-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -20px;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
+        }
     </style>
 </head>
 <body class="hide-scrollbar">
 
-<!-- ══════════════════════════════════════════════
-     PWA SPLASH SCREEN
-══════════════════════════════════════════════ -->
-<div id="pwa-splash">
-    <div class="splash-logo">D</div>
-    <h1 class="splash-title">DheKasir</h1>
-    <p class="splash-sub">Kasir Digital UMKM</p>
-    <div class="splash-loader">
-        <div class="splash-dot"></div>
-        <div class="splash-dot"></div>
-        <div class="splash-dot"></div>
+<!-- ══════════════════════════════
+     SPLASH SCREEN
+══════════════════════════════ -->
+<div id="splash-screen">
+    <!-- Animated orbs -->
+    <div class="splash-orb splash-orb-1"></div>
+    <div class="splash-orb splash-orb-2"></div>
+    <div class="splash-orb splash-orb-3"></div>
+
+    <!-- Grid overlay -->
+    <div class="splash-grid"></div>
+
+    <!-- Center content -->
+    <div class="splash-logo-wrap">
+        <!-- Pulsing rings behind logo -->
+        <div class="splash-ring splash-ring-3"></div>
+        <div class="splash-ring splash-ring-2"></div>
+        <div class="splash-ring splash-ring-1"></div>
+
+        <!-- Main logo -->
+        <div class="splash-logo-box">
+            <span class="splash-logo-letter" id="splash-logo-letter">D</span>
+            <!-- Sparkles -->
+            <div class="splash-sparkle sp1"></div>
+            <div class="splash-sparkle sp2"></div>
+            <div class="splash-sparkle sp3"></div>
+        </div>
+
+        <!-- App name & tagline -->
+        <div class="splash-app-name" id="splash-app-name">DheKasir</div>
+        <div class="splash-tagline">Sistem Kasir Digital UMKM</div>
     </div>
+
+    <!-- Progress bar -->
+    <div class="splash-progress-area">
+        <div class="splash-status-text" id="splash-status">Memuat sistem...</div>
+        <div class="splash-progress-track">
+            <div class="splash-progress-bar" id="splash-progress"></div>
+        </div>
+    </div>
+
+    <!-- Version -->
+    <div class="splash-version">DheKasir v1.4 • © 2025</div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PWA BANNERS
-══════════════════════════════════════════════ -->
-<!-- Offline / Online Banner -->
-<div id="pwa-offline-banner">
-    <i class="fa-solid fa-wifi-slash" style="font-size:12px;"></i>
-    <span id="pwa-offline-text">Tidak ada koneksi — Mode Offline Aktif</span>
-</div>
-
-<!-- Update Available Banner -->
-<div id="pwa-update-banner">
-    <div class="update-text">
-        <i class="fa-solid fa-rotate" style="font-size:10px; margin-right:6px;"></i>
-        Versi baru tersedia! Perbarui untuk fitur terbaru.
-    </div>
-    <button class="update-btn" onclick="pwaUpdate()">Perbarui</button>
-    <button onclick="hidePwaUpdateBanner()" style="background:none;border:none;color:rgba(255,255,255,0.6);cursor:pointer;font-size:14px; padding:0 4px;">×</button>
-</div>
-
-<!-- Install Prompt Banner -->
-<div id="pwa-install-banner">
-    <div class="install-icon">D</div>
-    <div class="install-text">
-        <h4>Pasang DheKasir</h4>
-        <p>Akses cepat dari layar utama, tanpa browser!</p>
-    </div>
-    <div class="install-actions">
-        <button class="install-btn install-btn-primary" onclick="pwaInstall()">Pasang</button>
-        <button class="install-btn install-btn-dismiss" onclick="pwaDissmissInstall()">✕</button>
-    </div>
-</div>
-
-<div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col">
+<div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col" style="opacity:0;transition:opacity 0.5s ease;">
 
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-    <!-- ══ SIDEBAR ══ -->
     <aside id="sidebar">
         <div class="sidebar-header">
             <div id="sb-logo" class="sidebar-store-logo">D</div>
             <div class="sidebar-store-name" id="sb-store-name">DheKasir</div>
             <div class="sidebar-store-addr" id="sb-store-addr">Alamat belum diatur</div>
             <div class="sidebar-version"><i class="fa-solid fa-circle-check" style="font-size:8px;"></i> v1.4 Aktif</div>
-            <div class="sidebar-pwa-badge" id="sb-pwa-status" style="display:none;"><i class="fa-solid fa-mobile-screen" style="font-size:8px;"></i> PWA Terpasang</div>
         </div>
+
         <div class="sidebar-nav hide-scrollbar">
             <div class="sidebar-section-label">Menu Utama</div>
             <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()">
@@ -588,6 +752,7 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-box" style="font-size:13px;"></i></div>
                 <span>Inventaris</span>
             </div>
+
             <div class="sidebar-section-label">Operasional</div>
             <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-warehouse" style="font-size:13px;"></i></div>
@@ -602,6 +767,7 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div>
                 <span>Laporan & Data</span>
             </div>
+
             <div class="sidebar-section-label">Akun</div>
             <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div>
@@ -611,12 +777,8 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-circle-info" style="font-size:13px;"></i></div>
                 <span>Tentang Aplikasi</span>
             </div>
-            <!-- Install App shortcut di sidebar -->
-            <div class="sidebar-item" id="sb-install-btn" onclick="pwaInstall(); closeSidebar()" style="display:none;">
-                <div class="sidebar-icon" style="background:rgba(79,70,229,0.1);"><i class="fa-solid fa-download" style="font-size:13px;color:#4f46e5;"></i></div>
-                <span style="color:#4f46e5;">Pasang Aplikasi</span>
-            </div>
         </div>
+
         <div class="sidebar-footer">
             <div class="sidebar-dark-toggle" onclick="document.getElementById('dark-mode-toggle').click()">
                 <div class="toggle-left">
@@ -631,7 +793,6 @@
         </div>
     </aside>
 
-    <!-- ══ HEADER ══ -->
     <header id="app-header">
         <button id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
             <div class="bars">
@@ -640,10 +801,12 @@
                 <span class="bar"></span>
             </div>
         </button>
+
         <div class="header-brand">
             <div id="app-logo" class="header-logo">D</div>
             <span class="header-title" id="store-name-display">DheKasir</span>
         </div>
+
         <div class="header-actions">
             <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" aria-label="Notifikasi">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
@@ -655,10 +818,9 @@
         </div>
     </header>
 
-    <!-- ══ TAB CONTENT ══ -->
     <main class="flex-1">
 
-        <!-- HOME -->
+        <!-- ── HOME ── -->
         <section id="tab-home" class="tab-content active space-y-5">
             <div class="dash-hero text-white relative z-10">
                 <p class="text-[10px] opacity-70 font-bold uppercase mb-1 tracking-widest">Profit Bersih Toko</p>
@@ -691,24 +853,9 @@
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
                 <div id="top-products" class="space-y-2"></div>
             </div>
-            <!-- PWA Status Card -->
-            <div id="home-pwa-card" class="card p-4 shadow-sm" style="display:none;">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center">
-                        <i class="fa-solid fa-mobile-screen text-sm"></i>
-                    </div>
-                    <div>
-                        <p class="text-xs font-black text-emerald-700">Aplikasi Terpasang</p>
-                        <p class="text-[9px] text-muted font-bold">DheKasir berjalan sebagai PWA</p>
-                    </div>
-                    <div class="ml-auto">
-                        <span class="stock-badge badge-ok">Aktif</span>
-                    </div>
-                </div>
-            </div>
         </section>
 
-        <!-- POS -->
+        <!-- ── POS ── -->
         <section id="tab-pos" class="tab-content space-y-4">
             <div class="sticky top-0 pb-2 z-20 space-y-3" style="background:var(--bg);">
                 <div class="relative">
@@ -720,7 +867,7 @@
             <div id="pos-grid" class="grid grid-cols-2 gap-3 pb-10"></div>
         </section>
 
-        <!-- ITEMS -->
+        <!-- ── ITEMS ── -->
         <section id="tab-items" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Inventaris</h2>
@@ -736,7 +883,7 @@
             <div id="item-list" class="space-y-3"></div>
         </section>
 
-        <!-- STOCK -->
+        <!-- ── STOCK ── -->
         <section id="tab-stock" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Manajemen Stok</h2>
@@ -757,9 +904,18 @@
                 </button>
             </div>
             <div class="grid grid-cols-3 gap-3">
-                <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black uppercase mb-1 text-muted">Produk</p><p class="text-2xl font-black text-indigo-600" id="stat-total-products">0</p></div>
-                <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black text-amber-500 uppercase mb-1">Menipis</p><p class="text-2xl font-black text-amber-500" id="stat-low-stock">0</p></div>
-                <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black text-red-500 uppercase mb-1">Habis</p><p class="text-2xl font-black text-red-500" id="stat-empty-stock">0</p></div>
+                <div class="card p-4 text-center shadow-sm">
+                    <p class="text-[9px] font-black uppercase mb-1 text-muted">Produk</p>
+                    <p class="text-2xl font-black text-indigo-600" id="stat-total-products">0</p>
+                </div>
+                <div class="card p-4 text-center shadow-sm">
+                    <p class="text-[9px] font-black text-amber-500 uppercase mb-1">Menipis</p>
+                    <p class="text-2xl font-black text-amber-500" id="stat-low-stock">0</p>
+                </div>
+                <div class="card p-4 text-center shadow-sm">
+                    <p class="text-[9px] font-black text-red-500 uppercase mb-1">Habis</p>
+                    <p class="text-2xl font-black text-red-500" id="stat-empty-stock">0</p>
+                </div>
             </div>
             <div class="flex items-center justify-between">
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">Status Produk</h3>
@@ -778,7 +934,7 @@
             <div id="stock-history-list" class="space-y-2"></div>
         </section>
 
-        <!-- DEBTS -->
+        <!-- ── DEBTS ── -->
         <section id="tab-debts" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Buku Hutang</h2>
@@ -787,7 +943,7 @@
             <div id="debt-list" class="space-y-3"></div>
         </section>
 
-        <!-- DATA -->
+        <!-- ── DATA ── -->
         <section id="tab-data" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Laporan</h2>
@@ -801,7 +957,7 @@
             <div id="data-list" class="space-y-3"></div>
         </section>
 
-        <!-- SETTINGS -->
+        <!-- ── SETTINGS ── -->
         <section id="tab-settings" class="tab-content space-y-5">
             <div class="flex items-center gap-4 card p-5 shadow-sm">
                 <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
@@ -810,7 +966,7 @@
                 <div>
                     <h2 class="font-black text-base" id="profile-name">Admin Toko</h2>
                     <p class="text-xs text-muted" id="profile-address-display">Alamat belum diatur</p>
-                    <span class="text-[9px] font-black text-indigo-500 uppercase">DheKasir v1.4 PWA</span>
+                    <span class="text-[9px] font-black text-indigo-500 uppercase">DheKasir v1.4</span>
                 </div>
             </div>
             <div class="card p-2 space-y-1">
@@ -835,17 +991,6 @@
                         <span class="text-sm font-bold">Printer Thermal</span>
                     </div>
                     <span id="printer-status" class="text-[8px] font-black text-muted uppercase">OFFLINE</span>
-                </div>
-                <!-- PWA Settings Row -->
-                <div id="settings-pwa-row" onclick="pwaInstall()" class="settings-row">
-                    <div class="flex items-center gap-3">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-mobile-screen text-sm"></i></div>
-                        <div>
-                            <span class="text-sm font-bold">Pasang ke Layar Utama</span>
-                            <p class="text-[9px] text-muted font-bold">Install sebagai aplikasi PWA</p>
-                        </div>
-                    </div>
-                    <span id="pwa-status-text" class="text-[8px] font-black text-indigo-500 uppercase">Pasang</span>
                 </div>
                 <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row">
@@ -874,30 +1019,40 @@
 
     </main>
 
-    <!-- ══ BOTTOM NAV ══ -->
     <nav id="bottom-nav">
         <div class="nav-item active" id="n-home" onclick="switchTab('home')">
-            <i class="fa-solid fa-house"></i><span>Home</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+            <div class="nav-item-pill"></div>
         </div>
         <div class="nav-item" id="n-pos" onclick="switchTab('pos')">
-            <i class="fa-solid fa-cash-register"></i><span>Kasir</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-cash-register"></i>
+            <span>Kasir</span>
+            <div class="nav-item-pill"></div>
         </div>
         <div class="nav-item" id="n-items" onclick="switchTab('items')">
-            <i class="fa-solid fa-box"></i><span>Stok</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-box"></i>
+            <span>Stok</span>
+            <div class="nav-item-pill"></div>
         </div>
         <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;">
-            <i class="fa-solid fa-warehouse"></i><span>Gudang</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Gudang</span>
+            <div class="nav-item-pill"></div>
             <span id="nav-stock-dot" class="nav-dot hidden"></span>
         </div>
         <div class="nav-item" id="n-debts" onclick="switchTab('debts')">
-            <i class="fa-solid fa-user-clock"></i><span>Hutang</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-user-clock"></i>
+            <span>Hutang</span>
+            <div class="nav-item-pill"></div>
         </div>
         <div class="nav-item" id="n-data" onclick="switchTab('data')">
-            <i class="fa-solid fa-chart-bar"></i><span>Data</span><div class="nav-item-pill"></div>
+            <i class="fa-solid fa-chart-bar"></i>
+            <span>Data</span>
+            <div class="nav-item-pill"></div>
         </div>
     </nav>
 
-    <!-- Cart Float -->
     <div id="cart-float" class="hidden fixed bottom-28 left-4 right-4 max-w-[440px] mx-auto p-5 rounded-[28px] border shadow-2xl z-40 animate-pop">
         <div class="flex justify-between items-center mb-4">
             <div class="flex items-center gap-3 cursor-pointer" onclick="openCartDetails()">
@@ -917,7 +1072,6 @@
 
 <!-- ═══════════════════════════════════════ MODALS ═══ -->
 
-<!-- SCANNER -->
 <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6">
     <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
     <div class="w-full max-w-sm"><div id="reader"></div></div>
@@ -931,7 +1085,6 @@
     <p class="text-white/40 text-[10px] font-bold mt-4 tracking-widest uppercase text-center">Auto-detect Aktif • Jeda 2.5 Detik per Produk</p>
 </div>
 
-<!-- NOTIFICATION PANEL -->
 <div id="modal-notif" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[80vh] flex flex-col">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -943,7 +1096,6 @@
     </div>
 </div>
 
-<!-- STOCK IN / OUT -->
 <div id="modal-stock-move" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="text-xl font-black" id="stock-move-title">Stok Masuk</h3>
@@ -970,7 +1122,6 @@
     </div>
 </div>
 
-<!-- STOCK OPNAME -->
 <div id="modal-opname" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[90vh] flex flex-col">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -984,7 +1135,6 @@
     </div>
 </div>
 
-<!-- MIN STOCK -->
 <div id="modal-minstock" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
         <h3 class="font-black text-lg">Batas Minimum Stok</h3>
@@ -998,7 +1148,6 @@
     </div>
 </div>
 
-<!-- CART DETAILS -->
 <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -1009,7 +1158,6 @@
     </div>
 </div>
 
-<!-- CHECKOUT -->
 <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -1046,7 +1194,6 @@
     </div>
 </div>
 
-<!-- RECEIPT -->
 <div id="modal-receipt" class="fixed inset-0 z-[130] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-xs rounded-[36px] overflow-hidden animate-pop shadow-2xl flex flex-col max-h-[90vh]">
         <div class="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100 shrink-0">
@@ -1072,7 +1219,7 @@
                 <div class="rec-footer" id="rec-footer">
                     <p>Terima kasih atas kunjungan Anda!</p>
                     <p style="margin-top:3px;">Barang yang sudah dibeli tidak dapat ditukar.</p>
-                    <p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.4 PWA ★</p>
+                    <p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.4 ★</p>
                 </div>
             </div>
         </div>
@@ -1086,7 +1233,6 @@
     </div>
 </div>
 
-<!-- DEBT DETAIL -->
 <div id="modal-debt-detail" class="fixed inset-0 z-[80] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
         <h3 class="text-lg font-black" id="det-debt-name">-</h3>
@@ -1104,7 +1250,6 @@
     </div>
 </div>
 
-<!-- PRODUCT MODAL -->
 <div id="modal-product" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop overflow-y-auto max-h-[85vh] shadow-2xl">
         <h3 class="text-xl font-black mb-5">Master Produk</h3>
@@ -1130,7 +1275,6 @@
     </div>
 </div>
 
-<!-- CATEGORY -->
 <div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg">Kelola Kategori</h3>
@@ -1143,7 +1287,6 @@
     </div>
 </div>
 
-<!-- STORE CFG -->
 <div id="modal-store-cfg" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <h3 class="font-black text-lg">Setelan Toko</h3>
@@ -1161,20 +1304,14 @@
     </div>
 </div>
 
-<!-- ABOUT -->
 <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center">
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
         <h3 class="font-black text-xl mb-1">DheKasir</h3>
-        <p class="text-[10px] mb-1 font-bold uppercase tracking-widest text-muted">Version 1.4 PWA Edition</p>
-        <div class="flex justify-center gap-2 mb-5">
-            <span class="stock-badge badge-ok" id="about-pwa-badge">PWA Ready</span>
-            <span class="stock-badge badge-opname" id="about-sw-badge">Offline Support</span>
-        </div>
+        <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>✦ <strong>PWA</strong>: Pasang ke layar utama, buka tanpa browser, bekerja offline penuh.</p>
-            <p>✦ <strong>v1.4</strong>: Bluetooth Print universal, Audio Feedback saat scan & transaksi.</p>
+            <p>Fitur baru v1.4: Fix Bluetooth Print (universal service discovery), Audio Feedback — beep saat scan produk & chime saat transaksi selesai.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1185,7 +1322,6 @@
         <h3 class="font-black text-lg mb-4 text-center">Kebijakan Privasi</h3>
         <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed space-y-4 text-justify text-muted">
             <p>Semua data transaksi, inventaris, dan pengaturan toko Anda disimpan secara utama di dalam memori internal perangkat Anda (LocalStorage).</p>
-            <p>Fitur PWA (Progressive Web App) menggunakan Service Worker untuk menyimpan aset aplikasi ke cache lokal perangkat agar dapat digunakan saat offline.</p>
             <p>Fitur sinkronisasi ke Google Spreadsheet hanya dikirim ke URL backend yang Anda tentukan sendiri. Kami tidak memiliki akses ke data tersebut.</p>
             <p>Akses kamera hanya digunakan secara instan untuk memindai kode produk. Tidak ada foto atau rekaman yang disimpan.</p>
         </div>
@@ -1212,207 +1348,70 @@
 
 <!-- ═══════════════════════════════════════ SCRIPTS ═══ -->
 <script>
-// ══════════════════════════════════════════════════════
-//  PWA ENGINE
-// ══════════════════════════════════════════════════════
-let swRegistration = null;
-let pwaInstallEvent = null;
-let pwaNewWorker = null;
+// ══════════════════════════════
+// SPLASH SCREEN LOGIC
+// ══════════════════════════════
+(function() {
+    const splash = document.getElementById('splash-screen');
+    const app = document.getElementById('app');
+    const progressBar = document.getElementById('splash-progress');
+    const statusText = document.getElementById('splash-status');
 
-// ── Register Service Worker ──────────────────────────
-async function registerServiceWorker() {
-    if (!('serviceWorker' in navigator)) {
-        console.warn('[PWA] Service Worker tidak didukung');
-        return;
-    }
+    const steps = [
+        { pct: 15, label: 'Memuat konfigurasi toko...' },
+        { pct: 30, label: 'Mengambil data inventaris...' },
+        { pct: 50, label: 'Memuat data transaksi...' },
+        { pct: 68, label: 'Menyiapkan tampilan kasir...' },
+        { pct: 82, label: 'Memeriksa status stok...' },
+        { pct: 92, label: 'Memfinalisasi sistem...' },
+        { pct: 100, label: 'Siap digunakan! ✓' }
+    ];
+
+    // Update logo letter from config if available
     try {
-        swRegistration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
-        console.log('[PWA] Service Worker terdaftar:', swRegistration.scope);
+        const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
+        const storeName = cfg.storeName || 'DheKasir';
+        const letter = storeName[0].toUpperCase();
+        const logoLetter = document.getElementById('splash-logo-letter');
+        const appName = document.getElementById('splash-app-name');
+        if (logoLetter) logoLetter.textContent = letter;
+        if (appName) appName.textContent = storeName;
+        // Apply dark mode if saved
+        if (cfg.darkMode) document.body.classList.add('dark');
+    } catch(e) {}
 
-        // Cek update tersedia
-        swRegistration.addEventListener('updatefound', () => {
-            pwaNewWorker = swRegistration.installing;
-            pwaNewWorker.addEventListener('statechange', () => {
-                if (pwaNewWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // Ada update tersedia
-                    showPwaUpdateBanner();
-                }
-            });
-        });
+    let stepIdx = 0;
 
-        // Dengarkan pesan dari SW (background sync)
-        navigator.serviceWorker.addEventListener('message', event => {
-            if (event.data?.type === 'SYNC_CLOUD') {
-                console.log('[PWA] Background sync triggered');
-            }
-        });
-
-        // Cek apakah update sudah menunggu
-        if (swRegistration.waiting) {
-            showPwaUpdateBanner();
+    function runStep() {
+        if (stepIdx >= steps.length) {
+            // All done — fade out splash, show app
+            setTimeout(() => {
+                splash.classList.add('fade-out');
+                app.style.opacity = '1';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                }, 650);
+            }, 300);
+            return;
         }
-
-    } catch (err) {
-        console.error('[PWA] Service Worker gagal:', err);
+        const step = steps[stepIdx];
+        progressBar.style.width = step.pct + '%';
+        statusText.style.opacity = '0';
+        setTimeout(() => {
+            statusText.textContent = step.label;
+            statusText.style.opacity = '1';
+        }, 120);
+        stepIdx++;
+        // Variable delay to feel realistic
+        const delays = [380, 320, 350, 280, 300, 250, 450];
+        setTimeout(runStep, delays[stepIdx - 1] || 300);
     }
-}
 
-// ── Install Prompt ───────────────────────────────────
-window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    pwaInstallEvent = e;
-    // Tampilkan banner install setelah 3 detik
-    setTimeout(() => {
-        if (!isPwaInstalled()) showPwaInstallBanner();
-    }, 3000);
-    // Tampilkan tombol install di sidebar
-    const sbInstall = document.getElementById('sb-install-btn');
-    if (sbInstall) sbInstall.style.display = 'flex';
-});
+    // Small initial delay so splash is visible
+    setTimeout(runStep, 500);
+})();
 
-window.addEventListener('appinstalled', () => {
-    pwaInstallEvent = null;
-    hidePwaInstallBanner();
-    updatePwaUI(true);
-    showToast('✓ DheKasir berhasil dipasang!');
-});
-
-function isPwaInstalled() {
-    return window.matchMedia('(display-mode: standalone)').matches ||
-           window.navigator.standalone === true;
-}
-
-async function pwaInstall() {
-    if (!pwaInstallEvent) {
-        // Jika sudah terpasang atau tidak ada prompt
-        if (isPwaInstalled()) {
-            showToast('Aplikasi sudah terpasang!');
-        } else {
-            showToast('Gunakan menu browser untuk "Tambahkan ke Layar Utama"');
-        }
-        return;
-    }
-    hidePwaInstallBanner();
-    pwaInstallEvent.prompt();
-    const { outcome } = await pwaInstallEvent.userChoice;
-    console.log('[PWA] Install outcome:', outcome);
-    if (outcome === 'accepted') {
-        pwaInstallEvent = null;
-    }
-}
-
-function pwaDissmissInstall() {
-    hidePwaInstallBanner();
-    localStorage.setItem('dk_pwa_install_dismissed', Date.now());
-}
-
-function showPwaInstallBanner() {
-    const dismissed = localStorage.getItem('dk_pwa_install_dismissed');
-    // Jangan tampilkan jika ditolak dalam 7 hari terakhir
-    if (dismissed && Date.now() - Number(dismissed) < 7 * 24 * 3600 * 1000) return;
-    const banner = document.getElementById('pwa-install-banner');
-    if (banner) banner.classList.add('show');
-}
-
-function hidePwaInstallBanner() {
-    const banner = document.getElementById('pwa-install-banner');
-    if (banner) banner.classList.remove('show');
-}
-
-// ── Update Banner ────────────────────────────────────
-function showPwaUpdateBanner() {
-    const banner = document.getElementById('pwa-update-banner');
-    if (banner) banner.classList.add('show');
-}
-
-function hidePwaUpdateBanner() {
-    const banner = document.getElementById('pwa-update-banner');
-    if (banner) banner.classList.remove('show');
-}
-
-function pwaUpdate() {
-    hidePwaUpdateBanner();
-    if (pwaNewWorker) {
-        pwaNewWorker.postMessage({ action: 'skipWaiting' });
-    } else if (swRegistration?.waiting) {
-        swRegistration.waiting.postMessage({ action: 'skipWaiting' });
-    }
-    // Reload setelah SW baru aktif
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
-    });
-    showToast('Memperbarui aplikasi...');
-    setTimeout(() => window.location.reload(), 1500);
-}
-
-// ── Offline / Online Detection ───────────────────────
-function handleOnlineStatus() {
-    const banner = document.getElementById('pwa-offline-banner');
-    const text = document.getElementById('pwa-offline-text');
-    if (!navigator.onLine) {
-        banner.classList.remove('online');
-        if (text) text.textContent = 'Tidak ada koneksi — Mode Offline Aktif';
-        banner.classList.add('show');
-    } else {
-        banner.classList.add('online');
-        if (text) text.textContent = 'Koneksi kembali — Semua data tersimpan';
-        banner.classList.add('show');
-        setTimeout(() => banner.classList.remove('show'), 3000);
-    }
-}
-
-window.addEventListener('online', handleOnlineStatus);
-window.addEventListener('offline', handleOnlineStatus);
-
-// ── PWA UI State ─────────────────────────────────────
-function updatePwaUI(installed) {
-    const pwaCard = document.getElementById('home-pwa-card');
-    const sbPwa = document.getElementById('sb-pwa-status');
-    const sbInstall = document.getElementById('sb-install-btn');
-    const settingsRow = document.getElementById('settings-pwa-row');
-    const statusText = document.getElementById('pwa-status-text');
-
-    if (installed) {
-        if (pwaCard) pwaCard.style.display = 'block';
-        if (sbPwa) sbPwa.style.display = 'inline-flex';
-        if (sbInstall) sbInstall.style.display = 'none';
-        if (statusText) {
-            statusText.textContent = 'Terpasang ✓';
-            statusText.className = 'text-[8px] font-black text-emerald-500 uppercase';
-        }
-    } else {
-        if (pwaCard) pwaCard.style.display = 'none';
-        if (sbPwa) sbPwa.style.display = 'none';
-    }
-}
-
-// ── Handle Deep Links dari Shortcut PWA ─────────────
-function handleDeepLinks() {
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get('tab');
-    const action = params.get('action');
-
-    if (tab && ['home','pos','items','stock','debts','data','settings'].includes(tab)) {
-        // Override tab yang akan ditampilkan
-        localStorage.setItem('dk_active_tab', tab);
-        if (action === 'add' && tab === 'items') {
-            setTimeout(() => openProductModal(), 500);
-        }
-    }
-}
-
-// ── Splash Screen ─────────────────────────────────────
-function hideSplash() {
-    const splash = document.getElementById('pwa-splash');
-    if (splash) {
-        splash.classList.add('hide');
-        setTimeout(() => { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 600);
-    }
-}
-
-// ══════════════════════════════════════════════════════
-//  APP STATE
-// ══════════════════════════════════════════════════════
+// ── State ─────────────────────────────────────────────────────────────
 let items      = JSON.parse(localStorage.getItem('dk_items'))      || [];
 let logs       = JSON.parse(localStorage.getItem('dk_logs'))       || [];
 let debts      = JSON.parse(localStorage.getItem('dk_debts'))      || [];
@@ -1425,9 +1424,11 @@ let payMethod = 'cash';
 let activePosCategory = 'Semua';
 let mainChart = null;
 let html5QrCode = null;
+
 let btDevice = null;
 let btCharacteristic = null;
 let btConnected = false;
+
 let lastReceiptData = null;
 let lastScannedCode = "";
 let lastScannedTime = 0;
@@ -1441,6 +1442,7 @@ const SCAN_COOLDOWN = 2500;
 // ── Scroll Lock ────────────────────────────────────────────────────────
 let _modalOpenCount = 0;
 let _scrollYBeforeLock = 0;
+
 function _lockBodyScroll() {
     _modalOpenCount++;
     if (_modalOpenCount === 1) {
@@ -1449,6 +1451,7 @@ function _lockBodyScroll() {
         document.body.style.top = `-${_scrollYBeforeLock}px`;
     }
 }
+
 function _unlockBodyScroll() {
     _modalOpenCount = Math.max(0, _modalOpenCount - 1);
     if (_modalOpenCount === 0) {
@@ -1460,9 +1463,12 @@ function _unlockBodyScroll() {
 
 // ── Sidebar ────────────────────────────────────────────────────────────
 function toggleSidebar() {
-    const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');
-    const isOpen=sb.classList.contains('open');
-    if(isOpen){closeSidebar();}else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');}
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('hamburger-btn');
+    const isOpen = sb.classList.contains('open');
+    if (isOpen) { closeSidebar(); }
+    else { sb.classList.add('open'); ov.classList.add('open'); btn.classList.add('open'); }
 }
 function closeSidebar() {
     document.getElementById('sidebar').classList.remove('open');
@@ -1482,34 +1488,59 @@ function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',cur
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const t=document.getElementById('toast');if(!t)return;t.innerText=m;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
 
+// ── Modal dengan Scroll Lock ───────────────────────────────────────────
 function openModal(id) {
-    const el=document.getElementById(id);
-    if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}
+    const el = document.getElementById(id);
+    if (el && el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+        _lockBodyScroll();
+    }
 }
+
 function closeModal(id) {
-    const el=document.getElementById(id);
-    if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}
+    const el = document.getElementById(id);
+    if (el && !el.classList.contains('hidden')) {
+        el.classList.add('hidden');
+        _unlockBodyScroll();
+    }
 }
+
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ── Tab Navigation ─────────────────────────────────────────────────────
 function switchTab(t) {
-    document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
-    const target=document.getElementById(`tab-${t}`);if(target)target.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-    const navBtn=document.getElementById(`n-${t}`);if(navBtn)navBtn.classList.add('active');
-    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
-    const sbBtn=document.getElementById(`sb-${t}`);if(sbBtn)sbBtn.classList.add('active');
-    localStorage.setItem('dk_active_tab',t);
-    if(t==='home')renderHome();if(t==='data')renderData();if(t==='items')renderItems();
-    if(t==='pos'){renderPos();}if(t==='debts')renderDebts();if(t==='stock')renderStockTab();
+    document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`tab-${t}`);
+    if (target) target.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    const navBtn = document.getElementById(`n-${t}`);
+    if (navBtn) navBtn.classList.add('active');
+
+    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b => b.classList.remove('active'));
+    const sbBtn = document.getElementById(`sb-${t}`);
+    if (sbBtn) sbBtn.classList.add('active');
+
+    localStorage.setItem('dk_active_tab', t);
+    if (t === 'home')  renderHome();
+    if (t === 'data')  renderData();
+    if (t === 'items') renderItems();
+    if (t === 'pos')   renderPos();
+    if (t === 'debts') renderDebts();
+    if (t === 'stock') renderStockTab();
 }
 
 // ── Categories ─────────────────────────────────────────────────────────
 function renderCategoryOptions(){const s=document.getElementById('p-category');if(!s)return;s.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<option value="${c}">${c}</option>`).join('');}
-function renderPosCategoryChips(){const c=document.getElementById('pos-category-chips');if(!c)return;c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');}
+function renderPosCategoryChips(){
+    const c=document.getElementById('pos-category-chips');if(!c)return;
+    c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');
+}
 function setPosCategory(c){activePosCategory=c;renderPosCategoryChips();renderPos();}
-function renderCategoryList(){const list=document.getElementById('category-list');list.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><span class="text-sm font-bold">${c}</span>${c!=='Umum'?`<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>`:''}</div>`).join('');}
+function renderCategoryList(){
+    const list=document.getElementById('category-list');
+    list.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><span class="text-sm font-bold">${c}</span>${c!=='Umum'?`<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>`:''}</div>`).join('');
+}
 function openCategoryModal(){renderCategoryList();openModal('modal-category');}
 function addCategory(){const input=document.getElementById('new-cat-name');const val=input.value.trim();if(!val)return showToast("Isi Nama!");if(categories.includes(val))return showToast("Sudah Ada!");categories.push(val);input.value='';saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
 function deleteCategory(name){categories=categories.filter(c=>c!==name);saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
@@ -1520,14 +1551,17 @@ function renderPos(){
     const q=(document.getElementById('pos-search')||{value:''}).value.toLowerCase();
     const grid=document.getElementById('pos-grid');if(!grid)return;
     const filtered=items.filter(i=>(i.name.toLowerCase().includes(q)||String(i.barcode).includes(q))&&(activePosCategory==='Semua'||i.category===activePosCategory));
-    grid.innerHTML=filtered.map(i=>{const inCart=cart.find(c=>c.id==i.id);return `<div onclick="${i.stock>0?`addToCart(${i.id})`:''}" class="card p-4 relative active:scale-95 transition-all ${i.stock<=0?'opacity-40 grayscale':'cursor-pointer'}">
-        ${inCart?`<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>`:''}
-        ${i.stock<=config.minStock&&i.stock>0?`<div class="absolute top-2 left-2 w-5 h-5 bg-amber-400 text-white rounded-full flex items-center justify-center text-[8px] font-black">!</div>`:''}
-        <div class="w-full aspect-square rounded-2xl flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div>
-        <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
-        <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
-        <p class="text-[8px] font-black ${i.stock<=0?'text-red-400':i.stock<=config.minStock?'text-amber-500':'text-muted'} mt-1">Stok: ${i.stock}</p>
-    </div>`;}).join('');
+    grid.innerHTML=filtered.map(i=>{
+        const inCart=cart.find(c=>c.id==i.id);
+        return `<div onclick="${i.stock>0?`addToCart(${i.id})`:''}" class="card p-4 relative active:scale-95 transition-all ${i.stock<=0?'opacity-40 grayscale':'cursor-pointer'}">
+            ${inCart?`<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>`:''}
+            ${i.stock<=config.minStock&&i.stock>0?`<div class="absolute top-2 left-2 w-5 h-5 bg-amber-400 text-white rounded-full flex items-center justify-center text-[8px] font-black">!</div>`:''}
+            <div class="w-full aspect-square rounded-2xl flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div>
+            <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
+            <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
+            <p class="text-[8px] font-black ${i.stock<=0?'text-red-400':i.stock<=config.minStock?'text-amber-500':'text-muted'} mt-1">Stok: ${i.stock}</p>
+        </div>`;
+    }).join('');
 }
 function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast("Stok Habis!");}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();}
 function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast("Maksimal!");}if(cart[idx].qty<=0)cart.splice(idx,1);updateCartUI();renderCartDetails();renderPos();}
@@ -1582,10 +1616,6 @@ async function finishCheckout(){
     logs.push(log);saveStorage();closeModal('modal-checkout');
     chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
     await syncCloud(log);
-    // Background sync jika offline
-    if(!navigator.onLine && swRegistration){
-        try{await swRegistration.sync.register('dk-sync-cloud');}catch(e){}
-    }
 }
 
 // ── Receipt ────────────────────────────────────────────────────────────
@@ -1618,8 +1648,11 @@ async function openScanner(mode='cart'){
     if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast("Wajib HTTPS!");
     flashOn=false;flashTrack=null;
     const fb=document.getElementById('flash-btn');if(fb){fb.disabled=true;fb.classList.remove('flash-on');}
-    const scannerEl=document.getElementById('modal-scanner');
-    if(scannerEl&&scannerEl.classList.contains('hidden')){scannerEl.classList.remove('hidden');_lockBodyScroll();}
+    const scannerEl = document.getElementById('modal-scanner');
+    if (scannerEl && scannerEl.classList.contains('hidden')) {
+        scannerEl.classList.remove('hidden');
+        _lockBodyScroll();
+    }
     if(!html5QrCode)html5QrCode=new Html5Qrcode("reader");
     html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{
         if(navigator.vibrate)navigator.vibrate(100);
@@ -1639,8 +1672,11 @@ async function closeScanner(){
     if(flashTrack&&flashOn){try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}}
     flashOn=false;flashTrack=null;
     if(html5QrCode){try{await html5QrCode.stop();}catch(e){}}
-    const scannerEl=document.getElementById('modal-scanner');
-    if(scannerEl&&!scannerEl.classList.contains('hidden')){scannerEl.classList.add('hidden');_unlockBodyScroll();}
+    const scannerEl = document.getElementById('modal-scanner');
+    if (scannerEl && !scannerEl.classList.contains('hidden')) {
+        scannerEl.classList.add('hidden');
+        _unlockBodyScroll();
+    }
 }
 async function toggleFlash(){if(!flashTrack)return showToast("Flash tidak tersedia!");try{flashOn=!flashOn;await flashTrack.applyConstraints({advanced:[{torch:flashOn}]});const btn=document.getElementById('flash-btn');if(btn)btn.classList.toggle('flash-on',flashOn);showToast(flashOn?"⚡ Flash Nyala":"Flash Mati");}catch(e){flashOn=!flashOn;showToast("Flash gagal!");}}
 
@@ -1681,6 +1717,7 @@ function checkStockAlerts(){
     if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}
     return{critical,low};
 }
+
 function openNotifPanel(){
     const{critical,low}=checkStockAlerts();
     const list=document.getElementById('notif-list');let html='';
@@ -1689,6 +1726,7 @@ function openNotifPanel(){
     low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">Menipis • Sisa ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase">Isi</button></div>`;});
     list.innerHTML=html;openModal('modal-notif');
 }
+
 function renderStockTab(){
     const minS=config.minStock,critical=items.filter(i=>i.stock<=0).length,low=items.filter(i=>i.stock>0&&i.stock<=minS).length,total=items.length;
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
@@ -1743,6 +1781,7 @@ function renderStockHistory(){
     }).join('');
 }
 function clearStockHistory(){if(!confirm('Hapus semua riwayat stok?'))return;stockHistory=[];saveStorage();renderStockHistory();showToast("Riwayat Dihapus");}
+
 function openStockModal(type,preSelectId=null){
     currentStockMoveType=type;
     const title=document.getElementById('stock-move-title'),btn=document.getElementById('sm-btn');
@@ -1757,6 +1796,7 @@ function openStockModal(type,preSelectId=null){
 }
 function updateSmCurrentStock(){const sel=document.getElementById('sm-product');const id=sel?.value;const item=items.find(i=>String(i.id)===String(id));const el=document.getElementById('sm-current-stock');if(el)el.innerText=item?item.stock+' unit':'—';}
 function submitStockMove(){const sel=document.getElementById('sm-product');const id=sel?.value;const qty=Number(document.getElementById('sm-qty').value);const note=document.getElementById('sm-note').value;if(!id||!qty||qty<=0)return showToast("Isi data dengan benar!");const item=items.find(i=>String(i.id)===String(id));if(!item)return showToast("Produk tidak ditemukan!");if(currentStockMoveType==='out'&&qty>item.stock)return showToast("Stok tidak cukup!");if(currentStockMoveType==='in')item.stock+=qty;else item.stock-=qty;addStockHistory(item.id,item.name,currentStockMoveType,qty,note||`${currentStockMoveType==='in'?'Stok masuk':'Stok keluar'} manual`);saveStorage();showToast(currentStockMoveType==='in'?`+${qty} stok ditambahkan!`:`-${qty} stok dikurangi!`);closeModal('modal-stock-move');renderStockTab();renderItems();renderPos();checkStockAlerts();}
+
 function openOpnameModal(){
     opnameData={};
     const list=document.getElementById('opname-list');
@@ -1776,11 +1816,17 @@ function openOpnameModal(){
     openModal('modal-opname');
 }
 function submitOpname(){const entries=Object.values(opnameData);if(entries.length===0)return showToast("Belum ada data opname!");let changed=0;entries.forEach(e=>{const item=items.find(i=>i.id==e.id);if(!item)return;const diff=e.physical-e.system;if(diff===0)return;addStockHistory(item.id,item.name,'opname',Math.abs(diff),`Opname: sistem ${e.system} → fisik ${e.physical} (${diff>0?'+':''}${diff})`);item.stock=e.physical;changed++;});if(changed===0)return showToast("Tidak ada perubahan stok!");saveStorage();showToast(`Opname selesai — ${changed} produk diperbarui`);closeModal('modal-opname');renderStockTab();renderItems();renderPos();checkStockAlerts();}
+
 function openMinStockSettings(){document.getElementById('min-stock-input').value=config.minStock||5;openModal('modal-minstock');}
 function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast("Minimum 1!");config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast("Batas Minimum Disimpan!");checkStockAlerts();}
 
 // ── Settings ───────────────────────────────────────────────────────────
-function toggleDarkMode(){config.darkMode=document.getElementById('dark-mode-toggle').checked;document.body.classList.toggle('dark',config.darkMode);localStorage.setItem('dk_config',JSON.stringify(config));renderHome();}
+function toggleDarkMode(){
+    config.darkMode=document.getElementById('dark-mode-toggle').checked;
+    document.body.classList.toggle('dark',config.darkMode);
+    localStorage.setItem('dk_config',JSON.stringify(config));
+    renderHome();
+}
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url;}
 async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast("Simpan Berhasil!");syncCloud({type:'settings',id:'app_cfg',data:config});}
 function loadSettings(){
@@ -1792,16 +1838,17 @@ function loadSettings(){
     set('profile-address-display',s.storeAddress);set('min-stock-display',s.minStock||5);
     set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||'Alamat belum diatur');
     const letter=(s.storeName||'D')[0].toUpperCase();
-    const updateLogo=(el,isImg)=>{if(!el)return;if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}else{el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;}};
+    const updateLogo=(el,isImg)=>{
+        if(!el)return;
+        if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}
+        else{el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;}
+    };
     updateLogo(document.getElementById('app-logo'),true);
     updateLogo(document.getElementById('sb-logo'),true);
     const pp=document.getElementById('profile-logo-preview');
     if(pp){if(s.logo){pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}}
     const lpCfg=document.getElementById('logo-preview-cfg');
     if(lpCfg){if(s.logo){lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}}
-    // Update splash logo
-    const splashLogo=document.getElementById('pwa-splash');
-    if(splashLogo)splashLogo.querySelector('.splash-logo').innerText=letter;
 }
 function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
@@ -1859,7 +1906,7 @@ function renderData(){
 function exportExcel(){if(typeof XLSX==='undefined')return showToast("Library XLSX belum dimuat!");const filtered=getFilteredLogs();if(filtered.length===0)return showToast("Tidak ada data!");try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),rawIDR(l.amount),rawIDR(l.total_cost),rawIDR(l.amount)-rawIDR(l.total_cost),rawIDR(l.pay_cash),rawIDR(l.pay_qris),rawIDR(l.change),l.method]);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);txRows.push([],[" TOTAL","","","",tAmt,tCost,tAmt-tCost,filtered.reduce((a,l)=>a+rawIDR(l.pay_cash),0),filtered.reduce((a,l)=>a+rawIDR(l.pay_qris),0),filtered.reduce((a,l)=>a+rawIDR(l.change),0),""]);const wsTx=XLSX.utils.aoa_to_sheet([...txHeader,...txRows]);const invHeader=[["ID","Barcode","Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]];const invRows=items.map(i=>[i.id,i.barcode||'-',i.name,i.category||'Umum',rawIDR(i.cost),rawIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',rawIDR(i.cost)*i.stock]);const wsInv=XLSX.utils.aoa_to_sheet([...invHeader,...invRows]);const shHeader=[["ID","Produk","Tipe","Qty","Keterangan","Tanggal"]];const shRows=stockHistory.map(h=>[h.id,h.productName,h.type==='in'?'Masuk':h.type==='out'?'Keluar':'Opname',h.qty,h.note,new Date(h.date).toLocaleString('id-ID')]);const wsSh=XLSX.utils.aoa_to_sheet([...shHeader,...shRows]);const debtHeader=[["ID","Pelanggan","Total","Terbayar","Sisa","Jatuh Tempo","Status"]];const debtRows=debts.map(d=>[d.id,d.customer,rawIDR(d.total),rawIDR(d.paid),rawIDR(d.balance),d.dueDate,d.status]);const wsDebt=XLSX.utils.aoa_to_sheet([...debtHeader,...debtRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,wsTx,"Transaksi");XLSX.utils.book_append_sheet(wb,wsInv,"Inventaris");XLSX.utils.book_append_sheet(wb,wsSh,"Riwayat Stok");XLSX.utils.book_append_sheet(wb,wsDebt,"Hutang");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.xlsx`);showToast("Excel Berhasil Diunduh!");}catch(e){console.error(e);showToast("Gagal Export Excel!");}}
 
 // ── Export PDF ─────────────────────────────────────────────────────────
-function exportPDF(){if(typeof window.jspdf==='undefined')return showToast("Library jsPDF belum dimuat!");const filtered=getFilteredLogs();if(filtered.length===0)return showToast("Tidak ada data!");try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!=='LUNAS').reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:'Total Omzet',value:formatIDR(tAmt),color:pc},{label:'Total Profit',value:formatIDR(tAmt-tCost),color:sc},{label:'Total Piutang',value:formatIDR(tDebt),color:dc},{label:'Jml Transaksi',value:`${filtered.length} Trx`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('LAPORAN TRANSAKSI',M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`Periode: ${f}`:'Semua Periode',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Tanggal","Item","Total","Profit","Metode"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.addPage();hdr(doc.internal.getNumberOfPages());doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,10,3,3,'F');doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('INVENTARIS & STATUS STOK',M+4,33);doc.autoTable({head:[["Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]],body:items.map(i=>[i.name,i.category||'Umum',formatIDR(i.cost),formatIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',formatIDR(rawIDR(i.cost)*i.stock)]),startY:40,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didParseCell:(d)=>{if(d.section==='body'&&d.column.index===5){const s=d.cell.raw;if(s==='Habis'){d.cell.styles.textColor=dc;d.cell.styles.fontStyle='bold';}else if(s==='Menipis'){d.cell.styles.textColor=[217,119,6];d.cell.styles.fontStyle='bold';}else{d.cell.styles.textColor=sc;}}},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});const tp=doc.internal.getNumberOfPages();for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(160,160,180);doc.text(`© ${sn} — DheKasir v1.4 PWA`,PW/2,PH-6,{align:'center'});doc.line(M,PH-9,PW-M,PH-9);}doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast("PDF Berhasil Diunduh!");}catch(e){console.error(e);showToast("Gagal Export PDF!");}}
+function exportPDF(){if(typeof window.jspdf==='undefined')return showToast("Library jsPDF belum dimuat!");const filtered=getFilteredLogs();if(filtered.length===0)return showToast("Tidak ada data!");try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!=='LUNAS').reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:'Total Omzet',value:formatIDR(tAmt),color:pc},{label:'Total Profit',value:formatIDR(tAmt-tCost),color:sc},{label:'Total Piutang',value:formatIDR(tDebt),color:dc},{label:'Jml Transaksi',value:`${filtered.length} Trx`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('LAPORAN TRANSAKSI',M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`Periode: ${f}`:'Semua Periode',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Tanggal","Item","Total","Profit","Metode"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.addPage();hdr(doc.internal.getNumberOfPages());doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,10,3,3,'F');doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('INVENTARIS & STATUS STOK',M+4,33);doc.autoTable({head:[["Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]],body:items.map(i=>[i.name,i.category||'Umum',formatIDR(i.cost),formatIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',formatIDR(rawIDR(i.cost)*i.stock)]),startY:40,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didParseCell:(d)=>{if(d.section==='body'&&d.column.index===5){const s=d.cell.raw;if(s==='Habis'){d.cell.styles.textColor=dc;d.cell.styles.fontStyle='bold';}else if(s==='Menipis'){d.cell.styles.textColor=[217,119,6];d.cell.styles.fontStyle='bold';}else{d.cell.styles.textColor=sc;}}},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});const tp=doc.internal.getNumberOfPages();for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(160,160,180);doc.text(`© ${sn} — DheKasir v1.4`,PW/2,PH-6,{align:'center'});doc.line(M,PH-9,PW-M,PH-9);}doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast("PDF Berhasil Diunduh!");}catch(e){console.error(e);showToast("Gagal Export PDF!");}}
 
 // ── Debts ──────────────────────────────────────────────────────────────
 function renderDebts(){
@@ -1881,42 +1928,19 @@ async function payInstallment(){const amt=Number(document.getElementById('ins-am
 async function findWritableCharacteristic(server){const knownServiceUUIDs=['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb'];let services=[];try{services=await server.getPrimaryServices();}catch(e){for(const uuid of knownServiceUUIDs){try{const svc=await server.getPrimaryService(uuid);if(svc){services=[svc];break;}}catch(e2){}}}for(const service of services){let characteristics=[];try{characteristics=await service.getCharacteristics();}catch(e){continue;}for(const char of characteristics){const p=char.properties;if(p.write||p.writeWithoutResponse)return char;}}return null;}
 async function connectPrinter(){const statusEl=document.getElementById('printer-status');if(statusEl){statusEl.innerText='CONNECTING...';statusEl.className='text-[8px] font-black printer-connecting uppercase';}try{if(btDevice&&btDevice.gatt.connected){showToast("Printer sudah terhubung!");if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}return;}btDevice=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb']});btDevice.addEventListener('gattserverdisconnected',()=>{btConnected=false;btCharacteristic=null;const s=document.getElementById('printer-status');if(s){s.innerText='OFFLINE';s.className='text-[8px] font-black text-muted uppercase';}showToast("Printer terputus");});const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Tidak ditemukan karakteristik writable.");btConnected=true;if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}showToast(`✓ Printer "${btDevice.name||'Unknown'}" terhubung!`);}catch(e){btConnected=false;btCharacteristic=null;if(statusEl){statusEl.innerText='OFFLINE';statusEl.className='text-[8px] font-black text-muted uppercase';}if(e.name!=='NotFoundError'){showToast("Gagal: "+(e.message||"Bluetooth error"));}}}
 async function btWrite(data){if(!btCharacteristic)throw new Error("Tidak ada karakteristik printer");if(btDevice&&!btDevice.gatt.connected){showToast("Reconnecting printer...");try{const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Reconnect gagal");}catch(e){throw new Error("Printer terputus, hubungkan ulang!");}}const CHUNK=512;const useWithoutResponse=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithoutResponse)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){if(CHUNK>20){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}else throw e;}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
-function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());const dtStr=dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});text(dtStr);lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text('ITEM PEMBELIAN');lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);const dots='.'.repeat(Math.max(1,32-left.length-right.length));text(left+dots+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const totalLeft='TOTAL';const totalRight=formatIDRRaw(d.amount);const totalSpaces=' '.repeat(Math.max(1,32-totalLeft.length-totalRight.length));text(totalLeft+totalSpaces+totalRight);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text('*** HUTANG / BON ***');lf();}else{if(d.pay_cash>0){const l='Tunai',r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l='QRIS/Transfer',r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cL='Kembalian',cR=formatIDRRaw(d.change);text(cL+' '.repeat(Math.max(1,32-cL.length-cR.length))+cR);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text('Terima kasih atas kunjungan Anda!');lf();text('Barang dibeli tidak dapat ditukar.');lf();text('* DheKasir v1.4 PWA *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
+function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());const dtStr=dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});text(dtStr);lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text('ITEM PEMBELIAN');lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);const dots='.'.repeat(Math.max(1,32-left.length-right.length));text(left+dots+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const totalLeft='TOTAL';const totalRight=formatIDRRaw(d.amount);const totalSpaces=' '.repeat(Math.max(1,32-totalLeft.length-totalRight.length));text(totalLeft+totalSpaces+totalRight);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text('*** HUTANG / BON ***');lf();}else{if(d.pay_cash>0){const l='Tunai',r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l='QRIS/Transfer',r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cL='Kembalian',cR=formatIDRRaw(d.change);text(cL+' '.repeat(Math.max(1,32-cL.length-cR.length))+cR);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text('Terima kasih atas kunjungan Anda!');lf();text('Barang dibeli tidak dapat ditukar.');lf();text('* DheKasir v1.4 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 async function printBluetoothReceipt(){if(!lastReceiptData)return showToast("Tidak ada data struk!");if(!btCharacteristic&&!btDevice){showToast("Hubungkan printer dulu di Pengaturan!");return;}showToast("Mengirim ke printer...");try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){showToast("Gagal cetak: "+(e.message||"Error"));btCharacteristic=null;btConnected=false;const s=document.getElementById('printer-status');if(s){s.innerText='ERROR';s.className='text-[8px] font-black text-rose-400 uppercase';}}}
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
-// ══════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════
-window.onload = async () => {
-    // 1. Registrasi Service Worker
-    await registerServiceWorker();
-
-    // 2. Handle deep links dari PWA shortcuts
-    handleDeepLinks();
-
-    // 3. Load settings
+// ── Init ───────────────────────────────────────────────────────────────
+window.onload = () => {
     loadSettings();
-
-    // 4. Tentukan tab awal
     const saved = localStorage.getItem('dk_active_tab') || 'home';
     switchTab(saved);
     renderCategoryOptions();
     renderPosCategoryChips();
     checkStockAlerts();
-
-    // 5. Cek PWA status
-    const isInstalled = isPwaInstalled();
-    updatePwaUI(isInstalled);
-
-    // 6. Deteksi offline saat pertama load
-    if (!navigator.onLine) {
-        setTimeout(handleOnlineStatus, 500);
-    }
-
-    // 7. Sembunyikan splash screen
-    setTimeout(hideSplash, 1400);
 };
 </script>
 </body>
