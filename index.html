@@ -14,68 +14,323 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* ── CSS Variables — Light & Dark ────────────────────────── */
         :root {
-            --bg: #f8fafc;
+            --bg: #f0f2f8;
             --card: #ffffff;
-            --card-border: #f1f5f9;
-            --text: #1e293b;
-            --text-muted: #94a3b8;
+            --card-border: #e8ecf4;
+            --text: #1a1f36;
+            --text-muted: #8892aa;
             --primary: #4f46e5;
+            --primary-soft: rgba(79,70,229,0.10);
             --input-bg: #f8fafc;
             --input-border: #e2e8f0;
-            --nav-bg: rgba(255,255,255,0.97);
-            --header-bg: rgba(255,255,255,0.8);
-            --divider: #f1f5f9;
-            --surface: #f1f5f9;
-            --surface-hover: #e2e8f0;
+            --nav-bg: rgba(255,255,255,0.98);
+            --header-bg: rgba(255,255,255,0.95);
+            --divider: #e8ecf4;
+            --surface: #f0f2f8;
+            --surface-hover: #e4e8f2;
+            --sidebar-bg: #ffffff;
+            --sidebar-overlay: rgba(15,20,40,0.45);
         }
         .dark {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --card-border: #334155;
-            --text: #f1f5f9;
-            --text-muted: #64748b;
+            --bg: #0d1117;
+            --card: #161b27;
+            --card-border: #242c3d;
+            --text: #e8edf8;
+            --text-muted: #556070;
             --primary: #6366f1;
-            --input-bg: #0f172a;
-            --input-border: #334155;
-            --nav-bg: rgba(15,23,42,0.97);
-            --header-bg: rgba(15,23,42,0.85);
-            --divider: #1e293b;
-            --surface: #0f172a;
-            --surface-hover: #334155;
+            --primary-soft: rgba(99,102,241,0.12);
+            --input-bg: #0d1117;
+            --input-border: #242c3d;
+            --nav-bg: rgba(13,17,23,0.98);
+            --header-bg: rgba(13,17,23,0.92);
+            --divider: #161b27;
+            --surface: #0d1117;
+            --surface-hover: #242c3d;
+            --sidebar-bg: #161b27;
+            --sidebar-overlay: rgba(0,0,0,0.65);
         }
 
-        /* ── Base ─────────────────────────────────────────────────── */
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
             color: var(--text);
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Card ────────────────────────────────────────────────── */
+        /* ── Card ── */
         .card {
             background: var(--card);
             border: 1px solid var(--card-border);
-            border-radius: 28px;
+            border-radius: 20px;
             transition: background 0.3s, border-color 0.3s;
         }
 
-        /* ── Header ──────────────────────────────────────────────── */
-        header {
-            background: var(--header-bg) !important;
-            border-bottom-color: var(--card-border) !important;
+        /* ══════════════════════════════
+           HEADER — fresh redesign
+        ══════════════════════════════ */
+        #app-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: var(--header-bg);
+            border-bottom: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 0 16px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s, border-color 0.3s;
         }
 
-        /* ── Nav ─────────────────────────────────────────────────── */
-        nav {
-            background: var(--nav-bg) !important;
-            border-top-color: var(--card-border) !important;
+        /* Hamburger button */
+        #hamburger-btn {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: var(--card);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        #hamburger-btn:active { transform: scale(0.92); }
+        #hamburger-btn .bar {
+            display: block; width: 16px; height: 1.5px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        #hamburger-btn .bars { display: flex; flex-direction: column; gap: 4px; }
+        #hamburger-btn.open .bar:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+        #hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+        /* Header center brand */
+        .header-brand {
+            display: flex; align-items: center; gap: 9px;
+            position: absolute; left: 50%; transform: translateX(-50%);
+        }
+        .header-logo {
+            width: 32px; height: 32px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 14px; font-weight: 900;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .header-title {
+            font-size: 15px; font-weight: 800;
+            color: var(--text);
+            max-width: 110px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* ── Inputs — unified via CSS vars ───────────────────────── */
+        /* Header right actions */
+        .header-actions { display: flex; align-items: center; gap: 8px; }
+        .hdr-btn {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+            background: var(--card);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+            position: relative;
+        }
+        .hdr-btn:active { transform: scale(0.92); }
+        .hdr-btn.primary-action {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-color: transparent;
+            color: #fff;
+            width: 42px; height: 38px;
+            box-shadow: 0 3px 10px rgba(79,70,229,0.35);
+        }
+
+        /* ══════════════════════════════
+           SIDEBAR DRAWER
+        ══════════════════════════════ */
+        #sidebar-overlay {
+            position: fixed; inset: 0; z-index: 80;
+            background: var(--sidebar-overlay);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        #sidebar-overlay.open { opacity: 1; pointer-events: all; }
+
+        #sidebar {
+            position: fixed; top: 0; left: 0; bottom: 0;
+            width: 272px;
+            background: var(--sidebar-bg);
+            z-index: 90;
+            transform: translateX(-100%);
+            transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+            display: flex; flex-direction: column;
+            border-right: 1px solid var(--card-border);
+        }
+        #sidebar.open { transform: translateX(0); }
+
+        .sidebar-header {
+            padding: 52px 20px 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .sidebar-store-logo {
+            width: 52px; height: 52px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 22px; font-weight: 900;
+            overflow: hidden; margin-bottom: 12px;
+            box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+        }
+        .sidebar-store-name {
+            font-size: 16px; font-weight: 800; margin-bottom: 2px;
+        }
+        .sidebar-store-addr {
+            font-size: 11px; color: var(--text-muted); font-weight: 500;
+        }
+        .sidebar-version {
+            display: inline-flex; align-items: center; gap: 4px;
+            margin-top: 8px;
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-size: 9px; font-weight: 800;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 3px 8px; border-radius: 6px;
+        }
+
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 12px; }
+        .sidebar-section-label {
+            font-size: 9px; font-weight: 900;
+            text-transform: uppercase; letter-spacing: 0.1em;
+            color: var(--text-muted);
+            padding: 12px 8px 6px;
+        }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 12px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: var(--text-muted);
+            font-size: 13px; font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .sidebar-item:active { transform: scale(0.97); }
+        .sidebar-item.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .sidebar-item:not(.active):hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+        .sidebar-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+            background: var(--surface);
+            transition: background 0.15s;
+        }
+        .sidebar-item.active .sidebar-icon {
+            background: var(--primary);
+            color: #fff;
+        }
+        .sidebar-badge {
+            margin-left: auto;
+            background: #ef4444;
+            color: #fff;
+            font-size: 9px; font-weight: 800;
+            min-width: 18px; height: 18px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 5px;
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--card-border);
+        }
+        .sidebar-dark-toggle {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: var(--surface);
+            cursor: pointer;
+        }
+        .sidebar-dark-toggle span {
+            font-size: 12px; font-weight: 700; color: var(--text-muted);
+        }
+        .sidebar-dark-toggle .toggle-left {
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        /* ══════════════════════════════
+           BOTTOM NAV — redesign
+        ══════════════════════════════ */
+        #bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            max-width: 480px; margin: 0 auto;
+            background: var(--nav-bg);
+            border-top: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 50;
+            padding: 8px 8px 20px;
+            display: flex; align-items: center; justify-content: space-around;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 3px; padding: 6px 10px; border-radius: 14px;
+            cursor: pointer; transition: all 0.2s;
+            color: var(--text-muted);
+            font-size: 9px; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.04em;
+            min-width: 52px; position: relative;
+        }
+        .nav-item i { font-size: 18px; transition: all 0.2s; }
+        .nav-item.active {
+            color: var(--primary);
+        }
+        .nav-item.active i { transform: translateY(-1px); }
+        .nav-item-pill {
+            position: absolute; bottom: -2px;
+            width: 20px; height: 3px;
+            border-radius: 2px;
+            background: var(--primary);
+            opacity: 0;
+            transition: opacity 0.2s, width 0.2s;
+        }
+        .nav-item.active .nav-item-pill { opacity: 1; }
+        .nav-dot {
+            position: absolute; top: 4px; right: 8px;
+            width: 7px; height: 7px;
+            background: #ef4444; border-radius: 50%;
+            border: 1.5px solid var(--nav-bg);
+        }
+
+        /* ── Tab content ── */
+        .tab-content { display: none; padding: 16px 16px 110px; }
+        .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+        /* ── Scrollbar ── */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* ── Inputs ── */
         input, select, textarea {
             background: var(--input-bg) !important;
             color: var(--text) !important;
@@ -85,211 +340,299 @@
         input::placeholder, textarea::placeholder { color: var(--text-muted) !important; }
         select option { background: var(--card); color: var(--text); }
 
-        /* ── Modal Sheets ────────────────────────────────────────── */
+        /* ── Modal Sheets ── */
         .modal-sheet {
             background: var(--card) !important;
             transition: background 0.3s;
         }
 
-        /* ── Surface (stat cards, list items bg) ─────────────────── */
-        .surface {
-            background: var(--surface) !important;
-            transition: background 0.3s;
-        }
+        /* ── Surface ── */
+        .surface { background: var(--surface) !important; transition: background 0.3s; }
         .surface-hover:hover { background: var(--surface-hover) !important; }
-
-        /* ── Divider ─────────────────────────────────────────────── */
         .dk-divider { border-color: var(--card-border) !important; }
-
-        /* ── Text helpers ────────────────────────────────────────── */
         .text-muted { color: var(--text-muted) !important; }
 
-        /* ── Gradient Brand ──────────────────────────────────────── */
+        /* ── Gradient ── */
         .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
 
-        /* ── Tab Animation ───────────────────────────────────────── */
-        .tab-content { display: none; padding-bottom: 120px; }
-        .tab-content.active { display: block; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        /* ── Scanner ── */
+        #reader { border-radius: 24px; overflow: hidden; background: #000; border: none !important; }
 
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        #reader { border-radius: 28px; overflow: hidden; background: #000; border: none !important; }
-
-        /* ── Receipt (print only — always light) ─────────────────── */
+        /* ── Receipt ── */
         .receipt-paper {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 12px;
-            line-height: 1.55;
-            color: #111;
-            background: #fff;
-            width: 100%;
+            font-size: 12px; line-height: 1.55;
+            color: #111; background: #fff; width: 100%;
         }
-        .receipt-paper .rec-header { text-align: center; padding-bottom: 8px; border-bottom: 1px dashed #bbb; margin-bottom: 8px; }
-        .receipt-paper .rec-logo { display: flex; justify-content: center; align-items: center; margin-bottom: 6px; }
-        .receipt-paper .rec-logo img { max-height: 52px; max-width: 120px; object-fit: contain; }
-        .receipt-paper .rec-logo-placeholder { width: 48px; height: 48px; background: #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .receipt-paper .rec-storename { font-size: 15px; font-weight: 900; font-family: 'Plus Jakarta Sans', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; margin: 0; }
-        .receipt-paper .rec-addr { font-size: 10px; color: #555; margin: 1px 0 0; }
-        .receipt-paper .rec-phone { font-size: 10px; color: #555; margin: 1px 0; }
-        .receipt-paper .rec-meta { font-size: 9px; color: #888; margin-top: 4px; }
-        .receipt-paper .rec-divider { border: none; border-top: 1px dashed #bbb; margin: 6px 0; }
-        .receipt-paper .rec-section-title { font-size: 9px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin: 4px 0 3px; }
-        .receipt-paper .rec-item-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 1px 0; }
-        .receipt-paper .rec-item-name { flex: 1; padding-right: 8px; word-break: break-word; }
-        .receipt-paper .rec-item-subtotal { white-space: nowrap; font-weight: 700; }
-        .receipt-paper .rec-item-detail { font-size: 10px; color: #666; padding-left: 6px; }
-        .receipt-paper .rec-total-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 900; font-family: 'Plus Jakarta Sans', sans-serif; padding: 4px 0; }
-        .receipt-paper .rec-pay-row { display: flex; justify-content: space-between; font-size: 11px; color: #444; padding: 1px 0; }
-        .receipt-paper .rec-change-row { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; border-top: 1px dotted #bbb; padding: 4px 0 0; margin-top: 3px; }
-        .receipt-paper .rec-footer { text-align: center; font-size: 9px; color: #999; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #bbb; }
-        .receipt-paper .rec-debt-badge { display: inline-block; background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; border-radius: 6px; font-size: 11px; font-weight: 700; padding: 3px 12px; margin: 4px auto; font-family: 'Plus Jakarta Sans', sans-serif; text-align: center; }
+        .receipt-paper .rec-header { text-align:center; padding-bottom:8px; border-bottom:1px dashed #bbb; margin-bottom:8px; }
+        .receipt-paper .rec-logo { display:flex; justify-content:center; align-items:center; margin-bottom:6px; }
+        .receipt-paper .rec-logo img { max-height:52px; max-width:120px; object-fit:contain; }
+        .receipt-paper .rec-logo-placeholder { width:48px; height:48px; background:#4f46e5; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:22px; font-weight:900; font-family:'Plus Jakarta Sans',sans-serif; }
+        .receipt-paper .rec-storename { font-size:15px; font-weight:900; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0.5px; text-transform:uppercase; margin:0; }
+        .receipt-paper .rec-addr { font-size:10px; color:#555; margin:1px 0 0; }
+        .receipt-paper .rec-phone { font-size:10px; color:#555; margin:1px 0; }
+        .receipt-paper .rec-meta { font-size:9px; color:#888; margin-top:4px; }
+        .receipt-paper .rec-divider { border:none; border-top:1px dashed #bbb; margin:6px 0; }
+        .receipt-paper .rec-section-title { font-size:9px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:0.08em; margin:4px 0 3px; }
+        .receipt-paper .rec-item-row { display:flex; justify-content:space-between; align-items:flex-start; padding:1px 0; }
+        .receipt-paper .rec-item-name { flex:1; padding-right:8px; word-break:break-word; }
+        .receipt-paper .rec-item-subtotal { white-space:nowrap; font-weight:700; }
+        .receipt-paper .rec-item-detail { font-size:10px; color:#666; padding-left:6px; }
+        .receipt-paper .rec-total-row { display:flex; justify-content:space-between; font-size:14px; font-weight:900; font-family:'Plus Jakarta Sans',sans-serif; padding:4px 0; }
+        .receipt-paper .rec-pay-row { display:flex; justify-content:space-between; font-size:11px; color:#444; padding:1px 0; }
+        .receipt-paper .rec-change-row { display:flex; justify-content:space-between; font-size:12px; font-weight:700; border-top:1px dotted #bbb; padding:4px 0 0; margin-top:3px; }
+        .receipt-paper .rec-footer { text-align:center; font-size:9px; color:#999; margin-top:8px; padding-top:6px; border-top:1px dashed #bbb; }
+        .receipt-paper .rec-debt-badge { display:inline-block; background:#fef2f2; color:#dc2626; border:1px solid #fca5a5; border-radius:6px; font-size:11px; font-weight:700; padding:3px 12px; margin:4px auto; font-family:'Plus Jakarta Sans',sans-serif; text-align:center; }
         @media print {
-            body > *:not(#print-area) { display: none !important; }
-            #print-area { display: block !important; position: fixed; top: 0; left: 0; width: 80mm; }
+            body > *:not(#print-area) { display:none !important; }
+            #print-area { display:block !important; position:fixed; top:0; left:0; width:80mm; }
         }
 
-        /* ── Stock Badges ────────────────────────────────────────── */
-        .stock-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
-        .badge-in     { background: #d1fae5; color: #059669; }
-        .badge-out    { background: #fee2e2; color: #dc2626; }
-        .badge-opname { background: #e0e7ff; color: #4338ca; }
-        .badge-critical { background: #fef2f2; color: #dc2626; }
-        .badge-low    { background: #fffbeb; color: #d97706; }
-        .badge-ok     { background: #f0fdf4; color: #16a34a; }
+        /* ── Stock Badges ── */
+        .stock-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:20px; font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; }
+        .badge-in     { background:#d1fae5; color:#059669; }
+        .badge-out    { background:#fee2e2; color:#dc2626; }
+        .badge-opname { background:#e0e7ff; color:#4338ca; }
+        .badge-critical { background:#fef2f2; color:#dc2626; }
+        .badge-low    { background:#fffbeb; color:#d97706; }
+        .badge-ok     { background:#f0fdf4; color:#16a34a; }
+        .dark .badge-in     { background:#064e3b; color:#6ee7b7; }
+        .dark .badge-out    { background:#450a0a; color:#fca5a5; }
+        .dark .badge-opname { background:#1e1b4b; color:#a5b4fc; }
+        .dark .badge-critical { background:#450a0a; color:#fca5a5; }
+        .dark .badge-low    { background:#422006; color:#fcd34d; }
+        .dark .badge-ok     { background:#052e16; color:#86efac; }
 
-        .dark .badge-in     { background: #064e3b; color: #6ee7b7; }
-        .dark .badge-out    { background: #450a0a; color: #fca5a5; }
-        .dark .badge-opname { background: #1e1b4b; color: #a5b4fc; }
-        .dark .badge-critical { background: #450a0a; color: #fca5a5; }
-        .dark .badge-low    { background: #422006; color: #fcd34d; }
-        .dark .badge-ok     { background: #052e16; color: #86efac; }
+        /* ── Notification Dot ── */
+        .notif-dot { width:8px; height:8px; background:#ef4444; border-radius:50%; display:inline-block; animation:pulse-notif 1.4s infinite; }
+        @keyframes pulse-notif { 0%,100%{opacity:1;transform:scale(1);}50%{opacity:.6;transform:scale(1.3);} }
 
-        /* ── Notification Dot ────────────────────────────────────── */
-        .notif-dot { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; animation: pulse-notif 1.4s infinite; }
-        @keyframes pulse-notif { 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.6; transform:scale(1.3);} }
+        .btn-hover:active { transform:scale(0.93); transition:0.1s; }
+        .animate-pop { animation:pop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes pop { 0%{transform:scale(0.9);opacity:0;}100%{transform:scale(1);opacity:1;} }
 
-        .btn-hover:active { transform: scale(0.92); transition: 0.1s; }
-        .animate-pop { animation: pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes pop { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        /* ── Toggle Switch ── */
+        .switch { position:relative; display:inline-block; width:44px; height:24px; }
+        .switch input { opacity:0; width:0; height:0; }
+        .slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#cbd5e1; transition:.4s; border-radius:34px; }
+        .slider:before { position:absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background:#fff; transition:.4s; border-radius:50%; }
+        input:checked + .slider { background:#4f46e5; }
+        input:checked + .slider:before { transform:translateX(20px); }
 
-        /* ── Toggle Switch ───────────────────────────────────────── */
-        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e1; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #4f46e5; }
-        input:checked + .slider:before { transform: translateX(22px); }
-
-        /* ── Flash Button ────────────────────────────────────────── */
+        /* ── Flash Btn ── */
         #flash-btn { display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 28px; background:rgba(255,255,255,0.1); border:1.5px solid rgba(255,255,255,0.2); border-radius:20px; cursor:pointer; transition:all 0.2s; color:white; }
         #flash-btn:active { transform:scale(0.93); }
         #flash-btn.flash-on { background:rgba(254,240,138,0.22); border-color:rgba(253,224,71,0.6); box-shadow:0 0 18px rgba(253,224,71,0.25); }
         #flash-btn .flash-icon { font-size:22px; transition:color 0.2s; color:rgba(253,224,71,0.5); }
         #flash-btn.flash-on .flash-icon { color:#fde047; }
-        #flash-btn .flash-label { font-size:9px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6; transition:opacity 0.2s; }
+        #flash-btn .flash-label { font-size:9px; font-weight:800; letter-spacing:0.12em; text-transform:uppercase; opacity:0.6; }
         #flash-btn.flash-on .flash-label { opacity:1; }
         #flash-btn:disabled { opacity:0.25; pointer-events:none; }
 
-        /* ── Printer Status ──────────────────────────────────────── */
-        .printer-ready { color: #10b981 !important; }
-        .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; }
+        /* ── Printer ── */
+        .printer-ready { color:#10b981 !important; }
+        .printer-connecting { color:#f59e0b !important; animation:pulse-notif 1s infinite; }
 
-        /* ── Settings Row ────────────────────────────────────────── */
+        /* ── Settings Row ── */
         .settings-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border-bottom: 1px solid var(--card-border);
-            cursor: pointer;
-            border-radius: 12px;
-            transition: background 0.2s;
+            display:flex; align-items:center; justify-content:space-between;
+            padding:14px 12px; border-bottom:1px solid var(--card-border);
+            cursor:pointer; border-radius:12px; transition:background 0.2s;
         }
-        .settings-row:last-child { border-bottom: none; }
-        .settings-row:active { background: var(--surface); }
-        .settings-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--surface);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.3s;
-        }
+        .settings-row:last-child { border-bottom:none; }
+        .settings-row:active { background:var(--surface); }
+        .settings-icon { width:38px; height:38px; background:var(--surface); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.3s; }
 
-        /* ── Cart Float ──────────────────────────────────────────── */
+        /* ── Cart Float ── */
         #cart-float {
             background: var(--card) !important;
             border-color: var(--card-border) !important;
         }
 
-        /* ── Category Chips in POS ───────────────────────────────── */
-        .cat-chip-active { background: #4f46e5 !important; color: #fff !important; }
-        .cat-chip-inactive { background: var(--card) !important; color: var(--text-muted) !important; border: 1px solid var(--card-border); }
+        /* ── Category Chips ── */
+        .cat-chip-active { background:#4f46e5 !important; color:#fff !important; }
+        .cat-chip-inactive { background:var(--card) !important; color:var(--text-muted) !important; border:1px solid var(--card-border); }
 
-        /* ── Data List items ─────────────────────────────────────── */
         .dk-section-label {
-            font-size: 9px;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-muted);
-            padding: 1.5rem 1rem 0.5rem;
+            font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em;
+            color:var(--text-muted); padding:1.25rem 12px 0.5rem;
+        }
+
+        /* ── Page Title ── */
+        .page-title {
+            font-size: 22px; font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0;
+        }
+
+        /* ── Dashboard Hero Card ── */
+        .dash-hero {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(79,70,229,0.3);
+        }
+        .dash-hero::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+        }
+        .dash-hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -20px;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.04);
         }
     </style>
 </head>
 <body class="hide-scrollbar">
 <div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col">
 
-    <!-- HEADER -->
-    <header class="p-5 flex justify-between items-center backdrop-blur-lg sticky top-0 z-40 border-b" style="border-bottom-color:var(--card-border);">
-        <div class="flex items-center gap-3">
-            <div id="app-logo" class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center overflow-hidden shadow-lg border-2 border-white/20 text-white font-black text-lg">D</div>
-            <div>
-                <h1 class="text-sm font-extrabold truncate max-w-[120px]" id="store-name-display">DheKasir</h1>
-                <div class="flex items-center gap-1.5">
-                    <div id="cloud-dot" class="w-1.5 h-1.5 rounded-full" style="background:var(--text-muted)"></div>
-                    <span class="text-[8px] font-black uppercase tracking-widest text-muted">v1.4</span>
-                </div>
+    <!-- ══════════════════════════════
+         SIDEBAR OVERLAY
+    ══════════════════════════════ -->
+    <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- ══════════════════════════════
+         SIDEBAR DRAWER
+    ══════════════════════════════ -->
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <div id="sb-logo" class="sidebar-store-logo">D</div>
+            <div class="sidebar-store-name" id="sb-store-name">DheKasir</div>
+            <div class="sidebar-store-addr" id="sb-store-addr">Alamat belum diatur</div>
+            <div class="sidebar-version"><i class="fa-solid fa-circle-check" style="font-size:8px;"></i> v1.4 Aktif</div>
+        </div>
+
+        <div class="sidebar-nav hide-scrollbar">
+            <div class="sidebar-section-label">Menu Utama</div>
+            <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-house" style="font-size:13px;"></i></div>
+                <span>Beranda</span>
+            </div>
+            <div class="sidebar-item" id="sb-pos" onclick="switchTab('pos'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-cash-register" style="font-size:13px;"></i></div>
+                <span>Kasir / POS</span>
+            </div>
+            <div class="sidebar-item" id="sb-items" onclick="switchTab('items'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-box" style="font-size:13px;"></i></div>
+                <span>Inventaris</span>
+            </div>
+
+            <div class="sidebar-section-label">Operasional</div>
+            <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-warehouse" style="font-size:13px;"></i></div>
+                <span>Manajemen Stok</span>
+                <span id="sb-stock-badge" class="sidebar-badge hidden">0</span>
+            </div>
+            <div class="sidebar-item" id="sb-debts" onclick="switchTab('debts'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-user-clock" style="font-size:13px;"></i></div>
+                <span>Buku Hutang</span>
+            </div>
+            <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div>
+                <span>Laporan & Data</span>
+            </div>
+
+            <div class="sidebar-section-label">Akun</div>
+            <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div>
+                <span>Pengaturan</span>
+            </div>
+            <div class="sidebar-item" onclick="openModal('modal-about'); closeSidebar()">
+                <div class="sidebar-icon"><i class="fa-solid fa-circle-info" style="font-size:13px;"></i></div>
+                <span>Tentang Aplikasi</span>
             </div>
         </div>
-        <div class="flex items-center gap-2">
-            <button onclick="openNotifPanel()" id="notif-bell" class="relative w-10 h-10 rounded-2xl flex items-center justify-center surface" style="color:var(--text-muted)">
-                <i class="fa-solid fa-bell text-base"></i>
-                <span id="notif-count-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-[9px] font-black flex items-center justify-center hidden">0</span>
+
+        <div class="sidebar-footer">
+            <div class="sidebar-dark-toggle" onclick="document.getElementById('dark-mode-toggle').click()">
+                <div class="toggle-left">
+                    <i class="fa-solid fa-moon" style="color:var(--primary);font-size:13px;"></i>
+                    <span>Tema Gelap</span>
+                </div>
+                <label class="switch" onclick="event.stopPropagation()">
+                    <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ══════════════════════════════
+         HEADER
+    ══════════════════════════════ -->
+    <header id="app-header">
+        <!-- Hamburger -->
+        <button id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+            <div class="bars">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </button>
+
+        <!-- Brand center -->
+        <div class="header-brand">
+            <div id="app-logo" class="header-logo">D</div>
+            <span class="header-title" id="store-name-display">DheKasir</span>
+        </div>
+
+        <!-- Right actions -->
+        <div class="header-actions">
+            <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" aria-label="Notifikasi">
+                <i class="fa-solid fa-bell" style="font-size:15px;"></i>
+                <span id="notif-count-badge" class="hidden" style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:8px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--nav-bg);">0</span>
             </button>
-            <button onclick="openScanner('cart')" class="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg btn-hover border-4 border-indigo-100/20">
-                <i class="fa-solid fa-barcode text-xl"></i>
+            <button onclick="openScanner('cart')" class="hdr-btn primary-action" aria-label="Scan Barcode">
+                <i class="fa-solid fa-barcode" style="font-size:16px;"></i>
             </button>
         </div>
     </header>
 
-    <main class="flex-1 px-5 pt-4">
+    <!-- ══════════════════════════════
+         TAB CONTENT
+    ══════════════════════════════ -->
+    <main class="flex-1">
 
         <!-- ── HOME ── -->
-        <section id="tab-home" class="tab-content active space-y-6">
-            <div class="premium-gradient p-8 rounded-[40px] text-white shadow-2xl relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-[10px] opacity-80 font-bold uppercase mb-1 tracking-widest">Profit Bersih Toko</p>
-                    <h2 class="text-3xl font-black" id="dash-profit">Rp 0</h2>
-                    <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-6 mt-6">
-                        <div><p class="text-[9px] opacity-70 font-bold uppercase tracking-widest">Pemasukan Hari Ini</p><p class="text-sm font-bold" id="dash-omzet">Rp 0</p></div>
-                        <div><p class="text-[9px] opacity-70 font-bold uppercase tracking-widest">Total Piutang</p><p class="text-sm font-bold text-rose-200" id="dash-debt">Rp 0</p></div>
+        <section id="tab-home" class="tab-content active space-y-5">
+            <div class="dash-hero text-white relative z-10">
+                <p class="text-[10px] opacity-70 font-bold uppercase mb-1 tracking-widest">Profit Bersih Toko</p>
+                <h2 class="text-3xl font-black mb-1" id="dash-profit">Rp 0</h2>
+                <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-5 mt-5">
+                    <div>
+                        <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">Pemasukan Hari Ini</p>
+                        <p class="text-base font-bold" id="dash-omzet">Rp 0</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">Total Piutang</p>
+                        <p class="text-base font-bold text-rose-200" id="dash-debt">Rp 0</p>
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between items-center px-6 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
-                <p class="text-[10px] font-black uppercase text-muted">Status Stok</p>
+            <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
+                        <i class="fa-solid fa-triangle-exclamation text-xs"></i>
+                    </div>
+                    <p class="text-xs font-black uppercase text-muted">Status Stok</p>
+                </div>
                 <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
             </div>
-            <div class="card p-6 shadow-sm">
-                <h3 class="text-xs font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
-                <canvas id="hourChart" height="150"></canvas>
+            <div class="card p-5 shadow-sm">
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
+                <canvas id="hourChart" height="140"></canvas>
             </div>
-            <div class="card p-6 space-y-4 shadow-sm">
-                <h3 class="text-xs font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
+            <div class="card p-5 space-y-3 shadow-sm">
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
                 <div id="top-products" class="space-y-2"></div>
             </div>
         </section>
@@ -298,47 +641,47 @@
         <section id="tab-pos" class="tab-content space-y-4">
             <div class="sticky top-0 pb-2 z-20 space-y-3" style="background:var(--bg);">
                 <div class="relative">
-                    <input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari barang atau scan..." class="w-full p-4 pl-12 card rounded-3xl outline-none shadow-sm text-sm">
-                    <i class="fa-solid fa-search absolute left-5 top-4" style="color:var(--text-muted)"></i>
+                    <input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari barang atau scan..." class="w-full p-4 pl-11 card rounded-2xl outline-none text-sm">
+                    <i class="fa-solid fa-search absolute left-4 top-4 text-sm" style="color:var(--text-muted)"></i>
                 </div>
                 <div id="pos-category-chips" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1"></div>
             </div>
-            <div id="pos-grid" class="grid grid-cols-2 gap-4 pb-10"></div>
+            <div id="pos-grid" class="grid grid-cols-2 gap-3 pb-10"></div>
         </section>
 
         <!-- ── ITEMS ── -->
         <section id="tab-items" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black">Inventaris</h2>
+                <h2 class="page-title">Inventaris</h2>
                 <div class="flex gap-2">
-                    <button onclick="openCategoryModal()" class="px-4 py-2 rounded-xl font-bold text-[10px] uppercase shadow-sm surface text-indigo-500">Kategori</button>
-                    <button onclick="openProductModal()" class="px-4 py-2 premium-gradient text-white rounded-xl font-bold text-[10px] uppercase shadow-lg">Tambah</button>
+                    <button onclick="openCategoryModal()" class="px-3 py-2 rounded-xl font-bold text-[10px] uppercase shadow-sm surface text-indigo-500">Kategori</button>
+                    <button onclick="openProductModal()" class="px-4 py-2 premium-gradient text-white rounded-xl font-bold text-[10px] uppercase shadow-lg">+ Tambah</button>
                 </div>
             </div>
             <div class="relative">
-                <input type="text" id="item-search" oninput="renderItems()" placeholder="Cari barang atau barcode..." class="w-full p-4 pl-12 card rounded-3xl outline-none shadow-sm text-sm">
-                <i class="fa-solid fa-search absolute left-5 top-4" style="color:var(--text-muted)"></i>
+                <input type="text" id="item-search" oninput="renderItems()" placeholder="Cari barang atau barcode..." class="w-full p-4 pl-11 card rounded-2xl outline-none text-sm">
+                <i class="fa-solid fa-search absolute left-4 top-4 text-sm" style="color:var(--text-muted)"></i>
             </div>
             <div id="item-list" class="space-y-3"></div>
         </section>
 
-        <!-- ── STOCK MANAGEMENT ── -->
+        <!-- ── STOCK ── -->
         <section id="tab-stock" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black">Manajemen Stok</h2>
+                <h2 class="page-title">Manajemen Stok</h2>
                 <div id="stock-alert-badge" class="hidden bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[10px] font-black"></div>
             </div>
             <div class="grid grid-cols-3 gap-3">
-                <button onclick="openStockModal('in')" class="flex flex-col items-center gap-2 p-4 rounded-[22px] active:scale-95 transition-all" style="background:var(--surface);border:1px solid var(--card-border)">
-                    <div class="w-10 h-10 bg-emerald-500 text-white rounded-2xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-down text-sm"></i></div>
+                <button onclick="openStockModal('in')" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card">
+                    <div class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-down text-sm"></i></div>
                     <span class="text-[9px] font-black text-emerald-500 uppercase">Stok Masuk</span>
                 </button>
-                <button onclick="openStockModal('out')" class="flex flex-col items-center gap-2 p-4 rounded-[22px] active:scale-95 transition-all" style="background:var(--surface);border:1px solid var(--card-border)">
-                    <div class="w-10 h-10 bg-rose-500 text-white rounded-2xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-up text-sm"></i></div>
+                <button onclick="openStockModal('out')" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card">
+                    <div class="w-10 h-10 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-up text-sm"></i></div>
                     <span class="text-[9px] font-black text-rose-500 uppercase">Stok Keluar</span>
                 </button>
-                <button onclick="openOpnameModal()" class="flex flex-col items-center gap-2 p-4 rounded-[22px] active:scale-95 transition-all" style="background:var(--surface);border:1px solid var(--card-border)">
-                    <div class="w-10 h-10 bg-indigo-500 text-white rounded-2xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-clipboard-check text-sm"></i></div>
+                <button onclick="openOpnameModal()" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card">
+                    <div class="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-clipboard-check text-sm"></i></div>
                     <span class="text-[9px] font-black text-indigo-500 uppercase">Opname</span>
                 </button>
             </div>
@@ -348,16 +691,16 @@
                     <p class="text-2xl font-black text-indigo-600" id="stat-total-products">0</p>
                 </div>
                 <div class="card p-4 text-center shadow-sm">
-                    <p class="text-[9px] font-black text-amber-500 uppercase mb-1">Stok Menipis</p>
+                    <p class="text-[9px] font-black text-amber-500 uppercase mb-1">Menipis</p>
                     <p class="text-2xl font-black text-amber-500" id="stat-low-stock">0</p>
                 </div>
                 <div class="card p-4 text-center shadow-sm">
-                    <p class="text-[9px] font-black text-red-500 uppercase mb-1">Stok Habis</p>
+                    <p class="text-[9px] font-black text-red-500 uppercase mb-1">Habis</p>
                     <p class="text-2xl font-black text-red-500" id="stat-empty-stock">0</p>
                 </div>
             </div>
             <div class="flex items-center justify-between">
-                <h3 class="text-xs font-black uppercase tracking-widest text-muted">Status Per Produk</h3>
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">Status Produk</h3>
                 <select id="stock-filter" onchange="renderStockList()" class="text-[9px] font-black uppercase rounded-xl px-3 py-2 outline-none surface border-0">
                     <option value="all">Semua</option>
                     <option value="critical">Habis</option>
@@ -367,26 +710,26 @@
             </div>
             <div id="stock-product-list" class="space-y-3"></div>
             <div class="flex items-center justify-between mt-4">
-                <h3 class="text-xs font-black uppercase tracking-widest text-muted">Riwayat Stok</h3>
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">Riwayat Stok</h3>
                 <button onclick="clearStockHistory()" class="text-[9px] font-black text-red-400 uppercase">Hapus</button>
             </div>
             <div id="stock-history-list" class="space-y-2"></div>
         </section>
 
         <!-- ── DEBTS ── -->
-        <section id="tab-debts" class="tab-content space-y-6">
+        <section id="tab-debts" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black">Buku Hutang</h2>
+                <h2 class="page-title">Buku Hutang</h2>
                 <div class="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-[10px] font-black" id="debt-count-label">0 ORANG</div>
             </div>
             <div id="debt-list" class="space-y-3"></div>
         </section>
 
         <!-- ── DATA ── -->
-        <section id="tab-data" class="tab-content space-y-6">
+        <section id="tab-data" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
-                <h2 class="text-xl font-black">Laporan</h2>
-                <input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none">
+                <h2 class="page-title">Laporan</h2>
+                <input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none rounded-xl">
             </div>
             <div class="grid grid-cols-2 gap-3">
                 <button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
@@ -397,109 +740,125 @@
         </section>
 
         <!-- ── SETTINGS ── -->
-        <section id="tab-settings" class="tab-content space-y-6">
-            <div class="flex items-center gap-4 p-4">
-                <div id="profile-logo-preview" class="w-16 h-16 bg-indigo-100 rounded-3xl flex items-center justify-center border-4 border-white shadow-xl overflow-hidden"><span class="text-2xl font-black text-indigo-600">A</span></div>
+        <section id="tab-settings" class="tab-content space-y-5">
+            <div class="flex items-center gap-4 card p-5 shadow-sm">
+                <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+                    <span class="text-xl font-black text-white">A</span>
+                </div>
                 <div>
-                    <h2 class="font-black text-lg" id="profile-name">Admin Toko</h2>
+                    <h2 class="font-black text-base" id="profile-name">Admin Toko</h2>
                     <p class="text-xs text-muted" id="profile-address-display">Alamat belum diatur</p>
+                    <span class="text-[9px] font-black text-indigo-500 uppercase">DheKasir v1.4</span>
                 </div>
             </div>
             <div class="card p-2 space-y-1">
-                <p class="dk-section-label">Tampilan</p>
-                <div class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-moon"></i></div>
-                        <span class="text-sm font-bold">Tema Gelap</span>
-                    </div>
-                    <label class="switch"><input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"><span class="slider"></span></label>
-                </div>
-
-                <p class="dk-section-label">Konfigurasi</p>
+                <p class="dk-section-label">Konfigurasi Toko</p>
                 <div onclick="openStoreSettings()" class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-store"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-store text-sm"></i></div>
                         <span class="text-sm font-bold">Setelan Toko</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
                 </div>
                 <div onclick="openMinStockSettings()" class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-amber-500"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-amber-500"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div>
                         <span class="text-sm font-bold">Batas Minimum Stok</span>
                     </div>
                     <span id="min-stock-display" class="text-[10px] font-black text-muted">5</span>
                 </div>
                 <div onclick="connectPrinter()" class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-muted"><i class="fa-solid fa-print"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-muted"><i class="fa-solid fa-print text-sm"></i></div>
                         <span class="text-sm font-bold">Printer Thermal</span>
                     </div>
                     <span id="printer-status" class="text-[8px] font-black text-muted uppercase">OFFLINE</span>
                 </div>
-
-                <p class="dk-section-label">Bantuan & Informasi</p>
+                <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div>
                         <span class="text-sm font-bold">Tentang Aplikasi</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
                 </div>
                 <div onclick="openModal('modal-contact')" class="settings-row">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-headset"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-headset text-sm"></i></div>
                         <span class="text-sm font-bold">Hubungi Kami</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
                 </div>
                 <div onclick="openModal('modal-privacy')" class="settings-row" style="border-bottom:none">
-                    <div class="flex items-center gap-4">
-                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div class="flex items-center gap-3">
+                        <div class="settings-icon text-indigo-500"><i class="fa-solid fa-shield-halved text-sm"></i></div>
                         <span class="text-sm font-bold">Privasi & Kebijakan</span>
                     </div>
                     <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- NAV -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto border-t p-4 flex justify-around items-center z-50 rounded-t-[35px] shadow-[0_-10px_40px_rgba(0,0,0,0.08)] backdrop-blur-xl">
-        <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-home"><i class="fa-solid fa-house text-lg"></i><span class="text-[8px] font-bold uppercase">Home</span></button>
-        <button onclick="switchTab('pos')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-pos"><i class="fa-solid fa-cash-register text-lg"></i><span class="text-[8px] font-bold uppercase">Kasir</span></button>
-        <button onclick="switchTab('items')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-items"><i class="fa-solid fa-box text-lg"></i><span class="text-[8px] font-bold uppercase">Stok</span></button>
-        <button onclick="switchTab('stock')" class="nav-btn flex flex-col items-center gap-1 relative text-muted" id="n-stock">
-            <i class="fa-solid fa-warehouse text-lg"></i>
-            <span id="nav-stock-dot" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full hidden"></span>
-            <span class="text-[8px] font-bold uppercase">Gudang</span>
-        </button>
-        <button onclick="switchTab('debts')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-debts"><i class="fa-solid fa-user-clock text-lg"></i><span class="text-[8px] font-bold uppercase">Hutang</span></button>
-        <button onclick="switchTab('data')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-data"><i class="fa-solid fa-history text-lg"></i><span class="text-[8px] font-bold uppercase">Data</span></button>
-        <button onclick="switchTab('settings')" class="nav-btn flex flex-col items-center gap-1 text-muted" id="n-settings"><i class="fa-solid fa-user-gear text-lg"></i><span class="text-[8px] font-bold uppercase">User</span></button>
+    <!-- ══════════════════════════════
+         BOTTOM NAVIGATION
+    ══════════════════════════════ -->
+    <nav id="bottom-nav">
+        <div class="nav-item active" id="n-home" onclick="switchTab('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+            <div class="nav-item-pill"></div>
+        </div>
+        <div class="nav-item" id="n-pos" onclick="switchTab('pos')">
+            <i class="fa-solid fa-cash-register"></i>
+            <span>Kasir</span>
+            <div class="nav-item-pill"></div>
+        </div>
+        <div class="nav-item" id="n-items" onclick="switchTab('items')">
+            <i class="fa-solid fa-box"></i>
+            <span>Stok</span>
+            <div class="nav-item-pill"></div>
+        </div>
+        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;">
+            <i class="fa-solid fa-warehouse"></i>
+            <span>Gudang</span>
+            <div class="nav-item-pill"></div>
+            <span id="nav-stock-dot" class="nav-dot hidden"></span>
+        </div>
+        <div class="nav-item" id="n-debts" onclick="switchTab('debts')">
+            <i class="fa-solid fa-user-clock"></i>
+            <span>Hutang</span>
+            <div class="nav-item-pill"></div>
+        </div>
+        <div class="nav-item" id="n-data" onclick="switchTab('data')">
+            <i class="fa-solid fa-chart-bar"></i>
+            <span>Data</span>
+            <div class="nav-item-pill"></div>
+        </div>
     </nav>
 
     <!-- Cart Float -->
-    <div id="cart-float" class="hidden fixed bottom-28 left-6 right-6 max-w-[360px] mx-auto p-5 rounded-[30px] border shadow-2xl z-40 animate-pop" style="background:var(--card);border-color:var(--card-border);">
+    <div id="cart-float" class="hidden fixed bottom-28 left-4 right-4 max-w-[440px] mx-auto p-5 rounded-[28px] border shadow-2xl z-40 animate-pop">
         <div class="flex justify-between items-center mb-4">
-            <div class="flex items-center gap-2 cursor-pointer" onclick="openCartDetails()">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="openCartDetails()">
                 <div id="cart-count" class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center font-bold text-xs">0</div>
                 <div>
                     <p id="cart-total" class="text-xl font-black">Rp 0</p>
                     <p class="text-[8px] font-bold text-indigo-500 uppercase tracking-widest flex items-center gap-1">Lihat Detail <i class="fa-solid fa-chevron-up"></i></p>
                 </div>
             </div>
-            <button onclick="resetCart()" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can"></i></button>
+            <button onclick="resetCart()" class="text-rose-500 p-2 w-9 h-9 rounded-xl surface flex items-center justify-center"><i class="fa-solid fa-trash-can text-sm"></i></button>
         </div>
-        <button onclick="openCheckout()" class="w-full py-5 premium-gradient text-white rounded-[24px] font-black text-xs uppercase shadow-lg active:scale-95 transition-all">Lanjutkan Pembayaran</button>
+        <button onclick="openCheckout()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-lg active:scale-95 transition-all">Lanjutkan Pembayaran →</button>
     </div>
 
-    <div id="toast" class="fixed top-12 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
+    <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
 </div>
 
 <!-- ═══════════════════════════════════════ MODALS ═══ -->
 
-<!-- SCANNER (always dark overlay) -->
+<!-- SCANNER -->
 <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6">
     <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
     <div class="w-full max-w-sm"><div id="reader"></div></div>
@@ -515,21 +874,21 @@
 
 <!-- NOTIFICATION PANEL -->
 <div id="modal-notif" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl max-h-[80vh] flex flex-col">
-        <div class="w-12 h-1.5 rounded-full mx-auto mb-6" style="background:var(--card-border)"></div>
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-xl font-black uppercase tracking-widest">Notifikasi Stok</h3>
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[80vh] flex flex-col">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <div class="flex justify-between items-center mb-5">
+            <h3 class="text-lg font-black uppercase tracking-widest">Notifikasi Stok</h3>
             <button onclick="closeModal('modal-notif')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <div id="notif-list" class="flex-1 overflow-y-auto space-y-3 hide-scrollbar"></div>
     </div>
 </div>
 
-<!-- STOCK IN / OUT MODAL -->
+<!-- STOCK IN / OUT -->
 <div id="modal-stock-move" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-5">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="text-xl font-black" id="stock-move-title">Stok Masuk</h3>
-        <div class="space-y-4">
+        <div class="space-y-3">
             <div class="space-y-1">
                 <label class="text-[8px] font-black uppercase ml-2 text-muted">Pilih Produk</label>
                 <select id="sm-product" class="w-full p-4 border rounded-2xl text-sm outline-none"></select>
@@ -552,23 +911,23 @@
     </div>
 </div>
 
-<!-- STOCK OPNAME MODAL -->
+<!-- STOCK OPNAME -->
 <div id="modal-opname" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl max-h-[90vh] flex flex-col">
-        <div class="w-12 h-1.5 rounded-full mx-auto mb-6" style="background:var(--card-border)"></div>
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[90vh] flex flex-col">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-black uppercase tracking-widest">Stok Opname</h3>
             <button onclick="closeModal('modal-opname')" class="font-bold text-[10px] uppercase text-muted">Batal</button>
         </div>
-        <p class="text-xs mb-6 text-muted">Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.</p>
-        <div id="opname-list" class="flex-1 overflow-y-auto space-y-3 hide-scrollbar mb-6"></div>
-        <button onclick="submitOpname()" class="w-full py-5 premium-gradient text-white rounded-[28px] font-black text-xs uppercase shadow-xl">Simpan Opname</button>
+        <p class="text-xs mb-5 text-muted">Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.</p>
+        <div id="opname-list" class="flex-1 overflow-y-auto space-y-3 hide-scrollbar mb-5"></div>
+        <button onclick="submitOpname()" class="w-full py-5 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl">Simpan Opname</button>
     </div>
 </div>
 
-<!-- MIN STOCK SETTINGS -->
+<!-- MIN STOCK -->
 <div id="modal-minstock" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
         <h3 class="font-black text-lg">Batas Minimum Stok</h3>
         <p class="text-xs text-muted">Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.</p>
         <div class="space-y-2">
@@ -582,20 +941,20 @@
 
 <!-- CART DETAILS -->
 <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
-        <div class="w-12 h-1.5 rounded-full mx-auto mb-6" style="background:var(--card-border)"></div>
-        <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Detail Keranjang</h3>
-        <div id="cart-items-list" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-6"></div>
-        <div class="flex justify-between font-black text-xl border-t pt-6 mt-2 dk-divider"><span>TOTAL</span><span id="cart-detail-total" class="text-indigo-600">Rp 0</span></div>
-        <button onclick="closeModal('modal-cart-details')" class="w-full py-4 mt-6 rounded-2xl text-xs uppercase font-black text-indigo-600 surface">Tutup</button>
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <h3 class="text-xl font-black mb-5 text-center uppercase tracking-widest">Detail Keranjang</h3>
+        <div id="cart-items-list" class="flex-1 overflow-y-auto space-y-3 pr-1 mb-5"></div>
+        <div class="flex justify-between font-black text-xl border-t pt-5 mt-2 dk-divider"><span>TOTAL</span><span id="cart-detail-total" class="text-indigo-600">Rp 0</span></div>
+        <button onclick="closeModal('modal-cart-details')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-600 surface">Tutup</button>
     </div>
 </div>
 
 <!-- CHECKOUT -->
 <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[45px] p-8 pb-12 animate-pop shadow-2xl">
-        <div class="w-12 h-1.5 rounded-full mx-auto mb-6" style="background:var(--card-border)"></div>
-        <h3 class="text-xl font-black mb-6 text-center uppercase tracking-widest">Konfirmasi Bayar</h3>
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <h3 class="text-xl font-black mb-5 text-center uppercase tracking-widest">Konfirmasi Bayar</h3>
         <div class="space-y-4">
             <div class="flex justify-between font-black text-2xl border-b pb-4 dk-divider"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
             <div class="grid grid-cols-2 gap-2 rounded-2xl p-1 surface">
@@ -613,7 +972,7 @@
                         <input type="number" id="pay-amt-qris" oninput="calcChange()" class="w-full p-4 text-indigo-600 font-black rounded-2xl outline-none border">
                     </div>
                 </div>
-                <div class="flex justify-between items-center px-6 py-4 rounded-2xl surface"><span class="text-xs font-bold uppercase text-muted">Kembalian</span><span id="pay-change" class="text-xl font-black">Rp 0</span></div>
+                <div class="flex justify-between items-center px-5 py-4 rounded-2xl surface"><span class="text-xs font-bold uppercase text-muted">Kembalian</span><span id="pay-change" class="text-xl font-black">Rp 0</span></div>
             </div>
             <div id="pay-debt-area" class="hidden space-y-4">
                 <input type="text" id="debt-customer" placeholder="Nama Pelanggan" class="w-full p-4 text-rose-600 font-bold rounded-2xl outline-none border border-rose-300" style="background:var(--input-bg)">
@@ -622,15 +981,15 @@
                     <input type="date" id="debt-due" class="flex-1 p-3 rounded-xl text-xs outline-none border">
                 </div>
             </div>
-            <button onclick="finishCheckout()" class="w-full py-6 premium-gradient text-white rounded-[30px] font-black text-sm uppercase shadow-xl active:scale-95 transition-all">Selesaikan Transaksi</button>
+            <button onclick="finishCheckout()" class="w-full py-5 premium-gradient text-white rounded-[28px] font-black text-sm uppercase shadow-xl active:scale-95 transition-all">Selesaikan Transaksi</button>
             <button onclick="closeModal('modal-checkout')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Batal</button>
         </div>
     </div>
 </div>
 
-<!-- RECEIPT (always white — simulates paper) -->
+<!-- RECEIPT -->
 <div id="modal-receipt" class="fixed inset-0 z-[130] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-xs rounded-[40px] overflow-hidden animate-pop shadow-2xl flex flex-col max-h-[90vh]">
+    <div class="bg-white w-full max-w-xs rounded-[36px] overflow-hidden animate-pop shadow-2xl flex flex-col max-h-[90vh]">
         <div class="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100 shrink-0">
             <h4 class="font-black text-sm uppercase tracking-widest text-slate-700">Struk Belanja</h4>
             <span class="text-[8px] font-black text-slate-400 uppercase bg-slate-100 px-2 py-1 rounded-lg">Preview</span>
@@ -648,15 +1007,9 @@
                 <p class="rec-section-title">ITEM PEMBELIAN</p>
                 <div id="rec-items"></div>
                 <hr class="rec-divider">
-                <div class="rec-total-row">
-                    <span>TOTAL</span>
-                    <span id="rec-total">Rp 0</span>
-                </div>
+                <div class="rec-total-row"><span>TOTAL</span><span id="rec-total">Rp 0</span></div>
                 <div id="rec-payment-details"></div>
-                <div class="rec-change-row">
-                    <span>Kembalian</span>
-                    <span id="rec-change">Rp 0</span>
-                </div>
+                <div class="rec-change-row"><span>Kembalian</span><span id="rec-change">Rp 0</span></div>
                 <div class="rec-footer" id="rec-footer">
                     <p>Terima kasih atas kunjungan Anda!</p>
                     <p style="margin-top:3px;">Barang yang sudah dibeli tidak dapat ditukar.</p>
@@ -676,15 +1029,15 @@
 
 <!-- DEBT DETAIL -->
 <div id="modal-debt-detail" class="fixed inset-0 z-[80] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
         <h3 class="text-lg font-black" id="det-debt-name">-</h3>
         <p class="text-[10px] mb-4 font-bold text-muted" id="det-debt-id">-</p>
-        <div class="space-y-2 mb-6">
+        <div class="space-y-2 mb-5">
             <div class="flex justify-between text-xs"><span>Total Pinjaman</span><span id="det-debt-total" class="font-bold"></span></div>
             <div class="flex justify-between text-xs text-emerald-600 font-bold"><span>Terbayar</span><span id="det-debt-paid"></span></div>
             <div class="flex justify-between text-sm font-black border-t pt-2 dk-divider"><span>SISA</span><span id="det-debt-rem" class="text-rose-500"></span></div>
         </div>
-        <div class="space-y-3 mb-6">
+        <div class="space-y-3 mb-5">
             <input type="number" id="ins-amt" placeholder="Nominal Cicilan" class="w-full p-4 rounded-2xl text-sm font-bold outline-none border">
             <button onclick="payInstallment()" class="w-full py-4 bg-emerald-600 text-white rounded-2xl font-bold text-xs uppercase shadow-lg">Bayar Cicilan</button>
         </div>
@@ -694,8 +1047,8 @@
 
 <!-- PRODUCT MODAL -->
 <div id="modal-product" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop overflow-y-auto max-h-[85vh] shadow-2xl">
-        <h3 class="text-xl font-black mb-6">Master Produk</h3>
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop overflow-y-auto max-h-[85vh] shadow-2xl">
+        <h3 class="text-xl font-black mb-5">Master Produk</h3>
         <input type="hidden" id="p-id">
         <div class="space-y-4">
             <div class="flex gap-2">
@@ -720,7 +1073,7 @@
 
 <!-- CATEGORY -->
 <div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-4">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg">Kelola Kategori</h3>
         <div class="flex gap-2">
             <input type="text" id="new-cat-name" placeholder="Kategori Baru" class="flex-1 p-4 rounded-2xl text-sm outline-none border">
@@ -733,7 +1086,7 @@
 
 <!-- STORE CFG -->
 <div id="modal-store-cfg" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <h3 class="font-black text-lg">Setelan Toko</h3>
         <div class="flex flex-col items-center gap-3">
             <div id="logo-preview-cfg" class="w-20 h-20 border rounded-2xl flex items-center justify-center overflow-hidden surface"><i class="fa-solid fa-image text-muted text-2xl"></i></div>
@@ -751,11 +1104,11 @@
 
 <!-- ABOUT -->
 <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-10 animate-pop shadow-2xl text-center">
-        <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-6 shadow-xl">D</div>
-        <h3 class="font-black text-xl mb-2">DheKasir</h3>
-        <p class="text-[10px] mb-6 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
-        <div class="text-[11px] leading-relaxed mb-8 space-y-3 text-left text-muted">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center">
+        <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
+        <h3 class="font-black text-xl mb-1">DheKasir</h3>
+        <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
+        <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
             <p>Fitur baru v1.4: Fix Bluetooth Print (universal service discovery), Audio Feedback — beep saat scan produk & chime saat transaksi selesai.</p>
         </div>
@@ -764,21 +1117,21 @@
 </div>
 
 <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
         <h3 class="font-black text-lg mb-4 text-center">Kebijakan Privasi</h3>
         <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed space-y-4 text-justify text-muted">
             <p>Semua data transaksi, inventaris, dan pengaturan toko Anda disimpan secara utama di dalam memori internal perangkat Anda (LocalStorage).</p>
             <p>Fitur sinkronisasi ke Google Spreadsheet hanya dikirim ke URL backend yang Anda tentukan sendiri. Kami tidak memiliki akses ke data tersebut.</p>
             <p>Akses kamera hanya digunakan secara instan untuk memindai kode produk. Tidak ada foto atau rekaman yang disimpan.</p>
         </div>
-        <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-6 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Saya Setuju</button>
+        <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Saya Setuju</button>
     </div>
 </div>
 
 <div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[40px] p-8 animate-pop shadow-2xl">
-        <h3 class="font-black text-lg mb-6 text-center">Hubungi Kami</h3>
-        <div class="space-y-5 mb-8">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
+        <h3 class="font-black text-lg mb-5 text-center">Hubungi Kami</h3>
+        <div class="space-y-5 mb-7">
             <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-500 shrink-0 surface"><i class="fa-solid fa-envelope"></i></div>
                 <div><p class="text-[9px] font-black uppercase text-muted">Email</p><p class="text-sm font-bold">support@dhekasir.app</p></div>
@@ -792,7 +1145,7 @@
     </div>
 </div>
 
-<!-- ═══════════════════════════ SCRIPTS ═══════════════════════════════ -->
+<!-- ═══════════════════════════════════════ SCRIPTS ═══ -->
 <script>
 // ── State ─────────────────────────────────────────────────────────────
 let items      = JSON.parse(localStorage.getItem('dk_items'))      || [];
@@ -822,6 +1175,21 @@ let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
 
+// ── Sidebar ────────────────────────────────────────────────────────────
+function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('hamburger-btn');
+    const isOpen = sb.classList.contains('open');
+    if (isOpen) { closeSidebar(); }
+    else { sb.classList.add('open'); ov.classList.add('open'); btn.classList.add('open'); }
+}
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('open');
+    document.getElementById('hamburger-btn').classList.remove('open');
+}
+
 // ── Web Audio ──────────────────────────────────────────────────────────
 let audioCtx = null;
 function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
@@ -838,26 +1206,39 @@ function closeModal(id){const el=document.getElementById(id);if(el)el.classList.
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ── Tab Navigation ─────────────────────────────────────────────────────
-function switchTab(t){
-    document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
-    const target=document.getElementById(`tab-${t}`);if(target)target.classList.add('active');
-    document.querySelectorAll('.nav-btn').forEach(b=>{b.classList.remove('text-indigo-600');b.style.color='var(--text-muted)';});
-    const navBtn=document.getElementById(`n-${t}`);
-    if(navBtn){navBtn.classList.add('text-indigo-600');navBtn.style.color='';}
-    localStorage.setItem('dk_active_tab',t);
-    if(t==='home')  renderHome();
-    if(t==='data')  renderData();
-    if(t==='items') renderItems();
-    if(t==='pos')   renderPos();
-    if(t==='debts') renderDebts();
-    if(t==='stock') renderStockTab();
+const TAB_MAP = {
+    home:'home', pos:'pos', items:'items', stock:'stock', debts:'debts', data:'data', settings:'settings'
+};
+
+function switchTab(t) {
+    document.querySelectorAll('.tab-content').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(`tab-${t}`);
+    if (target) target.classList.add('active');
+
+    // Bottom nav
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    const navBtn = document.getElementById(`n-${t}`);
+    if (navBtn) navBtn.classList.add('active');
+
+    // Sidebar items
+    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b => b.classList.remove('active'));
+    const sbBtn = document.getElementById(`sb-${t}`);
+    if (sbBtn) sbBtn.classList.add('active');
+
+    localStorage.setItem('dk_active_tab', t);
+    if (t === 'home')  renderHome();
+    if (t === 'data')  renderData();
+    if (t === 'items') renderItems();
+    if (t === 'pos')   renderPos();
+    if (t === 'debts') renderDebts();
+    if (t === 'stock') renderStockTab();
 }
 
 // ── Categories ─────────────────────────────────────────────────────────
 function renderCategoryOptions(){const s=document.getElementById('p-category');if(!s)return;s.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<option value="${c}">${c}</option>`).join('');}
 function renderPosCategoryChips(){
     const c=document.getElementById('pos-category-chips');if(!c)return;
-    c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all shadow-sm ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');
+    c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');
 }
 function setPosCategory(c){activePosCategory=c;renderPosCategoryChips();renderPos();}
 function renderCategoryList(){
@@ -879,7 +1260,7 @@ function renderPos(){
         return `<div onclick="${i.stock>0?`addToCart(${i.id})`:''}" class="card p-4 relative active:scale-95 transition-all ${i.stock<=0?'opacity-40 grayscale':'cursor-pointer'}">
             ${inCart?`<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>`:''}
             ${i.stock<=config.minStock&&i.stock>0?`<div class="absolute top-2 left-2 w-5 h-5 bg-amber-400 text-white rounded-full flex items-center justify-center text-[8px] font-black">!</div>`:''}
-            <div class="w-full aspect-square rounded-[22px] flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div>
+            <div class="w-full aspect-square rounded-2xl flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div>
             <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
             <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
             <p class="text-[8px] font-black ${i.stock<=0?'text-red-400':i.stock<=config.minStock?'text-amber-500':'text-muted'} mt-1">Stok: ${i.stock}</p>
@@ -897,9 +1278,9 @@ function renderCartDetails(){
         <div class="flex items-center justify-between p-4 rounded-2xl surface">
             <div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-muted">${formatIDR(c.price)}</p></div>
             <div class="flex items-center gap-3">
-                <button onclick="updateCartItem(${c.id},-1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-rose-500 shadow-sm card"><i class="fa-solid fa-minus"></i></button>
+                <button onclick="updateCartItem(${c.id},-1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-rose-500 shadow-sm card"><i class="fa-solid fa-minus text-xs"></i></button>
                 <span class="text-sm font-black w-4 text-center">${c.qty}</span>
-                <button onclick="updateCartItem(${c.id},1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm card"><i class="fa-solid fa-plus"></i></button>
+                <button onclick="updateCartItem(${c.id},1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm card"><i class="fa-solid fa-plus text-xs"></i></button>
             </div>
         </div>`).join('');
     if(cart.length===0)closeModal('modal-cart-details');
@@ -916,7 +1297,6 @@ function openCheckout(){
 }
 function setPayMethod(m){
     payMethod=m;
-    const isDark=document.body.classList.contains('dark');
     const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt');
     const ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');
     if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}
@@ -938,9 +1318,7 @@ async function finishCheckout(){
     if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:'BELUM LUNAS'};debts.push(d);await syncCloud({...d,type:'debt_record'});}
     for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`Penjualan: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
     logs.push(log);saveStorage();closeModal('modal-checkout');
-    chimeSuccess();
-    showReceipt(log);resetCart();renderHome();renderPos();
-    checkStockAlerts();
+    chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
     await syncCloud(log);
 }
 
@@ -1006,27 +1384,37 @@ function renderHome(){
     set('dash-low-stock',lowCount+" Item Menipis");
     const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,3);
     const elTop=document.getElementById('top-products');
-    if(elTop)elTop.innerHTML=top.map(([n,q])=>`<div class="flex justify-between items-center p-3 rounded-2xl font-bold text-[10px] surface"><span>${n}</span><span class="text-indigo-500">${q} pcs</span></div>`).join('')||'<p class="text-center opacity-30 text-[10px]">No Data</p>';
+    if(elTop)elTop.innerHTML=top.map(([n,q])=>`<div class="flex justify-between items-center p-3 rounded-2xl font-bold text-[10px] surface"><span>${n}</span><span class="text-indigo-500">${q} pcs</span></div>`).join('')||'<p class="text-center opacity-30 text-[10px] py-4">No Data</p>';
     initChart(hourMap);
 }
 function initChart(data){
     const canvas=document.getElementById('hourChart');if(!canvas)return;
     if(mainChart)mainChart.destroy();
     const isDark=document.body.classList.contains('dark');
-    mainChart=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:Array.from({length:24},(_,i)=>i+':00'),datasets:[{data,backgroundColor:'#4f46e5',borderRadius:4}]},options:{plugins:{legend:{display:false}},scales:{y:{display:false},x:{grid:{display:false},ticks:{font:{size:7},color:isDark?'#64748b':'#94a3b8'}}}}});
+    mainChart=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:Array.from({length:24},(_,i)=>i+':00'),datasets:[{data,backgroundColor:'#4f46e5',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{display:false},x:{grid:{display:false},ticks:{font:{size:7},color:isDark?'#556070':'#8892aa'}}}}});
 }
 
 // ── Stock Management ───────────────────────────────────────────────────
 function getStockStatus(stock){if(stock<=0)return 'critical';if(stock<=config.minStock)return 'low';return 'ok';}
 function addStockHistory(productId,productName,type,qty,note=''){const entry={id:'SH-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),productId,productName,type,qty,note:note||'',date:new Date().toISOString(),operator:'Admin'};stockHistory.unshift(entry);if(stockHistory.length>200)stockHistory=stockHistory.slice(0,200);return entry;}
-function checkStockAlerts(){const critical=items.filter(i=>i.stock<=0);const low=items.filter(i=>i.stock>0&&i.stock<=config.minStock);const total=critical.length+low.length;const dot=document.getElementById('nav-stock-dot');if(dot)dot.classList.toggle('hidden',total===0);const badge=document.getElementById('notif-count-badge');if(badge){badge.innerText=total;badge.classList.toggle('hidden',total===0);}return{critical,low};}
+function checkStockAlerts(){
+    const critical=items.filter(i=>i.stock<=0);
+    const low=items.filter(i=>i.stock>0&&i.stock<=config.minStock);
+    const total=critical.length+low.length;
+    const dot=document.getElementById('nav-stock-dot');if(dot)dot.classList.toggle('hidden',total===0);
+    const badge=document.getElementById('notif-count-badge');
+    const sbBadge=document.getElementById('sb-stock-badge');
+    if(badge){badge.innerText=total;badge.style.display=total>0?'flex':'none';}
+    if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}
+    return{critical,low};
+}
 
 function openNotifPanel(){
     const{critical,low}=checkStockAlerts();
     const list=document.getElementById('notif-list');let html='';
     if(critical.length===0&&low.length===0){html='<div class="text-center py-10"><div class="text-4xl mb-3">✅</div><p class="text-sm font-bold text-muted">Semua stok dalam kondisi aman</p></div>';}
-    critical.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-red-50 rounded-2xl border border-red-200 dark:bg-red-900/20 dark:border-red-800"><div class="w-10 h-10 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center shrink-0 dark:bg-red-900/40"><i class="fa-solid fa-circle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-red-700 dark:text-red-400">${i.name}</p><p class="text-[9px] text-red-500 uppercase font-bold">Stok Habis • ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-red-600 bg-red-100 px-3 py-1.5 rounded-xl uppercase dark:bg-red-900/40 dark:text-red-400">Isi</button></div>`;});
-    low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200 dark:bg-amber-900/20 dark:border-amber-800"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center shrink-0 dark:bg-amber-900/40"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700 dark:text-amber-400">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">Menipis • Sisa ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase dark:bg-amber-900/40 dark:text-amber-400">Isi</button></div>`;});
+    critical.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-red-50 rounded-2xl border border-red-200"><div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-red-700">${i.name}</p><p class="text-[9px] text-red-500 uppercase font-bold">Stok Habis • ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-red-600 bg-red-100 px-3 py-1.5 rounded-xl uppercase">Isi</button></div>`;});
+    low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">Menipis • Sisa ${i.stock} unit</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase">Isi</button></div>`;});
     list.innerHTML=html;openModal('modal-notif');
 }
 
@@ -1128,7 +1516,6 @@ function toggleDarkMode(){
     config.darkMode=document.getElementById('dark-mode-toggle').checked;
     document.body.classList.toggle('dark',config.darkMode);
     localStorage.setItem('dk_config',JSON.stringify(config));
-    // Re-render chart with updated axis color
     renderHome();
 }
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url;}
@@ -1138,11 +1525,26 @@ function loadSettings(){
     const darkToggle=document.getElementById('dark-mode-toggle');if(darkToggle)darkToggle.checked=s.darkMode;
     document.body.classList.toggle('dark',s.darkMode);
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('store-name-display',s.storeName);set('profile-name',s.storeName);set('profile-address-display',s.storeAddress);set('min-stock-display',s.minStock||5);
-    if(s.logo){const img=`<img src="${s.logo}" class="w-full h-full object-cover">`;const lb=document.getElementById('app-logo');if(lb)lb.innerHTML=img;const pp=document.getElementById('profile-logo-preview');if(pp)pp.innerHTML=img;const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg)lpCfg.innerHTML=img;}
+    set('store-name-display',s.storeName);set('profile-name',s.storeName);
+    set('profile-address-display',s.storeAddress);set('min-stock-display',s.minStock||5);
+    set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||'Alamat belum diatur');
+    // First letter for logo text
+    const letter=(s.storeName||'D')[0].toUpperCase();
+    // Update all logo elements
+    const updateLogo=(el,isImg)=>{
+        if(!el)return;
+        if(s.logo){el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;}
+        else{el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;}
+    };
+    updateLogo(document.getElementById('app-logo'),true);
+    updateLogo(document.getElementById('sb-logo'),true);
+    const pp=document.getElementById('profile-logo-preview');
+    if(pp){if(s.logo){pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}}
+    const lpCfg=document.getElementById('logo-preview-cfg');
+    if(lpCfg){if(s.logo){lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}}
 }
-function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg)lpCfg.innerHTML=`<img src="${e.target.result}" class="w-full h-full object-cover">`;};r.readAsDataURL(input.files[0]);}}
-async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});const dot=document.getElementById('cloud-dot');if(dot)dot.style.background='#10b981';}catch(e){}}
+function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
+async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
 
 // ── Items ──────────────────────────────────────────────────────────────
 function renderItems(){
@@ -1160,8 +1562,8 @@ function renderItems(){
                 </div>
             </div>
             <div class="flex gap-2">
-                <button onclick="openProductModal(${i.id})" class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-edit text-xs"></i></button>
-                <button onclick="deleteProduct(${i.id})" class="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500" style="background:rgba(239,68,68,0.1)"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                <button onclick="openProductModal(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-edit text-xs"></i></button>
+                <button onclick="deleteProduct(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-rose-500" style="background:rgba(239,68,68,0.1)"><i class="fa-solid fa-trash-can text-xs"></i></button>
             </div>
         </div>`;
     }).join('');
@@ -1217,22 +1619,17 @@ async function payInstallment(){const amt=Number(document.getElementById('ins-am
 
 // ── Bluetooth Printer ──────────────────────────────────────────────────
 async function findWritableCharacteristic(server){const knownServiceUUIDs=['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb'];let services=[];try{services=await server.getPrimaryServices();}catch(e){for(const uuid of knownServiceUUIDs){try{const svc=await server.getPrimaryService(uuid);if(svc){services=[svc];break;}}catch(e2){}}}for(const service of services){let characteristics=[];try{characteristics=await service.getCharacteristics();}catch(e){continue;}for(const char of characteristics){const p=char.properties;if(p.write||p.writeWithoutResponse)return char;}}return null;}
-
-async function connectPrinter(){const statusEl=document.getElementById('printer-status');if(statusEl){statusEl.innerText='CONNECTING...';statusEl.className='text-[8px] font-black printer-connecting uppercase';}try{if(btDevice&&btDevice.gatt.connected){showToast("Printer sudah terhubung!");if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}return;}btDevice=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb']});btDevice.addEventListener('gattserverdisconnected',()=>{btConnected=false;btCharacteristic=null;const s=document.getElementById('printer-status');if(s){s.innerText='OFFLINE';s.className='text-[8px] font-black text-muted uppercase';}showToast("Printer terputus");});const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Tidak ditemukan karakteristik writable.");btConnected=true;if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}showToast(`✓ Printer "${btDevice.name||'Unknown'}" terhubung!`);}catch(e){btConnected=false;btCharacteristic=null;if(statusEl){statusEl.innerText='OFFLINE';statusEl.className='text-[8px] font-black text-muted uppercase';}if(e.name!=='NotFoundError'){showToast("Gagal: "+(e.message||"Bluetooth error"));console.error('[BT]',e);}}}
-
+async function connectPrinter(){const statusEl=document.getElementById('printer-status');if(statusEl){statusEl.innerText='CONNECTING...';statusEl.className='text-[8px] font-black printer-connecting uppercase';}try{if(btDevice&&btDevice.gatt.connected){showToast("Printer sudah terhubung!");if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}return;}btDevice=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb']});btDevice.addEventListener('gattserverdisconnected',()=>{btConnected=false;btCharacteristic=null;const s=document.getElementById('printer-status');if(s){s.innerText='OFFLINE';s.className='text-[8px] font-black text-muted uppercase';}showToast("Printer terputus");});const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Tidak ditemukan karakteristik writable.");btConnected=true;if(statusEl){statusEl.innerText='READY ✓';statusEl.className='text-[8px] font-black printer-ready uppercase';}showToast(`✓ Printer "${btDevice.name||'Unknown'}" terhubung!`);}catch(e){btConnected=false;btCharacteristic=null;if(statusEl){statusEl.innerText='OFFLINE';statusEl.className='text-[8px] font-black text-muted uppercase';}if(e.name!=='NotFoundError'){showToast("Gagal: "+(e.message||"Bluetooth error"));}}}
 async function btWrite(data){if(!btCharacteristic)throw new Error("Tidak ada karakteristik printer");if(btDevice&&!btDevice.gatt.connected){showToast("Reconnecting printer...");try{const server=await btDevice.gatt.connect();btCharacteristic=await findWritableCharacteristic(server);if(!btCharacteristic)throw new Error("Reconnect gagal");}catch(e){throw new Error("Printer terputus, hubungkan ulang!");}}const CHUNK=512;const useWithoutResponse=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithoutResponse)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){if(CHUNK>20){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}else throw e;}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
-
 function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());const dtStr=dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});text(dtStr);lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text('ITEM PEMBELIAN');lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);const dots='.'.repeat(Math.max(1,32-left.length-right.length));text(left+dots+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const totalLeft='TOTAL';const totalRight=formatIDRRaw(d.amount);const totalSpaces=' '.repeat(Math.max(1,32-totalLeft.length-totalRight.length));text(totalLeft+totalSpaces+totalRight);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text('*** HUTANG / BON ***');lf();}else{if(d.pay_cash>0){const l='Tunai',r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l='QRIS/Transfer',r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cL='Kembalian',cR=formatIDRRaw(d.change);text(cL+' '.repeat(Math.max(1,32-cL.length-cR.length))+cR);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text('Terima kasih atas kunjungan Anda!');lf();text('Barang dibeli tidak dapat ditukar.');lf();text('* DheKasir v1.4 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
-
-async function printBluetoothReceipt(){if(!lastReceiptData)return showToast("Tidak ada data struk!");if(!btCharacteristic&&!btDevice){showToast("Hubungkan printer dulu di Pengaturan!");return;}showToast("Mengirim ke printer...");try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){console.error('[Print]',e);showToast("Gagal cetak: "+(e.message||"Error"));btCharacteristic=null;btConnected=false;const s=document.getElementById('printer-status');if(s){s.innerText='ERROR';s.className='text-[8px] font-black text-rose-400 uppercase';}}}
-
+async function printBluetoothReceipt(){if(!lastReceiptData)return showToast("Tidak ada data struk!");if(!btCharacteristic&&!btDevice){showToast("Hubungkan printer dulu di Pengaturan!");return;}showToast("Mengirim ke printer...");try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){showToast("Gagal cetak: "+(e.message||"Error"));btCharacteristic=null;btConnected=false;const s=document.getElementById('printer-status');if(s){s.innerText='ERROR';s.className='text-[8px] font-black text-rose-400 uppercase';}}}
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
 // ── Init ───────────────────────────────────────────────────────────────
-window.onload=()=>{
+window.onload = () => {
     loadSettings();
-    const saved=localStorage.getItem('dk_active_tab')||'home';
+    const saved = localStorage.getItem('dk_active_tab') || 'home';
     switchTab(saved);
     renderCategoryOptions();
     renderPosCategoryChips();
