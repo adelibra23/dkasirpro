@@ -53,6 +53,22 @@
 
         * { box-sizing: border-box; }
 
+        /* ══════════════════════════════
+           SEMBUNYIKAN SEMUA SCROLLBAR
+           (Global — browser & WebKit)
+        ══════════════════════════════ */
+        html, body {
+            scrollbar-width: none !important;       /* Firefox */
+            -ms-overflow-style: none !important;    /* IE / Edge Legacy */
+        }
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             background: var(--bg);
@@ -60,6 +76,18 @@
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+        }
+
+        /* ══════════════════════════════
+           SIDEBAR SCROLL LOCK
+           Saat sidebar terbuka, body
+           tidak bisa di-scroll sama sekali
+        ══════════════════════════════ */
+        body.sidebar-open {
+            overflow: hidden !important;
+            position: fixed;
+            width: 100%;
+            /* simpan posisi scroll agar tidak loncat ke atas */
         }
 
         body.modal-open {
@@ -289,14 +317,13 @@
         #flash-btn:disabled { opacity:0.25; pointer-events:none; }
 
         /* ══════════════════════════════
-           PRINTER STATUS STYLES (ENHANCED)
+           PRINTER STATUS STYLES
         ══════════════════════════════ */
         .printer-ready    { color: #10b981 !important; }
         .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; }
         .printer-error    { color: #ef4444 !important; }
         .printer-offline  { color: var(--text-muted) !important; }
 
-        /* Printer card in settings */
         .printer-card {
             border-radius: 20px;
             border: 1px solid var(--card-border);
@@ -315,7 +342,6 @@
         .printer-status-bar.offline    { background: var(--card-border); }
         @keyframes shimmer { 0%{background-position:200% 0;}100%{background-position:-200% 0;} }
 
-        /* Printer modal */
         .bt-device-item {
             display: flex; align-items: center; gap: 12px;
             padding: 12px 14px; border-radius: 16px;
@@ -625,7 +651,6 @@
                     </div>
                     <span id="min-stock-display" class="text-[10px] font-black text-muted">5</span>
                 </div>
-                <!-- PRINTER ROW — redesigned -->
                 <div onclick="openPrinterModal()" class="settings-row">
                     <div class="flex items-center gap-3">
                         <div class="settings-icon" id="printer-icon-wrap" style="color:var(--text-muted)">
@@ -745,16 +770,9 @@
     </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     PRINTER MODAL — REDESIGNED (v1.4+)
-     Fitur: connect, reconnect, auto-reconnect,
-     test print, disconnect, status bar.
-══════════════════════════════════════════════ -->
 <div id="modal-printer" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-5">
         <div class="w-10 h-1.5 rounded-full mx-auto" style="background:var(--card-border)"></div>
-
-        <!-- Status bar strip -->
         <div class="printer-card overflow-hidden">
             <div id="printer-modal-bar" class="printer-status-bar offline"></div>
             <div class="p-4 flex items-center gap-4">
@@ -766,7 +784,6 @@
                     <p class="text-[10px] font-semibold text-muted" id="printer-modal-desc">Belum ada perangkat terhubung</p>
                     <p class="text-[9px] font-black uppercase mt-1" id="printer-modal-status-text" style="color:var(--text-muted);">OFFLINE</p>
                 </div>
-                <!-- Signal strength dots -->
                 <div id="printer-signal" class="hidden flex items-end gap-0.5 shrink-0">
                     <div class="w-1.5 rounded-sm bg-emerald-400" style="height:6px"></div>
                     <div class="w-1.5 rounded-sm bg-emerald-400" style="height:10px"></div>
@@ -774,8 +791,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Auto-reconnect toggle -->
         <div class="flex items-center justify-between p-4 rounded-2xl surface">
             <div>
                 <p class="text-xs font-black">Auto-Reconnect</p>
@@ -786,16 +801,12 @@
                 <span class="slider"></span>
             </label>
         </div>
-
-        <!-- Action buttons -->
         <div id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()">
             <i class="fa-brands fa-bluetooth mr-2"></i> Hubungkan Printer
         </div>
-
         <div id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()">
             <i class="fa-solid fa-rotate mr-2"></i> Sambung Ulang
         </div>
-
         <div id="printer-btn-actions" class="hidden grid grid-cols-2 gap-3">
             <button onclick="btTestPrint()" class="py-4 bg-emerald-600 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all">
                 <i class="fa-solid fa-file-lines mr-1"></i> Test Print
@@ -804,12 +815,9 @@
                 <i class="fa-solid fa-link-slash mr-1"></i> Putuskan
             </button>
         </div>
-
-        <!-- Help note -->
         <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed">
             <strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>. Jika printer sering terputus, aktifkan <strong>Auto-Reconnect</strong>.
         </div>
-
         <button onclick="closeModal('modal-printer')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Tutup</button>
     </div>
 </div>
@@ -1161,16 +1169,9 @@ const SCAN_COOLDOWN = 2500;
 
 // ══════════════════════════════
 // BLUETOOTH PRINTER — ENHANCED
-// Features:
-//   • Auto-reconnect on page load (uses navigator.bluetooth.getDevices())
-//   • Persistent device name saved to localStorage
-//   • Retry logic (up to 3 attempts) with exponential back-off
-//   • Disconnect detection + silent background reconnect
-//   • Chunked write with fallback micro-chunks
-//   • ESC/POS build unchanged
 // ══════════════════════════════
 
-const BT_PREFS_KEY  = 'dk_bt_prefs';    // { autoReconnect: bool, lastName: str }
+const BT_PREFS_KEY  = 'dk_bt_prefs';
 const BT_KNOWN_SERVICES = [
     '000018f0-0000-1000-8000-00805f9b34fb',
     '49535343-fe7d-4ae5-8fa9-9fafd205e455',
@@ -1181,17 +1182,15 @@ const BT_KNOWN_SERVICES = [
     '000003f3-0000-1000-8000-00805f9b34fb'
 ];
 const BT_MAX_RETRIES   = 3;
-const BT_RETRY_BASE_MS = 1500;  // doubles each retry
+const BT_RETRY_BASE_MS = 1500;
 
-let btDevice         = null;   // BluetoothDevice object
-let btCharacteristic = null;   // writable characteristic
-let btConnected      = false;  // live connection flag
-let btReconnectTimer = null;   // pending auto-reconnect timer
+let btDevice         = null;
+let btCharacteristic = null;
+let btConnected      = false;
+let btReconnectTimer = null;
 let btPrefs          = JSON.parse(localStorage.getItem(BT_PREFS_KEY) || '{"autoReconnect":false,"lastName":""}');
 
-// ── Printer UI helpers ──────────────────────────────────────────────
 function _setPrinterUI(state, deviceName = '') {
-    // state: 'offline' | 'connecting' | 'ready' | 'error'
     const statusEl   = document.getElementById('printer-status');
     const iconWrap   = document.getElementById('printer-icon-wrap');
     const devName    = document.getElementById('printer-device-name');
@@ -1227,16 +1226,13 @@ function _setPrinterUI(state, deviceName = '') {
     if (modalStat) { modalStat.style.color = m.iconColor; modalStat.innerText = m.text; }
     if (signal)    signal.classList.toggle('hidden', state !== 'ready');
 
-    // Modal buttons
     if (btnConnect)  btnConnect.classList.toggle('hidden',  state === 'ready');
     if (btnReconn)   btnReconn.classList.toggle('hidden',   state !== 'error');
     if (btnActions)  btnActions.classList.toggle('hidden',  state !== 'ready');
 
-    // Receipt print button hint
     if (printLbl)  printLbl.innerText = 'Print Bluetooth';
     if (printBtSt) printBtSt.innerText = state === 'ready' ? `(${name})` : '';
 
-    // Update auto-reconnect toggle to reflect saved pref
     const arToggle = document.getElementById('printer-auto-reconnect');
     if (arToggle && arToggle.checked !== btPrefs.autoReconnect) {
         arToggle.checked = btPrefs.autoReconnect;
@@ -1256,7 +1252,6 @@ function openPrinterModal() {
     openModal('modal-printer');
 }
 
-// ── Core BT helpers ──────────────────────────────────────────────────
 async function _findWritableChar(server) {
     let services = [];
     try { services = await server.getPrimaryServices(); } catch(e) {
@@ -1315,15 +1310,12 @@ function _onDisconnected() {
             if (!btConnected) {
                 showToast("🔄 Auto-reconnect...");
                 try { await _doConnect(btDevice); showToast("✓ Printer tersambung kembali!"); }
-                catch(e) { /* silent, UI already shows error */ }
+                catch(e) {}
             }
         }, 3000);
     }
 }
 
-// ── Public BT API ────────────────────────────────────────────────────
-
-/** Called from the "Hubungkan Printer" button — shows OS picker */
 async function btConnect() {
     _setPrinterUI('connecting');
     try {
@@ -1344,7 +1336,6 @@ async function btConnect() {
     }
 }
 
-/** Called from "Sambung Ulang" button or after disconnect */
 async function btReconnect() {
     if (!btDevice) return btConnect();
     _setPrinterUI('connecting', btDevice.name);
@@ -1356,7 +1347,6 @@ async function btReconnect() {
     }
 }
 
-/** Called from the "Putuskan" button */
 function btDisconnect() {
     clearTimeout(btReconnectTimer);
     if (btDevice?.gatt?.connected) {
@@ -1371,7 +1361,6 @@ function btDisconnect() {
     showToast("Printer diputuskan");
 }
 
-/** Called on page load — silently re-attach to previously paired device */
 async function btAutoReconnectOnLoad() {
     if (!btPrefs.autoReconnect) return;
     if (!navigator.bluetooth || typeof navigator.bluetooth.getDevices !== 'function') return;
@@ -1379,7 +1368,6 @@ async function btAutoReconnectOnLoad() {
         const devices = await navigator.bluetooth.getDevices();
         if (!devices || devices.length === 0) return;
 
-        // Prefer the last-known device by name
         let target = devices.find(d => d.name === btPrefs.lastName) || devices[0];
         if (!target) return;
 
@@ -1388,14 +1376,11 @@ async function btAutoReconnectOnLoad() {
         await _doConnect(target);
         showToast(`✓ Auto-connect: "${target.name || 'Printer'}" siap!`);
     } catch(e) {
-        // Silent — auto-reconnect is best-effort
         _setPrinterUI('offline');
     }
 }
 
-/** Chunked BT write with micro-chunk fallback */
 async function btWrite(data) {
-    // Ensure connection is alive; try once to recover
     if (!btCharacteristic) throw new Error("Printer tidak terhubung");
     if (btDevice && !btDevice.gatt.connected) {
         showToast("Reconnecting printer...");
@@ -1412,7 +1397,6 @@ async function btWrite(data) {
             if (useWithout) await btCharacteristic.writeValueWithoutResponse(chunk);
             else            await btCharacteristic.writeValue(chunk);
         } catch(e) {
-            // Fallback: micro-chunks of 20 bytes
             for (let i = 0; i < chunk.length; i += 20) {
                 const mini = chunk.slice(i, i + 20);
                 try { await btCharacteristic.writeValueWithoutResponse(mini); }
@@ -1424,7 +1408,6 @@ async function btWrite(data) {
     }
 }
 
-/** Test print from inside printer modal */
 async function btTestPrint() {
     const testData = {
         id: 'TEST-' + Date.now(),
@@ -1449,7 +1432,6 @@ async function btTestPrint() {
     }
 }
 
-/** Main print from receipt modal */
 async function printBluetoothReceipt() {
     if (!lastReceiptData) return showToast("Tidak ada data struk!");
     if (!btCharacteristic && !btDevice) {
@@ -1475,7 +1457,6 @@ async function printBluetoothReceipt() {
     }
 }
 
-/** ESC/POS byte builder */
 function buildEscPosReceipt(d) {
     const enc = new TextEncoder();
     const bytes = [];
@@ -1485,10 +1466,7 @@ function buildEscPosReceipt(d) {
     function lf(n=1){ for(let i=0;i<n;i++)bytes.push(LF); }
 
     const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';
-    cmd(ESC,0x40);
-    cmd(ESC,0x74,0x00);
-    cmd(ESC,0x61,0x01);
-    cmd(ESC,0x45,0x01);
+    cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);
     cmd(GS,0x21,0x11); text(sname.toUpperCase()); lf();
     cmd(GS,0x21,0x00); cmd(ESC,0x45,0x00);
     if(saddr&&saddr!=='-'){text(saddr);lf();}
@@ -1528,17 +1506,72 @@ function buildEscPosReceipt(d) {
 }
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 
-// ── END BLUETOOTH SECTION ─────────────────────────────────────────────
-
 // ── Scroll Lock ────────────────────────────────────────────────────────
+
+// ── SIDEBAR SCROLL LOCK ────────────────────────────────────────────────
+// Menyimpan posisi scroll sebelum sidebar dibuka agar tidak loncat
+let _sidebarScrollY = 0;
+
+function _lockSidebarScroll() {
+    _sidebarScrollY = window.scrollY;
+    document.body.classList.add('sidebar-open');
+    document.body.style.top = `-${_sidebarScrollY}px`;
+}
+
+function _unlockSidebarScroll() {
+    document.body.classList.remove('sidebar-open');
+    document.body.style.top = '';
+    window.scrollTo(0, _sidebarScrollY);
+}
+
+// ── MODAL SCROLL LOCK ─────────────────────────────────────────────────
 let _modalOpenCount = 0;
 let _scrollYBeforeLock = 0;
-function _lockBodyScroll(){_modalOpenCount++;if(_modalOpenCount===1){_scrollYBeforeLock=window.scrollY;document.body.classList.add('modal-open');document.body.style.top=`-${_scrollYBeforeLock}px`;}}
-function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_modalOpenCount===0){document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,_scrollYBeforeLock);}}
+
+function _lockBodyScroll() {
+    _modalOpenCount++;
+    if (_modalOpenCount === 1) {
+        _scrollYBeforeLock = window.scrollY;
+        document.body.classList.add('modal-open');
+        document.body.style.top = `-${_scrollYBeforeLock}px`;
+    }
+}
+
+function _unlockBodyScroll() {
+    _modalOpenCount = Math.max(0, _modalOpenCount - 1);
+    if (_modalOpenCount === 0) {
+        document.body.classList.remove('modal-open');
+        document.body.style.top = '';
+        window.scrollTo(0, _scrollYBeforeLock);
+    }
+}
 
 // ── Sidebar ────────────────────────────────────────────────────────────
-function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open')){closeSidebar();}else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');}}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('open');document.getElementById('hamburger-btn').classList.remove('open');}
+function toggleSidebar() {
+    const sb  = document.getElementById('sidebar');
+    const ov  = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('hamburger-btn');
+
+    if (sb.classList.contains('open')) {
+        closeSidebar();
+    } else {
+        sb.classList.add('open');
+        ov.classList.add('open');
+        btn.classList.add('open');
+        _lockSidebarScroll();   // ← kunci scroll saat sidebar terbuka
+    }
+}
+
+function closeSidebar() {
+    const sb  = document.getElementById('sidebar');
+    const ov  = document.getElementById('sidebar-overlay');
+    const btn = document.getElementById('hamburger-btn');
+
+    sb.classList.remove('open');
+    ov.classList.remove('open');
+    btn.classList.remove('open');
+    _unlockSidebarScroll();     // ← kembalikan scroll saat sidebar ditutup
+}
 
 // ── Web Audio ──────────────────────────────────────────────────────────
 let audioCtx=null;
@@ -1678,7 +1711,6 @@ function showReceipt(d){
     if(d.method==='Hutang'||d.method==='Debt'){pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">⚠ HUTANG / BON</span></div>`;}
     else{let rows='';if(d.pay_cash>0)rows+=`<div class="rec-pay-row"><span>Tunai</span><span>${formatIDR(d.pay_cash)}</span></div>`;if(d.pay_qris>0)rows+=`<div class="rec-pay-row"><span>QRIS/Transfer</span><span>${formatIDR(d.pay_qris)}</span></div>`;pd.innerHTML=rows;}
     document.getElementById('rec-change').innerText=formatIDR(d.change);
-    // Update print button hint based on current BT state
     const printBtSt=document.getElementById('print-bt-status');
     if(printBtSt)printBtSt.innerText=btConnected?(btDevice?.name?`(${btDevice.name})`:'(Ready)'):'(Offline)';
     openModal('modal-receipt');
@@ -1871,7 +1903,6 @@ function loadSettings(){
     updateLogo(document.getElementById('sb-logo'),true);
     const pp=document.getElementById('profile-logo-preview');if(pp){if(s.logo){pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}}
     const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg){if(s.logo){lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;}else{lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}}
-    // Restore last-known printer name in settings row
     const devNameEl=document.getElementById('printer-device-name');
     if(devNameEl)devNameEl.innerText=btConnected?(btDevice?.name||'Terhubung'):(btPrefs.lastName?`Terakhir: ${btPrefs.lastName}`:'Belum terhubung');
 }
@@ -1961,10 +1992,8 @@ window.onload = async () => {
     renderPosCategoryChips();
     checkStockAlerts();
 
-    // Apply initial printer UI state from saved prefs
     _setPrinterUI('offline');
 
-    // Attempt silent auto-reconnect if pref is on
     await btAutoReconnectOnLoad();
 };
 </script>
