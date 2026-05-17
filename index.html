@@ -53,13 +53,9 @@
 
         * { box-sizing: border-box; }
 
-        /* ══════════════════════════════
-           SEMBUNYIKAN SEMUA SCROLLBAR
-           (Global — browser & WebKit)
-        ══════════════════════════════ */
         html, body {
-            scrollbar-width: none !important;       /* Firefox */
-            -ms-overflow-style: none !important;    /* IE / Edge Legacy */
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
         }
         html::-webkit-scrollbar,
         body::-webkit-scrollbar,
@@ -78,16 +74,10 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ══════════════════════════════
-           SIDEBAR SCROLL LOCK
-           Saat sidebar terbuka, body
-           tidak bisa di-scroll sama sekali
-        ══════════════════════════════ */
         body.sidebar-open {
             overflow: hidden !important;
             position: fixed;
             width: 100%;
-            /* simpan posisi scroll agar tidak loncat ke atas */
         }
 
         body.modal-open {
@@ -96,80 +86,55 @@
             width: 100%;
         }
 
-        /* ══════════════════════════════
-           SPLASH SCREEN
-        ══════════════════════════════ */
+        /* ── SPLASH SCREEN ── */
         #splash-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
+            position: fixed; inset: 0; z-index: 9999;
             background: linear-gradient(145deg, #1e1b4b 0%, #312e81 30%, #4f46e5 65%, #7c3aed 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden; transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        #splash-screen.fade-out {
-            opacity: 0;
-            transform: scale(1.05);
-            pointer-events: none;
-        }
-        #splash-screen.skip-instant {
-            display: none !important;
-        }
+        #splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+        #splash-screen.skip-instant { display: none !important; }
 
-        .splash-orb {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            animation: orbFloat 6s ease-in-out infinite;
-        }
-        .splash-orb-1 { width: 300px; height: 300px; background: rgba(167, 139, 250, 0.25); top: -80px; right: -60px; animation-delay: 0s; }
-        .splash-orb-2 { width: 200px; height: 200px; background: rgba(99, 102, 241, 0.3); bottom: 20px; left: -50px; animation-delay: 2s; }
-        .splash-orb-3 { width: 150px; height: 150px; background: rgba(236, 72, 153, 0.15); top: 50%; left: 20%; animation-delay: 4s; }
-        @keyframes orbFloat { 0%, 100% { transform: translateY(0px) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+        .splash-orb { position: absolute; border-radius: 50%; filter: blur(60px); animation: orbFloat 6s ease-in-out infinite; }
+        .splash-orb-1 { width: 300px; height: 300px; background: rgba(167,139,250,0.25); top: -80px; right: -60px; animation-delay: 0s; }
+        .splash-orb-2 { width: 200px; height: 200px; background: rgba(99,102,241,0.3); bottom: 20px; left: -50px; animation-delay: 2s; }
+        .splash-orb-3 { width: 150px; height: 150px; background: rgba(236,72,153,0.15); top: 50%; left: 20%; animation-delay: 4s; }
+        @keyframes orbFloat { 0%,100%{transform:translateY(0px) scale(1);}50%{transform:translateY(-20px) scale(1.05);} }
 
-        .splash-grid {
-            position: absolute; inset: 0;
-            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-            background-size: 32px 32px;
-        }
+        .splash-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px); background-size: 32px 32px; }
 
         .splash-logo-wrap { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 0; }
-
         .splash-ring { position: absolute; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.15); animation: ringPulse 2s ease-in-out infinite; }
         .splash-ring-1 { width: 100px; height: 100px; animation-delay: 0s; }
         .splash-ring-2 { width: 130px; height: 130px; animation-delay: 0.3s; }
         .splash-ring-3 { width: 165px; height: 165px; animation-delay: 0.6s; }
-        @keyframes ringPulse { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.15; transform: scale(1.04); } }
+        @keyframes ringPulse { 0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:0.15;transform:scale(1.04);} }
 
         .splash-logo-box {
             position: relative; width: 80px; height: 80px;
             background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1.5px solid rgba(255,255,255,0.25); border-radius: 28px;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 0 1px rgba(255,255,255,0.1), 0 20px 60px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
-            animation: logoAppear 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both; z-index: 2;
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.1),0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.3);
+            animation: logoAppear 0.7s cubic-bezier(0.34,1.56,0.64,1) 0.2s both; z-index: 2;
         }
-        @keyframes logoAppear { 0% { opacity: 0; transform: scale(0.5) rotate(-10deg); } 100% { opacity: 1; transform: scale(1) rotate(0deg); } }
-
+        @keyframes logoAppear { 0%{opacity:0;transform:scale(0.5) rotate(-10deg);}100%{opacity:1;transform:scale(1) rotate(0deg);} }
         .splash-logo-letter { font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.2); line-height: 1; }
 
         .splash-sparkle { position: absolute; width: 5px; height: 5px; background: rgba(255,255,255,0.8); border-radius: 50%; animation: sparkleAnim 1.8s ease-in-out infinite; }
         .sp1 { top: -4px; right: 14px; animation-delay: 0s; }
         .sp2 { bottom: 10px; right: -5px; animation-delay: 0.6s; width: 4px; height: 4px; }
         .sp3 { top: 18px; left: -5px; animation-delay: 1.2s; width: 3px; height: 3px; }
-        @keyframes sparkleAnim { 0%, 100% { opacity: 0; transform: scale(0); } 50% { opacity: 1; transform: scale(1); } }
+        @keyframes sparkleAnim { 0%,100%{opacity:0;transform:scale(0);}50%{opacity:1;transform:scale(1);} }
 
         .splash-app-name { margin-top: 28px; font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.5px; text-align: center; animation: textSlideUp 0.6s ease 0.6s both; }
         .splash-tagline { margin-top: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0.15em; text-transform: uppercase; text-align: center; animation: textSlideUp 0.6s ease 0.75s both; }
-        @keyframes textSlideUp { 0% { opacity: 0; transform: translateY(16px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes textSlideUp { 0%{opacity:0;transform:translateY(16px);}100%{opacity:1;transform:translateY(0);} }
 
         .splash-progress-area { position: absolute; bottom: 72px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 48px; animation: textSlideUp 0.6s ease 1s both; }
         .splash-progress-track { width: 100%; height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
-        .splash-progress-bar { height: 100%; background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(255,255,255,1)); border-radius: 2px; width: 0%; transition: width 0.25s ease; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+        .splash-progress-bar { height: 100%; background: linear-gradient(90deg,rgba(255,255,255,0.6),rgba(255,255,255,1)); border-radius: 2px; width: 0%; transition: width 0.25s ease; box-shadow: 0 0 10px rgba(255,255,255,0.5); }
         .splash-status-text { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; min-height: 14px; transition: opacity 0.3s; }
         .splash-version { position: absolute; bottom: 32px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
 
@@ -194,13 +159,13 @@
         #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
         .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
-        .header-logo { width: 32px; height: 32px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; overflow: hidden; flex-shrink: 0; }
+        .header-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; overflow: hidden; flex-shrink: 0; }
         .header-title { font-size: 15px; font-weight: 800; color: var(--text); max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
         .hdr-btn:active { transform: scale(0.92); }
-        .hdr-btn.primary-action { background: linear-gradient(135deg, #4f46e5, #7c3aed); border-color: transparent; color: #fff; width: 42px; height: 38px; box-shadow: 0 3px 10px rgba(79,70,229,0.35); }
+        .hdr-btn.primary-action { background: linear-gradient(135deg,#4f46e5,#7c3aed); border-color: transparent; color: #fff; width: 42px; height: 38px; box-shadow: 0 3px 10px rgba(79,70,229,0.35); }
 
         #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         #sidebar-overlay.open { opacity: 1; pointer-events: all; }
@@ -209,7 +174,7 @@
         #sidebar.open { transform: translateX(0); }
 
         .sidebar-header { padding: 52px 20px 20px; border-bottom: 1px solid var(--card-border); }
-        .sidebar-store-logo { width: 52px; height: 52px; background: linear-gradient(135deg, #4f46e5, #7c3aed); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+        .sidebar-store-logo { width: 52px; height: 52px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
         .sidebar-store-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
         .sidebar-store-addr { font-size: 11px; color: var(--text-muted); font-weight: 500; }
         .sidebar-version { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; background: var(--primary-soft); color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; }
@@ -234,18 +199,18 @@
         .nav-item i { font-size: 18px; transition: all 0.2s; }
         .nav-item.active { color: var(--primary); }
         .nav-item.active i { transform: translateY(-1px); }
-        .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--primary); opacity: 0; transition: opacity 0.2s, width 0.2s; }
+        .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--primary); opacity: 0; transition: opacity 0.2s,width 0.2s; }
         .nav-item.active .nav-item-pill { opacity: 1; }
         .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
 
         .tab-content { display: none; padding: 16px 16px 110px; }
         .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
-        @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeUp { from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);} }
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        input, select, textarea { background: var(--input-bg) !important; color: var(--text) !important; border-color: var(--input-border) !important; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+        input, select, textarea { background: var(--input-bg) !important; color: var(--text) !important; border-color: var(--input-border) !important; transition: background 0.3s,color 0.3s,border-color 0.3s; }
         input::placeholder, textarea::placeholder { color: var(--text-muted) !important; }
         select option { background: var(--card); color: var(--text); }
 
@@ -254,11 +219,11 @@
         .surface-hover:hover { background: var(--surface-hover) !important; }
         .dk-divider { border-color: var(--card-border) !important; }
         .text-muted { color: var(--text-muted) !important; }
-        .premium-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); }
+        .premium-gradient { background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%); }
 
         #reader { border-radius: 24px; overflow: hidden; background: #000; border: none !important; }
 
-        .receipt-paper { font-family: 'Courier New', Courier, monospace; font-size: 12px; line-height: 1.55; color: #111; background: #fff; width: 100%; }
+        .receipt-paper { font-family: 'Courier New',Courier,monospace; font-size: 12px; line-height: 1.55; color: #111; background: #fff; width: 100%; }
         .receipt-paper .rec-header { text-align:center; padding-bottom:8px; border-bottom:1px dashed #bbb; margin-bottom:8px; }
         .receipt-paper .rec-logo { display:flex; justify-content:center; align-items:center; margin-bottom:6px; }
         .receipt-paper .rec-logo img { max-height:52px; max-width:120px; object-fit:contain; }
@@ -316,38 +281,21 @@
         #flash-btn.flash-on .flash-label { opacity:1; }
         #flash-btn:disabled { opacity:0.25; pointer-events:none; }
 
-        /* ══════════════════════════════
-           PRINTER STATUS STYLES
-        ══════════════════════════════ */
+        /* ── PRINTER STATUS ── */
         .printer-ready    { color: #10b981 !important; }
         .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; }
         .printer-error    { color: #ef4444 !important; }
         .printer-offline  { color: var(--text-muted) !important; }
 
-        .printer-card {
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            background: var(--card);
-            overflow: hidden;
-            transition: all 0.3s;
-        }
-        .printer-status-bar {
-            height: 4px;
-            transition: background 0.4s;
-            border-radius: 0;
-        }
-        .printer-status-bar.ready      { background: linear-gradient(90deg, #10b981, #34d399); }
-        .printer-status-bar.connecting { background: linear-gradient(90deg, #f59e0b, #fbbf24); animation: shimmer 1s linear infinite; background-size: 200% 100%; }
-        .printer-status-bar.error      { background: linear-gradient(90deg, #ef4444, #f87171); }
+        .printer-card { border-radius: 20px; border: 1px solid var(--card-border); background: var(--card); overflow: hidden; transition: all 0.3s; }
+        .printer-status-bar { height: 4px; transition: background 0.4s; border-radius: 0; }
+        .printer-status-bar.ready      { background: linear-gradient(90deg,#10b981,#34d399); }
+        .printer-status-bar.connecting { background: linear-gradient(90deg,#f59e0b,#fbbf24); animation: shimmer 1s linear infinite; background-size: 200% 100%; }
+        .printer-status-bar.error      { background: linear-gradient(90deg,#ef4444,#f87171); }
         .printer-status-bar.offline    { background: var(--card-border); }
         @keyframes shimmer { 0%{background-position:200% 0;}100%{background-position:-200% 0;} }
 
-        .bt-device-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 12px 14px; border-radius: 16px;
-            cursor: pointer; border: 1.5px solid var(--card-border);
-            background: var(--surface); transition: all 0.2s;
-        }
+        .bt-device-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; cursor: pointer; border: 1.5px solid var(--card-border); background: var(--surface); transition: all 0.2s; }
         .bt-device-item:hover { border-color: var(--primary); background: var(--primary-soft); }
         .bt-device-item:active { transform: scale(0.97); }
         .bt-device-item.selected { border-color: var(--primary); background: var(--primary-soft); }
@@ -363,9 +311,64 @@
         .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
         .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
 
-        .dash-hero { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%); border-radius: 24px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(79,70,229,0.3); }
-        .dash-hero::before { content: ''; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.06); }
-        .dash-hero::after { content: ''; position: absolute; bottom: -30px; left: -20px; width: 100px; height: 100px; border-radius: 50%; background: rgba(255,255,255,0.04); }
+        .dash-hero { background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#a855f7 100%); border-radius: 24px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(79,70,229,0.3); }
+        .dash-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.06); }
+        .dash-hero::after { content:''; position:absolute; bottom:-30px; left:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.04); }
+
+        /* ══════════════════════════════
+           BALANCE HIDE / SHOW
+        ══════════════════════════════ */
+        .balance-mask {
+            display: inline-block;
+            transition: filter 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+        }
+        .balance-hidden .balance-mask {
+            filter: blur(10px);
+            opacity: 0.35;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* Tombol toggle intip saldo */
+        .balance-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            color: rgba(255,255,255,0.9);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .balance-toggle-btn:active {
+            transform: scale(0.90);
+        }
+        .balance-toggle-btn:hover {
+            background: rgba(255,255,255,0.22);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+        .balance-toggle-btn .btn-eye-icon {
+            font-size: 11px;
+            transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s;
+        }
+        .balance-toggle-btn .btn-label {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.07em;
+            text-transform: uppercase;
+        }
+
+        /* Animasi icon mata saat toggle */
+        .balance-toggle-btn.hiding .btn-eye-icon {
+            transform: scale(0.7) rotate(-20deg);
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -488,20 +491,45 @@
 
         <!-- ── HOME ── -->
         <section id="tab-home" class="tab-content active space-y-5">
-            <div class="dash-hero text-white relative z-10">
-                <p class="text-[10px] opacity-70 font-bold uppercase mb-1 tracking-widest">Profit Bersih Toko</p>
-                <h2 class="text-3xl font-black mb-1" id="dash-profit">Rp 0</h2>
-                <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-5 mt-5">
+
+            <!-- HERO DENGAN FITUR SEMBUNYIKAN SALDO -->
+            <div class="dash-hero text-white relative z-10" id="dash-hero-wrap">
+                <!-- Baris label + tombol toggle -->
+                <div class="flex items-center justify-between mb-2" style="position:relative;z-index:2;">
+                    <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest">Profit Bersih Toko</p>
+                    <button
+                        class="balance-toggle-btn"
+                        id="balance-toggle-btn"
+                        onclick="toggleBalanceVisibility()"
+                        aria-label="Sembunyikan/Tampilkan Saldo"
+                    >
+                        <i class="fa-solid fa-eye btn-eye-icon" id="balance-eye-icon"></i>
+                        <span class="btn-label" id="balance-toggle-label">Sembunyikan</span>
+                    </button>
+                </div>
+
+                <!-- Angka profit utama -->
+                <h2 class="text-3xl font-black mb-1" style="position:relative;z-index:2;">
+                    <span class="balance-mask" id="dash-profit">Rp 0</span>
+                </h2>
+
+                <!-- Grid sub-metric -->
+                <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-5 mt-5" style="position:relative;z-index:2;">
                     <div>
                         <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">Pemasukan Hari Ini</p>
-                        <p class="text-base font-bold" id="dash-omzet">Rp 0</p>
+                        <p class="text-base font-bold">
+                            <span class="balance-mask" id="dash-omzet">Rp 0</span>
+                        </p>
                     </div>
                     <div>
                         <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1">Total Piutang</p>
-                        <p class="text-base font-bold text-rose-200" id="dash-debt">Rp 0</p>
+                        <p class="text-base font-bold text-rose-200">
+                            <span class="balance-mask" id="dash-debt">Rp 0</span>
+                        </p>
                     </div>
                 </div>
             </div>
+
             <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center">
@@ -1079,7 +1107,7 @@
 <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
 <script>
 // ══════════════════════════════
-// SPLASH SCREEN LOGIC
+// SPLASH SCREEN
 // ══════════════════════════════
 (function() {
     const SPLASH_KEY = 'dk_splash_shown';
@@ -1100,7 +1128,6 @@
     } catch(e) {}
 
     const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
-
     if (alreadyShown) {
         splash.classList.add('skip-instant');
         app.style.opacity = '1';
@@ -1143,7 +1170,7 @@
     setTimeout(runStep, 500);
 })();
 
-// ── State ─────────────────────────────────────────────────────────────
+// ── State ──────────────────────────────────────────────────────────────
 let items        = JSON.parse(localStorage.getItem('dk_items'))         || [];
 let logs         = JSON.parse(localStorage.getItem('dk_logs'))          || [];
 let debts        = JSON.parse(localStorage.getItem('dk_debts'))         || [];
@@ -1168,9 +1195,48 @@ let opnameData = {};
 const SCAN_COOLDOWN = 2500;
 
 // ══════════════════════════════
-// BLUETOOTH PRINTER — ENHANCED
+// BALANCE HIDE / SHOW
 // ══════════════════════════════
+let balanceHidden = localStorage.getItem('dk_balance_hidden') === '1';
 
+function applyBalanceUI() {
+    const hero  = document.getElementById('dash-hero-wrap');
+    const icon  = document.getElementById('balance-eye-icon');
+    const label = document.getElementById('balance-toggle-label');
+    const btn   = document.getElementById('balance-toggle-btn');
+    if (!hero) return;
+
+    if (balanceHidden) {
+        hero.classList.add('balance-hidden');
+        if (icon)  { icon.className = 'fa-solid fa-eye-slash btn-eye-icon'; }
+        if (label) label.textContent = 'Tampilkan';
+        if (btn)   btn.setAttribute('aria-label', 'Tampilkan Saldo');
+    } else {
+        hero.classList.remove('balance-hidden');
+        if (icon)  { icon.className = 'fa-solid fa-eye btn-eye-icon'; }
+        if (label) label.textContent = 'Sembunyikan';
+        if (btn)   btn.setAttribute('aria-label', 'Sembunyikan Saldo');
+    }
+}
+
+function toggleBalanceVisibility() {
+    balanceHidden = !balanceHidden;
+    localStorage.setItem('dk_balance_hidden', balanceHidden ? '1' : '0');
+
+    // Animasi singkat pada tombol
+    const btn = document.getElementById('balance-toggle-btn');
+    if (btn) {
+        btn.classList.add('hiding');
+        setTimeout(() => btn.classList.remove('hiding'), 350);
+    }
+
+    applyBalanceUI();
+    showToast(balanceHidden ? '🙈 Saldo disembunyikan' : '👁 Saldo ditampilkan');
+}
+
+// ══════════════════════════════
+// BLUETOOTH PRINTER
+// ══════════════════════════════
 const BT_PREFS_KEY  = 'dk_bt_prefs';
 const BT_KNOWN_SERVICES = [
     '000018f0-0000-1000-8000-00805f9b34fb',
@@ -1209,7 +1275,7 @@ function _setPrinterUI(state, deviceName = '') {
     const name = deviceName || btPrefs.lastName || 'Printer Thermal';
 
     const map = {
-        offline:    { text:'OFFLINE',     cls:'printer-offline',    barCls:'offline',    iconColor:'var(--text-muted)', iconBg:'var(--surface)',     desc:'Belum ada perangkat terhubung' },
+        offline:    { text:'OFFLINE',     cls:'printer-offline',    barCls:'offline',    iconColor:'var(--text-muted)', iconBg:'var(--surface)',      desc:'Belum ada perangkat terhubung' },
         connecting: { text:'CONNECTING…', cls:'printer-connecting', barCls:'connecting', iconColor:'#f59e0b',           iconBg:'rgba(245,158,11,0.1)', desc:'Sedang menghubungkan...' },
         ready:      { text:'READY ✓',     cls:'printer-ready',      barCls:'ready',      iconColor:'#10b981',           iconBg:'rgba(16,185,129,0.1)', desc:'Siap mencetak struk' },
         error:      { text:'ERROR',       cls:'printer-error',      barCls:'error',      iconColor:'#ef4444',           iconBg:'rgba(239,68,68,0.1)', desc:'Gagal terhubung — coba lagi' }
@@ -1275,13 +1341,11 @@ async function _doConnect(device, retryCount = 0) {
         const server = await device.gatt.connect();
         const char   = await _findWritableChar(server);
         if (!char) throw new Error("Tidak ada karakteristik writable");
-
         btDevice         = device;
         btCharacteristic = char;
         btConnected      = true;
         btPrefs.lastName = device.name || btPrefs.lastName;
         savePrinterPrefs();
-
         _setPrinterUI('ready', device.name);
         return true;
     } catch(e) {
@@ -1303,7 +1367,6 @@ function _onDisconnected() {
     btCharacteristic = null;
     _setPrinterUI(btDevice ? 'error' : 'offline', btDevice?.name || '');
     showToast("⚠ Printer terputus");
-
     if (btPrefs.autoReconnect && btDevice) {
         clearTimeout(btReconnectTimer);
         btReconnectTimer = setTimeout(async () => {
@@ -1349,9 +1412,7 @@ async function btReconnect() {
 
 function btDisconnect() {
     clearTimeout(btReconnectTimer);
-    if (btDevice?.gatt?.connected) {
-        try { btDevice.gatt.disconnect(); } catch(e) {}
-    }
+    if (btDevice?.gatt?.connected) { try { btDevice.gatt.disconnect(); } catch(e) {} }
     btDevice         = null;
     btCharacteristic = null;
     btConnected      = false;
@@ -1367,10 +1428,8 @@ async function btAutoReconnectOnLoad() {
     try {
         const devices = await navigator.bluetooth.getDevices();
         if (!devices || devices.length === 0) return;
-
         let target = devices.find(d => d.name === btPrefs.lastName) || devices[0];
         if (!target) return;
-
         target.addEventListener('gattserverdisconnected', _onDisconnected);
         _setPrinterUI('connecting', target.name);
         await _doConnect(target);
@@ -1387,10 +1446,8 @@ async function btWrite(data) {
         await _doConnect(btDevice);
         if (!btCharacteristic) throw new Error("Reconnect gagal");
     }
-
     const CHUNK = 512;
     const useWithout = !btCharacteristic.properties.write && btCharacteristic.properties.writeWithoutResponse;
-
     for (let offset = 0; offset < data.length; offset += CHUNK) {
         const chunk = data.slice(offset, offset + CHUNK);
         try {
@@ -1409,17 +1466,7 @@ async function btWrite(data) {
 }
 
 async function btTestPrint() {
-    const testData = {
-        id: 'TEST-' + Date.now(),
-        items: [{ name: 'Test Item', qty: 1, price: 10000, cost: 0 }],
-        amount: 10000,
-        total_cost: 0,
-        pay_cash: 10000,
-        pay_qris: 0,
-        change: 0,
-        method: 'Cash/QRIS',
-        created_at: new Date().toISOString()
-    };
+    const testData = { id:'TEST-'+Date.now(), items:[{name:'Test Item',qty:1,price:10000,cost:0}], amount:10000, total_cost:0, pay_cash:10000, pay_qris:0, change:0, method:'Cash/QRIS', created_at:new Date().toISOString() };
     showToast("Mengirim test print...");
     try {
         const data = buildEscPosReceipt(testData);
@@ -1434,14 +1481,10 @@ async function btTestPrint() {
 
 async function printBluetoothReceipt() {
     if (!lastReceiptData) return showToast("Tidak ada data struk!");
-    if (!btCharacteristic && !btDevice) {
-        showToast("Hubungkan printer dulu di Pengaturan!");
-        return;
-    }
+    if (!btCharacteristic && !btDevice) { showToast("Hubungkan printer dulu di Pengaturan!"); return; }
     if (!btConnected) {
         showToast("Printer terputus — mencoba reconnect...");
-        try { await btReconnect(); }
-        catch(e) { return showToast("Gagal reconnect printer!"); }
+        try { await btReconnect(); } catch(e) { return showToast("Gagal reconnect printer!"); }
     }
     showToast("Mengirim ke printer...");
     try {
@@ -1507,27 +1550,20 @@ function buildEscPosReceipt(d) {
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 
 // ── Scroll Lock ────────────────────────────────────────────────────────
-
-// ── SIDEBAR SCROLL LOCK ────────────────────────────────────────────────
-// Menyimpan posisi scroll sebelum sidebar dibuka agar tidak loncat
 let _sidebarScrollY = 0;
-
 function _lockSidebarScroll() {
     _sidebarScrollY = window.scrollY;
     document.body.classList.add('sidebar-open');
     document.body.style.top = `-${_sidebarScrollY}px`;
 }
-
 function _unlockSidebarScroll() {
     document.body.classList.remove('sidebar-open');
     document.body.style.top = '';
     window.scrollTo(0, _sidebarScrollY);
 }
 
-// ── MODAL SCROLL LOCK ─────────────────────────────────────────────────
 let _modalOpenCount = 0;
 let _scrollYBeforeLock = 0;
-
 function _lockBodyScroll() {
     _modalOpenCount++;
     if (_modalOpenCount === 1) {
@@ -1536,7 +1572,6 @@ function _lockBodyScroll() {
         document.body.style.top = `-${_scrollYBeforeLock}px`;
     }
 }
-
 function _unlockBodyScroll() {
     _modalOpenCount = Math.max(0, _modalOpenCount - 1);
     if (_modalOpenCount === 0) {
@@ -1551,26 +1586,15 @@ function toggleSidebar() {
     const sb  = document.getElementById('sidebar');
     const ov  = document.getElementById('sidebar-overlay');
     const btn = document.getElementById('hamburger-btn');
-
-    if (sb.classList.contains('open')) {
-        closeSidebar();
-    } else {
-        sb.classList.add('open');
-        ov.classList.add('open');
-        btn.classList.add('open');
-        _lockSidebarScroll();   // ← kunci scroll saat sidebar terbuka
-    }
+    if (sb.classList.contains('open')) { closeSidebar(); }
+    else { sb.classList.add('open'); ov.classList.add('open'); btn.classList.add('open'); _lockSidebarScroll(); }
 }
-
 function closeSidebar() {
     const sb  = document.getElementById('sidebar');
     const ov  = document.getElementById('sidebar-overlay');
     const btn = document.getElementById('hamburger-btn');
-
-    sb.classList.remove('open');
-    ov.classList.remove('open');
-    btn.classList.remove('open');
-    _unlockSidebarScroll();     // ← kembalikan scroll saat sidebar ditutup
+    sb.classList.remove('open'); ov.classList.remove('open'); btn.classList.remove('open');
+    _unlockSidebarScroll();
 }
 
 // ── Web Audio ──────────────────────────────────────────────────────────
@@ -1584,10 +1608,8 @@ function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const t=document.getElementById('toast');if(!t)return;t.innerText=m;t.style.opacity='1';setTimeout(()=>t.style.opacity='0',2500);}
-
 function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
 function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
-
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ── Tab Navigation ─────────────────────────────────────────────────────
@@ -1755,14 +1777,19 @@ function renderHome(){
     logs.forEach(l=>{const a=rawIDR(l.amount);profit+=(a-rawIDR(l.total_cost));if(l.date===today)omzet+=a;if(l.created_at)hourMap[new Date(l.created_at).getHours()]++;if(l.items)l.items.forEach(it=>best[it.name]=(best[it.name]||0)+it.qty);});
     debts.forEach(d=>{if(d.status!=='LUNAS')debtT+=rawIDR(d.balance);});
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('dash-profit',formatIDR(profit));set('dash-omzet',formatIDR(omzet));set('dash-debt',formatIDR(debtT));
+    set('dash-profit',formatIDR(profit));
+    set('dash-omzet',formatIDR(omzet));
+    set('dash-debt',formatIDR(debtT));
     const lowCount=items.filter(i=>i.stock<config.minStock).length;
     set('dash-low-stock',lowCount+" Item Menipis");
     const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,3);
     const elTop=document.getElementById('top-products');
     if(elTop)elTop.innerHTML=top.map(([n,q])=>`<div class="flex justify-between items-center p-3 rounded-2xl font-bold text-[10px] surface"><span>${n}</span><span class="text-indigo-500">${q} pcs</span></div>`).join('')||'<p class="text-center opacity-30 text-[10px] py-4">No Data</p>';
     initChart(hourMap);
+    // Terapkan state sembunyikan saldo setelah render
+    applyBalanceUI();
 }
+
 function initChart(data){
     const canvas=document.getElementById('hourChart');if(!canvas)return;
     if(mainChart)mainChart.destroy();
@@ -1958,10 +1985,9 @@ function renderData(){
         </div>`).join('')||'<p class="text-center opacity-30 py-10">Data Kosong</p>';
 }
 
-// ── Export Excel ───────────────────────────────────────────────────────
+// ── Export ─────────────────────────────────────────────────────────────
 function exportExcel(){if(typeof XLSX==='undefined')return showToast("Library XLSX belum dimuat!");const filtered=getFilteredLogs();if(filtered.length===0)return showToast("Tidak ada data!");try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),rawIDR(l.amount),rawIDR(l.total_cost),rawIDR(l.amount)-rawIDR(l.total_cost),rawIDR(l.pay_cash),rawIDR(l.pay_qris),rawIDR(l.change),l.method]);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);txRows.push([],[" TOTAL","","","",tAmt,tCost,tAmt-tCost,filtered.reduce((a,l)=>a+rawIDR(l.pay_cash),0),filtered.reduce((a,l)=>a+rawIDR(l.pay_qris),0),filtered.reduce((a,l)=>a+rawIDR(l.change),0),""]);const wsTx=XLSX.utils.aoa_to_sheet([...txHeader,...txRows]);const invHeader=[["ID","Barcode","Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]];const invRows=items.map(i=>[i.id,i.barcode||'-',i.name,i.category||'Umum',rawIDR(i.cost),rawIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',rawIDR(i.cost)*i.stock]);const wsInv=XLSX.utils.aoa_to_sheet([...invHeader,...invRows]);const shHeader=[["ID","Produk","Tipe","Qty","Keterangan","Tanggal"]];const shRows=stockHistory.map(h=>[h.id,h.productName,h.type==='in'?'Masuk':h.type==='out'?'Keluar':'Opname',h.qty,h.note,new Date(h.date).toLocaleString('id-ID')]);const wsSh=XLSX.utils.aoa_to_sheet([...shHeader,...shRows]);const debtHeader=[["ID","Pelanggan","Total","Terbayar","Sisa","Jatuh Tempo","Status"]];const debtRows=debts.map(d=>[d.id,d.customer,rawIDR(d.total),rawIDR(d.paid),rawIDR(d.balance),d.dueDate,d.status]);const wsDebt=XLSX.utils.aoa_to_sheet([...debtHeader,...debtRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,wsTx,"Transaksi");XLSX.utils.book_append_sheet(wb,wsInv,"Inventaris");XLSX.utils.book_append_sheet(wb,wsSh,"Riwayat Stok");XLSX.utils.book_append_sheet(wb,wsDebt,"Hutang");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.xlsx`);showToast("Excel Berhasil Diunduh!");}catch(e){console.error(e);showToast("Gagal Export Excel!");}}
 
-// ── Export PDF ─────────────────────────────────────────────────────────
 function exportPDF(){if(typeof window.jspdf==='undefined')return showToast("Library jsPDF belum dimuat!");const filtered=getFilteredLogs();if(filtered.length===0)return showToast("Tidak ada data!");try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!=='LUNAS').reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:'Total Omzet',value:formatIDR(tAmt),color:pc},{label:'Total Profit',value:formatIDR(tAmt-tCost),color:sc},{label:'Total Piutang',value:formatIDR(tDebt),color:dc},{label:'Jml Transaksi',value:`${filtered.length} Trx`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('LAPORAN TRANSAKSI',M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`Periode: ${f}`:'Semua Periode',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Tanggal","Item","Total","Profit","Metode"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.addPage();hdr(doc.internal.getNumberOfPages());doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,10,3,3,'F');doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text('INVENTARIS & STATUS STOK',M+4,33);doc.autoTable({head:[["Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]],body:items.map(i=>[i.name,i.category||'Umum',formatIDR(i.cost),formatIDR(i.price),i.stock,getStockStatus(i.stock)==='critical'?'Habis':getStockStatus(i.stock)==='low'?'Menipis':'Aman',formatIDR(rawIDR(i.cost)*i.stock)]),startY:40,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didParseCell:(d)=>{if(d.section==='body'&&d.column.index===5){const s=d.cell.raw;if(s==='Habis'){d.cell.styles.textColor=dc;d.cell.styles.fontStyle='bold';}else if(s==='Menipis'){d.cell.styles.textColor=[217,119,6];d.cell.styles.fontStyle='bold';}else{d.cell.styles.textColor=sc;}}},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});const tp=doc.internal.getNumberOfPages();for(let p=1;p<=tp;p++){doc.setPage(p);doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(160,160,180);doc.text(`© ${sn} — DheKasir v1.4`,PW/2,PH-6,{align:'center'});doc.line(M,PH-9,PW-M,PH-9);}doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast("PDF Berhasil Diunduh!");}catch(e){console.error(e);showToast("Gagal Export PDF!");}}
 
 // ── Debts ──────────────────────────────────────────────────────────────
@@ -1980,7 +2006,7 @@ function renderDebts(){
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast("Isi Nominal!");const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status='LUNAS';saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
-// ── WhatsApp share ─────────────────────────────────────────────────────
+// ── WhatsApp ───────────────────────────────────────────────────────────
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`Tanggal: ${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
 // ── Init ───────────────────────────────────────────────────────────────
@@ -1991,9 +2017,9 @@ window.onload = async () => {
     renderCategoryOptions();
     renderPosCategoryChips();
     checkStockAlerts();
-
     _setPrinterUI('offline');
-
+    // Terapkan state saldo dari localStorage saat pertama load
+    applyBalanceUI();
     await btAutoReconnectOnLoad();
 };
 </script>
