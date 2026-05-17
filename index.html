@@ -88,6 +88,10 @@
             transform: scale(1.05);
             pointer-events: none;
         }
+        /* Ketika splash di-skip langsung (sudah pernah dibuka), sembunyikan tanpa animasi */
+        #splash-screen.skip-instant {
+            display: none !important;
+        }
 
         /* Animated background circles */
         .splash-orb {
@@ -1350,13 +1354,40 @@
 <script>
 // ══════════════════════════════
 // SPLASH SCREEN LOGIC
+// Hanya tampil SEKALI per sesi browser (sessionStorage).
+// Jika sudah pernah tampil di sesi ini, langsung skip tanpa animasi.
 // ══════════════════════════════
 (function() {
-    const splash = document.getElementById('splash-screen');
-    const app = document.getElementById('app');
+    const SPLASH_KEY = 'dk_splash_shown';
+    const splash      = document.getElementById('splash-screen');
+    const app         = document.getElementById('app');
     const progressBar = document.getElementById('splash-progress');
-    const statusText = document.getElementById('splash-status');
+    const statusText  = document.getElementById('splash-status');
 
+    // ── Cek apakah splash sudah ditampilkan di sesi ini ──
+    const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
+
+    // Terapkan dark mode & nama toko dari config (dilakukan selalu, sebelum apapun)
+    try {
+        const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
+        const storeName = cfg.storeName || 'DheKasir';
+        const letter = storeName[0].toUpperCase();
+        const logoLetter = document.getElementById('splash-logo-letter');
+        const appName    = document.getElementById('splash-app-name');
+        if (logoLetter) logoLetter.textContent = letter;
+        if (appName)    appName.textContent    = storeName;
+        if (cfg.darkMode) document.body.classList.add('dark');
+    } catch(e) {}
+
+    // ── Jika sudah pernah tampil di sesi ini → langsung sembunyikan splash ──
+    if (alreadyShown) {
+        splash.classList.add('skip-instant');   // display:none seketika
+        app.style.opacity = '1';                // langsung tampilkan app
+        app.style.transition = 'none';
+        return; // selesai, tidak perlu jalankan animasi
+    }
+
+    // ── Pertama kali di sesi ini → jalankan splash normal ──
     const steps = [
         { pct: 15, label: 'Memuat konfigurasi toko...' },
         { pct: 30, label: 'Mengambil data inventaris...' },
@@ -1367,24 +1398,14 @@
         { pct: 100, label: 'Siap digunakan! ✓' }
     ];
 
-    // Update logo letter from config if available
-    try {
-        const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
-        const storeName = cfg.storeName || 'DheKasir';
-        const letter = storeName[0].toUpperCase();
-        const logoLetter = document.getElementById('splash-logo-letter');
-        const appName = document.getElementById('splash-app-name');
-        if (logoLetter) logoLetter.textContent = letter;
-        if (appName) appName.textContent = storeName;
-        // Apply dark mode if saved
-        if (cfg.darkMode) document.body.classList.add('dark');
-    } catch(e) {}
-
     let stepIdx = 0;
 
     function runStep() {
         if (stepIdx >= steps.length) {
-            // All done — fade out splash, show app
+            // Tandai bahwa splash sudah ditampilkan di sesi ini
+            sessionStorage.setItem(SPLASH_KEY, '1');
+
+            // Fade out splash, tampilkan app
             setTimeout(() => {
                 splash.classList.add('fade-out');
                 app.style.opacity = '1';
@@ -1394,6 +1415,7 @@
             }, 300);
             return;
         }
+
         const step = steps[stepIdx];
         progressBar.style.width = step.pct + '%';
         statusText.style.opacity = '0';
@@ -1401,13 +1423,13 @@
             statusText.textContent = step.label;
             statusText.style.opacity = '1';
         }, 120);
+
         stepIdx++;
-        // Variable delay to feel realistic
         const delays = [380, 320, 350, 280, 300, 250, 450];
         setTimeout(runStep, delays[stepIdx - 1] || 300);
     }
 
-    // Small initial delay so splash is visible
+    // Delay kecil agar splash terlihat sejenak sebelum progress mulai
     setTimeout(runStep, 500);
 })();
 
