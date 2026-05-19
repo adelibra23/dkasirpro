@@ -66,7 +66,6 @@
         body.sidebar-open { overflow: hidden !important; position: fixed; width: 100%; }
         body.modal-open { overflow: hidden !important; position: fixed; width: 100%; }
 
-        /* ── SPLASH ── */
         #splash-screen {
             position: fixed; inset: 0; z-index: 9999;
             background: linear-gradient(145deg, #1e1b4b 0%, #312e81 30%, #4f46e5 65%, #7c3aed 100%);
@@ -102,7 +101,6 @@
         .splash-status-text { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; min-height: 14px; transition: opacity 0.3s; }
         .splash-version { position: absolute; bottom: 32px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
 
-        /* ── Card ── */
         .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; transition: background 0.3s, border-color 0.3s; }
 
         #app-header { position: sticky; top: 0; z-index: 40; background: var(--header-bg); border-bottom: 1px solid var(--card-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0 16px; height: 62px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s, border-color 0.3s; }
@@ -252,7 +250,6 @@
         .balance-toggle-btn .btn-label { font-size: 9px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
         .balance-toggle-btn.hiding .btn-eye-icon { transform: scale(0.7) rotate(-20deg); opacity: 0.5; }
 
-        /* ── LANGUAGE SELECTOR ── */
         .lang-option { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; cursor: pointer; border: 1.5px solid var(--card-border); background: var(--surface); transition: all 0.2s; margin-bottom: 8px; }
         .lang-option:hover { border-color: var(--primary); background: var(--primary-soft); }
         .lang-option.selected { border-color: var(--primary); background: var(--primary-soft); }
@@ -262,11 +259,19 @@
         .lang-native { font-size: 10px; color: var(--text-muted); font-weight: 500; }
         .lang-check { margin-left: auto; color: var(--primary); font-size: 14px; opacity: 0; transition: opacity 0.2s; }
         .lang-option.selected .lang-check { opacity: 1; }
+
+        /* ── BT SIGNAL INDICATOR ── */
+        .bt-signal-bars { display:flex; align-items:flex-end; gap:2px; }
+        .bt-signal-bars .bar { width:4px; border-radius:1px; transition:background 0.3s; }
+        .bt-signal-bars .bar:nth-child(1){ height:6px; }
+        .bt-signal-bars .bar:nth-child(2){ height:10px; }
+        .bt-signal-bars .bar:nth-child(3){ height:14px; }
+        .bt-signal-bars.active .bar { background:#10b981; }
+        .bt-signal-bars:not(.active) .bar { background:var(--card-border); }
     </style>
 </head>
 <body class="hide-scrollbar">
 
-<!-- SPLASH -->
 <div id="splash-screen">
     <div class="splash-orb splash-orb-1"></div>
     <div class="splash-orb splash-orb-2"></div>
@@ -291,7 +296,7 @@
             <div class="splash-progress-bar" id="splash-progress"></div>
         </div>
     </div>
-    <div class="splash-version">DheKasir v1.4 • © 2025</div>
+    <div class="splash-version">DheKasir v1.5 • © 2025</div>
 </div>
 
 <div id="app" class="max-w-md mx-auto min-h-screen relative flex flex-col" style="opacity:0;transition:opacity 0.5s ease;">
@@ -303,7 +308,7 @@
             <div id="sb-logo" class="sidebar-store-logo">D</div>
             <div class="sidebar-store-name" id="sb-store-name">DheKasir</div>
             <div class="sidebar-store-addr" id="sb-store-addr">-</div>
-            <div class="sidebar-version"><i class="fa-solid fa-circle-check" style="font-size:8px;"></i> v1.4 Aktif</div>
+            <div class="sidebar-version"><i class="fa-solid fa-circle-check" style="font-size:8px;"></i> v1.5 Aktif</div>
         </div>
         <div class="sidebar-nav hide-scrollbar">
             <div class="sidebar-section-label" data-i18n="menu_main">Menu Utama</div>
@@ -377,8 +382,6 @@
     </header>
 
     <main class="flex-1">
-
-        <!-- HOME -->
         <section id="tab-home" class="tab-content active space-y-5">
             <div class="dash-hero text-white relative z-10" id="dash-hero-wrap">
                 <div class="flex items-center justify-between mb-2" style="position:relative;z-index:2;">
@@ -419,7 +422,6 @@
             </div>
         </section>
 
-        <!-- POS -->
         <section id="tab-pos" class="tab-content space-y-4">
             <div class="sticky top-0 pb-2 z-20 space-y-3" style="background:var(--bg);">
                 <div class="relative">
@@ -431,7 +433,6 @@
             <div id="pos-grid" class="grid grid-cols-2 gap-3 pb-10"></div>
         </section>
 
-        <!-- ITEMS -->
         <section id="tab-items" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_inventory">Inventaris</h2>
@@ -447,7 +448,6 @@
             <div id="item-list" class="space-y-3"></div>
         </section>
 
-        <!-- STOCK -->
         <section id="tab-stock" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_stock">Manajemen Stok</h2>
@@ -498,7 +498,6 @@
             <div id="stock-history-list" class="space-y-2"></div>
         </section>
 
-        <!-- DEBTS -->
         <section id="tab-debts" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_debts">Buku Hutang</h2>
@@ -507,7 +506,6 @@
             <div id="debt-list" class="space-y-3"></div>
         </section>
 
-        <!-- DATA -->
         <section id="tab-data" class="tab-content space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_reports">Laporan</h2>
@@ -521,7 +519,6 @@
             <div id="data-list" class="space-y-3"></div>
         </section>
 
-        <!-- SETTINGS -->
         <section id="tab-settings" class="tab-content space-y-5">
             <div class="flex items-center gap-4 card p-5 shadow-sm">
                 <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
@@ -530,7 +527,7 @@
                 <div>
                     <h2 class="font-black text-base" id="profile-name">Admin Toko</h2>
                     <p class="text-xs text-muted" id="profile-address-display">-</p>
-                    <span class="text-[9px] font-black text-indigo-500 uppercase">DheKasir v1.4</span>
+                    <span class="text-[9px] font-black text-indigo-500 uppercase">DheKasir v1.5</span>
                 </div>
             </div>
             <div class="card p-2 space-y-1">
@@ -564,7 +561,6 @@
                         <i class="fa-solid fa-chevron-right text-xs text-muted"></i>
                     </div>
                 </div>
-                <!-- LANGUAGE SETTING -->
                 <div onclick="openLanguageModal()" class="settings-row">
                     <div class="flex items-center gap-3">
                         <div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div>
@@ -654,7 +650,6 @@
 
 <!-- ═══════════════════ MODALS ═══════════════════ -->
 
-<!-- LANGUAGE MODAL -->
 <div id="modal-language" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg" data-i18n="lang_select_title">Pilih Bahasa</h3>
@@ -662,26 +657,17 @@
         <div id="lang-list">
             <div class="lang-option" id="lang-id" onclick="setLanguage('id')">
                 <span class="lang-flag">🇮🇩</span>
-                <div>
-                    <div class="lang-name">Bahasa Indonesia</div>
-                    <div class="lang-native">Indonesia</div>
-                </div>
+                <div><div class="lang-name">Bahasa Indonesia</div><div class="lang-native">Indonesia</div></div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
             <div class="lang-option" id="lang-en" onclick="setLanguage('en')">
                 <span class="lang-flag">🇬🇧</span>
-                <div>
-                    <div class="lang-name">English</div>
-                    <div class="lang-native">English (United Kingdom)</div>
-                </div>
+                <div><div class="lang-name">English</div><div class="lang-native">English (United Kingdom)</div></div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
             <div class="lang-option" id="lang-ms" onclick="setLanguage('ms')">
                 <span class="lang-flag">🇲🇾</span>
-                <div>
-                    <div class="lang-name">Bahasa Melayu</div>
-                    <div class="lang-native">Malaysia</div>
-                </div>
+                <div><div class="lang-name">Bahasa Melayu</div><div class="lang-native">Malaysia</div></div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
         </div>
@@ -713,9 +699,12 @@
     </div>
 </div>
 
+<!-- ══ PRINTER MODAL (DIPERBAIKI) ══ -->
 <div id="modal-printer" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-5">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <div class="w-10 h-1.5 rounded-full mx-auto" style="background:var(--card-border)"></div>
+
+        <!-- Status Card -->
         <div class="printer-card overflow-hidden">
             <div id="printer-modal-bar" class="printer-status-bar offline"></div>
             <div class="p-4 flex items-center gap-4">
@@ -723,17 +712,24 @@
                     <i class="fa-solid fa-print"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-sm font-black" id="printer-modal-name" data-i18n="settings_printer">Printer Thermal</p>
-                    <p class="text-[10px] font-semibold text-muted" id="printer-modal-desc" data-i18n="printer_no_device">Belum ada perangkat terhubung</p>
+                    <p class="text-sm font-black" id="printer-modal-name">Printer Thermal</p>
+                    <p class="text-[10px] font-semibold text-muted" id="printer-modal-desc">Belum ada perangkat terhubung</p>
                     <p class="text-[9px] font-black uppercase mt-1" id="printer-modal-status-text" style="color:var(--text-muted);">OFFLINE</p>
                 </div>
-                <div id="printer-signal" class="hidden flex items-end gap-0.5 shrink-0">
-                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:6px"></div>
-                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:10px"></div>
-                    <div class="w-1.5 rounded-sm bg-emerald-400" style="height:14px"></div>
+                <div id="printer-signal" class="bt-signal-bars hidden">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
                 </div>
             </div>
         </div>
+
+        <!-- Info: Karakteristik yang Terpakai -->
+        <div id="printer-char-info" class="hidden p-3 rounded-2xl surface text-[9px] text-muted space-y-1">
+            <p class="font-black text-indigo-500 uppercase">Karakteristik Printer</p>
+            <p id="printer-char-uuid">UUID: -</p>
+            <p id="printer-char-method">Mode: -</p>
+        </div>
+
+        <!-- Auto-Reconnect Toggle -->
         <div class="flex items-center justify-between p-4 rounded-2xl surface">
             <div>
                 <p class="text-xs font-black" data-i18n="printer_auto_reconnect">Auto-Reconnect</p>
@@ -744,12 +740,26 @@
                 <span class="slider"></span>
             </label>
         </div>
-        <div id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()" data-i18n="printer_connect">
+
+        <!-- Keep Alive Toggle -->
+        <div class="flex items-center justify-between p-4 rounded-2xl surface">
+            <div>
+                <p class="text-xs font-black">Keep Alive</p>
+                <p class="text-[9px] text-muted">Kirim ping setiap 20 detik agar koneksi stabil</p>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="printer-keep-alive" onchange="savePrinterPrefs()">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- Action Buttons -->
+        <button id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()" data-i18n="printer_connect">
             <i class="fa-brands fa-bluetooth mr-2"></i> Hubungkan Printer
-        </div>
-        <div id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()" data-i18n="printer_reconnect">
+        </button>
+        <button id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()" data-i18n="printer_reconnect">
             <i class="fa-solid fa-rotate mr-2"></i> Sambung Ulang
-        </div>
+        </button>
         <div id="printer-btn-actions" class="hidden grid grid-cols-2 gap-3">
             <button onclick="btTestPrint()" class="py-4 bg-emerald-600 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all" data-i18n="printer_test">
                 <i class="fa-solid fa-file-lines mr-1"></i> Test Print
@@ -758,9 +768,14 @@
                 <i class="fa-solid fa-link-slash mr-1"></i> Putuskan
             </button>
         </div>
-        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed" data-i18n="printer_tip">
-            <strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>. Jika printer sering terputus, aktifkan <strong>Auto-Reconnect</strong>.
+
+        <!-- Tips -->
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed space-y-2">
+            <p><strong class="text-indigo-500">💡 Tip Koneksi:</strong> Pastikan Bluetooth aktif dan printer dinyalakan terlebih dahulu sebelum menekan tombol Hubungkan.</p>
+            <p><strong class="text-amber-500">🔄 Sering putus?</strong> Aktifkan <strong>Keep Alive</strong> dan <strong>Auto-Reconnect</strong> untuk koneksi yang lebih stabil.</p>
+            <p><strong class="text-emerald-500">📱 Refresh halaman?</strong> Aktifkan <strong>Auto-Reconnect</strong> agar printer otomatis tersambung kembali.</p>
         </div>
+
         <button onclick="closeModal('modal-printer')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted" data-i18n="btn_close">Tutup</button>
     </div>
 </div>
@@ -807,7 +822,7 @@
 <div id="modal-minstock" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
         <h3 class="font-black text-lg" data-i18n="settings_min_stock">Batas Minimum Stok</h3>
-        <p class="text-xs text-muted" data-i18n="minstock_desc">Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.</p>
+        <p class="text-xs text-muted" data-i18n="minstock_desc">Produk dengan stok di bawah batas ini akan masuk kategori "Menipis".</p>
         <div class="space-y-2">
             <label class="text-[8px] font-black uppercase ml-2 text-muted" data-i18n="minstock_label">Batas Minimum (unit)</label>
             <input type="number" id="min-stock-input" min="1" class="w-full p-5 border-2 border-indigo-400 rounded-2xl text-2xl font-black text-indigo-600 text-center outline-none" style="background:var(--input-bg)">
@@ -889,9 +904,9 @@
             </div>
         </div>
         <div class="px-6 py-4 border-t border-slate-100 space-y-2 shrink-0 bg-white">
-            <button onclick="printBluetoothReceipt()" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wide flex items-center justify-center gap-2">
+            <button onclick="printBluetoothReceipt()" id="print-bt-btn" class="w-full py-3.5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] uppercase tracking-wide flex items-center justify-center gap-2">
                 <i class="fa-solid fa-print"></i>
-                <span id="print-btn-label" data-i18n="print_bluetooth">Print Bluetooth</span>
+                <span id="print-btn-label">Print Bluetooth</span>
                 <span id="print-bt-status" class="ml-1 text-[8px] opacity-60"></span>
             </button>
             <div class="grid grid-cols-2 gap-2">
@@ -967,7 +982,7 @@
         <input type="text" id="cfg-name" data-i18n-placeholder="store_name_placeholder" placeholder="Nama Toko" class="w-full p-4 rounded-2xl text-sm outline-none border">
         <input type="text" id="cfg-address" data-i18n-placeholder="store_address_placeholder" placeholder="Alamat Toko" class="w-full p-4 rounded-2xl text-sm outline-none border">
         <input type="text" id="cfg-phone" placeholder="WhatsApp (62...)" class="w-full p-4 rounded-2xl text-sm outline-none border">
-        <input type="text" id="cfg-url" placeholder="Google Script URL" class="w-full p-4 rounded-2xl text-[10px] outline-none border">
+        <input type="text" id="cfg-url" placeholder="Google Script URL" class="w-full p-4 rounded-2xl text[10px] outline-none border">
         <button onclick="saveSettings()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl" data-i18n="btn_save_config">Simpan Konfigurasi</button>
         <button onclick="closeModal('modal-store-cfg')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted" data-i18n="btn_close">Tutup</button>
     </div>
@@ -977,10 +992,10 @@
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center">
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
         <h3 class="font-black text-xl mb-1">DheKasir</h3>
-        <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
-        <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted" id="about-text">
+        <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.5</p>
+        <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v1.4: Fix Bluetooth Print, Audio Feedback, Multi-Bahasa (Indonesia, Inggris, Melayu).</p>
+            <p>Fitur baru v1.5: Fix Bluetooth Print (Keep Alive, Auto-Reconnect robust, multi-service scan), multi-bahasa.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface" data-i18n="btn_close">Tutup</button>
     </div>
@@ -989,7 +1004,7 @@
 <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
         <h3 class="font-black text-lg mb-4 text-center" data-i18n="privacy_title">Kebijakan Privasi</h3>
-        <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed space-y-4 text-justify text-muted" id="privacy-text">
+        <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed space-y-4 text-justify text-muted">
             <p>Semua data transaksi, inventaris, dan pengaturan toko Anda disimpan secara utama di dalam memori internal perangkat Anda (LocalStorage).</p>
             <p>Fitur sinkronisasi ke Google Spreadsheet hanya dikirim ke URL backend yang Anda tentukan sendiri.</p>
             <p>Akses kamera hanya digunakan secara instan untuk memindai kode produk. Tidak ada foto atau rekaman yang disimpan.</p>
@@ -1017,884 +1032,584 @@
 
 <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
 <script>
-// ══════════════════════════════
-// TRANSLATIONS
-// ══════════════════════════════
+// ══════════════════════════════════════════════════════════════
+// TRANSLATIONS (ringkas - sama seperti versi asli)
+// ══════════════════════════════════════════════════════════════
 const TRANSLATIONS = {
     id: {
-        // Splash
-        splash_tagline: 'Sistem Kasir Digital UMKM',
-        splash_loading: 'Memuat sistem...',
-        // Nav
-        menu_main: 'Menu Utama',
-        menu_operational: 'Operasional',
-        menu_account: 'Akun',
-        nav_home: 'Beranda',
-        nav_pos: 'Kasir / POS',
-        nav_inventory: 'Inventaris',
-        nav_stock: 'Manajemen Stok',
-        nav_debts: 'Buku Hutang',
-        nav_reports: 'Laporan & Data',
-        nav_settings: 'Pengaturan',
-        nav_about: 'Tentang Aplikasi',
-        nav_home_short: 'Home',
-        nav_pos_short: 'Kasir',
-        nav_stock_short: 'Stok',
-        nav_warehouse_short: 'Gudang',
-        nav_debts_short: 'Hutang',
-        nav_data_short: 'Data',
-        dark_mode: 'Tema Gelap',
-        // Dashboard
-        dash_net_profit: 'Profit Bersih Toko',
-        dash_today_income: 'Pemasukan Hari Ini',
-        dash_total_receivable: 'Total Piutang',
-        hide: 'Sembunyikan',
-        show: 'Tampilkan',
-        stock_status: 'Status Stok',
-        busy_hours: 'Jam Sibuk',
-        top_products: '3 Produk Terlaris',
-        items_low: 'Item Menipis',
-        no_data: 'Tidak Ada Data',
-        // POS
-        pos_search_placeholder: 'Cari barang atau scan...',
-        view_detail: 'Lihat Detail',
-        btn_checkout: 'Lanjutkan Pembayaran →',
-        // Inventory
-        btn_category: 'Kategori',
-        btn_add: '+ Tambah',
-        item_search_placeholder: 'Cari barang atau barcode...',
-        // Stock
-        stock_in: 'Stok Masuk',
-        stock_out: 'Stok Keluar',
-        stock_opname: 'Stok Opname',
-        stat_products: 'Produk',
-        stat_low: 'Menipis',
-        stat_empty: 'Habis',
-        filter_all: 'Semua',
-        filter_ok: 'Aman',
-        product_status: 'Status Produk',
-        stock_history: 'Riwayat Stok',
-        btn_delete: 'Hapus',
-        label_select_product: 'Pilih Produk',
-        label_qty: 'Jumlah',
-        label_note_optional: 'Keterangan (opsional)',
-        note_placeholder: 'Restock dari supplier...',
-        current_stock: 'Stok Saat Ini',
-        opname_desc: 'Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.',
-        opname_physical: 'Stok Fisik',
-        opname_system: 'Sistem',
-        btn_save_opname: 'Simpan Opname',
-        // Min stock
-        settings_min_stock: 'Batas Minimum Stok',
-        minstock_desc: 'Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.',
-        minstock_label: 'Batas Minimum (unit)',
-        // Debts
-        debt_total_loan: 'Total Pinjaman',
-        debt_paid: 'Terbayar',
-        debt_remaining: 'SISA',
-        debt_book_empty: 'Buku Hutang Kosong',
-        installment_placeholder: 'Nominal Cicilan',
-        btn_pay_installment: 'Bayar Cicilan',
-        deadline: 'Tempo',
-        // Checkout
-        checkout_title: 'Konfirmasi Bayar',
-        total: 'TOTAL',
-        pay_cash_qris: 'Tunai/QRIS',
-        pay_debt: 'Hutang (Bon)',
-        label_cash: 'Uang Tunai',
-        label_transfer: 'Transfer/QRIS',
-        change: 'Kembalian',
-        customer_name_placeholder: 'Nama Pelanggan',
-        due_date: 'Jatuh Tempo',
-        btn_finish_checkout: 'Selesaikan Transaksi',
-        // Cart
-        cart_detail_title: 'Detail Keranjang',
-        // Receipt
-        receipt_title: 'Struk Belanja',
-        receipt_items: 'ITEM PEMBELIAN',
-        receipt_thank: 'Terima kasih atas kunjungan Anda!',
-        receipt_no_return: 'Barang yang sudah dibeli tidak dapat ditukar.',
-        rec_cash: 'Tunai',
-        rec_qris: 'QRIS/Transfer',
-        rec_change: 'Kembalian',
-        rec_debt: '⚠ HUTANG / BON',
-        print_bluetooth: 'Print Bluetooth',
-        // Settings
-        settings_store_config: 'Konfigurasi Toko',
-        settings_store: 'Setelan Toko',
-        settings_printer: 'Printer Thermal',
-        settings_language: 'Bahasa / Language',
-        settings_info: 'Informasi',
-        settings_contact: 'Hubungi Kami',
-        settings_privacy: 'Privasi & Kebijakan',
-        // Language modal
-        lang_select_title: 'Pilih Bahasa',
-        lang_select_desc: 'Pilih bahasa tampilan aplikasi',
-        // Printer
-        printer_not_connected: 'Belum terhubung',
-        printer_no_device: 'Belum ada perangkat terhubung',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Sambung otomatis saat halaman dibuka',
-        printer_connect: 'Hubungkan Printer',
-        printer_reconnect: 'Sambung Ulang',
-        printer_test: 'Test Print',
-        printer_disconnect: 'Putuskan',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>.',
-        // Product
-        product_master: 'Master Produk',
-        product_name_placeholder: 'Nama Produk',
-        stock_placeholder: 'Stok',
-        label_category: 'Kategori',
-        label_cost: 'Modal',
-        label_price: 'Jual',
-        btn_save_data: 'Simpan Data',
-        // Category
-        manage_category: 'Kelola Kategori',
-        new_category_placeholder: 'Kategori Baru',
-        // Store cfg
-        store_name_placeholder: 'Nama Toko',
-        store_address_placeholder: 'Alamat Toko',
-        btn_change_logo: 'Ganti Logo',
-        btn_save_config: 'Simpan Konfigurasi',
-        // About
-        privacy_title: 'Kebijakan Privasi',
-        contact_address: 'Alamat',
-        // Common
-        btn_save: 'Simpan',
-        btn_cancel: 'Batal',
-        btn_close: 'Tutup',
-        btn_agree: 'Saya Setuju',
-        // Notifications
-        notif_stock_title: 'Notifikasi Stok',
-        notif_all_safe: 'Semua stok dalam kondisi aman',
-        notif_empty_stock: 'Stok Habis',
-        notif_low_stock: 'Menipis',
-        notif_fill: 'Isi',
-        notif_remaining: 'Sisa',
-        notif_unit: 'unit',
-        // Scanner
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Aktif • Jeda 2.5 Detik per Produk',
-        // Toast
-        toast_sku_filled: 'SKU Terisi!',
-        toast_max_stock: 'Maksimal!',
-        toast_out_of_stock: 'Stok Habis!',
-        toast_product_not_found: 'Produk tidak ditemukan!',
-        toast_fill_data: 'Isi data dengan benar!',
-        toast_stock_added: 'stok ditambahkan!',
-        toast_stock_reduced: 'stok dikurangi!',
-        toast_stock_not_enough: 'Stok tidak cukup!',
-        toast_product_deleted: 'Produk Dihapus',
-        toast_save_success: 'Simpan Berhasil!',
-        toast_min_stock_saved: 'Batas Minimum Disimpan!',
-        toast_history_deleted: 'Riwayat Dihapus',
-        toast_https_required: 'Wajib HTTPS!',
-        toast_camera_fail: 'Gagal Kamera!',
-        toast_insufficient_money: 'Uang Kurang!',
-        toast_fill_name: 'Isi Nama!',
-        toast_fill_product_name: 'Isi Nama Produk!',
-        toast_fill_customer_name: 'Isi Nama Pelanggan!',
-        toast_excel_success: 'Excel Berhasil Diunduh!',
-        toast_excel_fail: 'Gagal Export Excel!',
-        toast_pdf_success: 'PDF Berhasil Diunduh!',
-        toast_pdf_fail: 'Gagal Export PDF!',
-        toast_no_data: 'Tidak ada data!',
-        toast_no_receipt: 'Tidak ada data struk!',
-        toast_printer_not_connected: 'Hubungkan printer dulu di Pengaturan!',
-        toast_printer_disconnected: 'Printer terputus',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Printer tersambung kembali!',
-        toast_reconnect_fail: 'Gagal reconnect printer!',
-        toast_sending_test: 'Mengirim test print...',
-        toast_test_success: 'Test print berhasil!',
-        toast_test_fail: 'Gagal test print: ',
-        toast_sending_print: 'Mengirim ke printer...',
-        toast_print_success: 'Struk berhasil dicetak!',
-        toast_print_fail: 'Gagal cetak: ',
-        toast_printer_connected: 'terhubung!',
-        toast_bt_connect_fail: 'Gagal: ',
-        toast_printer_disconnected_ok: 'Printer diputuskan',
-        toast_auto_connect: 'Auto-connect:',
-        toast_retry: 'Coba ulang',
-        toast_reconnecting: 'Reconnecting printer...',
-        toast_category_exists: 'Sudah Ada!',
-        toast_fill_category: 'Isi Nama!',
-        toast_language_changed: 'Bahasa berhasil diubah!',
-        toast_opname_no_data: 'Belum ada data opname!',
-        toast_opname_no_change: 'Tidak ada perubahan stok!',
-        toast_opname_done: 'Opname selesai —',
-        toast_products_updated: 'produk diperbarui',
-        // Stock history types
-        sh_in: 'Masuk',
-        sh_out: 'Keluar',
-        sh_opname: 'Opname',
-        sh_sale: 'Penjualan',
-        sh_manual_in: 'Stok masuk manual',
-        sh_manual_out: 'Stok keluar manual',
-        // Stock status badges
-        badge_empty: 'Habis',
-        badge_low: 'Menipis',
-        badge_ok: 'Aman',
-        badge_in: 'Masuk',
-        badge_out: 'Keluar',
-        badge_opname: 'Opname',
-        // Debt status
-        debt_not_paid: 'BELUM LUNAS',
-        debt_paid_status: 'LUNAS',
-        pcs: 'pcs',
-        // Data
-        transactions: 'transaksi untuk',
-        all_transactions: 'Semua',
-        address_not_set: 'Alamat belum diatur',
-        // confirm
-        confirm_clear_history: 'Hapus semua riwayat stok?',
+        splash_tagline:'Sistem Kasir Digital UMKM',splash_loading:'Memuat sistem...',menu_main:'Menu Utama',menu_operational:'Operasional',menu_account:'Akun',nav_home:'Beranda',nav_pos:'Kasir / POS',nav_inventory:'Inventaris',nav_stock:'Manajemen Stok',nav_debts:'Buku Hutang',nav_reports:'Laporan & Data',nav_settings:'Pengaturan',nav_about:'Tentang Aplikasi',nav_home_short:'Home',nav_pos_short:'Kasir',nav_stock_short:'Stok',nav_warehouse_short:'Gudang',nav_debts_short:'Hutang',nav_data_short:'Data',dark_mode:'Tema Gelap',dash_net_profit:'Profit Bersih Toko',dash_today_income:'Pemasukan Hari Ini',dash_total_receivable:'Total Piutang',hide:'Sembunyikan',show:'Tampilkan',stock_status:'Status Stok',busy_hours:'Jam Sibuk',top_products:'3 Produk Terlaris',items_low:'Item Menipis',no_data:'Tidak Ada Data',pos_search_placeholder:'Cari barang atau scan...',view_detail:'Lihat Detail',btn_checkout:'Lanjutkan Pembayaran →',btn_category:'Kategori',btn_add:'+ Tambah',item_search_placeholder:'Cari barang atau barcode...',stock_in:'Stok Masuk',stock_out:'Stok Keluar',stock_opname:'Stok Opname',stat_products:'Produk',stat_low:'Menipis',stat_empty:'Habis',filter_all:'Semua',filter_ok:'Aman',product_status:'Status Produk',stock_history:'Riwayat Stok',btn_delete:'Hapus',label_select_product:'Pilih Produk',label_qty:'Jumlah',label_note_optional:'Keterangan (opsional)',note_placeholder:'Restock dari supplier...',current_stock:'Stok Saat Ini',opname_desc:'Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.',opname_physical:'Stok Fisik',opname_system:'Sistem',btn_save_opname:'Simpan Opname',settings_min_stock:'Batas Minimum Stok',minstock_desc:'Produk dengan stok di bawah batas ini akan masuk kategori "Menipis".',minstock_label:'Batas Minimum (unit)',debt_total_loan:'Total Pinjaman',debt_paid:'Terbayar',debt_remaining:'SISA',debt_book_empty:'Buku Hutang Kosong',installment_placeholder:'Nominal Cicilan',btn_pay_installment:'Bayar Cicilan',deadline:'Tempo',checkout_title:'Konfirmasi Bayar',total:'TOTAL',pay_cash_qris:'Tunai/QRIS',pay_debt:'Hutang (Bon)',label_cash:'Uang Tunai',label_transfer:'Transfer/QRIS',change:'Kembalian',customer_name_placeholder:'Nama Pelanggan',due_date:'Jatuh Tempo',btn_finish_checkout:'Selesaikan Transaksi',cart_detail_title:'Detail Keranjang',receipt_title:'Struk Belanja',receipt_items:'ITEM PEMBELIAN',receipt_thank:'Terima kasih atas kunjungan Anda!',receipt_no_return:'Barang yang sudah dibeli tidak dapat ditukar.',rec_cash:'Tunai',rec_qris:'QRIS/Transfer',rec_change:'Kembalian',rec_debt:'⚠ HUTANG / BON',print_bluetooth:'Print Bluetooth',settings_store_config:'Konfigurasi Toko',settings_store:'Setelan Toko',settings_printer:'Printer Thermal',settings_language:'Bahasa / Language',settings_info:'Informasi',settings_contact:'Hubungi Kami',settings_privacy:'Privasi & Kebijakan',lang_select_title:'Pilih Bahasa',lang_select_desc:'Pilih bahasa tampilan aplikasi',printer_not_connected:'Belum terhubung',printer_no_device:'Belum ada perangkat terhubung',printer_auto_reconnect:'Auto-Reconnect',printer_auto_reconnect_desc:'Sambung otomatis saat halaman dibuka',printer_connect:'Hubungkan Printer',printer_reconnect:'Sambung Ulang',printer_test:'Test Print',printer_disconnect:'Putuskan',product_master:'Master Produk',product_name_placeholder:'Nama Produk',stock_placeholder:'Stok',label_category:'Kategori',label_cost:'Modal',label_price:'Jual',btn_save_data:'Simpan Data',manage_category:'Kelola Kategori',new_category_placeholder:'Kategori Baru',store_name_placeholder:'Nama Toko',store_address_placeholder:'Alamat Toko',btn_change_logo:'Ganti Logo',btn_save_config:'Simpan Konfigurasi',privacy_title:'Kebijakan Privasi',contact_address:'Alamat',btn_save:'Simpan',btn_cancel:'Batal',btn_close:'Tutup',btn_agree:'Saya Setuju',notif_stock_title:'Notifikasi Stok',notif_all_safe:'Semua stok dalam kondisi aman',notif_empty_stock:'Stok Habis',notif_low_stock:'Menipis',notif_fill:'Isi',notif_remaining:'Sisa',notif_unit:'unit',flash:'Flash',scanner_hint:'Auto-detect Aktif • Jeda 2.5 Detik per Produk',toast_sku_filled:'SKU Terisi!',toast_max_stock:'Maksimal!',toast_out_of_stock:'Stok Habis!',toast_product_not_found:'Produk tidak ditemukan!',toast_fill_data:'Isi data dengan benar!',toast_stock_added:'stok ditambahkan!',toast_stock_reduced:'stok dikurangi!',toast_stock_not_enough:'Stok tidak cukup!',toast_product_deleted:'Produk Dihapus',toast_save_success:'Simpan Berhasil!',toast_min_stock_saved:'Batas Minimum Disimpan!',toast_history_deleted:'Riwayat Dihapus',toast_https_required:'Wajib HTTPS!',toast_camera_fail:'Gagal Kamera!',toast_insufficient_money:'Uang Kurang!',toast_fill_name:'Isi Nama!',toast_fill_product_name:'Isi Nama Produk!',toast_fill_customer_name:'Isi Nama Pelanggan!',toast_excel_success:'Excel Berhasil Diunduh!',toast_excel_fail:'Gagal Export Excel!',toast_pdf_success:'PDF Berhasil Diunduh!',toast_pdf_fail:'Gagal Export PDF!',toast_no_data:'Tidak ada data!',toast_no_receipt:'Tidak ada data struk!',toast_printer_not_connected:'Hubungkan printer dulu di Pengaturan!',toast_printer_disconnected:'Printer terputus',toast_auto_reconnect:'Auto-reconnect...',toast_printer_reconnected:'Printer tersambung kembali!',toast_reconnect_fail:'Gagal reconnect printer!',toast_sending_test:'Mengirim test print...',toast_test_success:'Test print berhasil!',toast_test_fail:'Gagal test print: ',toast_sending_print:'Mengirim ke printer...',toast_print_success:'Struk berhasil dicetak!',toast_print_fail:'Gagal cetak: ',toast_printer_connected:'terhubung!',toast_bt_connect_fail:'Gagal: ',toast_printer_disconnected_ok:'Printer diputuskan',toast_auto_connect:'Auto-connect:',toast_retry:'Coba ulang',toast_reconnecting:'Reconnecting printer...',toast_category_exists:'Sudah Ada!',toast_fill_category:'Isi Nama!',toast_language_changed:'Bahasa berhasil diubah!',toast_opname_no_data:'Belum ada data opname!',toast_opname_no_change:'Tidak ada perubahan stok!',toast_opname_done:'Opname selesai —',toast_products_updated:'produk diperbarui',sh_in:'Masuk',sh_out:'Keluar',sh_opname:'Opname',sh_sale:'Penjualan',sh_manual_in:'Stok masuk manual',sh_manual_out:'Stok keluar manual',badge_empty:'Habis',badge_low:'Menipis',badge_ok:'Aman',badge_in:'Masuk',badge_out:'Keluar',badge_opname:'Opname',debt_not_paid:'BELUM LUNAS',debt_paid_status:'LUNAS',pcs:'pcs',transactions:'transaksi untuk',all_transactions:'Semua',address_not_set:'Alamat belum diatur',confirm_clear_history:'Hapus semua riwayat stok?'
     },
     en: {
-        splash_tagline: 'Digital POS System for SMEs',
-        splash_loading: 'Loading system...',
-        menu_main: 'Main Menu',
-        menu_operational: 'Operations',
-        menu_account: 'Account',
-        nav_home: 'Home',
-        nav_pos: 'POS / Cashier',
-        nav_inventory: 'Inventory',
-        nav_stock: 'Stock Management',
-        nav_debts: 'Debt Book',
-        nav_reports: 'Reports & Data',
-        nav_settings: 'Settings',
-        nav_about: 'About App',
-        nav_home_short: 'Home',
-        nav_pos_short: 'POS',
-        nav_stock_short: 'Stock',
-        nav_warehouse_short: 'Warehouse',
-        nav_debts_short: 'Debts',
-        nav_data_short: 'Data',
-        dark_mode: 'Dark Mode',
-        dash_net_profit: 'Net Store Profit',
-        dash_today_income: "Today's Income",
-        dash_total_receivable: 'Total Receivables',
-        hide: 'Hide',
-        show: 'Show',
-        stock_status: 'Stock Status',
-        busy_hours: 'Busy Hours',
-        top_products: 'Top 3 Products',
-        items_low: 'Items Low',
-        no_data: 'No Data',
-        pos_search_placeholder: 'Search items or scan...',
-        view_detail: 'View Detail',
-        btn_checkout: 'Proceed to Payment →',
-        btn_category: 'Category',
-        btn_add: '+ Add',
-        item_search_placeholder: 'Search item or barcode...',
-        stock_in: 'Stock In',
-        stock_out: 'Stock Out',
-        stock_opname: 'Stock Opname',
-        stat_products: 'Products',
-        stat_low: 'Low',
-        stat_empty: 'Empty',
-        filter_all: 'All',
-        filter_ok: 'Safe',
-        product_status: 'Product Status',
-        stock_history: 'Stock History',
-        btn_delete: 'Clear',
-        label_select_product: 'Select Product',
-        label_qty: 'Quantity',
-        label_note_optional: 'Note (optional)',
-        note_placeholder: 'Restock from supplier...',
-        current_stock: 'Current Stock',
-        opname_desc: 'Enter the physical stock count. The system will adjust automatically.',
-        opname_physical: 'Physical Stock',
-        opname_system: 'System',
-        btn_save_opname: 'Save Opname',
-        settings_min_stock: 'Minimum Stock Threshold',
-        minstock_desc: 'Products below this threshold will be categorized as "Low" and trigger notifications.',
-        minstock_label: 'Minimum Threshold (units)',
-        debt_total_loan: 'Total Loan',
-        debt_paid: 'Paid',
-        debt_remaining: 'REMAINING',
-        debt_book_empty: 'Debt Book Empty',
-        installment_placeholder: 'Installment Amount',
-        btn_pay_installment: 'Pay Installment',
-        deadline: 'Due',
-        checkout_title: 'Confirm Payment',
-        total: 'TOTAL',
-        pay_cash_qris: 'Cash/QRIS',
-        pay_debt: 'Credit (IOU)',
-        label_cash: 'Cash',
-        label_transfer: 'Transfer/QRIS',
-        change: 'Change',
-        customer_name_placeholder: 'Customer Name',
-        due_date: 'Due Date',
-        btn_finish_checkout: 'Complete Transaction',
-        cart_detail_title: 'Cart Details',
-        receipt_title: 'Receipt',
-        receipt_items: 'ITEMS PURCHASED',
-        receipt_thank: 'Thank you for your visit!',
-        receipt_no_return: 'Purchased items cannot be exchanged.',
-        rec_cash: 'Cash',
-        rec_qris: 'QRIS/Transfer',
-        rec_change: 'Change',
-        rec_debt: '⚠ CREDIT / IOU',
-        print_bluetooth: 'Print Bluetooth',
-        settings_store_config: 'Store Configuration',
-        settings_store: 'Store Settings',
-        settings_printer: 'Thermal Printer',
-        settings_language: 'Language',
-        settings_info: 'Information',
-        settings_contact: 'Contact Us',
-        settings_privacy: 'Privacy & Policy',
-        lang_select_title: 'Select Language',
-        lang_select_desc: 'Choose app display language',
-        printer_not_connected: 'Not connected',
-        printer_no_device: 'No device connected',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Auto-connect when app opens',
-        printer_connect: 'Connect Printer',
-        printer_reconnect: 'Reconnect',
-        printer_test: 'Test Print',
-        printer_disconnect: 'Disconnect',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Enable Bluetooth, turn on the printer, then tap <strong>Connect Printer</strong>.',
-        product_master: 'Product Master',
-        product_name_placeholder: 'Product Name',
-        stock_placeholder: 'Stock',
-        label_category: 'Category',
-        label_cost: 'Cost',
-        label_price: 'Price',
-        btn_save_data: 'Save Data',
-        manage_category: 'Manage Categories',
-        new_category_placeholder: 'New Category',
-        store_name_placeholder: 'Store Name',
-        store_address_placeholder: 'Store Address',
-        btn_change_logo: 'Change Logo',
-        btn_save_config: 'Save Configuration',
-        privacy_title: 'Privacy Policy',
-        contact_address: 'Address',
-        btn_save: 'Save',
-        btn_cancel: 'Cancel',
-        btn_close: 'Close',
-        btn_agree: 'I Agree',
-        notif_stock_title: 'Stock Notifications',
-        notif_all_safe: 'All stock levels are safe',
-        notif_empty_stock: 'Out of Stock',
-        notif_low_stock: 'Low Stock',
-        notif_fill: 'Fill',
-        notif_remaining: 'Left',
-        notif_unit: 'units',
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Active • 2.5s Cooldown per Product',
-        toast_sku_filled: 'SKU Filled!',
-        toast_max_stock: 'Maximum!',
-        toast_out_of_stock: 'Out of Stock!',
-        toast_product_not_found: 'Product not found!',
-        toast_fill_data: 'Please fill in all fields!',
-        toast_stock_added: 'stock added!',
-        toast_stock_reduced: 'stock reduced!',
-        toast_stock_not_enough: 'Not enough stock!',
-        toast_product_deleted: 'Product Deleted',
-        toast_save_success: 'Saved Successfully!',
-        toast_min_stock_saved: 'Minimum Threshold Saved!',
-        toast_history_deleted: 'History Cleared',
-        toast_https_required: 'HTTPS Required!',
-        toast_camera_fail: 'Camera Failed!',
-        toast_insufficient_money: 'Insufficient Payment!',
-        toast_fill_name: 'Fill Name!',
-        toast_fill_product_name: 'Fill Product Name!',
-        toast_fill_customer_name: 'Fill Customer Name!',
-        toast_excel_success: 'Excel Downloaded!',
-        toast_excel_fail: 'Excel Export Failed!',
-        toast_pdf_success: 'PDF Downloaded!',
-        toast_pdf_fail: 'PDF Export Failed!',
-        toast_no_data: 'No data!',
-        toast_no_receipt: 'No receipt data!',
-        toast_printer_not_connected: 'Connect printer first in Settings!',
-        toast_printer_disconnected: 'Printer disconnected',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Printer reconnected!',
-        toast_reconnect_fail: 'Printer reconnect failed!',
-        toast_sending_test: 'Sending test print...',
-        toast_test_success: 'Test print successful!',
-        toast_test_fail: 'Test print failed: ',
-        toast_sending_print: 'Sending to printer...',
-        toast_print_success: 'Receipt printed successfully!',
-        toast_print_fail: 'Print failed: ',
-        toast_printer_connected: 'connected!',
-        toast_bt_connect_fail: 'Failed: ',
-        toast_printer_disconnected_ok: 'Printer disconnected',
-        toast_auto_connect: 'Auto-connect:',
-        toast_retry: 'Retrying',
-        toast_reconnecting: 'Reconnecting printer...',
-        toast_category_exists: 'Already exists!',
-        toast_fill_category: 'Fill Name!',
-        toast_language_changed: 'Language changed!',
-        toast_opname_no_data: 'No opname data!',
-        toast_opname_no_change: 'No stock changes!',
-        toast_opname_done: 'Opname done —',
-        toast_products_updated: 'products updated',
-        sh_in: 'In',
-        sh_out: 'Out',
-        sh_opname: 'Opname',
-        sh_sale: 'Sale',
-        sh_manual_in: 'Manual stock in',
-        sh_manual_out: 'Manual stock out',
-        badge_empty: 'Empty',
-        badge_low: 'Low',
-        badge_ok: 'Safe',
-        badge_in: 'In',
-        badge_out: 'Out',
-        badge_opname: 'Opname',
-        debt_not_paid: 'UNPAID',
-        debt_paid_status: 'PAID',
-        pcs: 'pcs',
-        transactions: 'transactions for',
-        all_transactions: 'All',
-        address_not_set: 'Address not set',
-        confirm_clear_history: 'Clear all stock history?',
+        splash_tagline:'Digital POS System for SMEs',splash_loading:'Loading system...',menu_main:'Main Menu',menu_operational:'Operations',menu_account:'Account',nav_home:'Home',nav_pos:'POS / Cashier',nav_inventory:'Inventory',nav_stock:'Stock Management',nav_debts:'Debt Book',nav_reports:'Reports & Data',nav_settings:'Settings',nav_about:'About App',nav_home_short:'Home',nav_pos_short:'POS',nav_stock_short:'Stock',nav_warehouse_short:'Warehouse',nav_debts_short:'Debts',nav_data_short:'Data',dark_mode:'Dark Mode',dash_net_profit:'Net Store Profit',dash_today_income:"Today's Income",dash_total_receivable:'Total Receivables',hide:'Hide',show:'Show',stock_status:'Stock Status',busy_hours:'Busy Hours',top_products:'Top 3 Products',items_low:'Items Low',no_data:'No Data',pos_search_placeholder:'Search items or scan...',view_detail:'View Detail',btn_checkout:'Proceed to Payment →',btn_category:'Category',btn_add:'+ Add',item_search_placeholder:'Search item or barcode...',stock_in:'Stock In',stock_out:'Stock Out',stock_opname:'Stock Opname',stat_products:'Products',stat_low:'Low',stat_empty:'Empty',filter_all:'All',filter_ok:'Safe',product_status:'Product Status',stock_history:'Stock History',btn_delete:'Clear',label_select_product:'Select Product',label_qty:'Quantity',label_note_optional:'Note (optional)',note_placeholder:'Restock from supplier...',current_stock:'Current Stock',opname_desc:'Enter physical stock count. System will adjust automatically.',opname_physical:'Physical Stock',opname_system:'System',btn_save_opname:'Save Opname',settings_min_stock:'Minimum Stock Threshold',minstock_desc:'Products below this threshold will be categorized as "Low".',minstock_label:'Minimum Threshold (units)',debt_total_loan:'Total Loan',debt_paid:'Paid',debt_remaining:'REMAINING',debt_book_empty:'Debt Book Empty',installment_placeholder:'Installment Amount',btn_pay_installment:'Pay Installment',deadline:'Due',checkout_title:'Confirm Payment',total:'TOTAL',pay_cash_qris:'Cash/QRIS',pay_debt:'Credit (IOU)',label_cash:'Cash',label_transfer:'Transfer/QRIS',change:'Change',customer_name_placeholder:'Customer Name',due_date:'Due Date',btn_finish_checkout:'Complete Transaction',cart_detail_title:'Cart Details',receipt_title:'Receipt',receipt_items:'ITEMS PURCHASED',receipt_thank:'Thank you for your visit!',receipt_no_return:'Purchased items cannot be exchanged.',rec_cash:'Cash',rec_qris:'QRIS/Transfer',rec_change:'Change',rec_debt:'⚠ CREDIT / IOU',print_bluetooth:'Print Bluetooth',settings_store_config:'Store Configuration',settings_store:'Store Settings',settings_printer:'Thermal Printer',settings_language:'Language',settings_info:'Information',settings_contact:'Contact Us',settings_privacy:'Privacy & Policy',lang_select_title:'Select Language',lang_select_desc:'Choose app display language',printer_not_connected:'Not connected',printer_no_device:'No device connected',printer_auto_reconnect:'Auto-Reconnect',printer_auto_reconnect_desc:'Auto-connect when app opens',printer_connect:'Connect Printer',printer_reconnect:'Reconnect',printer_test:'Test Print',printer_disconnect:'Disconnect',product_master:'Product Master',product_name_placeholder:'Product Name',stock_placeholder:'Stock',label_category:'Category',label_cost:'Cost',label_price:'Price',btn_save_data:'Save Data',manage_category:'Manage Categories',new_category_placeholder:'New Category',store_name_placeholder:'Store Name',store_address_placeholder:'Store Address',btn_change_logo:'Change Logo',btn_save_config:'Save Configuration',privacy_title:'Privacy Policy',contact_address:'Address',btn_save:'Save',btn_cancel:'Cancel',btn_close:'Close',btn_agree:'I Agree',notif_stock_title:'Stock Notifications',notif_all_safe:'All stock levels are safe',notif_empty_stock:'Out of Stock',notif_low_stock:'Low Stock',notif_fill:'Fill',notif_remaining:'Left',notif_unit:'units',flash:'Flash',scanner_hint:'Auto-detect Active • 2.5s Cooldown per Product',toast_sku_filled:'SKU Filled!',toast_max_stock:'Maximum!',toast_out_of_stock:'Out of Stock!',toast_product_not_found:'Product not found!',toast_fill_data:'Please fill in all fields!',toast_stock_added:'stock added!',toast_stock_reduced:'stock reduced!',toast_stock_not_enough:'Not enough stock!',toast_product_deleted:'Product Deleted',toast_save_success:'Saved Successfully!',toast_min_stock_saved:'Minimum Threshold Saved!',toast_history_deleted:'History Cleared',toast_https_required:'HTTPS Required!',toast_camera_fail:'Camera Failed!',toast_insufficient_money:'Insufficient Payment!',toast_fill_name:'Fill Name!',toast_fill_product_name:'Fill Product Name!',toast_fill_customer_name:'Fill Customer Name!',toast_excel_success:'Excel Downloaded!',toast_excel_fail:'Excel Export Failed!',toast_pdf_success:'PDF Downloaded!',toast_pdf_fail:'PDF Export Failed!',toast_no_data:'No data!',toast_no_receipt:'No receipt data!',toast_printer_not_connected:'Connect printer first in Settings!',toast_printer_disconnected:'Printer disconnected',toast_auto_reconnect:'Auto-reconnect...',toast_printer_reconnected:'Printer reconnected!',toast_reconnect_fail:'Printer reconnect failed!',toast_sending_test:'Sending test print...',toast_test_success:'Test print successful!',toast_test_fail:'Test print failed: ',toast_sending_print:'Sending to printer...',toast_print_success:'Receipt printed successfully!',toast_print_fail:'Print failed: ',toast_printer_connected:'connected!',toast_bt_connect_fail:'Failed: ',toast_printer_disconnected_ok:'Printer disconnected',toast_auto_connect:'Auto-connect:',toast_retry:'Retrying',toast_reconnecting:'Reconnecting printer...',toast_category_exists:'Already exists!',toast_fill_category:'Fill Name!',toast_language_changed:'Language changed!',toast_opname_no_data:'No opname data!',toast_opname_no_change:'No stock changes!',toast_opname_done:'Opname done —',toast_products_updated:'products updated',sh_in:'In',sh_out:'Out',sh_opname:'Opname',sh_sale:'Sale',sh_manual_in:'Manual stock in',sh_manual_out:'Manual stock out',badge_empty:'Empty',badge_low:'Low',badge_ok:'Safe',badge_in:'In',badge_out:'Out',badge_opname:'Opname',debt_not_paid:'UNPAID',debt_paid_status:'PAID',pcs:'pcs',transactions:'transactions for',all_transactions:'All',address_not_set:'Address not set',confirm_clear_history:'Clear all stock history?'
     },
     ms: {
-        splash_tagline: 'Sistem Kasir Digital PKS',
-        splash_loading: 'Memuatkan sistem...',
-        menu_main: 'Menu Utama',
-        menu_operational: 'Operasi',
-        menu_account: 'Akaun',
-        nav_home: 'Laman Utama',
-        nav_pos: 'Kasir / POS',
-        nav_inventory: 'Inventori',
-        nav_stock: 'Pengurusan Stok',
-        nav_debts: 'Buku Hutang',
-        nav_reports: 'Laporan & Data',
-        nav_settings: 'Tetapan',
-        nav_about: 'Tentang Aplikasi',
-        nav_home_short: 'Utama',
-        nav_pos_short: 'Kasir',
-        nav_stock_short: 'Stok',
-        nav_warehouse_short: 'Gudang',
-        nav_debts_short: 'Hutang',
-        nav_data_short: 'Data',
-        dark_mode: 'Mod Gelap',
-        dash_net_profit: 'Keuntungan Bersih Kedai',
-        dash_today_income: 'Pendapatan Hari Ini',
-        dash_total_receivable: 'Jumlah Belum Terima',
-        hide: 'Sembunyikan',
-        show: 'Tunjukkan',
-        stock_status: 'Status Stok',
-        busy_hours: 'Waktu Sibuk',
-        top_products: '3 Produk Terlaris',
-        items_low: 'Item Menipis',
-        no_data: 'Tiada Data',
-        pos_search_placeholder: 'Cari barang atau imbas...',
-        view_detail: 'Lihat Butiran',
-        btn_checkout: 'Teruskan Pembayaran →',
-        btn_category: 'Kategori',
-        btn_add: '+ Tambah',
-        item_search_placeholder: 'Cari barang atau barcode...',
-        stock_in: 'Stok Masuk',
-        stock_out: 'Stok Keluar',
-        stock_opname: 'Opname Stok',
-        stat_products: 'Produk',
-        stat_low: 'Menipis',
-        stat_empty: 'Habis',
-        filter_all: 'Semua',
-        filter_ok: 'Selamat',
-        product_status: 'Status Produk',
-        stock_history: 'Sejarah Stok',
-        btn_delete: 'Padam',
-        label_select_product: 'Pilih Produk',
-        label_qty: 'Kuantiti',
-        label_note_optional: 'Nota (opsional)',
-        note_placeholder: 'Restock daripada pembekal...',
-        current_stock: 'Stok Semasa',
-        opname_desc: 'Masukkan jumlah stok fizikal yang dikira. Sistem akan diselaraskan secara automatik.',
-        opname_physical: 'Stok Fizikal',
-        opname_system: 'Sistem',
-        btn_save_opname: 'Simpan Opname',
-        settings_min_stock: 'Had Minimum Stok',
-        minstock_desc: 'Produk di bawah had ini akan dikategorikan sebagai "Menipis" dan mencetuskan notifikasi.',
-        minstock_label: 'Had Minimum (unit)',
-        debt_total_loan: 'Jumlah Pinjaman',
-        debt_paid: 'Dibayar',
-        debt_remaining: 'BAKI',
-        debt_book_empty: 'Buku Hutang Kosong',
-        installment_placeholder: 'Jumlah Ansuran',
-        btn_pay_installment: 'Bayar Ansuran',
-        deadline: 'Tempoh',
-        checkout_title: 'Sahkan Pembayaran',
-        total: 'JUMLAH',
-        pay_cash_qris: 'Tunai/QRIS',
-        pay_debt: 'Hutang (Bon)',
-        label_cash: 'Wang Tunai',
-        label_transfer: 'Pindahan/QRIS',
-        change: 'Baki',
-        customer_name_placeholder: 'Nama Pelanggan',
-        due_date: 'Tarikh Luput',
-        btn_finish_checkout: 'Selesaikan Transaksi',
-        cart_detail_title: 'Butiran Troli',
-        receipt_title: 'Resit Belanja',
-        receipt_items: 'ITEM BELIAN',
-        receipt_thank: 'Terima kasih atas kunjungan anda!',
-        receipt_no_return: 'Barang yang dibeli tidak boleh ditukar.',
-        rec_cash: 'Tunai',
-        rec_qris: 'QRIS/Pindahan',
-        rec_change: 'Baki',
-        rec_debt: '⚠ HUTANG / BON',
-        print_bluetooth: 'Cetak Bluetooth',
-        settings_store_config: 'Konfigurasi Kedai',
-        settings_store: 'Tetapan Kedai',
-        settings_printer: 'Pencetak Thermal',
-        settings_language: 'Bahasa',
-        settings_info: 'Maklumat',
-        settings_contact: 'Hubungi Kami',
-        settings_privacy: 'Privasi & Dasar',
-        lang_select_title: 'Pilih Bahasa',
-        lang_select_desc: 'Pilih bahasa paparan aplikasi',
-        printer_not_connected: 'Belum disambung',
-        printer_no_device: 'Tiada peranti disambung',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Sambung automatik semasa buka halaman',
-        printer_connect: 'Sambung Pencetak',
-        printer_reconnect: 'Sambung Semula',
-        printer_test: 'Cetak Ujian',
-        printer_disconnect: 'Putuskan',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth, hidupkan pencetak, kemudian tekan <strong>Sambung Pencetak</strong>.',
-        product_master: 'Master Produk',
-        product_name_placeholder: 'Nama Produk',
-        stock_placeholder: 'Stok',
-        label_category: 'Kategori',
-        label_cost: 'Modal',
-        label_price: 'Harga Jual',
-        btn_save_data: 'Simpan Data',
-        manage_category: 'Urus Kategori',
-        new_category_placeholder: 'Kategori Baru',
-        store_name_placeholder: 'Nama Kedai',
-        store_address_placeholder: 'Alamat Kedai',
-        btn_change_logo: 'Tukar Logo',
-        btn_save_config: 'Simpan Konfigurasi',
-        privacy_title: 'Dasar Privasi',
-        contact_address: 'Alamat',
-        btn_save: 'Simpan',
-        btn_cancel: 'Batal',
-        btn_close: 'Tutup',
-        btn_agree: 'Saya Setuju',
-        notif_stock_title: 'Notifikasi Stok',
-        notif_all_safe: 'Semua stok dalam keadaan selamat',
-        notif_empty_stock: 'Stok Habis',
-        notif_low_stock: 'Menipis',
-        notif_fill: 'Isi',
-        notif_remaining: 'Baki',
-        notif_unit: 'unit',
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Aktif • Jeda 2.5 Saat per Produk',
-        toast_sku_filled: 'SKU Diisi!',
-        toast_max_stock: 'Maksimum!',
-        toast_out_of_stock: 'Stok Habis!',
-        toast_product_not_found: 'Produk tidak dijumpai!',
-        toast_fill_data: 'Isi data dengan betul!',
-        toast_stock_added: 'stok ditambah!',
-        toast_stock_reduced: 'stok dikurangkan!',
-        toast_stock_not_enough: 'Stok tidak mencukupi!',
-        toast_product_deleted: 'Produk Dipadam',
-        toast_save_success: 'Berjaya Disimpan!',
-        toast_min_stock_saved: 'Had Minimum Disimpan!',
-        toast_history_deleted: 'Sejarah Dipadam',
-        toast_https_required: 'HTTPS Diperlukan!',
-        toast_camera_fail: 'Kamera Gagal!',
-        toast_insufficient_money: 'Wang Tidak Mencukupi!',
-        toast_fill_name: 'Isi Nama!',
-        toast_fill_product_name: 'Isi Nama Produk!',
-        toast_fill_customer_name: 'Isi Nama Pelanggan!',
-        toast_excel_success: 'Excel Berjaya Dimuat Turun!',
-        toast_excel_fail: 'Eksport Excel Gagal!',
-        toast_pdf_success: 'PDF Berjaya Dimuat Turun!',
-        toast_pdf_fail: 'Eksport PDF Gagal!',
-        toast_no_data: 'Tiada data!',
-        toast_no_receipt: 'Tiada data resit!',
-        toast_printer_not_connected: 'Sambung pencetak dahulu di Tetapan!',
-        toast_printer_disconnected: 'Pencetak terputus',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Pencetak disambung semula!',
-        toast_reconnect_fail: 'Gagal reconnect pencetak!',
-        toast_sending_test: 'Menghantar cetakan ujian...',
-        toast_test_success: 'Cetakan ujian berjaya!',
-        toast_test_fail: 'Cetakan ujian gagal: ',
-        toast_sending_print: 'Menghantar ke pencetak...',
-        toast_print_success: 'Resit berjaya dicetak!',
-        toast_print_fail: 'Cetak gagal: ',
-        toast_printer_connected: 'disambung!',
-        toast_bt_connect_fail: 'Gagal: ',
-        toast_printer_disconnected_ok: 'Pencetak diputuskan',
-        toast_auto_connect: 'Auto-sambung:',
-        toast_retry: 'Cuba semula',
-        toast_reconnecting: 'Menyambung semula pencetak...',
-        toast_category_exists: 'Sudah Wujud!',
-        toast_fill_category: 'Isi Nama!',
-        toast_language_changed: 'Bahasa berjaya ditukar!',
-        toast_opname_no_data: 'Tiada data opname!',
-        toast_opname_no_change: 'Tiada perubahan stok!',
-        toast_opname_done: 'Opname selesai —',
-        toast_products_updated: 'produk dikemaskini',
-        sh_in: 'Masuk',
-        sh_out: 'Keluar',
-        sh_opname: 'Opname',
-        sh_sale: 'Jualan',
-        sh_manual_in: 'Stok masuk manual',
-        sh_manual_out: 'Stok keluar manual',
-        badge_empty: 'Habis',
-        badge_low: 'Menipis',
-        badge_ok: 'Selamat',
-        badge_in: 'Masuk',
-        badge_out: 'Keluar',
-        badge_opname: 'Opname',
-        debt_not_paid: 'BELUM LUNAS',
-        debt_paid_status: 'LUNAS',
-        pcs: 'unit',
-        transactions: 'transaksi untuk',
-        all_transactions: 'Semua',
-        address_not_set: 'Alamat belum ditetapkan',
-        confirm_clear_history: 'Padam semua sejarah stok?',
+        splash_tagline:'Sistem Kasir Digital PKS',splash_loading:'Memuatkan sistem...',menu_main:'Menu Utama',menu_operational:'Operasi',menu_account:'Akaun',nav_home:'Laman Utama',nav_pos:'Kasir / POS',nav_inventory:'Inventori',nav_stock:'Pengurusan Stok',nav_debts:'Buku Hutang',nav_reports:'Laporan & Data',nav_settings:'Tetapan',nav_about:'Tentang Aplikasi',nav_home_short:'Utama',nav_pos_short:'Kasir',nav_stock_short:'Stok',nav_warehouse_short:'Gudang',nav_debts_short:'Hutang',nav_data_short:'Data',dark_mode:'Mod Gelap',dash_net_profit:'Keuntungan Bersih Kedai',dash_today_income:'Pendapatan Hari Ini',dash_total_receivable:'Jumlah Belum Terima',hide:'Sembunyikan',show:'Tunjukkan',stock_status:'Status Stok',busy_hours:'Waktu Sibuk',top_products:'3 Produk Terlaris',items_low:'Item Menipis',no_data:'Tiada Data',pos_search_placeholder:'Cari barang atau imbas...',view_detail:'Lihat Butiran',btn_checkout:'Teruskan Pembayaran →',btn_category:'Kategori',btn_add:'+ Tambah',item_search_placeholder:'Cari barang atau barcode...',stock_in:'Stok Masuk',stock_out:'Stok Keluar',stock_opname:'Opname Stok',stat_products:'Produk',stat_low:'Menipis',stat_empty:'Habis',filter_all:'Semua',filter_ok:'Selamat',product_status:'Status Produk',stock_history:'Sejarah Stok',btn_delete:'Padam',label_select_product:'Pilih Produk',label_qty:'Kuantiti',label_note_optional:'Nota (opsional)',note_placeholder:'Restock daripada pembekal...',current_stock:'Stok Semasa',opname_desc:'Masukkan jumlah stok fizikal yang dikira. Sistem akan diselaraskan secara automatik.',opname_physical:'Stok Fizikal',opname_system:'Sistem',btn_save_opname:'Simpan Opname',settings_min_stock:'Had Minimum Stok',minstock_desc:'Produk di bawah had ini akan dikategorikan sebagai "Menipis".',minstock_label:'Had Minimum (unit)',debt_total_loan:'Jumlah Pinjaman',debt_paid:'Dibayar',debt_remaining:'BAKI',debt_book_empty:'Buku Hutang Kosong',installment_placeholder:'Jumlah Ansuran',btn_pay_installment:'Bayar Ansuran',deadline:'Tempoh',checkout_title:'Sahkan Pembayaran',total:'JUMLAH',pay_cash_qris:'Tunai/QRIS',pay_debt:'Hutang (Bon)',label_cash:'Wang Tunai',label_transfer:'Pindahan/QRIS',change:'Baki',customer_name_placeholder:'Nama Pelanggan',due_date:'Tarikh Luput',btn_finish_checkout:'Selesaikan Transaksi',cart_detail_title:'Butiran Troli',receipt_title:'Resit Belanja',receipt_items:'ITEM BELIAN',receipt_thank:'Terima kasih atas kunjungan anda!',receipt_no_return:'Barang yang dibeli tidak boleh ditukar.',rec_cash:'Tunai',rec_qris:'QRIS/Pindahan',rec_change:'Baki',rec_debt:'⚠ HUTANG / BON',print_bluetooth:'Cetak Bluetooth',settings_store_config:'Konfigurasi Kedai',settings_store:'Tetapan Kedai',settings_printer:'Pencetak Thermal',settings_language:'Bahasa',settings_info:'Maklumat',settings_contact:'Hubungi Kami',settings_privacy:'Privasi & Dasar',lang_select_title:'Pilih Bahasa',lang_select_desc:'Pilih bahasa paparan aplikasi',printer_not_connected:'Belum disambung',printer_no_device:'Tiada peranti disambung',printer_auto_reconnect:'Auto-Reconnect',printer_auto_reconnect_desc:'Sambung automatik semasa buka halaman',printer_connect:'Sambung Pencetak',printer_reconnect:'Sambung Semula',printer_test:'Cetak Ujian',printer_disconnect:'Putuskan',product_master:'Master Produk',product_name_placeholder:'Nama Produk',stock_placeholder:'Stok',label_category:'Kategori',label_cost:'Modal',label_price:'Harga Jual',btn_save_data:'Simpan Data',manage_category:'Urus Kategori',new_category_placeholder:'Kategori Baru',store_name_placeholder:'Nama Kedai',store_address_placeholder:'Alamat Kedai',btn_change_logo:'Tukar Logo',btn_save_config:'Simpan Konfigurasi',privacy_title:'Dasar Privasi',contact_address:'Alamat',btn_save:'Simpan',btn_cancel:'Batal',btn_close:'Tutup',btn_agree:'Saya Setuju',notif_stock_title:'Notifikasi Stok',notif_all_safe:'Semua stok dalam keadaan selamat',notif_empty_stock:'Stok Habis',notif_low_stock:'Menipis',notif_fill:'Isi',notif_remaining:'Baki',notif_unit:'unit',flash:'Flash',scanner_hint:'Auto-detect Aktif • Jeda 2.5 Saat per Produk',toast_sku_filled:'SKU Diisi!',toast_max_stock:'Maksimum!',toast_out_of_stock:'Stok Habis!',toast_product_not_found:'Produk tidak dijumpai!',toast_fill_data:'Isi data dengan betul!',toast_stock_added:'stok ditambah!',toast_stock_reduced:'stok dikurangkan!',toast_stock_not_enough:'Stok tidak mencukupi!',toast_product_deleted:'Produk Dipadam',toast_save_success:'Berjaya Disimpan!',toast_min_stock_saved:'Had Minimum Disimpan!',toast_history_deleted:'Sejarah Dipadam',toast_https_required:'HTTPS Diperlukan!',toast_camera_fail:'Kamera Gagal!',toast_insufficient_money:'Wang Tidak Mencukupi!',toast_fill_name:'Isi Nama!',toast_fill_product_name:'Isi Nama Produk!',toast_fill_customer_name:'Isi Nama Pelanggan!',toast_excel_success:'Excel Berjaya Dimuat Turun!',toast_excel_fail:'Eksport Excel Gagal!',toast_pdf_success:'PDF Berjaya Dimuat Turun!',toast_pdf_fail:'Eksport PDF Gagal!',toast_no_data:'Tiada data!',toast_no_receipt:'Tiada data resit!',toast_printer_not_connected:'Sambung pencetak dahulu di Tetapan!',toast_printer_disconnected:'Pencetak terputus',toast_auto_reconnect:'Auto-reconnect...',toast_printer_reconnected:'Pencetak disambung semula!',toast_reconnect_fail:'Gagal reconnect pencetak!',toast_sending_test:'Menghantar cetakan ujian...',toast_test_success:'Cetakan ujian berjaya!',toast_test_fail:'Cetakan ujian gagal: ',toast_sending_print:'Menghantar ke pencetak...',toast_print_success:'Resit berjaya dicetak!',toast_print_fail:'Cetak gagal: ',toast_printer_connected:'disambung!',toast_bt_connect_fail:'Gagal: ',toast_printer_disconnected_ok:'Pencetak diputuskan',toast_auto_connect:'Auto-sambung:',toast_retry:'Cuba semula',toast_reconnecting:'Menyambung semula pencetak...',toast_category_exists:'Sudah Wujud!',toast_fill_category:'Isi Nama!',toast_language_changed:'Bahasa berjaya ditukar!',toast_opname_no_data:'Tiada data opname!',toast_opname_no_change:'Tiada perubahan stok!',toast_opname_done:'Opname selesai —',toast_products_updated:'produk dikemaskini',sh_in:'Masuk',sh_out:'Keluar',sh_opname:'Opname',sh_sale:'Jualan',sh_manual_in:'Stok masuk manual',sh_manual_out:'Stok keluar manual',badge_empty:'Habis',badge_low:'Menipis',badge_ok:'Selamat',badge_in:'Masuk',badge_out:'Keluar',badge_opname:'Opname',debt_not_paid:'BELUM LUNAS',debt_paid_status:'LUNAS',pcs:'unit',transactions:'transaksi untuk',all_transactions:'Semua',address_not_set:'Alamat belum ditetapkan',confirm_clear_history:'Padam semua sejarah stok?'
     }
 };
 
 let currentLang = localStorage.getItem('dk_lang') || 'id';
-
-function t(key) {
-    return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS['id'][key] || key;
-}
-
-function applyTranslations() {
-    // data-i18n elements
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const val = t(key);
-        if (val && !val.startsWith('<')) el.textContent = val;
-        else if (val) el.innerHTML = val;
-    });
-    // data-i18n-placeholder
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        el.placeholder = t(key);
-    });
-    // Lang display
-    const langNames = { id: '🇮🇩 Bahasa Indonesia', en: '🇬🇧 English', ms: '🇲🇾 Bahasa Melayu' };
-    const el = document.getElementById('current-lang-display');
-    if (el) el.textContent = langNames[currentLang] || 'Bahasa Indonesia';
-    // html lang attr
-    document.documentElement.lang = currentLang;
-    // Mark selected lang
-    ['id','en','ms'].forEach(l => {
-        const opt = document.getElementById('lang-' + l);
-        if (opt) opt.classList.toggle('selected', l === currentLang);
-    });
-    // Splash tagline
-    const splashTag = document.getElementById('splash-tagline');
-    if (splashTag) splashTag.textContent = t('splash_tagline');
-    // splash status (only if still shown)
-    const splashSt = document.getElementById('splash-status');
-    if (splashSt) splashSt.textContent = t('splash_loading');
-    // Update dynamic content
+function t(key){return(TRANSLATIONS[currentLang]&&TRANSLATIONS[currentLang][key])||TRANSLATIONS['id'][key]||key;}
+function applyTranslations(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');const v=t(k);if(v&&!v.startsWith('<'))el.textContent=v;else if(v)el.innerHTML=v;});
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.placeholder=t(el.getAttribute('data-i18n-placeholder'));});
+    const ln={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English',ms:'🇲🇾 Bahasa Melayu'};
+    const el=document.getElementById('current-lang-display');if(el)el.textContent=ln[currentLang]||'Bahasa Indonesia';
+    document.documentElement.lang=currentLang;
+    ['id','en','ms'].forEach(l=>{const o=document.getElementById('lang-'+l);if(o)o.classList.toggle('selected',l===currentLang);});
+    const splashTag=document.getElementById('splash-tagline');if(splashTag)splashTag.textContent=t('splash_tagline');
     applyBalanceUI();
 }
-
-function setLanguage(lang) {
-    currentLang = lang;
-    localStorage.setItem('dk_lang', lang);
-    applyTranslations();
-    closeModal('modal-language');
-    showToast(t('toast_language_changed'));
-    renderHome();
-    renderItems();
-    renderPos();
-    renderStockTab();
-    renderDebts();
-    renderData();
-}
-
-function openLanguageModal() {
-    ['id','en','ms'].forEach(l => {
-        const opt = document.getElementById('lang-' + l);
-        if (opt) opt.classList.toggle('selected', l === currentLang);
-    });
-    openModal('modal-language');
-}
+function setLanguage(lang){currentLang=lang;localStorage.setItem('dk_lang',lang);applyTranslations();closeModal('modal-language');showToast(t('toast_language_changed'));renderHome();renderItems();renderPos();renderStockTab();renderDebts();renderData();}
+function openLanguageModal(){['id','en','ms'].forEach(l=>{const o=document.getElementById('lang-'+l);if(o)o.classList.toggle('selected',l===currentLang);});openModal('modal-language');}
 
 // ══════════════════════════════
-// SPLASH SCREEN
+// SPLASH
 // ══════════════════════════════
-(function() {
-    const SPLASH_KEY = 'dk_splash_shown';
-    const splash      = document.getElementById('splash-screen');
-    const app         = document.getElementById('app');
-    const progressBar = document.getElementById('splash-progress');
-    const statusText  = document.getElementById('splash-status');
-    const lang        = localStorage.getItem('dk_lang') || 'id';
-
-    try {
-        const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
-        const storeName = cfg.storeName || 'DheKasir';
-        const letter = storeName[0].toUpperCase();
-        const logoLetter = document.getElementById('splash-logo-letter');
-        const appName    = document.getElementById('splash-app-name');
-        if (logoLetter) logoLetter.textContent = letter;
-        if (appName)    appName.textContent    = storeName;
-        if (cfg.darkMode) document.body.classList.add('dark');
-    } catch(e) {}
-
-    const taglineEl = document.getElementById('splash-tagline');
-    if (taglineEl && TRANSLATIONS[lang]) taglineEl.textContent = TRANSLATIONS[lang].splash_tagline || TRANSLATIONS['id'].splash_tagline;
-
-    const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
-    if (alreadyShown) {
-        splash.classList.add('skip-instant');
-        app.style.opacity = '1';
-        app.style.transition = 'none';
-        return;
-    }
-
-    const getSteps = () => {
-        const tr = TRANSLATIONS[lang] || TRANSLATIONS['id'];
-        return [
-            { pct: 15, label: tr.splash_loading || 'Memuat sistem...' },
-            { pct: 30, label: 'Loading inventory...' },
-            { pct: 50, label: 'Loading transactions...' },
-            { pct: 68, label: 'Preparing POS...' },
-            { pct: 82, label: 'Checking stock...' },
-            { pct: 92, label: 'Finalizing...' },
-            { pct: 100, label: '✓ Ready!' }
-        ];
-    };
-    const steps = getSteps();
-    let stepIdx = 0;
-    function runStep() {
-        if (stepIdx >= steps.length) {
-            sessionStorage.setItem(SPLASH_KEY, '1');
-            setTimeout(() => {
-                splash.classList.add('fade-out');
-                app.style.opacity = '1';
-                setTimeout(() => { splash.style.display = 'none'; }, 650);
-            }, 300);
-            return;
-        }
-        const step = steps[stepIdx];
-        progressBar.style.width = step.pct + '%';
-        statusText.style.opacity = '0';
-        setTimeout(() => { statusText.textContent = step.label; statusText.style.opacity = '1'; }, 120);
-        stepIdx++;
-        const delays = [380, 320, 350, 280, 300, 250, 450];
-        setTimeout(runStep, delays[stepIdx - 1] || 300);
-    }
-    setTimeout(runStep, 500);
+(function(){
+    const SPLASH_KEY='dk_splash_shown';
+    const splash=document.getElementById('splash-screen'),app=document.getElementById('app');
+    const progressBar=document.getElementById('splash-progress'),statusText=document.getElementById('splash-status');
+    const lang=localStorage.getItem('dk_lang')||'id';
+    try{const cfg=JSON.parse(localStorage.getItem('dk_config')||'{}');const sn=cfg.storeName||'DheKasir';const letter=sn[0].toUpperCase();const ll=document.getElementById('splash-logo-letter'),an=document.getElementById('splash-app-name');if(ll)ll.textContent=letter;if(an)an.textContent=sn;if(cfg.darkMode)document.body.classList.add('dark');}catch(e){}
+    const taglineEl=document.getElementById('splash-tagline');if(taglineEl&&TRANSLATIONS[lang])taglineEl.textContent=TRANSLATIONS[lang].splash_tagline||TRANSLATIONS['id'].splash_tagline;
+    if(sessionStorage.getItem(SPLASH_KEY)==='1'){splash.classList.add('skip-instant');app.style.opacity='1';app.style.transition='none';return;}
+    const steps=[{pct:15,label:TRANSLATIONS[lang]?.splash_loading||'Memuat...'},{pct:30,label:'Loading inventory...'},{pct:50,label:'Loading transactions...'},{pct:68,label:'Preparing POS...'},{pct:82,label:'Checking stock...'},{pct:92,label:'Finalizing...'},{pct:100,label:'✓ Ready!'}];
+    let idx=0;function runStep(){if(idx>=steps.length){sessionStorage.setItem(SPLASH_KEY,'1');setTimeout(()=>{splash.classList.add('fade-out');app.style.opacity='1';setTimeout(()=>{splash.style.display='none';},650);},300);return;}const s=steps[idx];progressBar.style.width=s.pct+'%';statusText.style.opacity='0';setTimeout(()=>{statusText.textContent=s.label;statusText.style.opacity='1';},120);idx++;const delays=[380,320,350,280,300,250,450];setTimeout(runStep,delays[idx-1]||300);}
+    setTimeout(runStep,500);
 })();
 
 // ── State ──────────────────────────────────────────────────────────────
-let items        = JSON.parse(localStorage.getItem('dk_items'))         || [];
-let logs         = JSON.parse(localStorage.getItem('dk_logs'))          || [];
-let debts        = JSON.parse(localStorage.getItem('dk_debts'))         || [];
-let categories   = JSON.parse(localStorage.getItem('dk_categories'))    || ['Semua','Umum','Makanan','Minuman'];
-let config       = JSON.parse(localStorage.getItem('dk_config'))        || { darkMode:false, storeName:'DheKasir', storeAddress:'-', storePhone:'', url:'', logo:null, minStock:5 };
-let stockHistory = JSON.parse(localStorage.getItem('dk_stock_history')) || [];
+let items=JSON.parse(localStorage.getItem('dk_items'))||[];
+let logs=JSON.parse(localStorage.getItem('dk_logs'))||[];
+let debts=JSON.parse(localStorage.getItem('dk_debts'))||[];
+let categories=JSON.parse(localStorage.getItem('dk_categories'))||['Semua','Umum','Makanan','Minuman'];
+let config=JSON.parse(localStorage.getItem('dk_config'))||{darkMode:false,storeName:'DheKasir',storeAddress:'-',storePhone:'',url:'',logo:null,minStock:5};
+let stockHistory=JSON.parse(localStorage.getItem('dk_stock_history'))||[];
+let cart=[],payMethod='cash',activePosCategory='Semua',mainChart=null,html5QrCode=null,lastReceiptData=null,lastScannedCode='',lastScannedTime=0,currentDebtId=null,currentStockMoveType='in',flashTrack=null,flashOn=false,opnameData={};
+const SCAN_COOLDOWN=2500;
 
-let cart = [];
-let payMethod = 'cash';
-let activePosCategory = 'Semua';
-let mainChart = null;
-let html5QrCode = null;
-let lastReceiptData = null;
-let lastScannedCode = "";
-let lastScannedTime = 0;
-let currentDebtId = null;
-let currentStockMoveType = 'in';
-let flashTrack = null;
-let flashOn = false;
-let opnameData = {};
-const SCAN_COOLDOWN = 2500;
+// ══════════════════════════════════════════════════════════════════════
+// ██████╗ ██╗     ██╗   ██╗███████╗████████╗ ██████╗  ██████╗ ████████╗██╗  ██╗
+// ██╔══██╗██║     ██║   ██║██╔════╝╚══██╔══╝██╔═══██╗██╔═══██╗╚══██╔══╝██║  ██║
+// ██████╔╝██║     ██║   ██║█████╗     ██║   ██║   ██║██║   ██║   ██║   ███████║
+// ██╔══██╗██║     ██║   ██║██╔══╝     ██║   ██║   ██║██║   ██║   ██║   ██╔══██║
+// ██████╔╝███████╗╚██████╔╝███████╗   ██║   ╚██████╔╝╚██████╔╝   ██║   ██║  ██║
+//
+// VERSI DIPERBAIKI TOTAL — v1.5
+// Perbaikan:
+//   1. Scan SEMUA service + karakteristik untuk menemukan write char
+//   2. Chunking data yang aman (20 byte per chunk dengan delay)
+//   3. Keep-Alive ping setiap 20 detik untuk mencegah putus
+//   4. Auto-reconnect via navigator.bluetooth.getDevices() (persistent)
+//   5. Reconnect eksponensial backoff (1.5s, 3s, 6s)
+//   6. onDisconnected: immediate reconnect attempt
+//   7. buildEscPosReceipt: encode karakter aman, feed & cut yang benar
+// ══════════════════════════════════════════════════════════════════════
 
-// ══════════════════════════════
-// BALANCE HIDE / SHOW
-// ══════════════════════════════
-let balanceHidden = localStorage.getItem('dk_balance_hidden') === '1';
+const BT_PREFS_KEY = 'dk_bt_prefs_v2';
 
-function applyBalanceUI() {
-    const hero  = document.getElementById('dash-hero-wrap');
-    const icon  = document.getElementById('balance-eye-icon');
-    const label = document.getElementById('balance-toggle-label');
-    const btn   = document.getElementById('balance-toggle-btn');
-    if (!hero) return;
-    if (balanceHidden) {
-        hero.classList.add('balance-hidden');
-        if (icon)  icon.className = 'fa-solid fa-eye-slash btn-eye-icon';
-        if (label) label.textContent = t('show');
-        if (btn)   btn.setAttribute('aria-label', t('show'));
-    } else {
-        hero.classList.remove('balance-hidden');
-        if (icon)  icon.className = 'fa-solid fa-eye btn-eye-icon';
-        if (label) label.textContent = t('hide');
-        if (btn)   btn.setAttribute('aria-label', t('hide'));
+// Semua UUID service printer thermal yang diketahui
+const BT_KNOWN_SERVICES = [
+    '000018f0-0000-1000-8000-00805f9b34fb',
+    '49535343-fe7d-4ae5-8fa9-9fafd205e455',
+    '6e400001-b5a3-f393-e0a9-e50e24dcca9e',
+    '0000ff00-0000-1000-8000-00805f9b34fb',
+    '0000ffe0-0000-1000-8000-00805f9b34fb',
+    '0000fff0-0000-1000-8000-00805f9b34fb',
+    '000003f3-0000-1000-8000-00805f9b34fb',
+    '0000ae30-0000-1000-8000-00805f9b34fb',
+    '00001101-0000-1000-8000-00805f9b34fb',
+];
+
+const BT_MAX_RETRIES  = 4;
+const BT_RETRY_BASE   = 1500; // ms, akan dikali 2x tiap gagal
+const KEEP_ALIVE_MS   = 20000; // 20 detik
+const WRITE_CHUNK     = 20;    // byte per chunk (aman untuk semua printer)
+const CHUNK_DELAY     = 10;    // ms antar chunk
+
+let btDevice         = null;
+let btCharacteristic = null;
+let btConnected      = false;
+let btWriteMode      = null;   // 'write' | 'writeWithoutResponse'
+let btReconnTimer    = null;
+let btKeepAliveTimer = null;
+let btIsReconnecting = false;
+
+let btPrefs = (() => {
+    try { return JSON.parse(localStorage.getItem(BT_PREFS_KEY) || '{}'); } catch(e) { return {}; }
+})();
+btPrefs = { autoReconnect: false, keepAlive: true, lastName: '', ...btPrefs };
+
+function savePrinterPrefs() {
+    const arEl = document.getElementById('printer-auto-reconnect');
+    const kaEl = document.getElementById('printer-keep-alive');
+    if (arEl) btPrefs.autoReconnect = arEl.checked;
+    if (kaEl) btPrefs.keepAlive     = kaEl.checked;
+    localStorage.setItem(BT_PREFS_KEY, JSON.stringify(btPrefs));
+    // Restart keep-alive sesuai preferensi baru
+    _manageKeepAlive();
+}
+
+// ── UI Helper ─────────────────────────────────────────────────────────
+function _setPrinterUI(state, deviceName = '') {
+    const name = deviceName || btPrefs.lastName || t('settings_printer');
+    const MAP = {
+        offline:    { text:'OFFLINE',       cls:'printer-offline',    bar:'offline',    ic:'var(--text-muted)', bg:'var(--surface)',           desc: t('printer_no_device') },
+        connecting: { text:'CONNECTING…',   cls:'printer-connecting', bar:'connecting', ic:'#f59e0b',           bg:'rgba(245,158,11,0.1)',     desc:'Menyambung...' },
+        ready:      { text:'READY ✓',       cls:'printer-ready',      bar:'ready',      ic:'#10b981',           bg:'rgba(16,185,129,0.1)',     desc:'Siap mencetak' },
+        error:      { text:'ERROR',         cls:'printer-error',      bar:'error',      ic:'#ef4444',           bg:'rgba(239,68,68,0.1)',      desc:'Gagal tersambung' },
+    };
+    const m = MAP[state] || MAP.offline;
+
+    const qs = id => document.getElementById(id);
+    if (qs('printer-status'))          { qs('printer-status').className = `text-[8px] font-black uppercase ${m.cls}`; qs('printer-status').innerText = m.text; }
+    if (qs('printer-icon-wrap'))       qs('printer-icon-wrap').style.color = m.ic;
+    if (qs('printer-device-name'))     qs('printer-device-name').innerText = state === 'offline' ? t('printer_not_connected') : name;
+    if (qs('printer-modal-bar'))       qs('printer-modal-bar').className = `printer-status-bar ${m.bar}`;
+    if (qs('printer-modal-icon'))      { qs('printer-modal-icon').style.color = m.ic; qs('printer-modal-icon').style.background = m.bg; }
+    if (qs('printer-modal-name'))      qs('printer-modal-name').innerText = state !== 'offline' ? name : t('settings_printer');
+    if (qs('printer-modal-desc'))      qs('printer-modal-desc').innerText = m.desc;
+    if (qs('printer-modal-status-text')) { qs('printer-modal-status-text').style.color = m.ic; qs('printer-modal-status-text').innerText = m.text; }
+
+    const signal = qs('printer-signal');
+    if (signal) { signal.classList.toggle('hidden', state !== 'ready'); signal.classList.toggle('active', state === 'ready'); }
+
+    if (qs('printer-btn-connect'))  qs('printer-btn-connect').classList.toggle('hidden', state === 'ready');
+    if (qs('printer-btn-reconnect')) qs('printer-btn-reconnect').classList.toggle('hidden', state !== 'error');
+    if (qs('printer-btn-actions'))  qs('printer-btn-actions').classList.toggle('hidden', state !== 'ready');
+
+    // Char info
+    if (qs('printer-char-info')) qs('printer-char-info').classList.toggle('hidden', state !== 'ready');
+    if (state === 'ready' && btCharacteristic) {
+        if (qs('printer-char-uuid'))   qs('printer-char-uuid').innerText = 'UUID: ' + (btCharacteristic.uuid || '-');
+        if (qs('printer-char-method')) qs('printer-char-method').innerText = 'Mode: ' + (btWriteMode || '-');
+    }
+
+    // Print button status
+    const pbs = qs('print-bt-status');
+    if (pbs) pbs.innerText = state === 'ready' ? `(${name})` : '(Offline)';
+
+    // Sync toggle states
+    const arEl = qs('printer-auto-reconnect');
+    const kaEl = qs('printer-keep-alive');
+    if (arEl && arEl.checked !== btPrefs.autoReconnect) arEl.checked = btPrefs.autoReconnect;
+    if (kaEl && kaEl.checked !== btPrefs.keepAlive)     kaEl.checked = btPrefs.keepAlive;
+}
+
+function openPrinterModal() {
+    _setPrinterUI(btConnected ? 'ready' : (btDevice ? 'error' : 'offline'), btDevice?.name || '');
+    openModal('modal-printer');
+}
+
+// ── Keep-Alive ─────────────────────────────────────────────────────────
+// Kirim 0 byte (NUL) secara periodik agar koneksi BT tidak timeout
+function _manageKeepAlive() {
+    clearInterval(btKeepAliveTimer);
+    if (!btPrefs.keepAlive || !btConnected) return;
+    btKeepAliveTimer = setInterval(async () => {
+        if (!btConnected || !btCharacteristic) return;
+        try {
+            // Kirim ESC NUL (tidak berbuat apa-apa di printer, tapi menjaga koneksi)
+            const ping = new Uint8Array([0x1B, 0x00]);
+            if (btWriteMode === 'writeWithoutResponse') {
+                await btCharacteristic.writeValueWithoutResponse(ping);
+            } else {
+                await btCharacteristic.writeValue(ping);
+            }
+        } catch(e) {
+            // Jika ping gagal, tandai terputus
+            console.warn('[BT KeepAlive] ping failed:', e.message);
+        }
+    }, KEEP_ALIVE_MS);
+}
+
+// ── Temukan Karakteristik Write ────────────────────────────────────────
+async function _findWriteChar(server) {
+    // Strategi 1: Coba semua UUID service yang diketahui
+    for (const uuid of BT_KNOWN_SERVICES) {
+        try {
+            const svc  = await server.getPrimaryService(uuid);
+            const chars = await svc.getCharacteristics();
+            for (const ch of chars) {
+                if (ch.properties.write || ch.properties.writeWithoutResponse) {
+                    btWriteMode = ch.properties.write ? 'write' : 'writeWithoutResponse';
+                    console.log('[BT] Found char via known UUID:', uuid, '| mode:', btWriteMode);
+                    return ch;
+                }
+            }
+        } catch(e) { /* service tidak tersedia, coba berikutnya */ }
+    }
+
+    // Strategi 2: Enumerate semua service yang diiklankan perangkat
+    try {
+        const services = await server.getPrimaryServices();
+        for (const svc of services) {
+            let chars = [];
+            try { chars = await svc.getCharacteristics(); } catch(e) { continue; }
+            for (const ch of chars) {
+                if (ch.properties.write || ch.properties.writeWithoutResponse) {
+                    btWriteMode = ch.properties.write ? 'write' : 'writeWithoutResponse';
+                    console.log('[BT] Found char via enum:', svc.uuid, '| mode:', btWriteMode);
+                    return ch;
+                }
+            }
+        }
+    } catch(e) {
+        console.warn('[BT] getPrimaryServices failed:', e.message);
+    }
+
+    return null;
+}
+
+// ── Core Connect ───────────────────────────────────────────────────────
+async function _doConnect(device, attempt = 0) {
+    _setPrinterUI('connecting', device.name);
+    try {
+        const server = await device.gatt.connect();
+        const ch     = await _findWriteChar(server);
+        if (!ch) throw new Error('No writable characteristic found');
+
+        btDevice         = device;
+        btCharacteristic = ch;
+        btConnected      = true;
+        btIsReconnecting = false;
+        btPrefs.lastName = device.name || btPrefs.lastName;
+        savePrinterPrefs();
+        _setPrinterUI('ready', device.name);
+        _manageKeepAlive();
+        console.log('[BT] Connected to', device.name);
+        return true;
+    } catch(e) {
+        if (attempt < BT_MAX_RETRIES - 1) {
+            const wait = BT_RETRY_BASE * Math.pow(2, attempt);
+            showToast(`${t('toast_retry')} (${attempt+1}/${BT_MAX_RETRIES-1})...`);
+            console.warn(`[BT] Attempt ${attempt+1} failed, retry in ${wait}ms:`, e.message);
+            await new Promise(r => setTimeout(r, wait));
+            return _doConnect(device, attempt + 1);
+        }
+        btConnected      = false;
+        btCharacteristic = null;
+        btIsReconnecting = false;
+        _setPrinterUI('error', device.name);
+        throw e;
     }
 }
 
-function toggleBalanceVisibility() {
-    balanceHidden = !balanceHidden;
-    localStorage.setItem('dk_balance_hidden', balanceHidden ? '1' : '0');
-    const btn = document.getElementById('balance-toggle-btn');
-    if (btn) { btn.classList.add('hiding'); setTimeout(() => btn.classList.remove('hiding'), 350); }
-    applyBalanceUI();
-    showToast(balanceHidden ? '🙈 ' + t('hide') : '👁 ' + t('show'));
+// ── Disconnect Handler ─────────────────────────────────────────────────
+function _onDisconnected() {
+    btConnected      = false;
+    btCharacteristic = null;
+    clearInterval(btKeepAliveTimer);
+    console.warn('[BT] Disconnected from', btDevice?.name);
+    _setPrinterUI(btDevice ? 'error' : 'offline', btDevice?.name || '');
+    showToast('⚠ ' + t('toast_printer_disconnected'));
+
+    // Langsung coba reconnect jika auto-reconnect aktif
+    if (btPrefs.autoReconnect && btDevice && !btIsReconnecting) {
+        btIsReconnecting = true;
+        clearTimeout(btReconnTimer);
+        btReconnTimer = setTimeout(async () => {
+            if (btConnected) { btIsReconnecting = false; return; }
+            showToast('🔄 ' + t('toast_auto_reconnect'));
+            try {
+                await _doConnect(btDevice);
+                showToast('✓ ' + t('toast_printer_reconnected'));
+            } catch(e) {
+                console.error('[BT] Auto-reconnect failed:', e.message);
+                btIsReconnecting = false;
+            }
+        }, 2000);
+    }
 }
 
-// ══════════════════════════════
-// BLUETOOTH PRINTER
-// ══════════════════════════════
-const BT_PREFS_KEY = 'dk_bt_prefs';
-const BT_KNOWN_SERVICES = [
-    '000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455',
-    '6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb',
-    '0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb',
-    '000003f3-0000-1000-8000-00805f9b34fb'
-];
-const BT_MAX_RETRIES = 3, BT_RETRY_BASE_MS = 1500;
-let btDevice=null, btCharacteristic=null, btConnected=false, btReconnectTimer=null;
-let btPrefs = JSON.parse(localStorage.getItem(BT_PREFS_KEY)||'{"autoReconnect":false,"lastName":""}');
-
-function _setPrinterUI(state, deviceName='') {
-    const statusEl=document.getElementById('printer-status'),iconWrap=document.getElementById('printer-icon-wrap'),devName=document.getElementById('printer-device-name');
-    const modalBar=document.getElementById('printer-modal-bar'),modalIcon=document.getElementById('printer-modal-icon'),modalName=document.getElementById('printer-modal-name');
-    const modalDesc=document.getElementById('printer-modal-desc'),modalStat=document.getElementById('printer-modal-status-text'),signal=document.getElementById('printer-signal');
-    const btnConnect=document.getElementById('printer-btn-connect'),btnReconn=document.getElementById('printer-btn-reconnect'),btnActions=document.getElementById('printer-btn-actions');
-    const printLbl=document.getElementById('print-btn-label'),printBtSt=document.getElementById('print-bt-status');
-    const name=deviceName||btPrefs.lastName||t('settings_printer');
-    const map={offline:{text:'OFFLINE',cls:'printer-offline',barCls:'offline',iconColor:'var(--text-muted)',iconBg:'var(--surface)',desc:t('printer_no_device')},connecting:{text:'CONNECTING…',cls:'printer-connecting',barCls:'connecting',iconColor:'#f59e0b',iconBg:'rgba(245,158,11,0.1)',desc:'...'},ready:{text:'READY ✓',cls:'printer-ready',barCls:'ready',iconColor:'#10b981',iconBg:'rgba(16,185,129,0.1)',desc:'Siap mencetak struk'},error:{text:'ERROR',cls:'printer-error',barCls:'error',iconColor:'#ef4444',iconBg:'rgba(239,68,68,0.1)',desc:'Gagal'}};
-    const m=map[state]||map.offline;
-    if(statusEl){statusEl.className=`text-[8px] font-black uppercase ${m.cls}`;statusEl.innerText=m.text;}
-    if(iconWrap)iconWrap.style.color=m.iconColor;
-    if(devName)devName.innerText=state==='offline'?t('printer_not_connected'):name;
-    if(modalBar)modalBar.className=`printer-status-bar ${m.barCls}`;
-    if(modalIcon){modalIcon.style.color=m.iconColor;modalIcon.style.background=m.iconBg;}
-    if(modalName)modalName.innerText=state!=='offline'?name:t('settings_printer');
-    if(modalDesc)modalDesc.innerText=m.desc;
-    if(modalStat){modalStat.style.color=m.iconColor;modalStat.innerText=m.text;}
-    if(signal)signal.classList.toggle('hidden',state!=='ready');
-    if(btnConnect)btnConnect.classList.toggle('hidden',state==='ready');
-    if(btnReconn)btnReconn.classList.toggle('hidden',state!=='error');
-    if(btnActions)btnActions.classList.toggle('hidden',state!=='ready');
-    if(printLbl)printLbl.innerText=t('print_bluetooth');
-    if(printBtSt)printBtSt.innerText=state==='ready'?`(${name})`:'';
-    const arToggle=document.getElementById('printer-auto-reconnect');
-    if(arToggle&&arToggle.checked!==btPrefs.autoReconnect)arToggle.checked=btPrefs.autoReconnect;
+// ── Publik: Hubungkan ──────────────────────────────────────────────────
+async function btConnect() {
+    if (!navigator.bluetooth) {
+        showToast('Bluetooth tidak didukung browser ini');
+        return;
+    }
+    _setPrinterUI('connecting');
+    try {
+        const device = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: BT_KNOWN_SERVICES,
+        });
+        device.addEventListener('gattserverdisconnected', _onDisconnected);
+        await _doConnect(device);
+        showToast(`✓ "${device.name || 'Printer'}" ${t('toast_printer_connected')}`);
+    } catch(e) {
+        if (e.name !== 'NotFoundError') {
+            _setPrinterUI(btDevice ? 'error' : 'offline');
+            showToast(t('toast_bt_connect_fail') + (e.message || 'Bluetooth error'));
+        } else {
+            _setPrinterUI(btDevice ? 'error' : 'offline');
+        }
+    }
 }
-function savePrinterPrefs(){const arToggle=document.getElementById('printer-auto-reconnect');if(arToggle)btPrefs.autoReconnect=arToggle.checked;localStorage.setItem(BT_PREFS_KEY,JSON.stringify(btPrefs));}
-function openPrinterModal(){_setPrinterUI(btConnected?'ready':(btDevice?'error':'offline'),btDevice?.name||'');const ar=document.getElementById('printer-auto-reconnect');if(ar)ar.checked=btPrefs.autoReconnect;openModal('modal-printer');}
-async function _findWritableChar(server){let services=[];try{services=await server.getPrimaryServices();}catch(e){for(const uuid of BT_KNOWN_SERVICES){try{const s=await server.getPrimaryService(uuid);services=[s];break;}catch(e2){}}}for(const svc of services){let chars=[];try{chars=await svc.getCharacteristics();}catch(e){continue;}for(const ch of chars)if(ch.properties.write||ch.properties.writeWithoutResponse)return ch;}return null;}
-async function _doConnect(device,retryCount=0){_setPrinterUI('connecting',device.name);try{const server=await device.gatt.connect();const char=await _findWritableChar(server);if(!char)throw new Error("No writable char");btDevice=device;btCharacteristic=char;btConnected=true;btPrefs.lastName=device.name||btPrefs.lastName;savePrinterPrefs();_setPrinterUI('ready',device.name);return true;}catch(e){if(retryCount<BT_MAX_RETRIES-1){const wait=BT_RETRY_BASE_MS*Math.pow(2,retryCount);showToast(`${t('toast_retry')} (${retryCount+1}/${BT_MAX_RETRIES})...`);await new Promise(r=>setTimeout(r,wait));return _doConnect(device,retryCount+1);}btConnected=false;btCharacteristic=null;_setPrinterUI('error',device.name);throw e;}}
-function _onDisconnected(){btConnected=false;btCharacteristic=null;_setPrinterUI(btDevice?'error':'offline',btDevice?.name||'');showToast("⚠ "+t('toast_printer_disconnected'));if(btPrefs.autoReconnect&&btDevice){clearTimeout(btReconnectTimer);btReconnectTimer=setTimeout(async()=>{if(!btConnected){showToast("🔄 "+t('toast_auto_reconnect'));try{await _doConnect(btDevice);showToast("✓ "+t('toast_printer_reconnected'));}catch(e){}}},3000);}}
-async function btConnect(){_setPrinterUI('connecting');try{const device=await navigator.bluetooth.requestDevice({acceptAllDevices:true,optionalServices:BT_KNOWN_SERVICES});device.addEventListener('gattserverdisconnected',_onDisconnected);await _doConnect(device);showToast(`✓ "${device.name||'Printer'}" ${t('toast_printer_connected')}`);}catch(e){if(e.name!=='NotFoundError'){_setPrinterUI('error',btDevice?.name||'');showToast(t('toast_bt_connect_fail')+(e.message||'Bluetooth error'));}else _setPrinterUI(btDevice?'error':'offline');}}
-async function btReconnect(){if(!btDevice)return btConnect();_setPrinterUI('connecting',btDevice.name);try{await _doConnect(btDevice);showToast(`✓ "${btDevice.name||'Printer'}" ${t('toast_printer_reconnected')}`);}catch(e){showToast(t('toast_bt_connect_fail')+' '+(e.message||'Error'));}}
-function btDisconnect(){clearTimeout(btReconnectTimer);if(btDevice?.gatt?.connected)try{btDevice.gatt.disconnect();}catch(e){}btDevice=null;btCharacteristic=null;btConnected=false;btPrefs.lastName='';savePrinterPrefs();_setPrinterUI('offline');showToast(t('toast_printer_disconnected_ok'));}
-async function btAutoReconnectOnLoad(){if(!btPrefs.autoReconnect)return;if(!navigator.bluetooth||typeof navigator.bluetooth.getDevices!=='function')return;try{const devices=await navigator.bluetooth.getDevices();if(!devices||devices.length===0)return;let target=devices.find(d=>d.name===btPrefs.lastName)||devices[0];if(!target)return;target.addEventListener('gattserverdisconnected',_onDisconnected);_setPrinterUI('connecting',target.name);await _doConnect(target);showToast(`✓ ${t('toast_auto_connect')} "${target.name||'Printer'}"`);}catch(e){_setPrinterUI('offline');}}
-async function btWrite(data){if(!btCharacteristic)throw new Error(t('toast_printer_not_connected'));if(btDevice&&!btDevice.gatt.connected){showToast(t('toast_reconnecting'));await _doConnect(btDevice);if(!btCharacteristic)throw new Error(t('toast_reconnect_fail'));}const CHUNK=512;const useWithout=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithout)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
-async function btTestPrint(){const testData={id:'TEST-'+Date.now(),items:[{name:'Test Item',qty:1,price:10000,cost:0}],amount:10000,total_cost:0,pay_cash:10000,pay_qris:0,change:0,method:'Cash/QRIS',created_at:new Date().toISOString()};showToast(t('toast_sending_test'));try{const data=buildEscPosReceipt(testData);await btWrite(data);showToast("✓ "+t('toast_test_success'));beepScan();}catch(e){showToast(t('toast_test_fail')+(e.message||'Error'));_setPrinterUI('error',btDevice?.name||'');}}
-async function printBluetoothReceipt(){if(!lastReceiptData)return showToast(t('toast_no_receipt'));if(!btCharacteristic&&!btDevice){showToast(t('toast_printer_not_connected'));return;}if(!btConnected){showToast(t('toast_reconnecting'));try{await btReconnect();}catch(e){return showToast(t('toast_reconnect_fail'));}}showToast(t('toast_sending_print'));try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ "+t('toast_print_success'));beepScan();}catch(e){showToast(t('toast_print_fail')+(e.message||'Error'));btCharacteristic=null;btConnected=false;_setPrinterUI('error',btDevice?.name||'');}}
-function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());text(dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text(t('receipt_items'));lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);text(left+'.'.repeat(Math.max(1,32-left.length-right.length))+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const tl=t('total'),tr=formatIDRRaw(d.amount);text(tl+' '.repeat(Math.max(1,32-tl.length-tr.length))+tr);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text(t('rec_debt'));lf();}else{if(d.pay_cash>0){const l=t('rec_cash'),r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l=t('rec_qris'),r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cl=t('rec_change'),cr=formatIDRRaw(d.change);text(cl+' '.repeat(Math.max(1,32-cl.length-cr.length))+cr);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text(t('receipt_thank'));lf();text(t('receipt_no_return'));lf();text('* DheKasir v1.4 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
-function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 
-// ── Scroll Lock ────────────────────────────────────────────────────────
+// ── Publik: Sambung Ulang ──────────────────────────────────────────────
+async function btReconnect() {
+    if (!btDevice) return btConnect();
+    _setPrinterUI('connecting', btDevice.name);
+    try {
+        await _doConnect(btDevice);
+        showToast(`✓ "${btDevice.name || 'Printer'}" ${t('toast_printer_reconnected')}`);
+    } catch(e) {
+        showToast(t('toast_bt_connect_fail') + ' ' + (e.message || 'Error'));
+    }
+}
+
+// ── Publik: Putuskan ───────────────────────────────────────────────────
+function btDisconnect() {
+    clearTimeout(btReconnTimer);
+    clearInterval(btKeepAliveTimer);
+    if (btDevice?.gatt?.connected) try { btDevice.gatt.disconnect(); } catch(e) {}
+    btDevice         = null;
+    btCharacteristic = null;
+    btConnected      = false;
+    btPrefs.lastName = '';
+    savePrinterPrefs();
+    _setPrinterUI('offline');
+    showToast(t('toast_printer_disconnected_ok'));
+}
+
+// ── Auto-Reconnect Saat Load ───────────────────────────────────────────
+async function btAutoReconnectOnLoad() {
+    if (!btPrefs.autoReconnect) return;
+    if (!navigator.bluetooth || typeof navigator.bluetooth.getDevices !== 'function') return;
+    try {
+        const devices = await navigator.bluetooth.getDevices();
+        if (!devices || devices.length === 0) return;
+        // Pilih perangkat terakhir yang dipakai
+        const target = devices.find(d => d.name === btPrefs.lastName) || devices[0];
+        if (!target) return;
+        target.addEventListener('gattserverdisconnected', _onDisconnected);
+        _setPrinterUI('connecting', target.name);
+        await _doConnect(target);
+        showToast(`✓ ${t('toast_auto_connect')} "${target.name || 'Printer'}"`);
+    } catch(e) {
+        _setPrinterUI('offline');
+        console.warn('[BT] Auto-reconnect on load failed:', e.message);
+    }
+}
+
+// ── Write Data ke Printer ──────────────────────────────────────────────
+// Chunk 20 byte dengan delay untuk stabilitas
+async function btWrite(data) {
+    if (!btCharacteristic) throw new Error(t('toast_printer_not_connected'));
+
+    // Pastikan masih tersambung
+    if (btDevice && !btDevice.gatt.connected) {
+        showToast(t('toast_reconnecting'));
+        await _doConnect(btDevice);
+        if (!btCharacteristic) throw new Error(t('toast_reconnect_fail'));
+    }
+
+    const useWithout = btWriteMode === 'writeWithoutResponse';
+    const total      = data.length;
+
+    for (let offset = 0; offset < total; offset += WRITE_CHUNK) {
+        const chunk = data.slice(offset, offset + WRITE_CHUNK);
+        try {
+            if (useWithout) {
+                await btCharacteristic.writeValueWithoutResponse(chunk);
+            } else {
+                await btCharacteristic.writeValue(chunk);
+            }
+        } catch(e) {
+            // Fallback: coba metode lain
+            try {
+                if (useWithout) {
+                    await btCharacteristic.writeValue(chunk);
+                } else {
+                    await btCharacteristic.writeValueWithoutResponse(chunk);
+                }
+            } catch(e2) {
+                throw new Error(`Write failed at offset ${offset}: ${e2.message}`);
+            }
+        }
+        // Delay antar chunk untuk mencegah buffer overflow
+        if (total > WRITE_CHUNK) {
+            await new Promise(r => setTimeout(r, CHUNK_DELAY));
+        }
+    }
+}
+
+// ── Test Print ─────────────────────────────────────────────────────────
+async function btTestPrint() {
+    const testData = {
+        id: 'TEST-' + Date.now(),
+        items: [{ name: 'Test Item', qty: 1, price: 10000, cost: 0 }],
+        amount: 10000, total_cost: 0, pay_cash: 10000,
+        pay_qris: 0, change: 0, method: 'Cash/QRIS',
+        created_at: new Date().toISOString(),
+    };
+    showToast(t('toast_sending_test'));
+    try {
+        await btWrite(buildEscPosReceipt(testData));
+        showToast('✓ ' + t('toast_test_success'));
+        beepScan();
+    } catch(e) {
+        showToast(t('toast_test_fail') + (e.message || 'Error'));
+        btCharacteristic = null; btConnected = false;
+        _setPrinterUI('error', btDevice?.name || '');
+    }
+}
+
+// ── Print Struk ────────────────────────────────────────────────────────
+async function printBluetoothReceipt() {
+    if (!lastReceiptData) return showToast(t('toast_no_receipt'));
+
+    // Jika belum tersambung sama sekali
+    if (!btCharacteristic && !btDevice) {
+        return showToast(t('toast_printer_not_connected'));
+    }
+
+    // Jika ada device tapi terputus, coba reconnect dulu
+    if (!btConnected && btDevice) {
+        showToast(t('toast_reconnecting'));
+        try { await btReconnect(); } catch(e) { return showToast(t('toast_reconnect_fail')); }
+    }
+
+    showToast(t('toast_sending_print'));
+    try {
+        await btWrite(buildEscPosReceipt(lastReceiptData));
+        showToast('✓ ' + t('toast_print_success'));
+        beepScan();
+    } catch(e) {
+        showToast(t('toast_print_fail') + (e.message || 'Error'));
+        btCharacteristic = null; btConnected = false;
+        _setPrinterUI('error', btDevice?.name || '');
+    }
+}
+
+// ── Bangun Data ESC/POS ────────────────────────────────────────────────
+function buildEscPosReceipt(d) {
+    const ESC = 0x1B, GS = 0x1D, LF = 0x0A;
+    const bytes = [];
+
+    // Encode teks ke ASCII aman (karakter non-ASCII → '?')
+    function encodeText(s) {
+        const out = [];
+        for (let i = 0; i < s.length; i++) {
+            const c = s.charCodeAt(i);
+            if (c < 128) out.push(c);
+            else {
+                // Penggantian karakter umum
+                const map = {'Rp':'Rp','×':'x','→':'->','✓':'v','⚠':'!','★':'*','—':'-','–':'-'};
+                const repl = map[s[i]] || '?';
+                for (let j = 0; j < repl.length; j++) out.push(repl.charCodeAt(j));
+            }
+        }
+        return out;
+    }
+
+    function cmd(...args) { bytes.push(...args); }
+    function text(s) { bytes.push(...encodeText(s)); }
+    function lf(n = 1) { for (let i = 0; i < n; i++) bytes.push(LF); }
+
+    // Baris dengan padding kiri-kanan (lebar 32 karakter)
+    function line2col(left, right, width = 32) {
+        const lStr = String(left), rStr = String(right);
+        const pad  = Math.max(1, width - lStr.length - rStr.length);
+        return lStr + ' '.repeat(pad) + rStr;
+    }
+    function dashedLine(char = '-', len = 32) { return char.repeat(len); }
+
+    const sname = config.storeName  || 'DheKasir';
+    const saddr = config.storeAddress || '';
+    const sphone= config.storePhone  || '';
+
+    // INIT
+    cmd(ESC, 0x40);          // Initialize printer
+    cmd(ESC, 0x74, 0x00);    // Character code table: PC437
+
+    // === HEADER ===
+    cmd(ESC, 0x61, 0x01);    // Center align
+    cmd(ESC, 0x45, 0x01);    // Bold ON
+    cmd(GS,  0x21, 0x11);    // Double width + height
+    text(sname.toUpperCase());
+    lf();
+    cmd(GS,  0x21, 0x00);    // Normal size
+    cmd(ESC, 0x45, 0x00);    // Bold OFF
+    if (saddr && saddr !== '-') { text(saddr); lf(); }
+    if (sphone) { text('Telp: ' + sphone); lf(); }
+
+    const dt = new Date(d.created_at || Date.now());
+    const dtStr = dt.toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric' })
+                + ' ' + dt.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+    text(dtStr); lf();
+    text('No: ' + d.id); lf();
+
+    // === ITEMS ===
+    cmd(ESC, 0x61, 0x00);    // Left align
+    text(dashedLine('-', 32)); lf();
+    text(t('receipt_items')); lf();
+    text(dashedLine('-', 32)); lf();
+
+    (d.items || []).forEach(item => {
+        // Nama produk (potong jika terlalu panjang)
+        const nameStr = String(item.name).substring(0, 24);
+        text(nameStr); lf();
+        // Qty x Harga = Subtotal
+        const detail = line2col(
+            '  ' + item.qty + ' x ' + formatIDRRaw(item.price),
+            formatIDRRaw(item.price * item.qty),
+            32
+        );
+        text(detail); lf();
+    });
+
+    text(dashedLine('-', 32)); lf();
+
+    // === TOTAL ===
+    cmd(ESC, 0x45, 0x01);    // Bold ON
+    text(line2col(t('total'), formatIDRRaw(d.amount), 32)); lf();
+    cmd(ESC, 0x45, 0x00);    // Bold OFF
+
+    // === PEMBAYARAN ===
+    if (d.method === 'Hutang' || d.method === 'Debt' || d.method === 'Credit') {
+        text(dashedLine('=', 32)); lf();
+        text('!! HUTANG / CREDIT !!'); lf();
+        text(dashedLine('=', 32)); lf();
+    } else {
+        if (d.pay_cash > 0) {
+            text(line2col(t('rec_cash'), formatIDRRaw(d.pay_cash), 32)); lf();
+        }
+        if (d.pay_qris > 0) {
+            text(line2col(t('rec_qris'), formatIDRRaw(d.pay_qris), 32)); lf();
+        }
+        text(dashedLine('.', 32)); lf();
+        text(line2col(t('rec_change'), formatIDRRaw(d.change), 32)); lf();
+    }
+
+    // === FOOTER ===
+    cmd(ESC, 0x61, 0x01);    // Center align
+    text(dashedLine('-', 32)); lf();
+    text(t('receipt_thank')); lf();
+    text(t('receipt_no_return')); lf(1);
+    text('* DheKasir v1.5 *'); lf();
+    text(dashedLine('-', 32)); lf();
+
+    // Feed & Full cut
+    lf(4);                   // Feed 4 baris
+    cmd(GS, 0x56, 0x42, 0x00); // Full cut (GS V B 0)
+
+    return new Uint8Array(bytes);
+}
+
+function formatIDRRaw(n) { return 'Rp' + Number(n || 0).toLocaleString('id-ID'); }
+
+// ══════════════════════════════════════════════════════════════════════
+// END BLUETOOTH SECTION
+// ══════════════════════════════════════════════════════════════════════
+
+// ── Balance ────────────────────────────────────────────────────────────
+let balanceHidden = localStorage.getItem('dk_balance_hidden') === '1';
+function applyBalanceUI(){const hero=document.getElementById('dash-hero-wrap'),icon=document.getElementById('balance-eye-icon'),label=document.getElementById('balance-toggle-label'),btn=document.getElementById('balance-toggle-btn');if(!hero)return;if(balanceHidden){hero.classList.add('balance-hidden');if(icon)icon.className='fa-solid fa-eye-slash btn-eye-icon';if(label)label.textContent=t('show');if(btn)btn.setAttribute('aria-label',t('show'));}else{hero.classList.remove('balance-hidden');if(icon)icon.className='fa-solid fa-eye btn-eye-icon';if(label)label.textContent=t('hide');if(btn)btn.setAttribute('aria-label',t('hide'));}}
+function toggleBalanceVisibility(){balanceHidden=!balanceHidden;localStorage.setItem('dk_balance_hidden',balanceHidden?'1':'0');const btn=document.getElementById('balance-toggle-btn');if(btn){btn.classList.add('hiding');setTimeout(()=>btn.classList.remove('hiding'),350);}applyBalanceUI();showToast(balanceHidden?'🙈 '+t('hide'):'👁 '+t('show'));}
+
+// ── Scroll Lock ─────────────────────────────────────────────────────────
 let _sidebarScrollY=0;
 function _lockSidebarScroll(){_sidebarScrollY=window.scrollY;document.body.classList.add('sidebar-open');document.body.style.top=`-${_sidebarScrollY}px`;}
 function _unlockSidebarScroll(){document.body.classList.remove('sidebar-open');document.body.style.top='';window.scrollTo(0,_sidebarScrollY);}
@@ -1902,18 +1617,18 @@ let _modalOpenCount=0,_scrollYBeforeLock=0;
 function _lockBodyScroll(){_modalOpenCount++;if(_modalOpenCount===1){_scrollYBeforeLock=window.scrollY;document.body.classList.add('modal-open');document.body.style.top=`-${_scrollYBeforeLock}px`;}}
 function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_modalOpenCount===0){document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,_scrollYBeforeLock);}}
 
-// ── Sidebar ──────────────────────────────────────────────────────────────
+// ── Sidebar ────────────────────────────────────────────────────────────
 function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open'))closeSidebar();else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');_lockSidebarScroll();}}
 function closeSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');sb.classList.remove('open');ov.classList.remove('open');btn.classList.remove('open');_unlockSidebarScroll();}
 
-// ── Audio ────────────────────────────────────────────────────────────
+// ── Audio ──────────────────────────────────────────────────────────────
 let audioCtx=null;
 function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
 function beepScan(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='square';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(1100,ctx.currentTime+0.06);gain.gain.setValueAtTime(0.18,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.1);}catch(e){}}
 function beepError(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sawtooth';osc.frequency.setValueAtTime(350,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(200,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.22);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.22);}catch(e){}}
 function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,1046.50];notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime);const t2=ctx.currentTime+i*0.11;gain.gain.setValueAtTime(0,t2);gain.gain.linearRampToValueAtTime(0.22,t2+0.02);gain.gain.exponentialRampToValueAtTime(0.001,t2+0.18);osc.start(t2);osc.stop(t2+0.2);});}catch(e){}}
 
-// ── Helpers ─────────────────────────────────────────────────────────────
+// ── Helpers ────────────────────────────────────────────────────────────
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',2500);}
@@ -1921,18 +1636,8 @@ function openModal(id){const el=document.getElementById(id);if(el&&el.classList.
 function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
-// ── Tab Navigation ──────────────────────────────────────────────────────
-function switchTab(tab){
-    document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
-    const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-    const navBtn=document.getElementById(`n-${tab}`);if(navBtn)navBtn.classList.add('active');
-    document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
-    const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');
-    localStorage.setItem('dk_active_tab',tab);
-    if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
-    if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
-}
+// ── Tab Navigation ─────────────────────────────────────────────────────
+function switchTab(tab){document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));const navBtn=document.getElementById(`n-${tab}`);if(navBtn)navBtn.classList.add('active');document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');localStorage.setItem('dk_active_tab',tab);if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();}
 
 // ── Categories ─────────────────────────────────────────────────────────
 function renderCategoryOptions(){const s=document.getElementById('p-category');if(!s)return;s.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<option value="${c}">${c}</option>`).join('');}
@@ -1944,354 +1649,82 @@ function addCategory(){const input=document.getElementById('new-cat-name');const
 function deleteCategory(name){categories=categories.filter(c=>c!==name);saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
 function saveCategories(){localStorage.setItem('dk_categories',JSON.stringify(categories));}
 
-// ── POS ─────────────────────────────────────────────────────────────────
-function renderPos(){
-    const q=(document.getElementById('pos-search')||{value:''}).value.toLowerCase();
-    const grid=document.getElementById('pos-grid');if(!grid)return;
-    const filtered=items.filter(i=>(i.name.toLowerCase().includes(q)||String(i.barcode).includes(q))&&(activePosCategory==='Semua'||i.category===activePosCategory));
-    grid.innerHTML=filtered.map(i=>{
-        const inCart=cart.find(c=>c.id==i.id);
-        return `<div onclick="${i.stock>0?`addToCart(${i.id})`:''}" class="card p-4 relative active:scale-95 transition-all ${i.stock<=0?'opacity-40 grayscale':'cursor-pointer'}">
-            ${inCart?`<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>`:''}
-            ${i.stock<=config.minStock&&i.stock>0?`<div class="absolute top-2 left-2 w-5 h-5 bg-amber-400 text-white rounded-full flex items-center justify-center text-[8px] font-black">!</div>`:''}
-            <div class="w-full aspect-square rounded-2xl flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div>
-            <p class="text-[11px] font-bold line-clamp-1">${i.name}</p>
-            <p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p>
-            <p class="text-[8px] font-black ${i.stock<=0?'text-red-400':i.stock<=config.minStock?'text-amber-500':'text-muted'} mt-1">${t('current_stock')}: ${i.stock}</p>
-        </div>`;
-    }).join('')||`<div class="col-span-2 text-center py-12 opacity-30 text-sm">${t('no_data')}</div>`;
-}
+// ── POS ────────────────────────────────────────────────────────────────
+function renderPos(){const q=(document.getElementById('pos-search')||{value:''}).value.toLowerCase();const grid=document.getElementById('pos-grid');if(!grid)return;const filtered=items.filter(i=>(i.name.toLowerCase().includes(q)||String(i.barcode).includes(q))&&(activePosCategory==='Semua'||i.category===activePosCategory));grid.innerHTML=filtered.map(i=>{const inCart=cart.find(c=>c.id==i.id);return`<div onclick="${i.stock>0?`addToCart(${i.id})`:''}" class="card p-4 relative active:scale-95 transition-all ${i.stock<=0?'opacity-40 grayscale':'cursor-pointer'}">${inCart?`<div class="absolute -top-1 -right-1 w-6 h-6 bg-indigo-600 text-white rounded-full flex items-center justify-center text-[10px] font-black shadow-lg animate-pop z-10">${inCart.qty}</div>`:''}<div class="w-full aspect-square rounded-2xl flex items-center justify-center text-3xl mb-3 text-indigo-200 surface">📦</div><p class="text-[11px] font-bold line-clamp-1">${i.name}</p><p class="text-[13px] font-black text-indigo-600">${formatIDR(i.price)}</p><p class="text-[8px] font-black ${i.stock<=0?'text-red-400':i.stock<=config.minStock?'text-amber-500':'text-muted'} mt-1">${t('current_stock')}: ${i.stock}</p></div>`;}).join('')||`<div class="col-span-2 text-center py-12 opacity-30 text-sm">${t('no_data')}</div>`;}
 function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast(t('toast_out_of_stock'));}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();}
 function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast(t('toast_max_stock'));}if(cart[idx].qty<=0)cart.splice(idx,1);updateCartUI();renderCartDetails();renderPos();}
 function updateCartUI(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const count=cart.reduce((a,b)=>a+b.qty,0);document.getElementById('cart-count').innerText=count;document.getElementById('cart-total').innerText=formatIDR(total);document.getElementById('cart-float').classList.toggle('hidden',cart.length===0);}
 function openCartDetails(){renderCartDetails();openModal('modal-cart-details');}
-function renderCartDetails(){
-    const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
-    document.getElementById('cart-detail-total').innerText=formatIDR(total);
-    document.getElementById('cart-items-list').innerHTML=cart.map(c=>`
-        <div class="flex items-center justify-between p-4 rounded-2xl surface">
-            <div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-muted">${formatIDR(c.price)}</p></div>
-            <div class="flex items-center gap-3">
-                <button onclick="updateCartItem(${c.id},-1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-rose-500 shadow-sm card"><i class="fa-solid fa-minus text-xs"></i></button>
-                <span class="text-sm font-black w-4 text-center">${c.qty}</span>
-                <button onclick="updateCartItem(${c.id},1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm card"><i class="fa-solid fa-plus text-xs"></i></button>
-            </div>
-        </div>`).join('');
-    if(cart.length===0)closeModal('modal-cart-details');
-}
+function renderCartDetails(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('cart-detail-total').innerText=formatIDR(total);document.getElementById('cart-items-list').innerHTML=cart.map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><div class="flex-1"><p class="text-xs font-black">${c.name}</p><p class="text-[10px] text-muted">${formatIDR(c.price)}</p></div><div class="flex items-center gap-3"><button onclick="updateCartItem(${c.id},-1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-rose-500 shadow-sm card"><i class="fa-solid fa-minus text-xs"></i></button><span class="text-sm font-black w-4 text-center">${c.qty}</span><button onclick="updateCartItem(${c.id},1)" class="w-8 h-8 rounded-xl flex items-center justify-center text-emerald-500 shadow-sm card"><i class="fa-solid fa-plus text-xs"></i></button></div></div>`).join('');if(cart.length===0)closeModal('modal-cart-details');}
 function resetCart(){cart=[];updateCartUI();renderPos();}
 
-// ── Checkout ─────────────────────────────────────────────────────────────
+// ── Checkout ───────────────────────────────────────────────────────────
 function openCheckout(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
 function setPayMethod(m){payMethod=m;const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt'),ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(bd){bd.style.background=m==='debt'?'var(--card)':'transparent';bd.style.color=m==='debt'?'#ef4444':'var(--text-muted)';bd.style.boxShadow=m==='debt'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(ac)ac.classList.toggle('hidden',m!=='cash');if(ad)ad.classList.toggle('hidden',m!=='debt');calcChange();}
 function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
-async function finishCheckout(){
-    const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
-    let cash=Number(document.getElementById('pay-amt-cash').value)||0;
-    let qris=Number(document.getElementById('pay-amt-qris').value)||0;
-    let change=Math.max(0,(cash+qris)-total);
-    if(payMethod==='cash'&&(cash+qris)<total){beepError();return showToast(t('toast_insufficient_money'));}
-    if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer){beepError();return showToast(t('toast_fill_customer_name'));}cash=0;qris=0;change=0;}
-    const tid="T-"+Date.now();
-    const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString()};
-    if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}
-    for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
-    logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();await syncCloud(log);
-}
+async function finishCheckout(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);let cash=Number(document.getElementById('pay-amt-cash').value)||0;let qris=Number(document.getElementById('pay-amt-qris').value)||0;let change=Math.max(0,(cash+qris)-total);if(payMethod==='cash'&&(cash+qris)<total){beepError();return showToast(t('toast_insufficient_money'));}if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer){beepError();return showToast(t('toast_fill_customer_name'));}cash=0;qris=0;change=0;}const tid="T-"+Date.now();const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString()};if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();await syncCloud(log);}
 
-// ── Receipt ──────────────────────────────────────────────────────────────
-function showReceipt(d){
-    lastReceiptData=d;
-    const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';
-    const logoBox=document.getElementById('rec-logo-box');
-    if(config.logo)logoBox.innerHTML=`<img src="${config.logo}" alt="Logo">`;
-    else logoBox.innerHTML=`<div class="rec-logo-placeholder">${(sname[0]||'D').toUpperCase()}</div>`;
-    document.getElementById('rec-store-name').innerText=sname;
-    document.getElementById('rec-store-addr').innerText=saddr;
-    document.getElementById('rec-store-addr').style.display=saddr&&saddr!=='-'?'':'none';
-    document.getElementById('rec-store-phone').innerText=sphone?'☎ '+sphone:'';
-    document.getElementById('rec-store-phone').style.display=sphone?'':'none';
-    document.getElementById('rec-date').innerText=new Date(d.created_at||Date.now()).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});
-    document.getElementById('rec-id').innerText='No: '+d.id;
-    const itemsTitle=document.getElementById('rec-items-title');if(itemsTitle)itemsTitle.innerText=t('receipt_items');
-    const totalLabel=document.getElementById('rec-total-label');if(totalLabel)totalLabel.innerText=t('total');
-    const changeLabel=document.getElementById('rec-change-label');if(changeLabel)changeLabel.innerText=t('rec_change');
-    document.getElementById('rec-items').innerHTML=(d.items||[]).map(item=>`
-        <div class="rec-item-row"><span class="rec-item-name">${item.name}</span><span class="rec-item-subtotal">${formatIDR(item.price*item.qty)}</span></div>
-        <div class="rec-item-detail">${item.qty} × ${formatIDR(item.price)}</div>`).join('');
-    document.getElementById('rec-total').innerText=formatIDR(d.amount);
-    const pd=document.getElementById('rec-payment-details');
-    if(d.method==='Hutang'||d.method==='Debt'){pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">${t('rec_debt')}</span></div>`;}
-    else{let rows='';if(d.pay_cash>0)rows+=`<div class="rec-pay-row"><span>${t('rec_cash')}</span><span>${formatIDR(d.pay_cash)}</span></div>`;if(d.pay_qris>0)rows+=`<div class="rec-pay-row"><span>${t('rec_qris')}</span><span>${formatIDR(d.pay_qris)}</span></div>`;pd.innerHTML=rows;}
-    document.getElementById('rec-change').innerText=formatIDR(d.change);
-    const footer=document.getElementById('rec-footer');
-    if(footer)footer.innerHTML=`<p>${t('receipt_thank')}</p><p style="margin-top:3px;">${t('receipt_no_return')}</p><p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.4 ★</p>`;
-    const printBtSt=document.getElementById('print-bt-status');
-    if(printBtSt)printBtSt.innerText=btConnected?(btDevice?.name?`(${btDevice.name})`:'(Ready)'):'(Offline)';
-    openModal('modal-receipt');
-}
+// ── Receipt ────────────────────────────────────────────────────────────
+function showReceipt(d){lastReceiptData=d;const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';const logoBox=document.getElementById('rec-logo-box');if(config.logo)logoBox.innerHTML=`<img src="${config.logo}" alt="Logo">`;else logoBox.innerHTML=`<div class="rec-logo-placeholder">${(sname[0]||'D').toUpperCase()}</div>`;document.getElementById('rec-store-name').innerText=sname;document.getElementById('rec-store-addr').innerText=saddr;document.getElementById('rec-store-addr').style.display=saddr&&saddr!=='-'?'':'none';document.getElementById('rec-store-phone').innerText=sphone?'☎ '+sphone:'';document.getElementById('rec-store-phone').style.display=sphone?'':'none';document.getElementById('rec-date').innerText=new Date(d.created_at||Date.now()).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'});document.getElementById('rec-id').innerText='No: '+d.id;const itemsTitle=document.getElementById('rec-items-title');if(itemsTitle)itemsTitle.innerText=t('receipt_items');const totalLabel=document.getElementById('rec-total-label');if(totalLabel)totalLabel.innerText=t('total');const changeLabel=document.getElementById('rec-change-label');if(changeLabel)changeLabel.innerText=t('rec_change');document.getElementById('rec-items').innerHTML=(d.items||[]).map(item=>`<div class="rec-item-row"><span class="rec-item-name">${item.name}</span><span class="rec-item-subtotal">${formatIDR(item.price*item.qty)}</span></div><div class="rec-item-detail">${item.qty} × ${formatIDR(item.price)}</div>`).join('');document.getElementById('rec-total').innerText=formatIDR(d.amount);const pd=document.getElementById('rec-payment-details');if(d.method==='Hutang'||d.method==='Debt'){pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">${t('rec_debt')}</span></div>`;}else{let rows='';if(d.pay_cash>0)rows+=`<div class="rec-pay-row"><span>${t('rec_cash')}</span><span>${formatIDR(d.pay_cash)}</span></div>`;if(d.pay_qris>0)rows+=`<div class="rec-pay-row"><span>${t('rec_qris')}</span><span>${formatIDR(d.pay_qris)}</span></div>`;pd.innerHTML=rows;}document.getElementById('rec-change').innerText=formatIDR(d.change);const footer=document.getElementById('rec-footer');if(footer)footer.innerHTML=`<p>${t('receipt_thank')}</p><p style="margin-top:3px;">${t('receipt_no_return')}</p><p style="margin-top:6px;font-size:8px;letter-spacing:0.04em;">★ DheKasir v1.5 ★</p>`;const pbs=document.getElementById('print-bt-status');if(pbs)pbs.innerText=btConnected?(btDevice?.name?`(${btDevice.name})`:'(Ready)'):'(Offline)';openModal('modal-receipt');}
 
-// ── Scanner ──────────────────────────────────────────────────────────────
-async function openScanner(mode='cart'){
-    if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast(t('toast_https_required'));
-    flashOn=false;flashTrack=null;
-    const fb=document.getElementById('flash-btn');if(fb){fb.disabled=true;fb.classList.remove('flash-on');}
-    const scannerEl=document.getElementById('modal-scanner');
-    if(scannerEl&&scannerEl.classList.contains('hidden')){scannerEl.classList.remove('hidden');_lockBodyScroll();}
-    if(!html5QrCode)html5QrCode=new Html5Qrcode("reader");
-    html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{
-        if(navigator.vibrate)navigator.vibrate(100);
-        if(mode==='sku'){document.getElementById('p-barcode').value=text;beepScan();showToast(t('toast_sku_filled'));closeScanner();return;}
-        if(mode==='stock-product'){document.getElementById('sm-product').value=text;updateSmCurrentStock();return;}
-        const now=Date.now();
-        if(text===lastScannedCode&&(now-lastScannedTime)<SCAN_COOLDOWN)return;
-        const found=items.find(i=>String(i.barcode)===String(text));
-        if(found&&found.stock>0){addToCart(found.id);lastScannedCode=text;lastScannedTime=now;beepScan();const sfb=document.getElementById('scan-feedback');sfb.innerText='+ '+found.name;sfb.classList.remove('hidden');setTimeout(()=>sfb.classList.add('hidden'),2000);}
-        else if(found){beepError();showToast(t('toast_out_of_stock'));}
-        else{beepError();showToast(t('toast_product_not_found'));}
-    }).then(()=>{
-        try{const video=document.querySelector('#reader video');if(video&&video.srcObject){const tracks=video.srcObject.getVideoTracks();if(tracks.length>0){const track=tracks[0];const caps=(typeof track.getCapabilities==='function')?track.getCapabilities():{};if(caps.torch){flashTrack=track;if(fb)fb.disabled=false;}}}}catch(e){}
-    }).catch(()=>{showToast(t('toast_camera_fail'));closeScanner();});
-}
+// ── Scanner ────────────────────────────────────────────────────────────
+async function openScanner(mode='cart'){if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast(t('toast_https_required'));flashOn=false;flashTrack=null;const fb=document.getElementById('flash-btn');if(fb){fb.disabled=true;fb.classList.remove('flash-on');}const scannerEl=document.getElementById('modal-scanner');if(scannerEl&&scannerEl.classList.contains('hidden')){scannerEl.classList.remove('hidden');_lockBodyScroll();}if(!html5QrCode)html5QrCode=new Html5Qrcode("reader");html5QrCode.start({facingMode:"environment"},{fps:24,qrbox:{width:280,height:160}},(text)=>{if(navigator.vibrate)navigator.vibrate(100);if(mode==='sku'){document.getElementById('p-barcode').value=text;beepScan();showToast(t('toast_sku_filled'));closeScanner();return;}if(mode==='stock-product'){document.getElementById('sm-product').value=text;updateSmCurrentStock();return;}const now=Date.now();if(text===lastScannedCode&&(now-lastScannedTime)<SCAN_COOLDOWN)return;const found=items.find(i=>String(i.barcode)===String(text));if(found&&found.stock>0){addToCart(found.id);lastScannedCode=text;lastScannedTime=now;beepScan();const sfb=document.getElementById('scan-feedback');sfb.innerText='+ '+found.name;sfb.classList.remove('hidden');setTimeout(()=>sfb.classList.add('hidden'),2000);}else if(found){beepError();showToast(t('toast_out_of_stock'));}else{beepError();showToast(t('toast_product_not_found'));}}).then(()=>{try{const video=document.querySelector('#reader video');if(video&&video.srcObject){const tracks=video.srcObject.getVideoTracks();if(tracks.length>0){const track=tracks[0];const caps=(typeof track.getCapabilities==='function')?track.getCapabilities():{};if(caps.torch){flashTrack=track;if(fb)fb.disabled=false;}}}}catch(e){}}).catch(()=>{showToast(t('toast_camera_fail'));closeScanner();});}
 async function closeScanner(){if(flashTrack&&flashOn)try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}flashOn=false;flashTrack=null;if(html5QrCode)try{await html5QrCode.stop();}catch(e){}const scannerEl=document.getElementById('modal-scanner');if(scannerEl&&!scannerEl.classList.contains('hidden')){scannerEl.classList.add('hidden');_unlockBodyScroll();}}
 async function toggleFlash(){if(!flashTrack)return showToast(t('flash')+' N/A');try{flashOn=!flashOn;await flashTrack.applyConstraints({advanced:[{torch:flashOn}]});const btn=document.getElementById('flash-btn');if(btn)btn.classList.toggle('flash-on',flashOn);showToast(flashOn?"⚡ "+t('flash')+" ON":t('flash')+" OFF");}catch(e){flashOn=!flashOn;showToast(t('flash')+" Error");}}
 
-// ── Home ─────────────────────────────────────────────────────────────────
-function renderHome(){
-    let profit=0,omzet=0,debtT=0,best={};
-    const hourMap=new Array(24).fill(0);
-    const today=new Date().toISOString().split('T')[0];
-    logs.forEach(l=>{const a=rawIDR(l.amount);profit+=(a-rawIDR(l.total_cost));if(l.date===today)omzet+=a;if(l.created_at)hourMap[new Date(l.created_at).getHours()]++;if(l.items)l.items.forEach(it=>best[it.name]=(best[it.name]||0)+it.qty);});
-    debts.forEach(d=>{if(d.status!==t('debt_paid_status'))debtT+=rawIDR(d.balance);});
-    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('dash-profit',formatIDR(profit));set('dash-omzet',formatIDR(omzet));set('dash-debt',formatIDR(debtT));
-    const lowCount=items.filter(i=>i.stock<config.minStock).length;
-    set('dash-low-stock',lowCount+' '+t('items_low'));
-    const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,3);
-    const elTop=document.getElementById('top-products');
-    if(elTop)elTop.innerHTML=top.map(([n,q])=>`<div class="flex justify-between items-center p-3 rounded-2xl font-bold text-[10px] surface"><span>${n}</span><span class="text-indigo-500">${q} ${t('pcs')}</span></div>`).join('')||`<p class="text-center opacity-30 text-[10px] py-4">${t('no_data')}</p>`;
-    initChart(hourMap);
-    applyBalanceUI();
-}
+// ── Home ───────────────────────────────────────────────────────────────
+function renderHome(){let profit=0,omzet=0,debtT=0,best={};const hourMap=new Array(24).fill(0);const today=new Date().toISOString().split('T')[0];logs.forEach(l=>{const a=rawIDR(l.amount);profit+=(a-rawIDR(l.total_cost));if(l.date===today)omzet+=a;if(l.created_at)hourMap[new Date(l.created_at).getHours()]++;if(l.items)l.items.forEach(it=>best[it.name]=(best[it.name]||0)+it.qty);});debts.forEach(d=>{if(d.status!==t('debt_paid_status'))debtT+=rawIDR(d.balance);});const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};set('dash-profit',formatIDR(profit));set('dash-omzet',formatIDR(omzet));set('dash-debt',formatIDR(debtT));const lowCount=items.filter(i=>i.stock<config.minStock).length;set('dash-low-stock',lowCount+' '+t('items_low'));const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,3);const elTop=document.getElementById('top-products');if(elTop)elTop.innerHTML=top.map(([n,q])=>`<div class="flex justify-between items-center p-3 rounded-2xl font-bold text-[10px] surface"><span>${n}</span><span class="text-indigo-500">${q} ${t('pcs')}</span></div>`).join('')||`<p class="text-center opacity-30 text-[10px] py-4">${t('no_data')}</p>`;initChart(hourMap);applyBalanceUI();}
 function initChart(data){const canvas=document.getElementById('hourChart');if(!canvas)return;if(mainChart)mainChart.destroy();const isDark=document.body.classList.contains('dark');mainChart=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:Array.from({length:24},(_,i)=>i+':00'),datasets:[{data,backgroundColor:'#4f46e5',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{display:false},x:{grid:{display:false},ticks:{font:{size:7},color:isDark?'#556070':'#8892aa'}}}}});}
 
-// ── Stock Management ──────────────────────────────────────────────────────
-function getStockStatus(stock){if(stock<=0)return 'critical';if(stock<=config.minStock)return 'low';return 'ok';}
+// ── Stock ──────────────────────────────────────────────────────────────
+function getStockStatus(stock){if(stock<=0)return'critical';if(stock<=config.minStock)return'low';return'ok';}
 function addStockHistory(productId,productName,type,qty,note=''){const entry={id:'SH-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),productId,productName,type,qty,note:note||'',date:new Date().toISOString(),operator:'Admin'};stockHistory.unshift(entry);if(stockHistory.length>200)stockHistory=stockHistory.slice(0,200);return entry;}
-function checkStockAlerts(){
-    const critical=items.filter(i=>i.stock<=0),low=items.filter(i=>i.stock>0&&i.stock<=config.minStock),total=critical.length+low.length;
-    const dot=document.getElementById('nav-stock-dot');if(dot)dot.classList.toggle('hidden',total===0);
-    const badge=document.getElementById('notif-count-badge'),sbBadge=document.getElementById('sb-stock-badge');
-    if(badge){badge.innerText=total;badge.style.display=total>0?'flex':'none';}
-    if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}
-    return{critical,low};
-}
-function openNotifPanel(){
-    const{critical,low}=checkStockAlerts();
-    const list=document.getElementById('notif-list');let html='';
-    if(critical.length===0&&low.length===0){html=`<div class="text-center py-10"><div class="text-4xl mb-3">✅</div><p class="text-sm font-bold text-muted">${t('notif_all_safe')}</p></div>`;}
-    critical.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-red-50 rounded-2xl border border-red-200"><div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-red-700">${i.name}</p><p class="text-[9px] text-red-500 uppercase font-bold">${t('notif_empty_stock')} • ${i.stock} ${t('notif_unit')}</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-red-600 bg-red-100 px-3 py-1.5 rounded-xl uppercase">${t('notif_fill')}</button></div>`;});
-    low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">${t('notif_low_stock')} • ${t('notif_remaining')} ${i.stock} ${t('notif_unit')}</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase">${t('notif_fill')}</button></div>`;});
-    list.innerHTML=html;openModal('modal-notif');
-}
-function renderStockTab(){
-    const minS=config.minStock,critical=items.filter(i=>i.stock<=0).length,low=items.filter(i=>i.stock>0&&i.stock<=minS).length,total=items.length;
-    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('stat-total-products',total);set('stat-low-stock',low);set('stat-empty-stock',critical);
-    const alertBadge=document.getElementById('stock-alert-badge');if(alertBadge){const n=critical+low;if(n>0){alertBadge.innerText=n+' ⚠';alertBadge.classList.remove('hidden');}else alertBadge.classList.add('hidden');}
-    renderStockList();renderStockHistory();checkStockAlerts();
-}
-function renderStockList(){
-    const filter=document.getElementById('stock-filter')?.value||'all';
-    const list=document.getElementById('stock-product-list');if(!list)return;
-    let filtered=items.filter(i=>{const s=getStockStatus(i.stock);return filter==='all'||s===filter;});
-    filtered.sort((a,b)=>a.stock-b.stock);
-    if(filtered.length===0){list.innerHTML=`<p class="text-center opacity-30 py-8 text-sm">${t('no_data')}</p>`;return;}
-    list.innerHTML=filtered.map(i=>{
-        const s=getStockStatus(i.stock);
-        const badgeClass=s==='critical'?'badge-critical':s==='low'?'badge-low':'badge-ok';
-        const badgeText=s==='critical'?t('badge_empty'):s==='low'?t('badge_low'):t('badge_ok');
-        const barPct=Math.min(100,Math.round((i.stock/Math.max(1,config.minStock*4))*100));
-        const barColor=s==='critical'?'bg-red-500':s==='low'?'bg-amber-400':'bg-emerald-400';
-        return `<div class="card p-5 space-y-3 shadow-sm">
-            <div class="flex justify-between items-start">
-                <div class="flex-1"><p class="text-xs font-black">${i.name}</p><p class="text-[9px] uppercase text-muted">${i.category||'Umum'} • ${i.barcode||'no-barcode'}</p></div>
-                <span class="stock-badge ${badgeClass}">${badgeText}</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <div class="flex-1 h-2 rounded-full overflow-hidden surface"><div class="${barColor} h-full rounded-full transition-all" style="width:${barPct}%"></div></div>
-                <span class="text-sm font-black ${s==='critical'?'text-red-500':s==='low'?'text-amber-500':'text-emerald-600'}">${i.stock}</span>
-                <span class="text-[9px] text-muted">${t('notif_unit')}</span>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="openStockModal('in','${i.id}')" class="flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase border text-emerald-600" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2)"><i class="fa-solid fa-plus mr-1"></i> ${t('stock_in')}</button>
-                <button onclick="openStockModal('out','${i.id}')" class="flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase border text-rose-600" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2)"><i class="fa-solid fa-minus mr-1"></i> ${t('stock_out')}</button>
-            </div>
-        </div>`;
-    }).join('');
-}
-function renderStockHistory(){
-    const list=document.getElementById('stock-history-list');if(!list)return;
-    if(stockHistory.length===0){list.innerHTML=`<p class="text-center opacity-30 py-6 text-sm">${t('no_data')}</p>`;return;}
-    list.innerHTML=stockHistory.slice(0,30).map(h=>{
-        const isIn=h.type==='in',isOpname=h.type==='opname';
-        const icon=isOpname?'clipboard-check':isIn?'arrow-down':'arrow-up';
-        const colorClass=isOpname?'text-indigo-500':isIn?'text-emerald-500':'text-rose-500';
-        const bgClass=isOpname?'rgba(99,102,241,0.1)':isIn?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)';
-        const badge=isOpname?'badge-opname':isIn?'badge-in':'badge-out';
-        const badgeText=isOpname?t('badge_opname'):isIn?t('badge_in'):t('badge_out');
-        return `<div class="flex items-center gap-3 p-4 card shadow-sm">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${colorClass}" style="background:${bgClass}"><i class="fa-solid fa-${icon} text-xs"></i></div>
-            <div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${h.productName}</p><p class="text-[8px] uppercase truncate text-muted">${h.note||'-'} • ${new Date(h.date).toLocaleDateString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</p></div>
-            <div class="text-right shrink-0"><span class="stock-badge ${badge}">${badgeText}</span><p class="text-xs font-black mt-1">${isIn||isOpname?'+':'-'}${h.qty}</p></div>
-        </div>`;
-    }).join('');
-}
+function checkStockAlerts(){const critical=items.filter(i=>i.stock<=0),low=items.filter(i=>i.stock>0&&i.stock<=config.minStock),total=critical.length+low.length;const dot=document.getElementById('nav-stock-dot');if(dot)dot.classList.toggle('hidden',total===0);const badge=document.getElementById('notif-count-badge'),sbBadge=document.getElementById('sb-stock-badge');if(badge){badge.innerText=total;badge.style.display=total>0?'flex':'none';}if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}return{critical,low};}
+function openNotifPanel(){const{critical,low}=checkStockAlerts();const list=document.getElementById('notif-list');let html='';if(critical.length===0&&low.length===0){html=`<div class="text-center py-10"><div class="text-4xl mb-3">✅</div><p class="text-sm font-bold text-muted">${t('notif_all_safe')}</p></div>`;}critical.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-red-50 rounded-2xl border border-red-200"><div class="w-10 h-10 bg-red-100 text-red-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-circle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-red-700">${i.name}</p><p class="text-[9px] text-red-500 uppercase font-bold">${t('notif_empty_stock')} • ${i.stock} ${t('notif_unit')}</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-red-600 bg-red-100 px-3 py-1.5 rounded-xl uppercase">${t('notif_fill')}</button></div>`;});low.forEach(i=>{html+=`<div class="flex items-center gap-4 p-4 bg-amber-50 rounded-2xl border border-amber-200"><div class="w-10 h-10 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center shrink-0"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="flex-1"><p class="text-xs font-black text-amber-700">${i.name}</p><p class="text-[9px] text-amber-500 uppercase font-bold">${t('notif_low_stock')} • ${t('notif_remaining')} ${i.stock} ${t('notif_unit')}</p></div><button onclick="openStockModal('in','${i.id}')" class="text-[9px] font-black text-amber-600 bg-amber-100 px-3 py-1.5 rounded-xl uppercase">${t('notif_fill')}</button></div>`;});list.innerHTML=html;openModal('modal-notif');}
+function renderStockTab(){const minS=config.minStock,critical=items.filter(i=>i.stock<=0).length,low=items.filter(i=>i.stock>0&&i.stock<=minS).length,total=items.length;const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};set('stat-total-products',total);set('stat-low-stock',low);set('stat-empty-stock',critical);const alertBadge=document.getElementById('stock-alert-badge');if(alertBadge){const n=critical+low;if(n>0){alertBadge.innerText=n+' ⚠';alertBadge.classList.remove('hidden');}else alertBadge.classList.add('hidden');}renderStockList();renderStockHistory();checkStockAlerts();}
+function renderStockList(){const filter=document.getElementById('stock-filter')?.value||'all';const list=document.getElementById('stock-product-list');if(!list)return;let filtered=items.filter(i=>{const s=getStockStatus(i.stock);return filter==='all'||s===filter;});filtered.sort((a,b)=>a.stock-b.stock);if(filtered.length===0){list.innerHTML=`<p class="text-center opacity-30 py-8 text-sm">${t('no_data')}</p>`;return;}list.innerHTML=filtered.map(i=>{const s=getStockStatus(i.stock);const badgeClass=s==='critical'?'badge-critical':s==='low'?'badge-low':'badge-ok';const badgeText=s==='critical'?t('badge_empty'):s==='low'?t('badge_low'):t('badge_ok');const barPct=Math.min(100,Math.round((i.stock/Math.max(1,config.minStock*4))*100));const barColor=s==='critical'?'bg-red-500':s==='low'?'bg-amber-400':'bg-emerald-400';return`<div class="card p-5 space-y-3 shadow-sm"><div class="flex justify-between items-start"><div class="flex-1"><p class="text-xs font-black">${i.name}</p><p class="text-[9px] uppercase text-muted">${i.category||'Umum'} • ${i.barcode||'no-barcode'}</p></div><span class="stock-badge ${badgeClass}">${badgeText}</span></div><div class="flex items-center gap-3"><div class="flex-1 h-2 rounded-full overflow-hidden surface"><div class="${barColor} h-full rounded-full transition-all" style="width:${barPct}%"></div></div><span class="text-sm font-black ${s==='critical'?'text-red-500':s==='low'?'text-amber-500':'text-emerald-600'}">${i.stock}</span><span class="text-[9px] text-muted">${t('notif_unit')}</span></div><div class="flex gap-2"><button onclick="openStockModal('in','${i.id}')" class="flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase border text-emerald-600" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.2)"><i class="fa-solid fa-plus mr-1"></i> ${t('stock_in')}</button><button onclick="openStockModal('out','${i.id}')" class="flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase border text-rose-600" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2)"><i class="fa-solid fa-minus mr-1"></i> ${t('stock_out')}</button></div></div>`;}).join('');}
+function renderStockHistory(){const list=document.getElementById('stock-history-list');if(!list)return;if(stockHistory.length===0){list.innerHTML=`<p class="text-center opacity-30 py-6 text-sm">${t('no_data')}</p>`;return;}list.innerHTML=stockHistory.slice(0,30).map(h=>{const isIn=h.type==='in',isOpname=h.type==='opname';const icon=isOpname?'clipboard-check':isIn?'arrow-down':'arrow-up';const colorClass=isOpname?'text-indigo-500':isIn?'text-emerald-500':'text-rose-500';const bgClass=isOpname?'rgba(99,102,241,0.1)':isIn?'rgba(16,185,129,0.1)':'rgba(239,68,68,0.1)';const badge=isOpname?'badge-opname':isIn?'badge-in':'badge-out';const badgeText=isOpname?t('badge_opname'):isIn?t('badge_in'):t('badge_out');return`<div class="flex items-center gap-3 p-4 card shadow-sm"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${colorClass}" style="background:${bgClass}"><i class="fa-solid fa-${icon} text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${h.productName}</p><p class="text-[8px] uppercase truncate text-muted">${h.note||'-'} • ${new Date(h.date).toLocaleDateString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</p></div><div class="text-right shrink-0"><span class="stock-badge ${badge}">${badgeText}</span><p class="text-xs font-black mt-1">${isIn||isOpname?'+':'-'}${h.qty}</p></div></div>`;}).join('');}
 function clearStockHistory(){if(!confirm(t('confirm_clear_history')))return;stockHistory=[];saveStorage();renderStockHistory();showToast(t('toast_history_deleted'));}
-
-function openStockModal(type,preSelectId=null){
-    currentStockMoveType=type;
-    const title=document.getElementById('stock-move-title'),btn=document.getElementById('sm-btn');
-    if(type==='in'){title.innerText=t('stock_in');title.className='text-xl font-black text-emerald-500';if(btn)btn.className='w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl';}
-    else{title.innerText=t('stock_out');title.className='text-xl font-black text-rose-500';if(btn)btn.className='w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl';}
-    const sel=document.getElementById('sm-product');
-    sel.innerHTML=items.map(i=>`<option value="${i.id}">${i.name} (${t('current_stock')}: ${i.stock})</option>`).join('');
-    if(preSelectId)sel.value=preSelectId;
-    document.getElementById('sm-qty').value='';document.getElementById('sm-note').value='';
-    updateSmCurrentStock();sel.onchange=updateSmCurrentStock;
-    openModal('modal-stock-move');
-}
+function openStockModal(type,preSelectId=null){currentStockMoveType=type;const title=document.getElementById('stock-move-title'),btn=document.getElementById('sm-btn');if(type==='in'){title.innerText=t('stock_in');title.className='text-xl font-black text-emerald-500';if(btn)btn.className='w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl';}else{title.innerText=t('stock_out');title.className='text-xl font-black text-rose-500';if(btn)btn.className='w-full py-4 bg-rose-600 text-white rounded-2xl font-black text-xs uppercase shadow-xl';}const sel=document.getElementById('sm-product');sel.innerHTML=items.map(i=>`<option value="${i.id}">${i.name} (${t('current_stock')}: ${i.stock})</option>`).join('');if(preSelectId)sel.value=preSelectId;document.getElementById('sm-qty').value='';document.getElementById('sm-note').value='';updateSmCurrentStock();sel.onchange=updateSmCurrentStock;openModal('modal-stock-move');}
 function updateSmCurrentStock(){const sel=document.getElementById('sm-product');const id=sel?.value;const item=items.find(i=>String(i.id)===String(id));const el=document.getElementById('sm-current-stock');if(el)el.innerText=item?item.stock+' '+t('notif_unit'):'—';}
 function submitStockMove(){const sel=document.getElementById('sm-product');const id=sel?.value;const qty=Number(document.getElementById('sm-qty').value);const note=document.getElementById('sm-note').value;if(!id||!qty||qty<=0)return showToast(t('toast_fill_data'));const item=items.find(i=>String(i.id)===String(id));if(!item)return showToast(t('toast_product_not_found'));if(currentStockMoveType==='out'&&qty>item.stock)return showToast(t('toast_stock_not_enough'));if(currentStockMoveType==='in')item.stock+=qty;else item.stock-=qty;addStockHistory(item.id,item.name,currentStockMoveType,qty,note||(currentStockMoveType==='in'?t('sh_manual_in'):t('sh_manual_out')));saveStorage();showToast(currentStockMoveType==='in'?`+${qty} ${t('toast_stock_added')}`:`-${qty} ${t('toast_stock_reduced')}`);closeModal('modal-stock-move');renderStockTab();renderItems();renderPos();checkStockAlerts();}
-
-function openOpnameModal(){
-    opnameData={};
-    const list=document.getElementById('opname-list');
-    list.innerHTML=items.map(i=>`
-        <div class="card p-4 shadow-sm space-y-2">
-            <div class="flex justify-between items-center">
-                <div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] uppercase text-muted">${i.category||'Umum'}</p></div>
-                <span class="text-sm font-black text-muted">${t('opname_system')}: <strong class="${getStockStatus(i.stock)==='critical'?'text-red-500':getStockStatus(i.stock)==='low'?'text-amber-500':'text-indigo-500'}">${i.stock}</strong></span>
-            </div>
-            <div class="flex items-center gap-3">
-                <label class="text-[8px] font-black uppercase w-20 shrink-0 text-muted">${t('opname_physical')}</label>
-                <input type="number" min="0" placeholder="${t('opname_physical')}..."
-                    oninput="opnameData['${i.id}']={id:${i.id},name:'${i.name.replace(/'/g,"\\'")}',physical:Number(this.value),system:${i.stock}}"
-                    class="flex-1 p-3 border rounded-2xl text-sm font-bold outline-none text-center">
-            </div>
-        </div>`).join('');
-    openModal('modal-opname');
-}
+function openOpnameModal(){opnameData={};const list=document.getElementById('opname-list');list.innerHTML=items.map(i=>`<div class="card p-4 shadow-sm space-y-2"><div class="flex justify-between items-center"><div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] uppercase text-muted">${i.category||'Umum'}</p></div><span class="text-sm font-black text-muted">${t('opname_system')}: <strong class="${getStockStatus(i.stock)==='critical'?'text-red-500':getStockStatus(i.stock)==='low'?'text-amber-500':'text-indigo-500'}">${i.stock}</strong></span></div><div class="flex items-center gap-3"><label class="text-[8px] font-black uppercase w-20 shrink-0 text-muted">${t('opname_physical')}</label><input type="number" min="0" placeholder="${t('opname_physical')}..." oninput="opnameData['${i.id}']={id:${i.id},name:'${i.name.replace(/'/g,"\\'")}',physical:Number(this.value),system:${i.stock}}" class="flex-1 p-3 border rounded-2xl text-sm font-bold outline-none text-center"></div></div>`).join('');openModal('modal-opname');}
 function submitOpname(){const entries=Object.values(opnameData);if(entries.length===0)return showToast(t('toast_opname_no_data'));let changed=0;entries.forEach(e=>{const item=items.find(i=>i.id==e.id);if(!item)return;const diff=e.physical-e.system;if(diff===0)return;addStockHistory(item.id,item.name,'opname',Math.abs(diff),`Opname: ${e.system} → ${e.physical} (${diff>0?'+':''}${diff})`);item.stock=e.physical;changed++;});if(changed===0)return showToast(t('toast_opname_no_change'));saveStorage();showToast(`${t('toast_opname_done')} ${changed} ${t('toast_products_updated')}`);closeModal('modal-opname');renderStockTab();renderItems();renderPos();checkStockAlerts();}
-
 function openMinStockSettings(){document.getElementById('min-stock-input').value=config.minStock||5;openModal('modal-minstock');}
 function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast(t('toast_fill_data'));config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast(t('toast_min_stock_saved'));checkStockAlerts();}
 
-// ── Settings ─────────────────────────────────────────────────────────────
+// ── Settings ───────────────────────────────────────────────────────────
 function toggleDarkMode(){config.darkMode=document.getElementById('dark-mode-toggle').checked;document.body.classList.toggle('dark',config.darkMode);localStorage.setItem('dk_config',JSON.stringify(config));renderHome();}
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url;}
 async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast(t('toast_save_success'));syncCloud({type:'settings',id:'app_cfg',data:config});}
-function loadSettings(){
-    const s=config;
-    const darkToggle=document.getElementById('dark-mode-toggle');if(darkToggle)darkToggle.checked=s.darkMode;
-    document.body.classList.toggle('dark',s.darkMode);
-    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('store-name-display',s.storeName);set('profile-name',s.storeName);
-    set('profile-address-display',s.storeAddress||t('address_not_set'));
-    set('min-stock-display',s.minStock||5);
-    set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||t('address_not_set'));
-    const letter=(s.storeName||'D')[0].toUpperCase();
-    const updateLogo=(el,isImg)=>{if(!el)return;if(s.logo)el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;else el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;};
-    updateLogo(document.getElementById('app-logo'),true);
-    updateLogo(document.getElementById('sb-logo'),true);
-    const pp=document.getElementById('profile-logo-preview');if(pp){if(s.logo)pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;else pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}
-    const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg){if(s.logo)lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;else lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}
-    const devNameEl=document.getElementById('printer-device-name');
-    if(devNameEl)devNameEl.innerText=btConnected?(btDevice?.name||t('settings_printer')):(btPrefs.lastName?`${t('printer_not_connected')}: ${btPrefs.lastName}`:t('printer_not_connected'));
-    // Language display
-    const langNames={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English',ms:'🇲🇾 Bahasa Melayu'};
-    const langEl=document.getElementById('current-lang-display');
-    if(langEl)langEl.textContent=langNames[currentLang]||'Bahasa Indonesia';
-}
+function loadSettings(){const s=config;const darkToggle=document.getElementById('dark-mode-toggle');if(darkToggle)darkToggle.checked=s.darkMode;document.body.classList.toggle('dark',s.darkMode);const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};set('store-name-display',s.storeName);set('profile-name',s.storeName);set('profile-address-display',s.storeAddress||t('address_not_set'));set('min-stock-display',s.minStock||5);set('sb-store-name',s.storeName);set('sb-store-addr',s.storeAddress||t('address_not_set'));const letter=(s.storeName||'D')[0].toUpperCase();const updateLogo=(el,isImg)=>{if(!el)return;if(s.logo)el.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover" alt="Logo">`;else el.innerHTML=`<span style="${isImg?'color:#fff;font-size:inherit;font-weight:900;':''}">${letter}</span>`;};updateLogo(document.getElementById('app-logo'),true);updateLogo(document.getElementById('sb-logo'),true);const pp=document.getElementById('profile-logo-preview');if(pp){if(s.logo)pp.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;else pp.innerHTML=`<span class="text-xl font-black text-white">${letter}</span>`;}const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg){if(s.logo)lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;else lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}const devNameEl=document.getElementById('printer-device-name');if(devNameEl)devNameEl.innerText=btConnected?(btDevice?.name||t('settings_printer')):(btPrefs.lastName?`${t('printer_not_connected')}: ${btPrefs.lastName}`:t('printer_not_connected'));const langNames={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English',ms:'🇲🇾 Bahasa Melayu'};const langEl=document.getElementById('current-lang-display');if(langEl)langEl.textContent=langNames[currentLang]||'Bahasa Indonesia';}
 function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
 
-// ── Items ─────────────────────────────────────────────────────────────────
-function renderItems(){
-    const q=(document.getElementById('item-search')||{value:''}).value.toLowerCase();
-    const list=document.getElementById('item-list');if(!list)return;
-    list.innerHTML=items.filter(i=>i.name.toLowerCase().includes(q)||String(i.barcode).includes(q)).map(i=>{
-        const s=getStockStatus(i.stock);
-        const dot=s==='critical'?'bg-red-500':s==='low'?'bg-amber-400':'bg-emerald-400';
-        return `<div class="card p-5 flex justify-between items-center shadow-sm">
-            <div class="flex items-center gap-3">
-                <div class="w-2.5 h-2.5 rounded-full ${dot} shrink-0"></div>
-                <div>
-                    <p class="text-xs font-black">${i.name}</p>
-                    <p class="text-[9px] uppercase text-muted">${i.category||'Umum'} • ${formatIDR(i.price)} • ${t('current_stock')}: <strong class="${s==='critical'?'text-red-500':s==='low'?'text-amber-500':''}">${i.stock}</strong></p>
-                </div>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="openProductModal(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-edit text-xs"></i></button>
-                <button onclick="deleteProduct(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-rose-500" style="background:rgba(239,68,68,0.1)"><i class="fa-solid fa-trash-can text-xs"></i></button>
-            </div>
-        </div>`;
-    }).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
-}
+// ── Items ──────────────────────────────────────────────────────────────
+function renderItems(){const q=(document.getElementById('item-search')||{value:''}).value.toLowerCase();const list=document.getElementById('item-list');if(!list)return;list.innerHTML=items.filter(i=>i.name.toLowerCase().includes(q)||String(i.barcode).includes(q)).map(i=>{const s=getStockStatus(i.stock);const dot=s==='critical'?'bg-red-500':s==='low'?'bg-amber-400':'bg-emerald-400';return`<div class="card p-5 flex justify-between items-center shadow-sm"><div class="flex items-center gap-3"><div class="w-2.5 h-2.5 rounded-full ${dot} shrink-0"></div><div><p class="text-xs font-black">${i.name}</p><p class="text-[9px] uppercase text-muted">${i.category||'Umum'} • ${formatIDR(i.price)} • ${t('current_stock')}: <strong class="${s==='critical'?'text-red-500':s==='low'?'text-amber-500':''}">${i.stock}</strong></p></div></div><div class="flex gap-2"><button onclick="openProductModal(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-edit text-xs"></i></button><button onclick="deleteProduct(${i.id})" class="w-9 h-9 rounded-xl flex items-center justify-center text-rose-500" style="background:rgba(239,68,68,0.1)"><i class="fa-solid fa-trash-can text-xs"></i></button></div></div>`;}).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;}
 function deleteProduct(id){items=items.filter(x=>x.id!==id);saveStorage();renderItems();renderPos();showToast(t('toast_product_deleted'));}
-function openProductModal(id=null){
-    if(id){const i=items.find(x=>x.id==id);document.getElementById('p-id').value=i.id;document.getElementById('p-barcode').value=i.barcode||'';document.getElementById('p-name').value=i.name;document.getElementById('p-cost').value=i.cost||0;document.getElementById('p-price').value=i.price;document.getElementById('p-stock').value=i.stock;renderCategoryOptions();document.getElementById('p-category').value=i.category||'Umum';}
-    else{document.getElementById('p-id').value='';document.getElementById('p-barcode').value='';document.getElementById('p-name').value='';document.getElementById('p-cost').value='';document.getElementById('p-price').value='';document.getElementById('p-stock').value='';renderCategoryOptions();}
-    openModal('modal-product');
-}
+function openProductModal(id=null){if(id){const i=items.find(x=>x.id==id);document.getElementById('p-id').value=i.id;document.getElementById('p-barcode').value=i.barcode||'';document.getElementById('p-name').value=i.name;document.getElementById('p-cost').value=i.cost||0;document.getElementById('p-price').value=i.price;document.getElementById('p-stock').value=i.stock;renderCategoryOptions();document.getElementById('p-category').value=i.category||'Umum';}else{document.getElementById('p-id').value='';document.getElementById('p-barcode').value='';document.getElementById('p-name').value='';document.getElementById('p-cost').value='';document.getElementById('p-price').value='';document.getElementById('p-stock').value='';renderCategoryOptions();}openModal('modal-product');}
 async function saveProduct(){const idIn=document.getElementById('p-id').value;const d={id:idIn?Number(idIn):Date.now(),barcode:document.getElementById('p-barcode').value,name:document.getElementById('p-name').value,cost:Number(document.getElementById('p-cost').value),price:Number(document.getElementById('p-price').value),stock:Number(document.getElementById('p-stock').value),category:document.getElementById('p-category').value};if(!d.name)return showToast(t('toast_fill_product_name'));if(idIn){const idx=items.findIndex(x=>x.id==idIn);items[idx]=d;}else items.push(d);saveStorage();closeModal('modal-product');renderItems();renderPos();checkStockAlerts();showToast(t('toast_save_success'));await syncCloud(d);}
 
-// ── Data ──────────────────────────────────────────────────────────────────
+// ── Data ───────────────────────────────────────────────────────────────
 function getFilteredLogs(){const f=(document.getElementById('date-filter')||{value:''}).value;return logs.filter(l=>!f||l.date===f);}
-function renderData(){
-    const filtered=getFilteredLogs();const f=(document.getElementById('date-filter')||{value:''}).value;
-    const infoEl=document.getElementById('export-info');if(infoEl)infoEl.innerText=f?`${filtered.length} ${t('transactions')} ${f}`:`${t('all_transactions')} ${filtered.length}`;
-    const list=document.getElementById('data-list');if(!list)return;
-    list.innerHTML=filtered.slice().reverse().map(l=>`
-        <div onclick='showReceipt(${JSON.stringify(l)})' class="card p-5 flex justify-between items-center active:scale-95 transition-all cursor-pointer shadow-sm">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xs text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-receipt"></i></div>
-                <div>
-                    <p class="text-[11px] font-black line-clamp-1">${l.items?l.items.map(i=>i.name).join(', '):'Manual'}</p>
-                    <p class="text-[8px] uppercase text-muted">${l.date} • ${l.method}</p>
-                </div>
-            </div>
-            <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
-        </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
-}
+function renderData(){const filtered=getFilteredLogs();const f=(document.getElementById('date-filter')||{value:''}).value;const infoEl=document.getElementById('export-info');if(infoEl)infoEl.innerText=f?`${filtered.length} ${t('transactions')} ${f}`:`${t('all_transactions')} ${filtered.length}`;const list=document.getElementById('data-list');if(!list)return;list.innerHTML=filtered.slice().reverse().map(l=>`<div onclick='showReceipt(${JSON.stringify(l)})' class="card p-5 flex justify-between items-center active:scale-95 transition-all cursor-pointer shadow-sm"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-xs text-indigo-500" style="background:rgba(99,102,241,0.1)"><i class="fa-solid fa-receipt"></i></div><div><p class="text-[11px] font-black line-clamp-1">${l.items?l.items.map(i=>i.name).join(', '):'Manual'}</p><p class="text-[8px] uppercase text-muted">${l.date} • ${l.method}</p></div></div><p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p></div>`).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;}
 
-// ── Export ────────────────────────────────────────────────────────────────
-function exportExcel(){if(typeof XLSX==='undefined')return showToast(t('toast_excel_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),rawIDR(l.amount),rawIDR(l.total_cost),rawIDR(l.amount)-rawIDR(l.total_cost),rawIDR(l.pay_cash),rawIDR(l.pay_qris),rawIDR(l.change),l.method]);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);txRows.push([],[" TOTAL","","","",tAmt,tCost,tAmt-tCost,filtered.reduce((a,l)=>a+rawIDR(l.pay_cash),0),filtered.reduce((a,l)=>a+rawIDR(l.pay_qris),0),filtered.reduce((a,l)=>a+rawIDR(l.change),0),""]);const wsTx=XLSX.utils.aoa_to_sheet([...txHeader,...txRows]);const invHeader=[["ID","Barcode","Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]];const invRows=items.map(i=>[i.id,i.barcode||'-',i.name,i.category||'Umum',rawIDR(i.cost),rawIDR(i.price),i.stock,t('badge_'+getStockStatus(i.stock)),rawIDR(i.cost)*i.stock]);const wsInv=XLSX.utils.aoa_to_sheet([...invHeader,...invRows]);const shHeader=[["ID","Produk","Tipe","Qty","Keterangan","Tanggal"]];const shRows=stockHistory.map(h=>[h.id,h.productName,h.type,h.qty,h.note,new Date(h.date).toLocaleString('id-ID')]);const wsSh=XLSX.utils.aoa_to_sheet([...shHeader,...shRows]);const debtHeader=[["ID","Pelanggan","Total","Terbayar","Sisa","Jatuh Tempo","Status"]];const debtRows=debts.map(d=>[d.id,d.customer,rawIDR(d.total),rawIDR(d.paid),rawIDR(d.balance),d.dueDate,d.status]);const wsDebt=XLSX.utils.aoa_to_sheet([...debtHeader,...debtRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,wsTx,"Transaksi");XLSX.utils.book_append_sheet(wb,wsInv,"Inventaris");XLSX.utils.book_append_sheet(wb,wsSh,"Riwayat Stok");XLSX.utils.book_append_sheet(wb,wsDebt,"Hutang");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.xlsx`);showToast(t('toast_excel_success'));}catch(e){console.error(e);showToast(t('toast_excel_fail'));}}
-
+// ── Export ─────────────────────────────────────────────────────────────
+function exportExcel(){if(typeof XLSX==='undefined')return showToast(t('toast_excel_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),rawIDR(l.amount),rawIDR(l.total_cost),rawIDR(l.amount)-rawIDR(l.total_cost),rawIDR(l.pay_cash),rawIDR(l.pay_qris),rawIDR(l.change),l.method]);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);txRows.push([],[" TOTAL","","","",tAmt,tCost,tAmt-tCost,filtered.reduce((a,l)=>a+rawIDR(l.pay_cash),0),filtered.reduce((a,l)=>a+rawIDR(l.pay_qris),0),filtered.reduce((a,l)=>a+rawIDR(l.change),0),""]);const wsTx=XLSX.utils.aoa_to_sheet([...txHeader,...txRows]);const invHeader=[["ID","Barcode","Nama","Kategori","Modal","Jual","Stok","Status"]];const invRows=items.map(i=>[i.id,i.barcode||'-',i.name,i.category||'Umum',rawIDR(i.cost),rawIDR(i.price),i.stock,t('badge_'+getStockStatus(i.stock))]);const wsInv=XLSX.utils.aoa_to_sheet([...invHeader,...invRows]);const shHeader=[["ID","Produk","Tipe","Qty","Keterangan","Tanggal"]];const shRows=stockHistory.map(h=>[h.id,h.productName,h.type,h.qty,h.note,new Date(h.date).toLocaleString('id-ID')]);const wsSh=XLSX.utils.aoa_to_sheet([...shHeader,...shRows]);const debtHeader=[["ID","Pelanggan","Total","Terbayar","Sisa","Jatuh Tempo","Status"]];const debtRows=debts.map(d=>[d.id,d.customer,rawIDR(d.total),rawIDR(d.paid),rawIDR(d.balance),d.dueDate,d.status]);const wsDebt=XLSX.utils.aoa_to_sheet([...debtHeader,...debtRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,wsTx,"Transaksi");XLSX.utils.book_append_sheet(wb,wsInv,"Inventaris");XLSX.utils.book_append_sheet(wb,wsSh,"Riwayat Stok");XLSX.utils.book_append_sheet(wb,wsDebt,"Hutang");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.xlsx`);showToast(t('toast_excel_success'));}catch(e){console.error(e);showToast(t('toast_excel_fail'));}}
 function exportPDF(){if(typeof window.jspdf==='undefined')return showToast(t('toast_pdf_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!==t('debt_paid_status')).reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:t('dash_today_income'),value:formatIDR(tAmt),color:pc},{label:t('dash_net_profit'),value:formatIDR(tAmt-tCost),color:sc},{label:t('dash_total_receivable'),value:formatIDR(tDebt),color:dc},{label:t('nav_reports'),value:`${filtered.length}`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text(t('nav_reports').toUpperCase(),M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`${t('transactions')}: ${f}`:'All',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Date","Items","Total","Profit","Method"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast(t('toast_pdf_success'));}catch(e){console.error(e);showToast(t('toast_pdf_fail'));}}
 
-// ── Debts ─────────────────────────────────────────────────────────────────
-function renderDebts(){
-    const label=document.getElementById('debt-count-label');if(label)label.innerText=debts.filter(d=>d.status!==t('debt_paid_status')).length+" ORANG";
-    const list=document.getElementById('debt-list');if(!list)return;
-    list.innerHTML=debts.slice().reverse().map(d=>`
-        <div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm ${d.dueDate!=='-'&&new Date(d.dueDate)<new Date()&&d.status!==t('debt_paid_status')?'border-rose-400':''}">
-            <div class="flex items-center gap-4">
-                <div class="w-10 h-10 ${d.status===t('debt_paid_status')?'bg-emerald-100 text-emerald-600':'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div>
-                <div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}</p></div>
-            </div>
-            <div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div>
-        </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;
-}
+// ── Debts ──────────────────────────────────────────────────────────────
+function renderDebts(){const label=document.getElementById('debt-count-label');if(label)label.innerText=debts.filter(d=>d.status!==t('debt_paid_status')).length+" ORANG";const list=document.getElementById('debt-list');if(!list)return;list.innerHTML=debts.slice().reverse().map(d=>`<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm ${d.dueDate!=='-'&&new Date(d.dueDate)<new Date()&&d.status!==t('debt_paid_status')?'border-rose-400':''}"><div class="flex items-center gap-4"><div class="w-10 h-10 ${d.status===t('debt_paid_status')?'bg-emerald-100 text-emerald-600':'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div><div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}</p></div></div><div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div></div>`).join('')||`<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;}
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast(t('toast_fill_data'));const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status=t('debt_paid_status');saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
-// ── WhatsApp ──────────────────────────────────────────────────────────────
+// ── WhatsApp ───────────────────────────────────────────────────────────
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*${t('total')}: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
-// ── Init ──────────────────────────────────────────────────────────────────
+// ── Init ───────────────────────────────────────────────────────────────
 window.onload = async () => {
-    // Apply language first
     applyTranslations();
     loadSettings();
     const saved = localStorage.getItem('dk_active_tab') || 'home';
@@ -2301,6 +1734,7 @@ window.onload = async () => {
     checkStockAlerts();
     _setPrinterUI('offline');
     applyBalanceUI();
+    // Auto-reconnect saat halaman dibuka
     await btAutoReconnectOnLoad();
 };
 </script>
