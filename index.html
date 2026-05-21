@@ -115,7 +115,6 @@
         #hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
         #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
 
-        /* ── HEADER BRAND: always show DheKasir app logo, NOT store name ── */
         .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
         .header-app-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; flex-shrink: 0; }
         .header-app-title { font-size: 15px; font-weight: 800; color: var(--text); }
@@ -147,7 +146,7 @@
         .sidebar-dark-toggle span { font-size: 12px; font-weight: 700; color: var(--text-muted); }
         .sidebar-dark-toggle .toggle-left { display: flex; align-items: center; gap: 10px; }
 
-        /* ── BOTTOM NAV — 5 items with center scan FAB ── */
+        /* ── BOTTOM NAV ── */
         #bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             max-width: 480px; margin: 0 auto;
@@ -166,7 +165,6 @@
         .nav-item.active .nav-item-pill { opacity: 1; }
         .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
 
-        /* Center FAB scan button */
         .nav-scan-fab {
             display: flex; flex-direction: column; align-items: center; gap: 3px;
             cursor: pointer; transition: all 0.2s; position: relative;
@@ -300,6 +298,15 @@
         .lang-native { font-size: 10px; color: var(--text-muted); font-weight: 500; }
         .lang-check { margin-left: auto; color: var(--primary); font-size: 14px; opacity: 0; transition: opacity 0.2s; }
         .lang-option.selected .lang-check { opacity: 1; }
+
+        /* ── DEBT SEARCH ── */
+        .debt-search-wrap { position: relative; }
+        .debt-search-wrap input { padding-left: 2.75rem !important; }
+        .debt-search-wrap .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 13px; pointer-events: none; }
+        .debt-filter-tabs { display: flex; gap: 6px; }
+        .debt-filter-tab { flex: 1; padding: 8px 4px; border-radius: 12px; font-size: 9px; font-weight: 800; text-transform: uppercase; text-align: center; cursor: pointer; transition: all 0.2s; border: 1.5px solid var(--card-border); background: var(--card); color: var(--text-muted); }
+        .debt-filter-tab.active-tab { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 10px rgba(79,70,229,0.3); }
+        .debt-filter-tab:active { transform: scale(0.95); }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -410,7 +417,6 @@
         </div>
     </aside>
 
-    <!-- HEADER: always shows DheKasir app logo, not store branding -->
     <header id="app-header">
         <button id="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
             <div class="bars"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
@@ -549,12 +555,33 @@
             <div id="stock-history-list" class="space-y-2"></div>
         </section>
 
-        <!-- DEBTS -->
-        <section id="tab-debts" class="tab-content space-y-5">
+        <!-- ═══ DEBTS — with search & filter ═══ -->
+        <section id="tab-debts" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_debts">Buku Hutang</h2>
                 <div class="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-[10px] font-black" id="debt-count-label">0 ORANG</div>
             </div>
+
+            <!-- Search bar -->
+            <div class="debt-search-wrap">
+                <i class="fa-solid fa-search search-icon"></i>
+                <input
+                    type="text"
+                    id="debt-search"
+                    oninput="renderDebts()"
+                    placeholder="Cari nama pelanggan..."
+                    data-i18n-placeholder="debt_search_placeholder"
+                    class="w-full p-3.5 card rounded-2xl outline-none text-sm font-medium"
+                >
+            </div>
+
+            <!-- Filter tabs -->
+            <div class="debt-filter-tabs">
+                <div class="debt-filter-tab active-tab" id="dft-all" onclick="setDebtFilter('all')" data-i18n="filter_all">Semua</div>
+                <div class="debt-filter-tab" id="dft-unpaid" onclick="setDebtFilter('unpaid')" data-i18n="debt_filter_unpaid">Belum Lunas</div>
+                <div class="debt-filter-tab" id="dft-paid" onclick="setDebtFilter('paid')" data-i18n="debt_filter_paid">Lunas</div>
+            </div>
+
             <div id="debt-list" class="space-y-3"></div>
         </section>
 
@@ -651,7 +678,7 @@
         </section>
     </main>
 
-    <!-- BOTTOM NAV: 5 items, center = scan FAB, no hutang tab -->
+    <!-- BOTTOM NAV -->
     <nav id="bottom-nav">
         <div class="nav-item active" id="n-home" onclick="switchTab('home')">
             <i class="fa-solid fa-house"></i>
@@ -664,7 +691,6 @@
             <div class="nav-item-pill"></div>
         </div>
 
-        <!-- Center FAB: Scan Barcode -->
         <div class="nav-scan-fab" onclick="openScanner('cart')" aria-label="Scan Barcode">
             <div class="nav-scan-fab-btn">
                 <i class="fa-solid fa-barcode"></i>
@@ -704,7 +730,7 @@
 
 <!-- ═══════════════════ MODALS ═══════════════════ -->
 
-<!-- LANGUAGE MODAL -->
+<!-- LANGUAGE MODAL — hanya ID & EN -->
 <div id="modal-language" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg" data-i18n="lang_select_title">Pilih Bahasa</h3>
@@ -723,14 +749,6 @@
                 <div>
                     <div class="lang-name">English</div>
                     <div class="lang-native">English (United Kingdom)</div>
-                </div>
-                <i class="fa-solid fa-check lang-check"></i>
-            </div>
-            <div class="lang-option" id="lang-ms" onclick="setLanguage('ms')">
-                <span class="lang-flag">🇲🇾</span>
-                <div>
-                    <div class="lang-name">Bahasa Melayu</div>
-                    <div class="lang-native">Malaysia</div>
                 </div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
@@ -1030,21 +1048,95 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted" id="about-text">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v1.4: Fix Bluetooth Print, Audio Feedback, Multi-Bahasa (Indonesia, Inggris, Melayu).</p>
+            <p>Fitur baru v1.4: Fix Bluetooth Print, Audio Feedback, Multi-Bahasa (Indonesia, Inggris).</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface" data-i18n="btn_close">Tutup</button>
     </div>
 </div>
 
+<!-- ═══ PRIVACY MODAL — Updated ═══ -->
 <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
-        <h3 class="font-black text-lg mb-4 text-center" data-i18n="privacy_title">Kebijakan Privasi</h3>
-        <div class="flex-1 overflow-y-auto pr-2 text-[11px] leading-relaxed space-y-4 text-justify text-muted">
-            <p>Semua data transaksi, inventaris, dan pengaturan toko Anda disimpan secara utama di dalam memori internal perangkat Anda (LocalStorage).</p>
-            <p>Fitur sinkronisasi ke Google Spreadsheet hanya dikirim ke URL backend yang Anda tentukan sendiri.</p>
-            <p>Akses kamera hanya digunakan secara instan untuk memindai kode produk. Tidak ada foto atau rekaman yang disimpan.</p>
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]">
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-5 shrink-0">
+            <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center">
+                <i class="fa-solid fa-shield-halved text-indigo-600"></i>
+            </div>
+            <div>
+                <h3 class="font-black text-base" data-i18n="privacy_title">Kebijakan Privasi</h3>
+                <p class="text-[9px] text-muted font-bold uppercase tracking-widest">Berlaku sejak 1 Januari 2025</p>
+            </div>
         </div>
-        <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface" data-i18n="btn_agree">Saya Setuju</button>
+
+        <div class="flex-1 overflow-y-auto pr-1 space-y-5 hide-scrollbar text-[11px] leading-relaxed text-muted">
+
+            <!-- 1 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-database text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">1. Penyimpanan Data Lokal</span>
+                </div>
+                <p>Seluruh data transaksi, inventaris, stok, buku hutang, dan konfigurasi toko disimpan secara eksklusif di dalam <strong>penyimpanan lokal perangkat</strong> Anda (<em>LocalStorage</em>). DheKasir tidak mengirimkan data ini ke server manapun tanpa persetujuan eksplisit Anda.</p>
+            </div>
+
+            <!-- 2 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">2. Sinkronisasi Cloud (Opsional)</span>
+                </div>
+                <p>Fitur sinkronisasi ke <strong>Google Spreadsheet</strong> hanya aktif jika Anda secara sukarela memasukkan URL Google Apps Script milik sendiri pada menu Setelan Toko. Data hanya dikirimkan ke endpoint yang Anda tentukan dan sepenuhnya berada di bawah kendali Anda.</p>
+            </div>
+
+            <!-- 3 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-camera text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">3. Akses Kamera & Barcode</span>
+                </div>
+                <p>Izin kamera hanya digunakan secara real-time untuk memindai kode barcode produk. Tidak ada foto, video, atau rekaman yang disimpan, dikirim, atau diproses di luar perangkat Anda.</p>
+            </div>
+
+            <!-- 4 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-brands fa-bluetooth text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">4. Koneksi Bluetooth</span>
+                </div>
+                <p>Bluetooth hanya digunakan untuk menghubungkan printer thermal. Tidak ada data yang dibagikan ke pihak ketiga melalui koneksi ini. Perangkat yang dipilih tersimpan lokal untuk kemudahan koneksi ulang.</p>
+            </div>
+
+            <!-- 5 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-user-shield text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">5. Data Pelanggan</span>
+                </div>
+                <p>Data nama pelanggan yang dimasukkan pada fitur Buku Hutang hanya disimpan di perangkat Anda. DheKasir tidak mengumpulkan, menjual, atau berbagi informasi pelanggan kepada pihak mana pun.</p>
+            </div>
+
+            <!-- 6 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-trash-can text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">6. Hak Penghapusan Data</span>
+                </div>
+                <p>Anda memiliki kendali penuh atas data Anda. Data dapat dihapus kapan saja melalui menu pengaturan browser (Clear Site Data) atau dengan menghapus cache aplikasi. Penghapusan bersifat permanen dan tidak dapat dipulihkan.</p>
+            </div>
+
+            <!-- 7 -->
+            <div class="p-4 rounded-2xl" style="background:var(--surface)">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-envelope text-indigo-500 text-xs"></i>
+                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">7. Kontak & Pertanyaan</span>
+                </div>
+                <p>Jika Anda memiliki pertanyaan mengenai kebijakan privasi ini, silakan hubungi kami di <strong class="text-indigo-500">support@dhekasir.app</strong>. Kami berkomitmen merespons dalam 2×24 jam kerja.</p>
+            </div>
+
+            <p class="text-center text-[9px] pt-2 pb-1" style="color:var(--text-muted)">© 2025 DheKasir — Versi Kebijakan 1.4</p>
+        </div>
+
+        <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0" data-i18n="btn_agree">Saya Mengerti</button>
     </div>
 </div>
 
@@ -1068,7 +1160,7 @@
 <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
 <script>
 // ══════════════════════════════
-// TRANSLATIONS
+// TRANSLATIONS — ID & EN only (Malay removed)
 // ══════════════════════════════
 const TRANSLATIONS = {
     id: {
@@ -1108,6 +1200,9 @@ const TRANSLATIONS = {
         btn_category: 'Kategori',
         btn_add: '+ Tambah',
         item_search_placeholder: 'Cari barang atau barcode...',
+        debt_search_placeholder: 'Cari nama pelanggan...',
+        debt_filter_unpaid: 'Belum Lunas',
+        debt_filter_paid: 'Lunas',
         stock_in: 'Stok Masuk',
         stock_out: 'Stok Keluar',
         stock_opname: 'Stok Opname',
@@ -1194,7 +1289,7 @@ const TRANSLATIONS = {
         btn_save: 'Simpan',
         btn_cancel: 'Batal',
         btn_close: 'Tutup',
-        btn_agree: 'Saya Setuju',
+        btn_agree: 'Saya Mengerti',
         notif_stock_title: 'Notifikasi Stok',
         notif_all_safe: 'Semua stok dalam kondisi aman',
         notif_empty_stock: 'Stok Habis',
@@ -1312,6 +1407,9 @@ const TRANSLATIONS = {
         btn_category: 'Category',
         btn_add: '+ Add',
         item_search_placeholder: 'Search item or barcode...',
+        debt_search_placeholder: 'Search customer name...',
+        debt_filter_unpaid: 'Unpaid',
+        debt_filter_paid: 'Paid',
         stock_in: 'Stock In',
         stock_out: 'Stock Out',
         stock_opname: 'Stock Opname',
@@ -1398,7 +1496,7 @@ const TRANSLATIONS = {
         btn_save: 'Save',
         btn_cancel: 'Cancel',
         btn_close: 'Close',
-        btn_agree: 'I Agree',
+        btn_agree: 'I Understand',
         notif_stock_title: 'Stock Notifications',
         notif_all_safe: 'All stock levels are safe',
         notif_empty_stock: 'Out of Stock',
@@ -1478,214 +1576,12 @@ const TRANSLATIONS = {
         confirm_delete_product_title: 'Delete Product?',
         confirm_delete_product_desc: 'This product will be permanently deleted and cannot be recovered.',
         confirm_delete_btn: 'Delete Permanently',
-    },
-    ms: {
-        splash_tagline: 'Sistem Kasir Digital PKS',
-        splash_loading: 'Memuatkan sistem...',
-        menu_main: 'Menu Utama',
-        menu_operational: 'Operasi',
-        menu_account: 'Akaun',
-        nav_home: 'Laman Utama',
-        nav_pos: 'Kasir / POS',
-        nav_inventory: 'Inventori',
-        nav_stock: 'Pengurusan Stok',
-        nav_debts: 'Buku Hutang',
-        nav_reports: 'Laporan & Data',
-        nav_settings: 'Tetapan',
-        nav_about: 'Tentang Aplikasi',
-        nav_home_short: 'Utama',
-        nav_pos_short: 'Kasir',
-        nav_stock_short: 'Stok',
-        nav_warehouse_short: 'Gudang',
-        nav_debts_short: 'Hutang',
-        nav_data_short: 'Data',
-        dark_mode: 'Mod Gelap',
-        dash_net_profit: 'Keuntungan Bersih Kedai',
-        dash_today_income: 'Pendapatan Hari Ini',
-        dash_total_receivable: 'Jumlah Belum Terima',
-        hide: 'Sembunyikan',
-        show: 'Tunjukkan',
-        stock_status: 'Status Stok',
-        busy_hours: 'Waktu Sibuk',
-        top_products: '3 Produk Terlaris',
-        items_low: 'Item Menipis',
-        no_data: 'Tiada Data',
-        pos_search_placeholder: 'Cari barang atau imbas...',
-        view_detail: 'Lihat Butiran',
-        btn_checkout: 'Teruskan Pembayaran →',
-        btn_category: 'Kategori',
-        btn_add: '+ Tambah',
-        item_search_placeholder: 'Cari barang atau barcode...',
-        stock_in: 'Stok Masuk',
-        stock_out: 'Stok Keluar',
-        stock_opname: 'Opname Stok',
-        stat_products: 'Produk',
-        stat_low: 'Menipis',
-        stat_empty: 'Habis',
-        filter_all: 'Semua',
-        filter_ok: 'Selamat',
-        product_status: 'Status Produk',
-        stock_history: 'Sejarah Stok',
-        btn_delete: 'Padam',
-        label_select_product: 'Pilih Produk',
-        label_qty: 'Kuantiti',
-        label_note_optional: 'Nota (opsional)',
-        note_placeholder: 'Restock daripada pembekal...',
-        current_stock: 'Stok Semasa',
-        opname_desc: 'Masukkan jumlah stok fizikal yang dikira. Sistem akan diselaraskan secara automatik.',
-        opname_physical: 'Stok Fizikal',
-        opname_system: 'Sistem',
-        btn_save_opname: 'Simpan Opname',
-        settings_min_stock: 'Had Minimum Stok',
-        minstock_desc: 'Produk di bawah had ini akan dikategorikan sebagai "Menipis" dan mencetuskan notifikasi.',
-        minstock_label: 'Had Minimum (unit)',
-        debt_total_loan: 'Jumlah Pinjaman',
-        debt_paid: 'Dibayar',
-        debt_remaining: 'BAKI',
-        debt_book_empty: 'Buku Hutang Kosong',
-        installment_placeholder: 'Jumlah Ansuran',
-        btn_pay_installment: 'Bayar Ansuran',
-        deadline: 'Tempoh',
-        checkout_title: 'Sahkan Pembayaran',
-        total: 'JUMLAH',
-        pay_cash_qris: 'Tunai/QRIS',
-        pay_debt: 'Hutang (Bon)',
-        label_cash: 'Wang Tunai',
-        label_transfer: 'Pindahan/QRIS',
-        change: 'Baki',
-        customer_name_placeholder: 'Nama Pelanggan',
-        due_date: 'Tarikh Luput',
-        btn_finish_checkout: 'Selesaikan Transaksi',
-        cart_detail_title: 'Butiran Troli',
-        receipt_title: 'Resit Belanja',
-        receipt_items: 'ITEM BELIAN',
-        receipt_thank: 'Terima kasih atas kunjungan anda!',
-        receipt_no_return: 'Barang yang dibeli tidak boleh ditukar.',
-        rec_cash: 'Tunai',
-        rec_qris: 'QRIS/Pindahan',
-        rec_change: 'Baki',
-        rec_debt: '⚠ HUTANG / BON',
-        print_bluetooth: 'Cetak Bluetooth',
-        settings_store_config: 'Konfigurasi Kedai',
-        settings_store: 'Tetapan Kedai',
-        settings_printer: 'Pencetak Thermal',
-        settings_language: 'Bahasa',
-        settings_info: 'Maklumat',
-        settings_contact: 'Hubungi Kami',
-        settings_privacy: 'Privasi & Dasar',
-        lang_select_title: 'Pilih Bahasa',
-        lang_select_desc: 'Pilih bahasa paparan aplikasi',
-        printer_not_connected: 'Belum disambung',
-        printer_no_device: 'Tiada peranti disambung',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Sambung automatik semasa buka halaman',
-        printer_connect: 'Sambung Pencetak',
-        printer_reconnect: 'Sambung Semula',
-        printer_test: 'Cetak Ujian',
-        printer_disconnect: 'Putuskan',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth, hidupkan pencetak, kemudian tekan <strong>Sambung Pencetak</strong>.',
-        product_master: 'Master Produk',
-        product_name_placeholder: 'Nama Produk',
-        stock_placeholder: 'Stok',
-        label_category: 'Kategori',
-        label_cost: 'Modal',
-        label_price: 'Harga Jual',
-        btn_save_data: 'Simpan Data',
-        manage_category: 'Urus Kategori',
-        new_category_placeholder: 'Kategori Baru',
-        store_name_placeholder: 'Nama Kedai',
-        store_address_placeholder: 'Alamat Kedai',
-        btn_change_logo: 'Tukar Logo',
-        btn_save_config: 'Simpan Konfigurasi',
-        privacy_title: 'Dasar Privasi',
-        contact_address: 'Alamat',
-        btn_save: 'Simpan',
-        btn_cancel: 'Batal',
-        btn_close: 'Tutup',
-        btn_agree: 'Saya Setuju',
-        notif_stock_title: 'Notifikasi Stok',
-        notif_all_safe: 'Semua stok dalam keadaan selamat',
-        notif_empty_stock: 'Stok Habis',
-        notif_low_stock: 'Menipis',
-        notif_fill: 'Isi',
-        notif_remaining: 'Baki',
-        notif_unit: 'unit',
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Aktif • Jeda 2.5 Saat per Produk',
-        toast_sku_filled: 'SKU Diisi!',
-        toast_max_stock: 'Maksimum!',
-        toast_out_of_stock: 'Stok Habis!',
-        toast_product_not_found: 'Produk tidak dijumpai!',
-        toast_fill_data: 'Isi data dengan betul!',
-        toast_stock_added: 'stok ditambah!',
-        toast_stock_reduced: 'stok dikurangkan!',
-        toast_stock_not_enough: 'Stok tidak mencukupi!',
-        toast_product_deleted: 'Produk Dipadam',
-        toast_save_success: 'Berjaya Disimpan!',
-        toast_min_stock_saved: 'Had Minimum Disimpan!',
-        toast_history_deleted: 'Sejarah Dipadam',
-        toast_https_required: 'HTTPS Diperlukan!',
-        toast_camera_fail: 'Kamera Gagal!',
-        toast_insufficient_money: 'Wang Tidak Mencukupi!',
-        toast_fill_name: 'Isi Nama!',
-        toast_fill_product_name: 'Isi Nama Produk!',
-        toast_fill_customer_name: 'Isi Nama Pelanggan!',
-        toast_excel_success: 'Excel Berjaya Dimuat Turun!',
-        toast_excel_fail: 'Eksport Excel Gagal!',
-        toast_pdf_success: 'PDF Berjaya Dimuat Turun!',
-        toast_pdf_fail: 'Eksport PDF Gagal!',
-        toast_no_data: 'Tiada data!',
-        toast_no_receipt: 'Tiada data resit!',
-        toast_printer_not_connected: 'Sambung pencetak dahulu di Tetapan!',
-        toast_printer_disconnected: 'Pencetak terputus',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Pencetak disambung semula!',
-        toast_reconnect_fail: 'Gagal reconnect pencetak!',
-        toast_sending_test: 'Menghantar cetakan ujian...',
-        toast_test_success: 'Cetakan ujian berjaya!',
-        toast_test_fail: 'Cetakan ujian gagal: ',
-        toast_sending_print: 'Menghantar ke pencetak...',
-        toast_print_success: 'Resit berjaya dicetak!',
-        toast_print_fail: 'Cetak gagal: ',
-        toast_printer_connected: 'disambung!',
-        toast_bt_connect_fail: 'Gagal: ',
-        toast_printer_disconnected_ok: 'Pencetak diputuskan',
-        toast_auto_connect: 'Auto-sambung:',
-        toast_retry: 'Cuba semula',
-        toast_reconnecting: 'Menyambung semula pencetak...',
-        toast_category_exists: 'Sudah Wujud!',
-        toast_fill_category: 'Isi Nama!',
-        toast_language_changed: 'Bahasa berjaya ditukar!',
-        toast_opname_no_data: 'Tiada data opname!',
-        toast_opname_no_change: 'Tiada perubahan stok!',
-        toast_opname_done: 'Opname selesai —',
-        toast_products_updated: 'produk dikemaskini',
-        sh_in: 'Masuk',
-        sh_out: 'Keluar',
-        sh_opname: 'Opname',
-        sh_sale: 'Jualan',
-        sh_manual_in: 'Stok masuk manual',
-        sh_manual_out: 'Stok keluar manual',
-        badge_empty: 'Habis',
-        badge_low: 'Menipis',
-        badge_ok: 'Selamat',
-        badge_in: 'Masuk',
-        badge_out: 'Keluar',
-        badge_opname: 'Opname',
-        debt_not_paid: 'BELUM LUNAS',
-        debt_paid_status: 'LUNAS',
-        pcs: 'unit',
-        transactions: 'transaksi untuk',
-        all_transactions: 'Semua',
-        address_not_set: 'Alamat belum ditetapkan',
-        confirm_clear_history: 'Padam semua sejarah stok?',
-        confirm_delete_product_title: 'Padam Produk?',
-        confirm_delete_product_desc: 'Produk ini akan dipadam secara kekal dan tidak boleh dipulihkan.',
-        confirm_delete_btn: 'Padam Kekal',
     }
 };
 
 let currentLang = localStorage.getItem('dk_lang') || 'id';
+// Fallback: jika bahasa Melayu tersimpan dari versi lama, reset ke ID
+if (currentLang === 'ms') { currentLang = 'id'; localStorage.setItem('dk_lang', 'id'); }
 
 function t(key) {
     return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) || TRANSLATIONS['id'][key] || key;
@@ -1702,11 +1598,11 @@ function applyTranslations() {
         const key = el.getAttribute('data-i18n-placeholder');
         el.placeholder = t(key);
     });
-    const langNames = { id: '🇮🇩 Bahasa Indonesia', en: '🇬🇧 English', ms: '🇲🇾 Bahasa Melayu' };
+    const langNames = { id: '🇮🇩 Bahasa Indonesia', en: '🇬🇧 English' };
     const el = document.getElementById('current-lang-display');
     if (el) el.textContent = langNames[currentLang] || 'Bahasa Indonesia';
     document.documentElement.lang = currentLang;
-    ['id','en','ms'].forEach(l => {
+    ['id','en'].forEach(l => {
         const opt = document.getElementById('lang-' + l);
         if (opt) opt.classList.toggle('selected', l === currentLang);
     });
@@ -1732,7 +1628,7 @@ function setLanguage(lang) {
 }
 
 function openLanguageModal() {
-    ['id','en','ms'].forEach(l => {
+    ['id','en'].forEach(l => {
         const opt = document.getElementById('lang-' + l);
         if (opt) opt.classList.toggle('selected', l === currentLang);
     });
@@ -1740,7 +1636,7 @@ function openLanguageModal() {
 }
 
 // ══════════════════════════════
-// CONFIRM DIALOG (replaces native confirm())
+// CONFIRM DIALOG
 // ══════════════════════════════
 let _confirmResolve = null;
 
@@ -1851,6 +1747,18 @@ let flashTrack = null;
 let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
+
+// ── Debt filter state ──────────────────────────────────────────────────
+let debtFilter = 'all'; // 'all' | 'unpaid' | 'paid'
+
+function setDebtFilter(f) {
+    debtFilter = f;
+    ['all','unpaid','paid'].forEach(id => {
+        const el = document.getElementById('dft-' + id);
+        if (el) el.classList.toggle('active-tab', id === f);
+    });
+    renderDebts();
+}
 
 // ══════════════════════════════
 // BALANCE HIDE / SHOW
@@ -2257,7 +2165,7 @@ function loadSettings(){
     const lpCfg=document.getElementById('logo-preview-cfg');if(lpCfg){if(s.logo)lpCfg.innerHTML=`<img src="${s.logo}" class="w-full h-full object-cover">`;else lpCfg.innerHTML=`<i class="fa-solid fa-image text-muted text-2xl"></i>`;}
     const devNameEl=document.getElementById('printer-device-name');
     if(devNameEl)devNameEl.innerText=btConnected?(btDevice?.name||t('settings_printer')):(btPrefs.lastName?`${t('printer_not_connected')}: ${btPrefs.lastName}`:t('printer_not_connected'));
-    const langNames={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English',ms:'🇲🇾 Bahasa Melayu'};
+    const langNames={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English'};
     const langEl=document.getElementById('current-lang-display');
     if(langEl)langEl.textContent=langNames[currentLang]||'Bahasa Indonesia';
 }
@@ -2287,7 +2195,6 @@ function renderItems(){
     }).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
 }
 
-// ── DELETE PRODUCT — with confirm dialog ──────────────────────────────────
 async function deleteProduct(id) {
     const item = items.find(x => x.id == id);
     const name = item ? item.name : '';
@@ -2335,19 +2242,60 @@ function exportExcel(){if(typeof XLSX==='undefined')return showToast(t('toast_ex
 
 function exportPDF(){if(typeof window.jspdf==='undefined')return showToast(t('toast_pdf_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!==t('debt_paid_status')).reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:t('dash_today_income'),value:formatIDR(tAmt),color:pc},{label:t('dash_net_profit'),value:formatIDR(tAmt-tCost),color:sc},{label:t('dash_total_receivable'),value:formatIDR(tDebt),color:dc},{label:t('nav_reports'),value:`${filtered.length}`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text(t('nav_reports').toUpperCase(),M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`${t('transactions')}: ${f}`:'All',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Date","Items","Total","Profit","Method"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast(t('toast_pdf_success'));}catch(e){console.error(e);showToast(t('toast_pdf_fail'));}}
 
-// ── Debts ─────────────────────────────────────────────────────────────────
-function renderDebts(){
-    const label=document.getElementById('debt-count-label');if(label)label.innerText=debts.filter(d=>d.status!==t('debt_paid_status')).length+" ORANG";
-    const list=document.getElementById('debt-list');if(!list)return;
-    list.innerHTML=debts.slice().reverse().map(d=>`
-        <div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm ${d.dueDate!=='-'&&new Date(d.dueDate)<new Date()&&d.status!==t('debt_paid_status')?'border-rose-400':''}">
+// ══════════════════════════════
+// DEBTS — with search + filter
+// ══════════════════════════════
+function renderDebts() {
+    const q = (document.getElementById('debt-search') || { value: '' }).value.toLowerCase().trim();
+    const paidStatus = t('debt_paid_status');
+
+    // Update counter label (unpaid only)
+    const unpaidCount = debts.filter(d => d.status !== paidStatus).length;
+    const label = document.getElementById('debt-count-label');
+    if (label) label.innerText = unpaidCount + ' ORANG';
+
+    const list = document.getElementById('debt-list');
+    if (!list) return;
+
+    // Filter by search + tab
+    let filtered = debts.slice().reverse().filter(d => {
+        const matchSearch = !q || d.customer.toLowerCase().includes(q);
+        const matchFilter =
+            debtFilter === 'all' ? true :
+            debtFilter === 'unpaid' ? d.status !== paidStatus :
+            debtFilter === 'paid' ? d.status === paidStatus : true;
+        return matchSearch && matchFilter;
+    });
+
+    if (filtered.length === 0) {
+        const emptyMsg = q
+            ? `<div class="text-center py-12 opacity-30"><i class="fa-solid fa-magnifying-glass text-2xl mb-3"></i><p class="text-sm">${t('no_data')}</p></div>`
+            : `<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;
+        list.innerHTML = emptyMsg;
+        return;
+    }
+
+    list.innerHTML = filtered.map(d => {
+        const isOverdue = d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== paidStatus;
+        const isPaid = d.status === paidStatus;
+        return `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm transition-all ${isOverdue ? 'border-rose-300' : ''}">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 ${d.status===t('debt_paid_status')?'bg-emerald-100 text-emerald-600':'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid fa-user-clock"></i></div>
-                <div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}</p></div>
+                <div class="w-10 h-10 ${isPaid ? 'bg-emerald-100 text-emerald-600' : isOverdue ? 'bg-red-100 text-red-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs">
+                    <i class="fa-solid ${isPaid ? 'fa-check-circle' : 'fa-user-clock'}"></i>
+                </div>
+                <div>
+                    <p class="text-xs font-black">${d.customer}</p>
+                    <p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}${isOverdue ? ' ⚠' : ''}</p>
+                </div>
             </div>
-            <div class="text-right"><p class="text-xs font-black">${formatIDR(d.balance)}</p><span class="text-[7px] font-black opacity-40 uppercase">${d.status}</span></div>
-        </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;
+            <div class="text-right">
+                <p class="text-xs font-black ${isPaid ? 'text-emerald-600' : 'text-rose-500'}">${formatIDR(d.balance)}</p>
+                <span class="text-[7px] font-black uppercase px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-500'}">${d.status}</span>
+            </div>
+        </div>`;
+    }).join('');
 }
+
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast(t('toast_fill_data'));const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status=t('debt_paid_status');saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
