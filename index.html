@@ -271,17 +271,104 @@
         .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
         .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
 
-        .dash-hero { background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 50%,#a855f7 100%); border-radius: 24px; padding: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(79,70,229,0.3); }
-        .dash-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:rgba(255,255,255,0.06); }
-        .dash-hero::after { content:''; position:absolute; bottom:-30px; left:-20px; width:100px; height:100px; border-radius:50%; background:rgba(255,255,255,0.04); }
+        /* ── HERO CARD BARU ── */
+        .dash-hero {
+            background: #1e1b4b;
+            border-radius: 28px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(30,27,75,0.35);
+        }
+        .dash-hero-grid {
+            position: absolute; inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),
+                linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);
+            background-size: 28px 28px;
+        }
+        .dash-hero-orb-1 {
+            position: absolute; top: -50px; right: -50px;
+            width: 200px; height: 200px; border-radius: 50%;
+            background: rgba(139,92,246,0.3); filter: blur(55px);
+            pointer-events: none;
+        }
+        .dash-hero-orb-2 {
+            position: absolute; bottom: -30px; left: -30px;
+            width: 150px; height: 150px; border-radius: 50%;
+            background: rgba(99,102,241,0.2); filter: blur(45px);
+            pointer-events: none;
+        }
+        .hero-inner { position: relative; z-index: 2; }
 
         .balance-mask { display: inline-block; transition: filter 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease; }
         .balance-hidden .balance-mask { filter: blur(10px); opacity: 0.35; user-select: none; pointer-events: none; }
-        .balance-toggle-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.28); border-radius: 20px; cursor: pointer; transition: background 0.2s, transform 0.15s, box-shadow 0.2s; color: rgba(255,255,255,0.9); backdrop-filter: blur(8px); flex-shrink: 0; line-height: 1; }
-        .balance-toggle-btn:active { transform: scale(0.90); } .balance-toggle-btn:hover { background: rgba(255,255,255,0.22); box-shadow: 0 2px 12px rgba(0,0,0,0.15); }
+        .balance-toggle-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; cursor: pointer; transition: background 0.2s, transform 0.15s; color: rgba(255,255,255,0.85); flex-shrink: 0; line-height: 1; }
+        .balance-toggle-btn:active { transform: scale(0.90); }
         .balance-toggle-btn .btn-eye-icon { font-size: 11px; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; }
         .balance-toggle-btn .btn-label { font-size: 9px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
         .balance-toggle-btn.hiding .btn-eye-icon { transform: scale(0.7) rotate(-20deg); opacity: 0.5; }
+
+        .hero-stat-cell {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px;
+            padding: 14px;
+        }
+        .hero-stat-cell.danger {
+            background: rgba(239,68,68,0.1);
+            border-color: rgba(239,68,68,0.22);
+        }
+        .hero-stat-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 9px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.1em; color: rgba(255,255,255,0.45); margin-bottom: 8px;
+        }
+        .hero-stat-dot {
+            width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; display: inline-block;
+        }
+        .hero-stat-value {
+            font-size: 17px; font-weight: 900; color: #fff;
+            letter-spacing: -0.5px; line-height: 1;
+        }
+        .hero-stat-value.red { color: #fca5a5; }
+        .hero-stat-sub {
+            font-size: 9px; margin-top: 4px; font-weight: 600;
+            color: rgba(255,255,255,0.3);
+        }
+        .hero-qa-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            padding: 11px 8px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .hero-qa-btn:active { transform: scale(0.93); background: rgba(255,255,255,0.13); }
+        .hero-qa-icon {
+            width: 30px; height: 30px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; font-size: 12px;
+        }
+        .hero-qa-label {
+            font-size: 8px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 0.06em; color: rgba(255,255,255,0.5);
+        }
+        .hero-divider {
+            border: none; border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 0 0 16px;
+        }
+        .hero-trend-chip {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 3px 9px; border-radius: 12px;
+            background: rgba(16,185,129,0.18);
+            border: 1px solid rgba(16,185,129,0.3);
+            font-size: 9px; font-weight: 800; color: #6ee7b7; letter-spacing: 0.04em;
+        }
+        .hero-trend-chip.warn {
+            background: rgba(245,158,11,0.18);
+            border-color: rgba(245,158,11,0.3);
+            color: #fcd34d;
+        }
 
         /* ── CONFIRM MODAL ── */
         #modal-confirm { position: fixed; inset: 0; z-index: 9000; background: rgba(15,20,40,0.65); display: none; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(6px); }
@@ -339,7 +426,7 @@
     <div class="splash-version">DheKasir v1.4 • © 2025</div>
 </div>
 
-<!-- ═══ GLOBAL CONFIRM MODAL ═══ -->
+<!-- GLOBAL CONFIRM MODAL -->
 <div id="modal-confirm">
     <div class="confirm-sheet">
         <div class="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -437,28 +524,89 @@
 
         <!-- HOME -->
         <section id="tab-home" class="tab-content active space-y-5">
-            <div class="dash-hero text-white relative z-10" id="dash-hero-wrap">
-                <div class="flex items-center justify-between mb-2" style="position:relative;z-index:2;">
-                    <p class="text-[10px] opacity-70 font-bold uppercase tracking-widest" data-i18n="dash_net_profit">Profit Bersih Toko</p>
-                    <button class="balance-toggle-btn" id="balance-toggle-btn" onclick="toggleBalanceVisibility()" aria-label="">
-                        <i class="fa-solid fa-eye btn-eye-icon" id="balance-eye-icon"></i>
-                        <span class="btn-label" id="balance-toggle-label" data-i18n="hide">Sembunyikan</span>
-                    </button>
-                </div>
-                <h2 class="text-3xl font-black mb-1" style="position:relative;z-index:2;">
-                    <span class="balance-mask" id="dash-profit">Rp 0</span>
-                </h2>
-                <div class="grid grid-cols-2 gap-4 border-t border-white/20 pt-5 mt-5" style="position:relative;z-index:2;">
-                    <div>
-                        <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1" data-i18n="dash_today_income">Pemasukan Hari Ini</p>
-                        <p class="text-base font-bold"><span class="balance-mask" id="dash-omzet">Rp 0</span></p>
+
+            <!-- ── HERO CARD BARU ── -->
+            <div class="dash-hero" id="dash-hero-wrap">
+                <div class="dash-hero-grid"></div>
+                <div class="dash-hero-orb-1"></div>
+                <div class="dash-hero-orb-2"></div>
+                <div class="hero-inner">
+
+                    <!-- Row: label + toggle -->
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-[10px] font-black uppercase tracking-widest" style="color:rgba(255,255,255,0.5);" data-i18n="dash_net_profit">Profit Bersih Toko</p>
+                        <button class="balance-toggle-btn" id="balance-toggle-btn" onclick="toggleBalanceVisibility()" aria-label="">
+                            <i class="fa-solid fa-eye btn-eye-icon" id="balance-eye-icon"></i>
+                            <span class="btn-label" id="balance-toggle-label" data-i18n="hide">Sembunyikan</span>
+                        </button>
                     </div>
-                    <div>
-                        <p class="text-[9px] opacity-60 font-bold uppercase tracking-widest mb-1" data-i18n="dash_total_receivable">Total Piutang</p>
-                        <p class="text-base font-bold text-rose-200"><span class="balance-mask" id="dash-debt">Rp 0</span></p>
+
+                    <!-- Angka profit utama -->
+                    <h2 class="text-white font-black mb-2" style="font-size:34px;letter-spacing:-1px;line-height:1;">
+                        <span class="balance-mask" id="dash-profit">Rp 0</span>
+                    </h2>
+
+                    <!-- Chip trend + tanggal -->
+                    <div class="flex items-center gap-2 mb-5">
+                        <span class="hero-trend-chip" id="dash-trend-chip">
+                            <i class="fa-solid fa-arrow-trend-up" style="font-size:8px;"></i>
+                            <span id="dash-trend-label">Hari Ini</span>
+                        </span>
+                        <span style="font-size:9px;font-weight:600;color:rgba(255,255,255,0.35);" id="dash-date-label"></span>
                     </div>
+
+                    <hr class="hero-divider">
+
+                    <!-- Stat cards -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <div class="hero-stat-cell">
+                            <div class="hero-stat-label">
+                                <span class="hero-stat-dot" style="background:#10b981;"></span>
+                                <span data-i18n="dash_today_income">Pemasukan Hari Ini</span>
+                            </div>
+                            <div class="hero-stat-value">
+                                <span class="balance-mask" id="dash-omzet">Rp 0</span>
+                            </div>
+                            <div class="hero-stat-sub" id="dash-tx-count">0 transaksi</div>
+                        </div>
+                        <div class="hero-stat-cell danger">
+                            <div class="hero-stat-label">
+                                <span class="hero-stat-dot" style="background:#f87171;"></span>
+                                <span data-i18n="dash_total_receivable">Total Piutang</span>
+                            </div>
+                            <div class="hero-stat-value red">
+                                <span class="balance-mask" id="dash-debt">Rp 0</span>
+                            </div>
+                            <div class="hero-stat-sub" id="dash-debt-count">0 pelanggan</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="grid grid-cols-3 gap-2">
+                        <div class="hero-qa-btn" onclick="switchTab('pos')">
+                            <div class="hero-qa-icon" style="background:rgba(139,92,246,0.3);">
+                                <i class="fa-solid fa-cash-register" style="color:#c4b5fd;font-size:13px;"></i>
+                            </div>
+                            <span class="hero-qa-label" data-i18n="nav_pos_short">Kasir</span>
+                        </div>
+                        <div class="hero-qa-btn" onclick="switchTab('stock')">
+                            <div class="hero-qa-icon" style="background:rgba(20,184,166,0.3);">
+                                <i class="fa-solid fa-warehouse" style="color:#5eead4;font-size:13px;"></i>
+                            </div>
+                            <span class="hero-qa-label" data-i18n="nav_warehouse_short">Gudang</span>
+                        </div>
+                        <div class="hero-qa-btn" onclick="switchTab('debts')">
+                            <div class="hero-qa-icon" style="background:rgba(245,158,11,0.3);">
+                                <i class="fa-solid fa-user-clock" style="color:#fcd34d;font-size:13px;"></i>
+                            </div>
+                            <span class="hero-qa-label" data-i18n="nav_debts_short">Hutang</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+            <!-- ── END HERO CARD ── -->
+
             <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
@@ -555,33 +703,21 @@
             <div id="stock-history-list" class="space-y-2"></div>
         </section>
 
-        <!-- ═══ DEBTS — with search & filter ═══ -->
+        <!-- DEBTS -->
         <section id="tab-debts" class="tab-content space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="page-title" data-i18n="nav_debts">Buku Hutang</h2>
                 <div class="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-[10px] font-black" id="debt-count-label">0 ORANG</div>
             </div>
-
-            <!-- Search bar -->
             <div class="debt-search-wrap">
                 <i class="fa-solid fa-search search-icon"></i>
-                <input
-                    type="text"
-                    id="debt-search"
-                    oninput="renderDebts()"
-                    placeholder="Cari nama pelanggan..."
-                    data-i18n-placeholder="debt_search_placeholder"
-                    class="w-full p-3.5 card rounded-2xl outline-none text-sm font-medium"
-                >
+                <input type="text" id="debt-search" oninput="renderDebts()" placeholder="Cari nama pelanggan..." data-i18n-placeholder="debt_search_placeholder" class="w-full p-3.5 card rounded-2xl outline-none text-sm font-medium">
             </div>
-
-            <!-- Filter tabs -->
             <div class="debt-filter-tabs">
                 <div class="debt-filter-tab active-tab" id="dft-all" onclick="setDebtFilter('all')" data-i18n="filter_all">Semua</div>
                 <div class="debt-filter-tab" id="dft-unpaid" onclick="setDebtFilter('unpaid')" data-i18n="debt_filter_unpaid">Belum Lunas</div>
                 <div class="debt-filter-tab" id="dft-paid" onclick="setDebtFilter('paid')" data-i18n="debt_filter_paid">Lunas</div>
             </div>
-
             <div id="debt-list" class="space-y-3"></div>
         </section>
 
@@ -690,14 +826,12 @@
             <span data-i18n="nav_pos_short">Kasir</span>
             <div class="nav-item-pill"></div>
         </div>
-
         <div class="nav-scan-fab" onclick="openScanner('cart')" aria-label="Scan Barcode">
             <div class="nav-scan-fab-btn">
                 <i class="fa-solid fa-barcode"></i>
             </div>
             <span class="nav-scan-fab-label">Scan</span>
         </div>
-
         <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;">
             <i class="fa-solid fa-warehouse"></i>
             <span data-i18n="nav_warehouse_short">Gudang</span>
@@ -728,9 +862,9 @@
     <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
 </div>
 
-<!-- ═══════════════════ MODALS ═══════════════════ -->
+<!-- MODALS -->
 
-<!-- LANGUAGE MODAL — hanya ID & EN -->
+<!-- LANGUAGE -->
 <div id="modal-language" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg" data-i18n="lang_select_title">Pilih Bahasa</h3>
@@ -738,18 +872,12 @@
         <div id="lang-list">
             <div class="lang-option" id="lang-id" onclick="setLanguage('id')">
                 <span class="lang-flag">🇮🇩</span>
-                <div>
-                    <div class="lang-name">Bahasa Indonesia</div>
-                    <div class="lang-native">Indonesia</div>
-                </div>
+                <div><div class="lang-name">Bahasa Indonesia</div><div class="lang-native">Indonesia</div></div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
             <div class="lang-option" id="lang-en" onclick="setLanguage('en')">
                 <span class="lang-flag">🇬🇧</span>
-                <div>
-                    <div class="lang-name">English</div>
-                    <div class="lang-native">English (United Kingdom)</div>
-                </div>
+                <div><div class="lang-name">English</div><div class="lang-native">English (United Kingdom)</div></div>
                 <i class="fa-solid fa-check lang-check"></i>
             </div>
         </div>
@@ -757,6 +885,7 @@
     </div>
 </div>
 
+<!-- SCANNER -->
 <div id="modal-scanner" class="fixed inset-0 z-[150] bg-black hidden flex flex-col items-center justify-center p-6">
     <button onclick="closeScanner()" class="absolute top-8 right-6 text-white text-3xl"><i class="fa-solid fa-circle-xmark"></i></button>
     <div class="w-full max-w-sm"><div id="reader"></div></div>
@@ -770,6 +899,7 @@
     <p class="text-white/40 text-[10px] font-bold mt-4 tracking-widest uppercase text-center" data-i18n="scanner_hint">Auto-detect Aktif • Jeda 2.5 Detik per Produk</p>
 </div>
 
+<!-- NOTIF -->
 <div id="modal-notif" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[80vh] flex flex-col">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -781,15 +911,14 @@
     </div>
 </div>
 
+<!-- PRINTER -->
 <div id="modal-printer" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-5">
         <div class="w-10 h-1.5 rounded-full mx-auto" style="background:var(--card-border)"></div>
         <div class="printer-card overflow-hidden">
             <div id="printer-modal-bar" class="printer-status-bar offline"></div>
             <div class="p-4 flex items-center gap-4">
-                <div id="printer-modal-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0" style="background:var(--surface);color:var(--text-muted);">
-                    <i class="fa-solid fa-print"></i>
-                </div>
+                <div id="printer-modal-icon" class="w-12 h-12 rounded-2xl flex items-center justify-center text-lg shrink-0" style="background:var(--surface);color:var(--text-muted);"><i class="fa-solid fa-print"></i></div>
                 <div class="flex-1 min-w-0">
                     <p class="text-sm font-black" id="printer-modal-name" data-i18n="settings_printer">Printer Thermal</p>
                     <p class="text-[10px] font-semibold text-muted" id="printer-modal-desc" data-i18n="printer_no_device">Belum ada perangkat terhubung</p>
@@ -807,32 +936,20 @@
                 <p class="text-xs font-black" data-i18n="printer_auto_reconnect">Auto-Reconnect</p>
                 <p class="text-[9px] text-muted" data-i18n="printer_auto_reconnect_desc">Sambung otomatis saat halaman dibuka</p>
             </div>
-            <label class="switch">
-                <input type="checkbox" id="printer-auto-reconnect" onchange="savePrinterPrefs()">
-                <span class="slider"></span>
-            </label>
+            <label class="switch"><input type="checkbox" id="printer-auto-reconnect" onchange="savePrinterPrefs()"><span class="slider"></span></label>
         </div>
-        <div id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()" data-i18n="printer_connect">
-            <i class="fa-brands fa-bluetooth mr-2"></i> Hubungkan Printer
-        </div>
-        <div id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()" data-i18n="printer_reconnect">
-            <i class="fa-solid fa-rotate mr-2"></i> Sambung Ulang
-        </div>
+        <div id="printer-btn-connect" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btConnect()" data-i18n="printer_connect"><i class="fa-brands fa-bluetooth mr-2"></i> Hubungkan Printer</div>
+        <div id="printer-btn-reconnect" class="hidden w-full py-4 bg-amber-500 text-white rounded-2xl font-black text-xs uppercase shadow-xl text-center cursor-pointer active:scale-95 transition-all" onclick="btReconnect()" data-i18n="printer_reconnect"><i class="fa-solid fa-rotate mr-2"></i> Sambung Ulang</div>
         <div id="printer-btn-actions" class="hidden grid grid-cols-2 gap-3">
-            <button onclick="btTestPrint()" class="py-4 bg-emerald-600 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all" data-i18n="printer_test">
-                <i class="fa-solid fa-file-lines mr-1"></i> Test Print
-            </button>
-            <button onclick="btDisconnect()" class="py-4 bg-rose-50 text-rose-600 rounded-2xl font-bold text-[10px] uppercase shadow-sm active:scale-95 transition-all border border-rose-200" data-i18n="printer_disconnect">
-                <i class="fa-solid fa-link-slash mr-1"></i> Putuskan
-            </button>
+            <button onclick="btTestPrint()" class="py-4 bg-emerald-600 text-white rounded-2xl font-bold text-[10px] uppercase shadow-lg active:scale-95 transition-all" data-i18n="printer_test"><i class="fa-solid fa-file-lines mr-1"></i> Test Print</button>
+            <button onclick="btDisconnect()" class="py-4 bg-rose-50 text-rose-600 rounded-2xl font-bold text-[10px] uppercase shadow-sm active:scale-95 transition-all border border-rose-200" data-i18n="printer_disconnect"><i class="fa-solid fa-link-slash mr-1"></i> Putuskan</button>
         </div>
-        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed" data-i18n="printer_tip">
-            <strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>.
-        </div>
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed" data-i18n="printer_tip"><strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>.</div>
         <button onclick="closeModal('modal-printer')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted" data-i18n="btn_close">Tutup</button>
     </div>
 </div>
 
+<!-- STOCK MOVE -->
 <div id="modal-stock-move" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="text-xl font-black" id="stock-move-title">Stok Masuk</h3>
@@ -859,6 +976,7 @@
     </div>
 </div>
 
+<!-- OPNAME -->
 <div id="modal-opname" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[90vh] flex flex-col">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -872,6 +990,7 @@
     </div>
 </div>
 
+<!-- MIN STOCK -->
 <div id="modal-minstock" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
         <h3 class="font-black text-lg" data-i18n="settings_min_stock">Batas Minimum Stok</h3>
@@ -885,6 +1004,7 @@
     </div>
 </div>
 
+<!-- CART DETAILS -->
 <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -895,6 +1015,7 @@
     </div>
 </div>
 
+<!-- CHECKOUT -->
 <div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -907,14 +1028,8 @@
             </div>
             <div id="pay-cash-area" class="space-y-4">
                 <div class="grid grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-black uppercase ml-2 text-muted" data-i18n="label_cash">Uang Tunai</label>
-                        <input type="number" id="pay-amt-cash" oninput="calcChange()" class="w-full p-4 text-emerald-600 font-black rounded-2xl outline-none border">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-[8px] font-black uppercase ml-2 text-muted" data-i18n="label_transfer">Transfer/QRIS</label>
-                        <input type="number" id="pay-amt-qris" oninput="calcChange()" class="w-full p-4 text-indigo-600 font-black rounded-2xl outline-none border">
-                    </div>
+                    <div><label class="text-[8px] font-black uppercase ml-2 text-muted" data-i18n="label_cash">Uang Tunai</label><input type="number" id="pay-amt-cash" oninput="calcChange()" class="w-full p-4 text-emerald-600 font-black rounded-2xl outline-none border"></div>
+                    <div><label class="text-[8px] font-black uppercase ml-2 text-muted" data-i18n="label_transfer">Transfer/QRIS</label><input type="number" id="pay-amt-qris" oninput="calcChange()" class="w-full p-4 text-indigo-600 font-black rounded-2xl outline-none border"></div>
                 </div>
                 <div class="flex justify-between items-center px-5 py-4 rounded-2xl surface"><span class="text-xs font-bold uppercase text-muted" data-i18n="change">Kembalian</span><span id="pay-change" class="text-xl font-black">Rp 0</span></div>
             </div>
@@ -931,6 +1046,7 @@
     </div>
 </div>
 
+<!-- RECEIPT -->
 <div id="modal-receipt" class="fixed inset-0 z-[130] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white w-full max-w-xs rounded-[36px] overflow-hidden animate-pop shadow-2xl flex flex-col max-h-[90vh]">
         <div class="px-6 pt-6 pb-4 flex items-center justify-between border-b border-slate-100 shrink-0">
@@ -970,6 +1086,7 @@
     </div>
 </div>
 
+<!-- DEBT DETAIL -->
 <div id="modal-debt-detail" class="fixed inset-0 z-[80] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
         <h3 class="text-lg font-black" id="det-debt-name">-</h3>
@@ -987,6 +1104,7 @@
     </div>
 </div>
 
+<!-- PRODUCT -->
 <div id="modal-product" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop overflow-y-auto max-h-[85vh] shadow-2xl">
         <h3 class="text-xl font-black mb-5" data-i18n="product_master">Master Produk</h3>
@@ -1012,6 +1130,7 @@
     </div>
 </div>
 
+<!-- CATEGORY -->
 <div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
         <h3 class="font-black text-lg" data-i18n="manage_category">Kelola Kategori</h3>
@@ -1024,6 +1143,7 @@
     </div>
 </div>
 
+<!-- STORE CFG -->
 <div id="modal-store-cfg" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
         <h3 class="font-black text-lg" data-i18n="settings_store">Setelan Toko</h3>
@@ -1041,6 +1161,7 @@
     </div>
 </div>
 
+<!-- ABOUT -->
 <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center">
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
@@ -1048,98 +1169,58 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 1.4</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted" id="about-text">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v1.4: Fix Bluetooth Print, Audio Feedback, Multi-Bahasa (Indonesia, Inggris).</p>
+            <p>Fitur baru v1.4: Fix Bluetooth Print, Audio Feedback, Multi-Bahasa (Indonesia, Inggris), Hero Card redesign.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface" data-i18n="btn_close">Tutup</button>
     </div>
 </div>
 
-<!-- ═══ PRIVACY MODAL — Updated ═══ -->
+<!-- PRIVACY -->
 <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]">
-        <!-- Header -->
         <div class="flex items-center gap-3 mb-5 shrink-0">
-            <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center">
-                <i class="fa-solid fa-shield-halved text-indigo-600"></i>
-            </div>
+            <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-shield-halved text-indigo-600"></i></div>
             <div>
                 <h3 class="font-black text-base" data-i18n="privacy_title">Kebijakan Privasi</h3>
                 <p class="text-[9px] text-muted font-bold uppercase tracking-widest">Berlaku sejak 1 Januari 2025</p>
             </div>
         </div>
-
         <div class="flex-1 overflow-y-auto pr-1 space-y-5 hide-scrollbar text-[11px] leading-relaxed text-muted">
-
-            <!-- 1 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-database text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">1. Penyimpanan Data Lokal</span>
-                </div>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-database text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">1. Penyimpanan Data Lokal</span></div>
                 <p>Seluruh data transaksi, inventaris, stok, buku hutang, dan konfigurasi toko disimpan secara eksklusif di dalam <strong>penyimpanan lokal perangkat</strong> Anda (<em>LocalStorage</em>). DheKasir tidak mengirimkan data ini ke server manapun tanpa persetujuan eksplisit Anda.</p>
             </div>
-
-            <!-- 2 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">2. Sinkronisasi Cloud (Opsional)</span>
-                </div>
-                <p>Fitur sinkronisasi ke <strong>Google Spreadsheet</strong> hanya aktif jika Anda secara sukarela memasukkan URL Google Apps Script milik sendiri pada menu Setelan Toko. Data hanya dikirimkan ke endpoint yang Anda tentukan dan sepenuhnya berada di bawah kendali Anda.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-cloud-arrow-up text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">2. Sinkronisasi Cloud (Opsional)</span></div>
+                <p>Fitur sinkronisasi ke <strong>Google Spreadsheet</strong> hanya aktif jika Anda secara sukarela memasukkan URL Google Apps Script milik sendiri pada menu Setelan Toko.</p>
             </div>
-
-            <!-- 3 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-camera text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">3. Akses Kamera & Barcode</span>
-                </div>
-                <p>Izin kamera hanya digunakan secara real-time untuk memindai kode barcode produk. Tidak ada foto, video, atau rekaman yang disimpan, dikirim, atau diproses di luar perangkat Anda.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-camera text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">3. Akses Kamera & Barcode</span></div>
+                <p>Izin kamera hanya digunakan secara real-time untuk memindai kode barcode produk. Tidak ada foto atau rekaman yang disimpan atau dikirim.</p>
             </div>
-
-            <!-- 4 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-brands fa-bluetooth text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">4. Koneksi Bluetooth</span>
-                </div>
-                <p>Bluetooth hanya digunakan untuk menghubungkan printer thermal. Tidak ada data yang dibagikan ke pihak ketiga melalui koneksi ini. Perangkat yang dipilih tersimpan lokal untuk kemudahan koneksi ulang.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-brands fa-bluetooth text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">4. Koneksi Bluetooth</span></div>
+                <p>Bluetooth hanya digunakan untuk menghubungkan printer thermal. Tidak ada data yang dibagikan ke pihak ketiga melalui koneksi ini.</p>
             </div>
-
-            <!-- 5 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-user-shield text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">5. Data Pelanggan</span>
-                </div>
-                <p>Data nama pelanggan yang dimasukkan pada fitur Buku Hutang hanya disimpan di perangkat Anda. DheKasir tidak mengumpulkan, menjual, atau berbagi informasi pelanggan kepada pihak mana pun.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-user-shield text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">5. Data Pelanggan</span></div>
+                <p>Data nama pelanggan yang dimasukkan pada fitur Buku Hutang hanya disimpan di perangkat Anda. DheKasir tidak mengumpulkan atau menjual informasi pelanggan.</p>
             </div>
-
-            <!-- 6 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-trash-can text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">6. Hak Penghapusan Data</span>
-                </div>
-                <p>Anda memiliki kendali penuh atas data Anda. Data dapat dihapus kapan saja melalui menu pengaturan browser (Clear Site Data) atau dengan menghapus cache aplikasi. Penghapusan bersifat permanen dan tidak dapat dipulihkan.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-trash-can text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">6. Hak Penghapusan Data</span></div>
+                <p>Anda memiliki kendali penuh atas data Anda. Data dapat dihapus kapan saja melalui menu pengaturan browser (Clear Site Data).</p>
             </div>
-
-            <!-- 7 -->
             <div class="p-4 rounded-2xl" style="background:var(--surface)">
-                <div class="flex items-center gap-2 mb-2">
-                    <i class="fa-solid fa-envelope text-indigo-500 text-xs"></i>
-                    <span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">7. Kontak & Pertanyaan</span>
-                </div>
-                <p>Jika Anda memiliki pertanyaan mengenai kebijakan privasi ini, silakan hubungi kami di <strong class="text-indigo-500">support@dhekasir.app</strong>. Kami berkomitmen merespons dalam 2×24 jam kerja.</p>
+                <div class="flex items-center gap-2 mb-2"><i class="fa-solid fa-envelope text-indigo-500 text-xs"></i><span class="font-black text-[10px] uppercase tracking-widest" style="color:var(--text)">7. Kontak & Pertanyaan</span></div>
+                <p>Hubungi kami di <strong class="text-indigo-500">support@dhekasir.app</strong>. Kami berkomitmen merespons dalam 2×24 jam kerja.</p>
             </div>
-
             <p class="text-center text-[9px] pt-2 pb-1" style="color:var(--text-muted)">© 2025 DheKasir — Versi Kebijakan 1.4</p>
         </div>
-
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0" data-i18n="btn_agree">Saya Mengerti</button>
     </div>
 </div>
 
+<!-- CONTACT -->
 <div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
     <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
         <h3 class="font-black text-lg mb-5 text-center" data-i18n="settings_contact">Hubungi Kami</h3>
@@ -1157,430 +1238,20 @@
     </div>
 </div>
 
-<!-- ═══════════════════ SCRIPTS ═══════════════════ -->
 <script>
 // ══════════════════════════════
-// TRANSLATIONS — ID & EN only (Malay removed)
+// TRANSLATIONS
 // ══════════════════════════════
 const TRANSLATIONS = {
     id: {
-        splash_tagline: 'Sistem Kasir Digital UMKM',
-        splash_loading: 'Memuat sistem...',
-        menu_main: 'Menu Utama',
-        menu_operational: 'Operasional',
-        menu_account: 'Akun',
-        nav_home: 'Beranda',
-        nav_pos: 'Kasir / POS',
-        nav_inventory: 'Inventaris',
-        nav_stock: 'Manajemen Stok',
-        nav_debts: 'Buku Hutang',
-        nav_reports: 'Laporan & Data',
-        nav_settings: 'Pengaturan',
-        nav_about: 'Tentang Aplikasi',
-        nav_home_short: 'Home',
-        nav_pos_short: 'Kasir',
-        nav_stock_short: 'Stok',
-        nav_warehouse_short: 'Gudang',
-        nav_debts_short: 'Hutang',
-        nav_data_short: 'Data',
-        dark_mode: 'Tema Gelap',
-        dash_net_profit: 'Profit Bersih Toko',
-        dash_today_income: 'Pemasukan Hari Ini',
-        dash_total_receivable: 'Total Piutang',
-        hide: 'Sembunyikan',
-        show: 'Tampilkan',
-        stock_status: 'Status Stok',
-        busy_hours: 'Jam Sibuk',
-        top_products: '3 Produk Terlaris',
-        items_low: 'Item Menipis',
-        no_data: 'Tidak Ada Data',
-        pos_search_placeholder: 'Cari barang atau scan...',
-        view_detail: 'Lihat Detail',
-        btn_checkout: 'Lanjutkan Pembayaran →',
-        btn_category: 'Kategori',
-        btn_add: '+ Tambah',
-        item_search_placeholder: 'Cari barang atau barcode...',
-        debt_search_placeholder: 'Cari nama pelanggan...',
-        debt_filter_unpaid: 'Belum Lunas',
-        debt_filter_paid: 'Lunas',
-        stock_in: 'Stok Masuk',
-        stock_out: 'Stok Keluar',
-        stock_opname: 'Stok Opname',
-        stat_products: 'Produk',
-        stat_low: 'Menipis',
-        stat_empty: 'Habis',
-        filter_all: 'Semua',
-        filter_ok: 'Aman',
-        product_status: 'Status Produk',
-        stock_history: 'Riwayat Stok',
-        btn_delete: 'Hapus',
-        label_select_product: 'Pilih Produk',
-        label_qty: 'Jumlah',
-        label_note_optional: 'Keterangan (opsional)',
-        note_placeholder: 'Restock dari supplier...',
-        current_stock: 'Stok Saat Ini',
-        opname_desc: 'Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.',
-        opname_physical: 'Stok Fisik',
-        opname_system: 'Sistem',
-        btn_save_opname: 'Simpan Opname',
-        settings_min_stock: 'Batas Minimum Stok',
-        minstock_desc: 'Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.',
-        minstock_label: 'Batas Minimum (unit)',
-        debt_total_loan: 'Total Pinjaman',
-        debt_paid: 'Terbayar',
-        debt_remaining: 'SISA',
-        debt_book_empty: 'Buku Hutang Kosong',
-        installment_placeholder: 'Nominal Cicilan',
-        btn_pay_installment: 'Bayar Cicilan',
-        deadline: 'Tempo',
-        checkout_title: 'Konfirmasi Bayar',
-        total: 'TOTAL',
-        pay_cash_qris: 'Tunai/QRIS',
-        pay_debt: 'Hutang (Bon)',
-        label_cash: 'Uang Tunai',
-        label_transfer: 'Transfer/QRIS',
-        change: 'Kembalian',
-        customer_name_placeholder: 'Nama Pelanggan',
-        due_date: 'Jatuh Tempo',
-        btn_finish_checkout: 'Selesaikan Transaksi',
-        cart_detail_title: 'Detail Keranjang',
-        receipt_title: 'Struk Belanja',
-        receipt_items: 'ITEM PEMBELIAN',
-        receipt_thank: 'Terima kasih atas kunjungan Anda!',
-        receipt_no_return: 'Barang yang sudah dibeli tidak dapat ditukar.',
-        rec_cash: 'Tunai',
-        rec_qris: 'QRIS/Transfer',
-        rec_change: 'Kembalian',
-        rec_debt: '⚠ HUTANG / BON',
-        print_bluetooth: 'Print Bluetooth',
-        settings_store_config: 'Konfigurasi Toko',
-        settings_store: 'Setelan Toko',
-        settings_printer: 'Printer Thermal',
-        settings_language: 'Bahasa / Language',
-        settings_info: 'Informasi',
-        settings_contact: 'Hubungi Kami',
-        settings_privacy: 'Privasi & Kebijakan',
-        lang_select_title: 'Pilih Bahasa',
-        lang_select_desc: 'Pilih bahasa tampilan aplikasi',
-        printer_not_connected: 'Belum terhubung',
-        printer_no_device: 'Belum ada perangkat terhubung',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Sambung otomatis saat halaman dibuka',
-        printer_connect: 'Hubungkan Printer',
-        printer_reconnect: 'Sambung Ulang',
-        printer_test: 'Test Print',
-        printer_disconnect: 'Putuskan',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>.',
-        product_master: 'Master Produk',
-        product_name_placeholder: 'Nama Produk',
-        stock_placeholder: 'Stok',
-        label_category: 'Kategori',
-        label_cost: 'Modal',
-        label_price: 'Jual',
-        btn_save_data: 'Simpan Data',
-        manage_category: 'Kelola Kategori',
-        new_category_placeholder: 'Kategori Baru',
-        store_name_placeholder: 'Nama Toko',
-        store_address_placeholder: 'Alamat Toko',
-        btn_change_logo: 'Ganti Logo',
-        btn_save_config: 'Simpan Konfigurasi',
-        privacy_title: 'Kebijakan Privasi',
-        contact_address: 'Alamat',
-        btn_save: 'Simpan',
-        btn_cancel: 'Batal',
-        btn_close: 'Tutup',
-        btn_agree: 'Saya Mengerti',
-        notif_stock_title: 'Notifikasi Stok',
-        notif_all_safe: 'Semua stok dalam kondisi aman',
-        notif_empty_stock: 'Stok Habis',
-        notif_low_stock: 'Menipis',
-        notif_fill: 'Isi',
-        notif_remaining: 'Sisa',
-        notif_unit: 'unit',
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Aktif • Jeda 2.5 Detik per Produk',
-        toast_sku_filled: 'SKU Terisi!',
-        toast_max_stock: 'Maksimal!',
-        toast_out_of_stock: 'Stok Habis!',
-        toast_product_not_found: 'Produk tidak ditemukan!',
-        toast_fill_data: 'Isi data dengan benar!',
-        toast_stock_added: 'stok ditambahkan!',
-        toast_stock_reduced: 'stok dikurangi!',
-        toast_stock_not_enough: 'Stok tidak cukup!',
-        toast_product_deleted: 'Produk Dihapus',
-        toast_save_success: 'Simpan Berhasil!',
-        toast_min_stock_saved: 'Batas Minimum Disimpan!',
-        toast_history_deleted: 'Riwayat Dihapus',
-        toast_https_required: 'Wajib HTTPS!',
-        toast_camera_fail: 'Gagal Kamera!',
-        toast_insufficient_money: 'Uang Kurang!',
-        toast_fill_name: 'Isi Nama!',
-        toast_fill_product_name: 'Isi Nama Produk!',
-        toast_fill_customer_name: 'Isi Nama Pelanggan!',
-        toast_excel_success: 'Excel Berhasil Diunduh!',
-        toast_excel_fail: 'Gagal Export Excel!',
-        toast_pdf_success: 'PDF Berhasil Diunduh!',
-        toast_pdf_fail: 'Gagal Export PDF!',
-        toast_no_data: 'Tidak ada data!',
-        toast_no_receipt: 'Tidak ada data struk!',
-        toast_printer_not_connected: 'Hubungkan printer dulu di Pengaturan!',
-        toast_printer_disconnected: 'Printer terputus',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Printer tersambung kembali!',
-        toast_reconnect_fail: 'Gagal reconnect printer!',
-        toast_sending_test: 'Mengirim test print...',
-        toast_test_success: 'Test print berhasil!',
-        toast_test_fail: 'Gagal test print: ',
-        toast_sending_print: 'Mengirim ke printer...',
-        toast_print_success: 'Struk berhasil dicetak!',
-        toast_print_fail: 'Gagal cetak: ',
-        toast_printer_connected: 'terhubung!',
-        toast_bt_connect_fail: 'Gagal: ',
-        toast_printer_disconnected_ok: 'Printer diputuskan',
-        toast_auto_connect: 'Auto-connect:',
-        toast_retry: 'Coba ulang',
-        toast_reconnecting: 'Reconnecting printer...',
-        toast_category_exists: 'Sudah Ada!',
-        toast_fill_category: 'Isi Nama!',
-        toast_language_changed: 'Bahasa berhasil diubah!',
-        toast_opname_no_data: 'Belum ada data opname!',
-        toast_opname_no_change: 'Tidak ada perubahan stok!',
-        toast_opname_done: 'Opname selesai —',
-        toast_products_updated: 'produk diperbarui',
-        sh_in: 'Masuk',
-        sh_out: 'Keluar',
-        sh_opname: 'Opname',
-        sh_sale: 'Penjualan',
-        sh_manual_in: 'Stok masuk manual',
-        sh_manual_out: 'Stok keluar manual',
-        badge_empty: 'Habis',
-        badge_low: 'Menipis',
-        badge_ok: 'Aman',
-        badge_in: 'Masuk',
-        badge_out: 'Keluar',
-        badge_opname: 'Opname',
-        debt_not_paid: 'BELUM LUNAS',
-        debt_paid_status: 'LUNAS',
-        pcs: 'pcs',
-        transactions: 'transaksi untuk',
-        all_transactions: 'Semua',
-        address_not_set: 'Alamat belum diatur',
-        confirm_clear_history: 'Hapus semua riwayat stok?',
-        confirm_delete_product_title: 'Hapus Produk?',
-        confirm_delete_product_desc: 'Produk akan dihapus secara permanen dan tidak dapat dikembalikan.',
-        confirm_delete_btn: 'Hapus Permanen',
+        splash_tagline:'Sistem Kasir Digital UMKM',splash_loading:'Memuat sistem...',menu_main:'Menu Utama',menu_operational:'Operasional',menu_account:'Akun',nav_home:'Beranda',nav_pos:'Kasir / POS',nav_inventory:'Inventaris',nav_stock:'Manajemen Stok',nav_debts:'Buku Hutang',nav_reports:'Laporan & Data',nav_settings:'Pengaturan',nav_about:'Tentang Aplikasi',nav_home_short:'Home',nav_pos_short:'Kasir',nav_stock_short:'Stok',nav_warehouse_short:'Gudang',nav_debts_short:'Hutang',nav_data_short:'Data',dark_mode:'Tema Gelap',dash_net_profit:'Profit Bersih Toko',dash_today_income:'Pemasukan Hari Ini',dash_total_receivable:'Total Piutang',hide:'Sembunyikan',show:'Tampilkan',stock_status:'Status Stok',busy_hours:'Jam Sibuk',top_products:'3 Produk Terlaris',items_low:'Item Menipis',no_data:'Tidak Ada Data',pos_search_placeholder:'Cari barang atau scan...',view_detail:'Lihat Detail',btn_checkout:'Lanjutkan Pembayaran →',btn_category:'Kategori',btn_add:'+ Tambah',item_search_placeholder:'Cari barang atau barcode...',debt_search_placeholder:'Cari nama pelanggan...',debt_filter_unpaid:'Belum Lunas',debt_filter_paid:'Lunas',stock_in:'Stok Masuk',stock_out:'Stok Keluar',stock_opname:'Stok Opname',stat_products:'Produk',stat_low:'Menipis',stat_empty:'Habis',filter_all:'Semua',filter_ok:'Aman',product_status:'Status Produk',stock_history:'Riwayat Stok',btn_delete:'Hapus',label_select_product:'Pilih Produk',label_qty:'Jumlah',label_note_optional:'Keterangan (opsional)',note_placeholder:'Restock dari supplier...',current_stock:'Stok Saat Ini',opname_desc:'Masukkan jumlah stok fisik yang dihitung. Sistem akan menyesuaikan secara otomatis.',opname_physical:'Stok Fisik',opname_system:'Sistem',btn_save_opname:'Simpan Opname',settings_min_stock:'Batas Minimum Stok',minstock_desc:'Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.',minstock_label:'Batas Minimum (unit)',debt_total_loan:'Total Pinjaman',debt_paid:'Terbayar',debt_remaining:'SISA',debt_book_empty:'Buku Hutang Kosong',installment_placeholder:'Nominal Cicilan',btn_pay_installment:'Bayar Cicilan',deadline:'Tempo',checkout_title:'Konfirmasi Bayar',total:'TOTAL',pay_cash_qris:'Tunai/QRIS',pay_debt:'Hutang (Bon)',label_cash:'Uang Tunai',label_transfer:'Transfer/QRIS',change:'Kembalian',customer_name_placeholder:'Nama Pelanggan',due_date:'Jatuh Tempo',btn_finish_checkout:'Selesaikan Transaksi',cart_detail_title:'Detail Keranjang',receipt_title:'Struk Belanja',receipt_items:'ITEM PEMBELIAN',receipt_thank:'Terima kasih atas kunjungan Anda!',receipt_no_return:'Barang yang sudah dibeli tidak dapat ditukar.',rec_cash:'Tunai',rec_qris:'QRIS/Transfer',rec_change:'Kembalian',rec_debt:'⚠ HUTANG / BON',print_bluetooth:'Print Bluetooth',settings_store_config:'Konfigurasi Toko',settings_store:'Setelan Toko',settings_printer:'Printer Thermal',settings_language:'Bahasa / Language',settings_info:'Informasi',settings_contact:'Hubungi Kami',settings_privacy:'Privasi & Kebijakan',lang_select_title:'Pilih Bahasa',lang_select_desc:'Pilih bahasa tampilan aplikasi',printer_not_connected:'Belum terhubung',printer_no_device:'Belum ada perangkat terhubung',printer_auto_reconnect:'Auto-Reconnect',printer_auto_reconnect_desc:'Sambung otomatis saat halaman dibuka',printer_connect:'Hubungkan Printer',printer_reconnect:'Sambung Ulang',printer_test:'Test Print',printer_disconnect:'Putuskan',printer_tip:'<strong class="text-indigo-500">Tip:</strong> Aktifkan Bluetooth di HP, nyalakan printer, lalu tekan <strong>Hubungkan Printer</strong>.',product_master:'Master Produk',product_name_placeholder:'Nama Produk',stock_placeholder:'Stok',label_category:'Kategori',label_cost:'Modal',label_price:'Jual',btn_save_data:'Simpan Data',manage_category:'Kelola Kategori',new_category_placeholder:'Kategori Baru',store_name_placeholder:'Nama Toko',store_address_placeholder:'Alamat Toko',btn_change_logo:'Ganti Logo',btn_save_config:'Simpan Konfigurasi',privacy_title:'Kebijakan Privasi',contact_address:'Alamat',btn_save:'Simpan',btn_cancel:'Batal',btn_close:'Tutup',btn_agree:'Saya Mengerti',notif_stock_title:'Notifikasi Stok',notif_all_safe:'Semua stok dalam kondisi aman',notif_empty_stock:'Stok Habis',notif_low_stock:'Menipis',notif_fill:'Isi',notif_remaining:'Sisa',notif_unit:'unit',flash:'Flash',scanner_hint:'Auto-detect Aktif • Jeda 2.5 Detik per Produk',toast_sku_filled:'SKU Terisi!',toast_max_stock:'Maksimal!',toast_out_of_stock:'Stok Habis!',toast_product_not_found:'Produk tidak ditemukan!',toast_fill_data:'Isi data dengan benar!',toast_stock_added:'stok ditambahkan!',toast_stock_reduced:'stok dikurangi!',toast_stock_not_enough:'Stok tidak cukup!',toast_product_deleted:'Produk Dihapus',toast_save_success:'Simpan Berhasil!',toast_min_stock_saved:'Batas Minimum Disimpan!',toast_history_deleted:'Riwayat Dihapus',toast_https_required:'Wajib HTTPS!',toast_camera_fail:'Gagal Kamera!',toast_insufficient_money:'Uang Kurang!',toast_fill_name:'Isi Nama!',toast_fill_product_name:'Isi Nama Produk!',toast_fill_customer_name:'Isi Nama Pelanggan!',toast_excel_success:'Excel Berhasil Diunduh!',toast_excel_fail:'Gagal Export Excel!',toast_pdf_success:'PDF Berhasil Diunduh!',toast_pdf_fail:'Gagal Export PDF!',toast_no_data:'Tidak ada data!',toast_no_receipt:'Tidak ada data struk!',toast_printer_not_connected:'Hubungkan printer dulu di Pengaturan!',toast_printer_disconnected:'Printer terputus',toast_auto_reconnect:'Auto-reconnect...',toast_printer_reconnected:'Printer tersambung kembali!',toast_reconnect_fail:'Gagal reconnect printer!',toast_sending_test:'Mengirim test print...',toast_test_success:'Test print berhasil!',toast_test_fail:'Gagal test print: ',toast_sending_print:'Mengirim ke printer...',toast_print_success:'Struk berhasil dicetak!',toast_print_fail:'Gagal cetak: ',toast_printer_connected:'terhubung!',toast_bt_connect_fail:'Gagal: ',toast_printer_disconnected_ok:'Printer diputuskan',toast_auto_connect:'Auto-connect:',toast_retry:'Coba ulang',toast_reconnecting:'Reconnecting printer...',toast_category_exists:'Sudah Ada!',toast_fill_category:'Isi Nama!',toast_language_changed:'Bahasa berhasil diubah!',toast_opname_no_data:'Belum ada data opname!',toast_opname_no_change:'Tidak ada perubahan stok!',toast_opname_done:'Opname selesai —',toast_products_updated:'produk diperbarui',sh_in:'Masuk',sh_out:'Keluar',sh_opname:'Opname',sh_sale:'Penjualan',sh_manual_in:'Stok masuk manual',sh_manual_out:'Stok keluar manual',badge_empty:'Habis',badge_low:'Menipis',badge_ok:'Aman',badge_in:'Masuk',badge_out:'Keluar',badge_opname:'Opname',debt_not_paid:'BELUM LUNAS',debt_paid_status:'LUNAS',pcs:'pcs',transactions:'transaksi untuk',all_transactions:'Semua',address_not_set:'Alamat belum diatur',confirm_clear_history:'Hapus semua riwayat stok?',confirm_delete_product_title:'Hapus Produk?',confirm_delete_product_desc:'Produk akan dihapus secara permanen dan tidak dapat dikembalikan.',confirm_delete_btn:'Hapus Permanen',
     },
     en: {
-        splash_tagline: 'Digital POS System for SMEs',
-        splash_loading: 'Loading system...',
-        menu_main: 'Main Menu',
-        menu_operational: 'Operations',
-        menu_account: 'Account',
-        nav_home: 'Home',
-        nav_pos: 'POS / Cashier',
-        nav_inventory: 'Inventory',
-        nav_stock: 'Stock Management',
-        nav_debts: 'Debt Book',
-        nav_reports: 'Reports & Data',
-        nav_settings: 'Settings',
-        nav_about: 'About App',
-        nav_home_short: 'Home',
-        nav_pos_short: 'POS',
-        nav_stock_short: 'Stock',
-        nav_warehouse_short: 'Warehouse',
-        nav_debts_short: 'Debts',
-        nav_data_short: 'Data',
-        dark_mode: 'Dark Mode',
-        dash_net_profit: 'Net Store Profit',
-        dash_today_income: "Today's Income",
-        dash_total_receivable: 'Total Receivables',
-        hide: 'Hide',
-        show: 'Show',
-        stock_status: 'Stock Status',
-        busy_hours: 'Busy Hours',
-        top_products: 'Top 3 Products',
-        items_low: 'Items Low',
-        no_data: 'No Data',
-        pos_search_placeholder: 'Search items or scan...',
-        view_detail: 'View Detail',
-        btn_checkout: 'Proceed to Payment →',
-        btn_category: 'Category',
-        btn_add: '+ Add',
-        item_search_placeholder: 'Search item or barcode...',
-        debt_search_placeholder: 'Search customer name...',
-        debt_filter_unpaid: 'Unpaid',
-        debt_filter_paid: 'Paid',
-        stock_in: 'Stock In',
-        stock_out: 'Stock Out',
-        stock_opname: 'Stock Opname',
-        stat_products: 'Products',
-        stat_low: 'Low',
-        stat_empty: 'Empty',
-        filter_all: 'All',
-        filter_ok: 'Safe',
-        product_status: 'Product Status',
-        stock_history: 'Stock History',
-        btn_delete: 'Clear',
-        label_select_product: 'Select Product',
-        label_qty: 'Quantity',
-        label_note_optional: 'Note (optional)',
-        note_placeholder: 'Restock from supplier...',
-        current_stock: 'Current Stock',
-        opname_desc: 'Enter the physical stock count. The system will adjust automatically.',
-        opname_physical: 'Physical Stock',
-        opname_system: 'System',
-        btn_save_opname: 'Save Opname',
-        settings_min_stock: 'Minimum Stock Threshold',
-        minstock_desc: 'Products below this threshold will be categorized as "Low" and trigger notifications.',
-        minstock_label: 'Minimum Threshold (units)',
-        debt_total_loan: 'Total Loan',
-        debt_paid: 'Paid',
-        debt_remaining: 'REMAINING',
-        debt_book_empty: 'Debt Book Empty',
-        installment_placeholder: 'Installment Amount',
-        btn_pay_installment: 'Pay Installment',
-        deadline: 'Due',
-        checkout_title: 'Confirm Payment',
-        total: 'TOTAL',
-        pay_cash_qris: 'Cash/QRIS',
-        pay_debt: 'Credit (IOU)',
-        label_cash: 'Cash',
-        label_transfer: 'Transfer/QRIS',
-        change: 'Change',
-        customer_name_placeholder: 'Customer Name',
-        due_date: 'Due Date',
-        btn_finish_checkout: 'Complete Transaction',
-        cart_detail_title: 'Cart Details',
-        receipt_title: 'Receipt',
-        receipt_items: 'ITEMS PURCHASED',
-        receipt_thank: 'Thank you for your visit!',
-        receipt_no_return: 'Purchased items cannot be exchanged.',
-        rec_cash: 'Cash',
-        rec_qris: 'QRIS/Transfer',
-        rec_change: 'Change',
-        rec_debt: '⚠ CREDIT / IOU',
-        print_bluetooth: 'Print Bluetooth',
-        settings_store_config: 'Store Configuration',
-        settings_store: 'Store Settings',
-        settings_printer: 'Thermal Printer',
-        settings_language: 'Language',
-        settings_info: 'Information',
-        settings_contact: 'Contact Us',
-        settings_privacy: 'Privacy & Policy',
-        lang_select_title: 'Select Language',
-        lang_select_desc: 'Choose app display language',
-        printer_not_connected: 'Not connected',
-        printer_no_device: 'No device connected',
-        printer_auto_reconnect: 'Auto-Reconnect',
-        printer_auto_reconnect_desc: 'Auto-connect when app opens',
-        printer_connect: 'Connect Printer',
-        printer_reconnect: 'Reconnect',
-        printer_test: 'Test Print',
-        printer_disconnect: 'Disconnect',
-        printer_tip: '<strong class="text-indigo-500">Tip:</strong> Enable Bluetooth, turn on the printer, then tap <strong>Connect Printer</strong>.',
-        product_master: 'Product Master',
-        product_name_placeholder: 'Product Name',
-        stock_placeholder: 'Stock',
-        label_category: 'Category',
-        label_cost: 'Cost',
-        label_price: 'Price',
-        btn_save_data: 'Save Data',
-        manage_category: 'Manage Categories',
-        new_category_placeholder: 'New Category',
-        store_name_placeholder: 'Store Name',
-        store_address_placeholder: 'Store Address',
-        btn_change_logo: 'Change Logo',
-        btn_save_config: 'Save Configuration',
-        privacy_title: 'Privacy Policy',
-        contact_address: 'Address',
-        btn_save: 'Save',
-        btn_cancel: 'Cancel',
-        btn_close: 'Close',
-        btn_agree: 'I Understand',
-        notif_stock_title: 'Stock Notifications',
-        notif_all_safe: 'All stock levels are safe',
-        notif_empty_stock: 'Out of Stock',
-        notif_low_stock: 'Low Stock',
-        notif_fill: 'Fill',
-        notif_remaining: 'Left',
-        notif_unit: 'units',
-        flash: 'Flash',
-        scanner_hint: 'Auto-detect Active • 2.5s Cooldown per Product',
-        toast_sku_filled: 'SKU Filled!',
-        toast_max_stock: 'Maximum!',
-        toast_out_of_stock: 'Out of Stock!',
-        toast_product_not_found: 'Product not found!',
-        toast_fill_data: 'Please fill in all fields!',
-        toast_stock_added: 'stock added!',
-        toast_stock_reduced: 'stock reduced!',
-        toast_stock_not_enough: 'Not enough stock!',
-        toast_product_deleted: 'Product Deleted',
-        toast_save_success: 'Saved Successfully!',
-        toast_min_stock_saved: 'Minimum Threshold Saved!',
-        toast_history_deleted: 'History Cleared',
-        toast_https_required: 'HTTPS Required!',
-        toast_camera_fail: 'Camera Failed!',
-        toast_insufficient_money: 'Insufficient Payment!',
-        toast_fill_name: 'Fill Name!',
-        toast_fill_product_name: 'Fill Product Name!',
-        toast_fill_customer_name: 'Fill Customer Name!',
-        toast_excel_success: 'Excel Downloaded!',
-        toast_excel_fail: 'Excel Export Failed!',
-        toast_pdf_success: 'PDF Downloaded!',
-        toast_pdf_fail: 'PDF Export Failed!',
-        toast_no_data: 'No data!',
-        toast_no_receipt: 'No receipt data!',
-        toast_printer_not_connected: 'Connect printer first in Settings!',
-        toast_printer_disconnected: 'Printer disconnected',
-        toast_auto_reconnect: 'Auto-reconnect...',
-        toast_printer_reconnected: 'Printer reconnected!',
-        toast_reconnect_fail: 'Printer reconnect failed!',
-        toast_sending_test: 'Sending test print...',
-        toast_test_success: 'Test print successful!',
-        toast_test_fail: 'Test print failed: ',
-        toast_sending_print: 'Sending to printer...',
-        toast_print_success: 'Receipt printed successfully!',
-        toast_print_fail: 'Print failed: ',
-        toast_printer_connected: 'connected!',
-        toast_bt_connect_fail: 'Failed: ',
-        toast_printer_disconnected_ok: 'Printer disconnected',
-        toast_auto_connect: 'Auto-connect:',
-        toast_retry: 'Retrying',
-        toast_reconnecting: 'Reconnecting printer...',
-        toast_category_exists: 'Already exists!',
-        toast_fill_category: 'Fill Name!',
-        toast_language_changed: 'Language changed!',
-        toast_opname_no_data: 'No opname data!',
-        toast_opname_no_change: 'No stock changes!',
-        toast_opname_done: 'Opname done —',
-        toast_products_updated: 'products updated',
-        sh_in: 'In',
-        sh_out: 'Out',
-        sh_opname: 'Opname',
-        sh_sale: 'Sale',
-        sh_manual_in: 'Manual stock in',
-        sh_manual_out: 'Manual stock out',
-        badge_empty: 'Empty',
-        badge_low: 'Low',
-        badge_ok: 'Safe',
-        badge_in: 'In',
-        badge_out: 'Out',
-        badge_opname: 'Opname',
-        debt_not_paid: 'UNPAID',
-        debt_paid_status: 'PAID',
-        pcs: 'pcs',
-        transactions: 'transactions for',
-        all_transactions: 'All',
-        address_not_set: 'Address not set',
-        confirm_clear_history: 'Clear all stock history?',
-        confirm_delete_product_title: 'Delete Product?',
-        confirm_delete_product_desc: 'This product will be permanently deleted and cannot be recovered.',
-        confirm_delete_btn: 'Delete Permanently',
+        splash_tagline:'Digital POS System for SMEs',splash_loading:'Loading system...',menu_main:'Main Menu',menu_operational:'Operations',menu_account:'Account',nav_home:'Home',nav_pos:'POS / Cashier',nav_inventory:'Inventory',nav_stock:'Stock Management',nav_debts:'Debt Book',nav_reports:'Reports & Data',nav_settings:'Settings',nav_about:'About App',nav_home_short:'Home',nav_pos_short:'POS',nav_stock_short:'Stock',nav_warehouse_short:'Warehouse',nav_debts_short:'Debts',nav_data_short:'Data',dark_mode:'Dark Mode',dash_net_profit:'Net Store Profit',dash_today_income:"Today's Income",dash_total_receivable:'Total Receivables',hide:'Hide',show:'Show',stock_status:'Stock Status',busy_hours:'Busy Hours',top_products:'Top 3 Products',items_low:'Items Low',no_data:'No Data',pos_search_placeholder:'Search items or scan...',view_detail:'View Detail',btn_checkout:'Proceed to Payment →',btn_category:'Category',btn_add:'+ Add',item_search_placeholder:'Search item or barcode...',debt_search_placeholder:'Search customer name...',debt_filter_unpaid:'Unpaid',debt_filter_paid:'Paid',stock_in:'Stock In',stock_out:'Stock Out',stock_opname:'Stock Opname',stat_products:'Products',stat_low:'Low',stat_empty:'Empty',filter_all:'All',filter_ok:'Safe',product_status:'Product Status',stock_history:'Stock History',btn_delete:'Clear',label_select_product:'Select Product',label_qty:'Quantity',label_note_optional:'Note (optional)',note_placeholder:'Restock from supplier...',current_stock:'Current Stock',opname_desc:'Enter the physical stock count. The system will adjust automatically.',opname_physical:'Physical Stock',opname_system:'System',btn_save_opname:'Save Opname',settings_min_stock:'Minimum Stock Threshold',minstock_desc:'Products below this threshold will be categorized as "Low" and trigger notifications.',minstock_label:'Minimum Threshold (units)',debt_total_loan:'Total Loan',debt_paid:'Paid',debt_remaining:'REMAINING',debt_book_empty:'Debt Book Empty',installment_placeholder:'Installment Amount',btn_pay_installment:'Pay Installment',deadline:'Due',checkout_title:'Confirm Payment',total:'TOTAL',pay_cash_qris:'Cash/QRIS',pay_debt:'Credit (IOU)',label_cash:'Cash',label_transfer:'Transfer/QRIS',change:'Change',customer_name_placeholder:'Customer Name',due_date:'Due Date',btn_finish_checkout:'Complete Transaction',cart_detail_title:'Cart Details',receipt_title:'Receipt',receipt_items:'ITEMS PURCHASED',receipt_thank:'Thank you for your visit!',receipt_no_return:'Purchased items cannot be exchanged.',rec_cash:'Cash',rec_qris:'QRIS/Transfer',rec_change:'Change',rec_debt:'⚠ CREDIT / IOU',print_bluetooth:'Print Bluetooth',settings_store_config:'Store Configuration',settings_store:'Store Settings',settings_printer:'Thermal Printer',settings_language:'Language',settings_info:'Information',settings_contact:'Contact Us',settings_privacy:'Privacy & Policy',lang_select_title:'Select Language',lang_select_desc:'Choose app display language',printer_not_connected:'Not connected',printer_no_device:'No device connected',printer_auto_reconnect:'Auto-Reconnect',printer_auto_reconnect_desc:'Auto-connect when app opens',printer_connect:'Connect Printer',printer_reconnect:'Reconnect',printer_test:'Test Print',printer_disconnect:'Disconnect',printer_tip:'<strong class="text-indigo-500">Tip:</strong> Enable Bluetooth, turn on the printer, then tap <strong>Connect Printer</strong>.',product_master:'Product Master',product_name_placeholder:'Product Name',stock_placeholder:'Stock',label_category:'Category',label_cost:'Cost',label_price:'Price',btn_save_data:'Save Data',manage_category:'Manage Categories',new_category_placeholder:'New Category',store_name_placeholder:'Store Name',store_address_placeholder:'Store Address',btn_change_logo:'Change Logo',btn_save_config:'Save Configuration',privacy_title:'Privacy Policy',contact_address:'Address',btn_save:'Save',btn_cancel:'Cancel',btn_close:'Close',btn_agree:'I Understand',notif_stock_title:'Stock Notifications',notif_all_safe:'All stock levels are safe',notif_empty_stock:'Out of Stock',notif_low_stock:'Low Stock',notif_fill:'Fill',notif_remaining:'Left',notif_unit:'units',flash:'Flash',scanner_hint:'Auto-detect Active • 2.5s Cooldown per Product',toast_sku_filled:'SKU Filled!',toast_max_stock:'Maximum!',toast_out_of_stock:'Out of Stock!',toast_product_not_found:'Product not found!',toast_fill_data:'Please fill in all fields!',toast_stock_added:'stock added!',toast_stock_reduced:'stock reduced!',toast_stock_not_enough:'Not enough stock!',toast_product_deleted:'Product Deleted',toast_save_success:'Saved Successfully!',toast_min_stock_saved:'Minimum Threshold Saved!',toast_history_deleted:'History Cleared',toast_https_required:'HTTPS Required!',toast_camera_fail:'Camera Failed!',toast_insufficient_money:'Insufficient Payment!',toast_fill_name:'Fill Name!',toast_fill_product_name:'Fill Product Name!',toast_fill_customer_name:'Fill Customer Name!',toast_excel_success:'Excel Downloaded!',toast_excel_fail:'Excel Export Failed!',toast_pdf_success:'PDF Downloaded!',toast_pdf_fail:'PDF Export Failed!',toast_no_data:'No data!',toast_no_receipt:'No receipt data!',toast_printer_not_connected:'Connect printer first in Settings!',toast_printer_disconnected:'Printer disconnected',toast_auto_reconnect:'Auto-reconnect...',toast_printer_reconnected:'Printer reconnected!',toast_reconnect_fail:'Printer reconnect failed!',toast_sending_test:'Sending test print...',toast_test_success:'Test print successful!',toast_test_fail:'Test print failed: ',toast_sending_print:'Sending to printer...',toast_print_success:'Receipt printed successfully!',toast_print_fail:'Print failed: ',toast_printer_connected:'connected!',toast_bt_connect_fail:'Failed: ',toast_printer_disconnected_ok:'Printer disconnected',toast_auto_connect:'Auto-connect:',toast_retry:'Retrying',toast_reconnecting:'Reconnecting printer...',toast_category_exists:'Already exists!',toast_fill_category:'Fill Name!',toast_language_changed:'Language changed!',toast_opname_no_data:'No opname data!',toast_opname_no_change:'No stock changes!',toast_opname_done:'Opname done —',toast_products_updated:'products updated',sh_in:'In',sh_out:'Out',sh_opname:'Opname',sh_sale:'Sale',sh_manual_in:'Manual stock in',sh_manual_out:'Manual stock out',badge_empty:'Empty',badge_low:'Low',badge_ok:'Safe',badge_in:'In',badge_out:'Out',badge_opname:'Opname',debt_not_paid:'UNPAID',debt_paid_status:'PAID',pcs:'pcs',transactions:'transactions for',all_transactions:'All',address_not_set:'Address not set',confirm_clear_history:'Clear all stock history?',confirm_delete_product_title:'Delete Product?',confirm_delete_product_desc:'This product will be permanently deleted and cannot be recovered.',confirm_delete_btn:'Delete Permanently',
     }
 };
 
 let currentLang = localStorage.getItem('dk_lang') || 'id';
-// Fallback: jika bahasa Melayu tersimpan dari versi lama, reset ke ID
 if (currentLang === 'ms') { currentLang = 'id'; localStorage.setItem('dk_lang', 'id'); }
 
 function t(key) {
@@ -1595,8 +1266,7 @@ function applyTranslations() {
         else if (val) el.innerHTML = val;
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-        const key = el.getAttribute('data-i18n-placeholder');
-        el.placeholder = t(key);
+        el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
     });
     const langNames = { id: '🇮🇩 Bahasa Indonesia', en: '🇬🇧 English' };
     const el = document.getElementById('current-lang-display');
@@ -1619,12 +1289,7 @@ function setLanguage(lang) {
     applyTranslations();
     closeModal('modal-language');
     showToast(t('toast_language_changed'));
-    renderHome();
-    renderItems();
-    renderPos();
-    renderStockTab();
-    renderDebts();
-    renderData();
+    renderHome(); renderItems(); renderPos(); renderStockTab(); renderDebts(); renderData();
 }
 
 function openLanguageModal() {
@@ -1635,11 +1300,8 @@ function openLanguageModal() {
     openModal('modal-language');
 }
 
-// ══════════════════════════════
-// CONFIRM DIALOG
-// ══════════════════════════════
+// ── CONFIRM ──
 let _confirmResolve = null;
-
 function showConfirm(title, desc, okLabel) {
     return new Promise(resolve => {
         _confirmResolve = resolve;
@@ -1650,68 +1312,36 @@ function showConfirm(title, desc, okLabel) {
         _lockBodyScroll();
     });
 }
+function confirmProceed() { document.getElementById('modal-confirm').classList.remove('open'); _unlockBodyScroll(); if (_confirmResolve) { _confirmResolve(true); _confirmResolve = null; } }
+function confirmCancel() { document.getElementById('modal-confirm').classList.remove('open'); _unlockBodyScroll(); if (_confirmResolve) { _confirmResolve(false); _confirmResolve = null; } }
 
-function confirmProceed() {
-    document.getElementById('modal-confirm').classList.remove('open');
-    _unlockBodyScroll();
-    if (_confirmResolve) { _confirmResolve(true); _confirmResolve = null; }
-}
-
-function confirmCancel() {
-    document.getElementById('modal-confirm').classList.remove('open');
-    _unlockBodyScroll();
-    if (_confirmResolve) { _confirmResolve(false); _confirmResolve = null; }
-}
-
-// ══════════════════════════════
-// SPLASH SCREEN
-// ══════════════════════════════
+// ── SPLASH ──
 (function() {
     const SPLASH_KEY = 'dk_splash_shown';
-    const splash      = document.getElementById('splash-screen');
-    const app         = document.getElementById('app');
+    const splash = document.getElementById('splash-screen');
+    const app = document.getElementById('app');
     const progressBar = document.getElementById('splash-progress');
-    const statusText  = document.getElementById('splash-status');
-    const lang        = localStorage.getItem('dk_lang') || 'id';
-
-    try {
-        const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}');
-        if (cfg.darkMode) document.body.classList.add('dark');
-    } catch(e) {}
-
+    const statusText = document.getElementById('splash-status');
+    const lang = localStorage.getItem('dk_lang') || 'id';
+    try { const cfg = JSON.parse(localStorage.getItem('dk_config') || '{}'); if (cfg.darkMode) document.body.classList.add('dark'); } catch(e) {}
     const taglineEl = document.getElementById('splash-tagline');
     if (taglineEl && TRANSLATIONS[lang]) taglineEl.textContent = TRANSLATIONS[lang].splash_tagline || TRANSLATIONS['id'].splash_tagline;
-
     const alreadyShown = sessionStorage.getItem(SPLASH_KEY) === '1';
-    if (alreadyShown) {
-        splash.classList.add('skip-instant');
-        app.style.opacity = '1';
-        app.style.transition = 'none';
-        return;
-    }
-
-    const getSteps = () => {
-        const tr = TRANSLATIONS[lang] || TRANSLATIONS['id'];
-        return [
-            { pct: 15, label: tr.splash_loading || 'Memuat sistem...' },
-            { pct: 30, label: 'Loading inventory...' },
-            { pct: 50, label: 'Loading transactions...' },
-            { pct: 68, label: 'Preparing POS...' },
-            { pct: 82, label: 'Checking stock...' },
-            { pct: 92, label: 'Finalizing...' },
-            { pct: 100, label: '✓ Ready!' }
-        ];
-    };
-    const steps = getSteps();
+    if (alreadyShown) { splash.classList.add('skip-instant'); app.style.opacity = '1'; app.style.transition = 'none'; return; }
+    const steps = [
+        { pct:15, label: (TRANSLATIONS[lang]||TRANSLATIONS['id']).splash_loading },
+        { pct:30, label:'Loading inventory...' },
+        { pct:50, label:'Loading transactions...' },
+        { pct:68, label:'Preparing POS...' },
+        { pct:82, label:'Checking stock...' },
+        { pct:92, label:'Finalizing...' },
+        { pct:100, label:'✓ Ready!' }
+    ];
     let stepIdx = 0;
     function runStep() {
         if (stepIdx >= steps.length) {
             sessionStorage.setItem(SPLASH_KEY, '1');
-            setTimeout(() => {
-                splash.classList.add('fade-out');
-                app.style.opacity = '1';
-                setTimeout(() => { splash.style.display = 'none'; }, 650);
-            }, 300);
+            setTimeout(() => { splash.classList.add('fade-out'); app.style.opacity = '1'; setTimeout(() => { splash.style.display = 'none'; }, 650); }, 300);
             return;
         }
         const step = steps[stepIdx];
@@ -1719,20 +1349,19 @@ function confirmCancel() {
         statusText.style.opacity = '0';
         setTimeout(() => { statusText.textContent = step.label; statusText.style.opacity = '1'; }, 120);
         stepIdx++;
-        const delays = [380, 320, 350, 280, 300, 250, 450];
+        const delays = [380,320,350,280,300,250,450];
         setTimeout(runStep, delays[stepIdx - 1] || 300);
     }
     setTimeout(runStep, 500);
 })();
 
-// ── State ──────────────────────────────────────────────────────────────
+// ── State ──
 let items        = JSON.parse(localStorage.getItem('dk_items'))         || [];
 let logs         = JSON.parse(localStorage.getItem('dk_logs'))          || [];
 let debts        = JSON.parse(localStorage.getItem('dk_debts'))         || [];
 let categories   = JSON.parse(localStorage.getItem('dk_categories'))    || ['Semua','Umum','Makanan','Minuman'];
 let config       = JSON.parse(localStorage.getItem('dk_config'))        || { darkMode:false, storeName:'DheKasir', storeAddress:'-', storePhone:'', url:'', logo:null, minStock:5 };
 let stockHistory = JSON.parse(localStorage.getItem('dk_stock_history')) || [];
-
 let cart = [];
 let payMethod = 'cash';
 let activePosCategory = 'Semua';
@@ -1747,9 +1376,7 @@ let flashTrack = null;
 let flashOn = false;
 let opnameData = {};
 const SCAN_COOLDOWN = 2500;
-
-// ── Debt filter state ──────────────────────────────────────────────────
-let debtFilter = 'all'; // 'all' | 'unpaid' | 'paid'
+let debtFilter = 'all';
 
 function setDebtFilter(f) {
     debtFilter = f;
@@ -1760,9 +1387,7 @@ function setDebtFilter(f) {
     renderDebts();
 }
 
-// ══════════════════════════════
-// BALANCE HIDE / SHOW
-// ══════════════════════════════
+// ── Balance visibility ──
 let balanceHidden = localStorage.getItem('dk_balance_hidden') === '1';
 
 function applyBalanceUI() {
@@ -1793,46 +1418,14 @@ function toggleBalanceVisibility() {
     showToast(balanceHidden ? '🙈 ' + t('hide') : '👁 ' + t('show'));
 }
 
-// ══════════════════════════════
-// BLUETOOTH PRINTER
-// ══════════════════════════════
+// ── Bluetooth ──
 const BT_PREFS_KEY = 'dk_bt_prefs';
-const BT_KNOWN_SERVICES = [
-    '000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455',
-    '6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb',
-    '0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb',
-    '000003f3-0000-1000-8000-00805f9b34fb'
-];
+const BT_KNOWN_SERVICES = ['000018f0-0000-1000-8000-00805f9b34fb','49535343-fe7d-4ae5-8fa9-9fafd205e455','6e400001-b5a3-f393-e0a9-e50e24dcca9e','0000ff00-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fff0-0000-1000-8000-00805f9b34fb','000003f3-0000-1000-8000-00805f9b34fb'];
 const BT_MAX_RETRIES = 3, BT_RETRY_BASE_MS = 1500;
-let btDevice=null, btCharacteristic=null, btConnected=false, btReconnectTimer=null;
+let btDevice=null,btCharacteristic=null,btConnected=false,btReconnectTimer=null;
 let btPrefs = JSON.parse(localStorage.getItem(BT_PREFS_KEY)||'{"autoReconnect":false,"lastName":""}');
 
-function _setPrinterUI(state, deviceName='') {
-    const statusEl=document.getElementById('printer-status'),iconWrap=document.getElementById('printer-icon-wrap'),devName=document.getElementById('printer-device-name');
-    const modalBar=document.getElementById('printer-modal-bar'),modalIcon=document.getElementById('printer-modal-icon'),modalName=document.getElementById('printer-modal-name');
-    const modalDesc=document.getElementById('printer-modal-desc'),modalStat=document.getElementById('printer-modal-status-text'),signal=document.getElementById('printer-signal');
-    const btnConnect=document.getElementById('printer-btn-connect'),btnReconn=document.getElementById('printer-btn-reconnect'),btnActions=document.getElementById('printer-btn-actions');
-    const printLbl=document.getElementById('print-btn-label'),printBtSt=document.getElementById('print-bt-status');
-    const name=deviceName||btPrefs.lastName||t('settings_printer');
-    const map={offline:{text:'OFFLINE',cls:'printer-offline',barCls:'offline',iconColor:'var(--text-muted)',iconBg:'var(--surface)',desc:t('printer_no_device')},connecting:{text:'CONNECTING…',cls:'printer-connecting',barCls:'connecting',iconColor:'#f59e0b',iconBg:'rgba(245,158,11,0.1)',desc:'...'},ready:{text:'READY ✓',cls:'printer-ready',barCls:'ready',iconColor:'#10b981',iconBg:'rgba(16,185,129,0.1)',desc:'Siap mencetak struk'},error:{text:'ERROR',cls:'printer-error',barCls:'error',iconColor:'#ef4444',iconBg:'rgba(239,68,68,0.1)',desc:'Gagal'}};
-    const m=map[state]||map.offline;
-    if(statusEl){statusEl.className=`text-[8px] font-black uppercase ${m.cls}`;statusEl.innerText=m.text;}
-    if(iconWrap)iconWrap.style.color=m.iconColor;
-    if(devName)devName.innerText=state==='offline'?t('printer_not_connected'):name;
-    if(modalBar)modalBar.className=`printer-status-bar ${m.barCls}`;
-    if(modalIcon){modalIcon.style.color=m.iconColor;modalIcon.style.background=m.iconBg;}
-    if(modalName)modalName.innerText=state!=='offline'?name:t('settings_printer');
-    if(modalDesc)modalDesc.innerText=m.desc;
-    if(modalStat){modalStat.style.color=m.iconColor;modalStat.innerText=m.text;}
-    if(signal)signal.classList.toggle('hidden',state!=='ready');
-    if(btnConnect)btnConnect.classList.toggle('hidden',state==='ready');
-    if(btnReconn)btnReconn.classList.toggle('hidden',state!=='error');
-    if(btnActions)btnActions.classList.toggle('hidden',state!=='ready');
-    if(printLbl)printLbl.innerText=t('print_bluetooth');
-    if(printBtSt)printBtSt.innerText=state==='ready'?`(${name})`:'';
-    const arToggle=document.getElementById('printer-auto-reconnect');
-    if(arToggle&&arToggle.checked!==btPrefs.autoReconnect)arToggle.checked=btPrefs.autoReconnect;
-}
+function _setPrinterUI(state,deviceName=''){const statusEl=document.getElementById('printer-status'),iconWrap=document.getElementById('printer-icon-wrap'),devName=document.getElementById('printer-device-name');const modalBar=document.getElementById('printer-modal-bar'),modalIcon=document.getElementById('printer-modal-icon'),modalName=document.getElementById('printer-modal-name');const modalDesc=document.getElementById('printer-modal-desc'),modalStat=document.getElementById('printer-modal-status-text'),signal=document.getElementById('printer-signal');const btnConnect=document.getElementById('printer-btn-connect'),btnReconn=document.getElementById('printer-btn-reconnect'),btnActions=document.getElementById('printer-btn-actions');const printLbl=document.getElementById('print-btn-label'),printBtSt=document.getElementById('print-bt-status');const name=deviceName||btPrefs.lastName||t('settings_printer');const map={offline:{text:'OFFLINE',cls:'printer-offline',barCls:'offline',iconColor:'var(--text-muted)',iconBg:'var(--surface)',desc:t('printer_no_device')},connecting:{text:'CONNECTING…',cls:'printer-connecting',barCls:'connecting',iconColor:'#f59e0b',iconBg:'rgba(245,158,11,0.1)',desc:'...'},ready:{text:'READY ✓',cls:'printer-ready',barCls:'ready',iconColor:'#10b981',iconBg:'rgba(16,185,129,0.1)',desc:'Siap mencetak struk'},error:{text:'ERROR',cls:'printer-error',barCls:'error',iconColor:'#ef4444',iconBg:'rgba(239,68,68,0.1)',desc:'Gagal'}};const m=map[state]||map.offline;if(statusEl){statusEl.className=`text-[8px] font-black uppercase ${m.cls}`;statusEl.innerText=m.text;}if(iconWrap)iconWrap.style.color=m.iconColor;if(devName)devName.innerText=state==='offline'?t('printer_not_connected'):name;if(modalBar)modalBar.className=`printer-status-bar ${m.barCls}`;if(modalIcon){modalIcon.style.color=m.iconColor;modalIcon.style.background=m.iconBg;}if(modalName)modalName.innerText=state!=='offline'?name:t('settings_printer');if(modalDesc)modalDesc.innerText=m.desc;if(modalStat){modalStat.style.color=m.iconColor;modalStat.innerText=m.text;}if(signal)signal.classList.toggle('hidden',state!=='ready');if(btnConnect)btnConnect.classList.toggle('hidden',state==='ready');if(btnReconn)btnReconn.classList.toggle('hidden',state!=='error');if(btnActions)btnActions.classList.toggle('hidden',state!=='ready');if(printLbl)printLbl.innerText=t('print_bluetooth');if(printBtSt)printBtSt.innerText=state==='ready'?`(${name})`:'';const arToggle=document.getElementById('printer-auto-reconnect');if(arToggle&&arToggle.checked!==btPrefs.autoReconnect)arToggle.checked=btPrefs.autoReconnect;}
 function savePrinterPrefs(){const arToggle=document.getElementById('printer-auto-reconnect');if(arToggle)btPrefs.autoReconnect=arToggle.checked;localStorage.setItem(BT_PREFS_KEY,JSON.stringify(btPrefs));}
 function openPrinterModal(){_setPrinterUI(btConnected?'ready':(btDevice?'error':'offline'),btDevice?.name||'');const ar=document.getElementById('printer-auto-reconnect');if(ar)ar.checked=btPrefs.autoReconnect;openModal('modal-printer');}
 async function _findWritableChar(server){let services=[];try{services=await server.getPrimaryServices();}catch(e){for(const uuid of BT_KNOWN_SERVICES){try{const s=await server.getPrimaryService(uuid);services=[s];break;}catch(e2){}}}for(const svc of services){let chars=[];try{chars=await svc.getCharacteristics();}catch(e){continue;}for(const ch of chars)if(ch.properties.write||ch.properties.writeWithoutResponse)return ch;}return null;}
@@ -1848,7 +1441,7 @@ async function printBluetoothReceipt(){if(!lastReceiptData)return showToast(t('t
 function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){const safe=s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x','★':'*','→':'->','✓':'v'};return map[c]||'?';});bytes.push(...enc.encode(safe));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x74,0x00);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());text(dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text(t('receipt_items'));lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);text(left+'.'.repeat(Math.max(1,32-left.length-right.length))+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const tl=t('total'),tr=formatIDRRaw(d.amount);text(tl+' '.repeat(Math.max(1,32-tl.length-tr.length))+tr);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text(t('rec_debt'));lf();}else{if(d.pay_cash>0){const l=t('rec_cash'),r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l=t('rec_qris'),r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cl=t('rec_change'),cr=formatIDRRaw(d.change);text(cl+' '.repeat(Math.max(1,32-cl.length-cr.length))+cr);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text(t('receipt_thank'));lf();text(t('receipt_no_return'));lf();text('* DheKasir v1.4 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 
-// ── Scroll Lock ────────────────────────────────────────────────────────
+// ── Scroll Lock ──
 let _sidebarScrollY=0;
 function _lockSidebarScroll(){_sidebarScrollY=window.scrollY;document.body.classList.add('sidebar-open');document.body.style.top=`-${_sidebarScrollY}px`;}
 function _unlockSidebarScroll(){document.body.classList.remove('sidebar-open');document.body.style.top='';window.scrollTo(0,_sidebarScrollY);}
@@ -1856,18 +1449,18 @@ let _modalOpenCount=0,_scrollYBeforeLock=0;
 function _lockBodyScroll(){_modalOpenCount++;if(_modalOpenCount===1){_scrollYBeforeLock=window.scrollY;document.body.classList.add('modal-open');document.body.style.top=`-${_scrollYBeforeLock}px`;}}
 function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_modalOpenCount===0){document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,_scrollYBeforeLock);}}
 
-// ── Sidebar ──────────────────────────────────────────────────────────────
+// ── Sidebar ──
 function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open'))closeSidebar();else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');_lockSidebarScroll();}}
 function closeSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');sb.classList.remove('open');ov.classList.remove('open');btn.classList.remove('open');_unlockSidebarScroll();}
 
-// ── Audio ────────────────────────────────────────────────────────────
+// ── Audio ──
 let audioCtx=null;
 function getAudioCtx(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();return audioCtx;}
 function beepScan(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='square';osc.frequency.setValueAtTime(880,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(1100,ctx.currentTime+0.06);gain.gain.setValueAtTime(0.18,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.1);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.1);}catch(e){}}
 function beepError(){try{const ctx=getAudioCtx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sawtooth';osc.frequency.setValueAtTime(350,ctx.currentTime);osc.frequency.exponentialRampToValueAtTime(200,ctx.currentTime+0.2);gain.gain.setValueAtTime(0.12,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.22);osc.start(ctx.currentTime);osc.stop(ctx.currentTime+0.22);}catch(e){}}
 function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,1046.50];notes.forEach((freq,i)=>{const osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.type='sine';osc.frequency.setValueAtTime(freq,ctx.currentTime);const t2=ctx.currentTime+i*0.11;gain.gain.setValueAtTime(0,t2);gain.gain.linearRampToValueAtTime(0.22,t2+0.02);gain.gain.exponentialRampToValueAtTime(0.001,t2+0.18);osc.start(t2);osc.stop(t2+0.2);});}catch(e){}}
 
-// ── Helpers ─────────────────────────────────────────────────────────────
+// ── Helpers ──
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function rawIDR(n){return Number(n||0);}
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';setTimeout(()=>el.style.opacity='0',2500);}
@@ -1875,7 +1468,7 @@ function openModal(id){const el=document.getElementById(id);if(el&&el.classList.
 function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
-// ── Tab Navigation ──────────────────────────────────────────────────────
+// ── Tab Navigation ──
 function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
@@ -1888,7 +1481,7 @@ function switchTab(tab){
     if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
 }
 
-// ── Categories ─────────────────────────────────────────────────────────
+// ── Categories ──
 function renderCategoryOptions(){const s=document.getElementById('p-category');if(!s)return;s.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<option value="${c}">${c}</option>`).join('');}
 function renderPosCategoryChips(){const c=document.getElementById('pos-category-chips');if(!c)return;c.innerHTML=categories.map(cat=>`<button onclick="setPosCategory('${cat}')" class="flex-none px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase transition-all ${activePosCategory===cat?'cat-chip-active':'cat-chip-inactive'}">${cat}</button>`).join('');}
 function setPosCategory(c){activePosCategory=c;renderPosCategoryChips();renderPos();}
@@ -1898,7 +1491,7 @@ function addCategory(){const input=document.getElementById('new-cat-name');const
 function deleteCategory(name){categories=categories.filter(c=>c!==name);saveCategories();renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
 function saveCategories(){localStorage.setItem('dk_categories',JSON.stringify(categories));}
 
-// ── POS ─────────────────────────────────────────────────────────────────
+// ── POS ──
 function renderPos(){
     const q=(document.getElementById('pos-search')||{value:''}).value.toLowerCase();
     const grid=document.getElementById('pos-grid');if(!grid)return;
@@ -1935,7 +1528,7 @@ function renderCartDetails(){
 }
 function resetCart(){cart=[];updateCartUI();renderPos();}
 
-// ── Checkout ─────────────────────────────────────────────────────────────
+// ── Checkout ──
 function openCheckout(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
 function setPayMethod(m){payMethod=m;const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt'),ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(bd){bd.style.background=m==='debt'?'var(--card)':'transparent';bd.style.color=m==='debt'?'#ef4444':'var(--text-muted)';bd.style.boxShadow=m==='debt'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(ac)ac.classList.toggle('hidden',m!=='cash');if(ad)ad.classList.toggle('hidden',m!=='debt');calcChange();}
 function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
@@ -1953,7 +1546,7 @@ async function finishCheckout(){
     logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();await syncCloud(log);
 }
 
-// ── Receipt ──────────────────────────────────────────────────────────────
+// ── Receipt ──
 function showReceipt(d){
     lastReceiptData=d;
     const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';
@@ -1985,7 +1578,7 @@ function showReceipt(d){
     openModal('modal-receipt');
 }
 
-// ── Scanner ──────────────────────────────────────────────────────────────
+// ── Scanner ──
 async function openScanner(mode='cart'){
     if(location.protocol!=='https:'&&location.hostname!=='localhost')return showToast(t('toast_https_required'));
     flashOn=false;flashTrack=null;
@@ -2010,7 +1603,7 @@ async function openScanner(mode='cart'){
 async function closeScanner(){if(flashTrack&&flashOn)try{await flashTrack.applyConstraints({advanced:[{torch:false}]});}catch(e){}flashOn=false;flashTrack=null;if(html5QrCode)try{await html5QrCode.stop();}catch(e){}const scannerEl=document.getElementById('modal-scanner');if(scannerEl&&!scannerEl.classList.contains('hidden')){scannerEl.classList.add('hidden');_unlockBodyScroll();}}
 async function toggleFlash(){if(!flashTrack)return showToast(t('flash')+' N/A');try{flashOn=!flashOn;await flashTrack.applyConstraints({advanced:[{torch:flashOn}]});const btn=document.getElementById('flash-btn');if(btn)btn.classList.toggle('flash-on',flashOn);showToast(flashOn?"⚡ "+t('flash')+" ON":t('flash')+" OFF");}catch(e){flashOn=!flashOn;showToast(t('flash')+" Error");}}
 
-// ── Home ─────────────────────────────────────────────────────────────────
+// ── Home ──
 function renderHome(){
     let profit=0,omzet=0,debtT=0,best={};
     const hourMap=new Array(24).fill(0);
@@ -2018,7 +1611,23 @@ function renderHome(){
     logs.forEach(l=>{const a=rawIDR(l.amount);profit+=(a-rawIDR(l.total_cost));if(l.date===today)omzet+=a;if(l.created_at)hourMap[new Date(l.created_at).getHours()]++;if(l.items)l.items.forEach(it=>best[it.name]=(best[it.name]||0)+it.qty);});
     debts.forEach(d=>{if(d.status!==t('debt_paid_status'))debtT+=rawIDR(d.balance);});
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
-    set('dash-profit',formatIDR(profit));set('dash-omzet',formatIDR(omzet));set('dash-debt',formatIDR(debtT));
+    set('dash-profit',formatIDR(profit));
+    set('dash-omzet',formatIDR(omzet));
+    set('dash-debt',formatIDR(debtT));
+
+    // Tanggal
+    const dateEl=document.getElementById('dash-date-label');
+    if(dateEl)dateEl.textContent=new Date().toLocaleDateString(currentLang==='en'?'en-GB':'id-ID',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+
+    // Jumlah transaksi hari ini
+    const txCount=logs.filter(l=>l.date===today).length;
+    const txEl=document.getElementById('dash-tx-count');
+    if(txEl)txEl.textContent=txCount+(currentLang==='en'?' transactions':' transaksi');
+
+    // Jumlah hutang belum lunas
+    const debtCountEl=document.getElementById('dash-debt-count');
+    if(debtCountEl){const unpaid=debts.filter(d=>d.status!==t('debt_paid_status')).length;debtCountEl.textContent=unpaid+(currentLang==='en'?' customers':' pelanggan');}
+
     const lowCount=items.filter(i=>i.stock<config.minStock).length;
     set('dash-low-stock',lowCount+' '+t('items_low'));
     const top=Object.entries(best).sort((a,b)=>b[1]-a[1]).slice(0,3);
@@ -2029,7 +1638,7 @@ function renderHome(){
 }
 function initChart(data){const canvas=document.getElementById('hourChart');if(!canvas)return;if(mainChart)mainChart.destroy();const isDark=document.body.classList.contains('dark');mainChart=new Chart(canvas.getContext('2d'),{type:'bar',data:{labels:Array.from({length:24},(_,i)=>i+':00'),datasets:[{data,backgroundColor:'#4f46e5',borderRadius:5}]},options:{plugins:{legend:{display:false}},scales:{y:{display:false},x:{grid:{display:false},ticks:{font:{size:7},color:isDark?'#556070':'#8892aa'}}}}});}
 
-// ── Stock Management ──────────────────────────────────────────────────────
+// ── Stock ──
 function getStockStatus(stock){if(stock<=0)return 'critical';if(stock<=config.minStock)return 'low';return 'ok';}
 function addStockHistory(productId,productName,type,qty,note=''){const entry={id:'SH-'+Date.now()+'-'+Math.random().toString(36).slice(2,5),productId,productName,type,qty,note:note||'',date:new Date().toISOString(),operator:'Admin'};stockHistory.unshift(entry);if(stockHistory.length>200)stockHistory=stockHistory.slice(0,200);return entry;}
 function checkStockAlerts(){
@@ -2102,11 +1711,10 @@ function renderStockHistory(){
     }).join('');
 }
 async function clearStockHistory(){
-    const ok = await showConfirm(t('confirm_clear_history'), t('confirm_delete_product_desc'), t('btn_delete'));
-    if(!ok) return;
+    const ok=await showConfirm(t('confirm_clear_history'),t('confirm_delete_product_desc'),t('btn_delete'));
+    if(!ok)return;
     stockHistory=[];saveStorage();renderStockHistory();showToast(t('toast_history_deleted'));
 }
-
 function openStockModal(type,preSelectId=null){
     currentStockMoveType=type;
     const title=document.getElementById('stock-move-title'),btn=document.getElementById('sm-btn');
@@ -2121,7 +1729,6 @@ function openStockModal(type,preSelectId=null){
 }
 function updateSmCurrentStock(){const sel=document.getElementById('sm-product');const id=sel?.value;const item=items.find(i=>String(i.id)===String(id));const el=document.getElementById('sm-current-stock');if(el)el.innerText=item?item.stock+' '+t('notif_unit'):'—';}
 function submitStockMove(){const sel=document.getElementById('sm-product');const id=sel?.value;const qty=Number(document.getElementById('sm-qty').value);const note=document.getElementById('sm-note').value;if(!id||!qty||qty<=0)return showToast(t('toast_fill_data'));const item=items.find(i=>String(i.id)===String(id));if(!item)return showToast(t('toast_product_not_found'));if(currentStockMoveType==='out'&&qty>item.stock)return showToast(t('toast_stock_not_enough'));if(currentStockMoveType==='in')item.stock+=qty;else item.stock-=qty;addStockHistory(item.id,item.name,currentStockMoveType,qty,note||(currentStockMoveType==='in'?t('sh_manual_in'):t('sh_manual_out')));saveStorage();showToast(currentStockMoveType==='in'?`+${qty} ${t('toast_stock_added')}`:`-${qty} ${t('toast_stock_reduced')}`);closeModal('modal-stock-move');renderStockTab();renderItems();renderPos();checkStockAlerts();}
-
 function openOpnameModal(){
     opnameData={};
     const list=document.getElementById('opname-list');
@@ -2141,11 +1748,10 @@ function openOpnameModal(){
     openModal('modal-opname');
 }
 function submitOpname(){const entries=Object.values(opnameData);if(entries.length===0)return showToast(t('toast_opname_no_data'));let changed=0;entries.forEach(e=>{const item=items.find(i=>i.id==e.id);if(!item)return;const diff=e.physical-e.system;if(diff===0)return;addStockHistory(item.id,item.name,'opname',Math.abs(diff),`Opname: ${e.system} → ${e.physical} (${diff>0?'+':''}${diff})`);item.stock=e.physical;changed++;});if(changed===0)return showToast(t('toast_opname_no_change'));saveStorage();showToast(`${t('toast_opname_done')} ${changed} ${t('toast_products_updated')}`);closeModal('modal-opname');renderStockTab();renderItems();renderPos();checkStockAlerts();}
-
 function openMinStockSettings(){document.getElementById('min-stock-input').value=config.minStock||5;openModal('modal-minstock');}
 function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast(t('toast_fill_data'));config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast(t('toast_min_stock_saved'));checkStockAlerts();}
 
-// ── Settings ─────────────────────────────────────────────────────────────
+// ── Settings ──
 function toggleDarkMode(){config.darkMode=document.getElementById('dark-mode-toggle').checked;document.body.classList.toggle('dark',config.darkMode);localStorage.setItem('dk_config',JSON.stringify(config));renderHome();}
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url;}
 async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast(t('toast_save_success'));syncCloud({type:'settings',id:'app_cfg',data:config});}
@@ -2172,7 +1778,7 @@ function loadSettings(){
 function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
 
-// ── Items ─────────────────────────────────────────────────────────────────
+// ── Items ──
 function renderItems(){
     const q=(document.getElementById('item-search')||{value:''}).value.toLowerCase();
     const list=document.getElementById('item-list');if(!list)return;
@@ -2194,23 +1800,14 @@ function renderItems(){
         </div>`;
     }).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
 }
-
-async function deleteProduct(id) {
-    const item = items.find(x => x.id == id);
-    const name = item ? item.name : '';
-    const ok = await showConfirm(
-        t('confirm_delete_product_title'),
-        `"${name}" ${t('confirm_delete_product_desc')}`,
-        t('confirm_delete_btn')
-    );
-    if (!ok) return;
-    items = items.filter(x => x.id !== id);
-    saveStorage();
-    renderItems();
-    renderPos();
-    showToast(t('toast_product_deleted'));
+async function deleteProduct(id){
+    const item=items.find(x=>x.id==id);
+    const name=item?item.name:'';
+    const ok=await showConfirm(t('confirm_delete_product_title'),`"${name}" ${t('confirm_delete_product_desc')}`,t('confirm_delete_btn'));
+    if(!ok)return;
+    items=items.filter(x=>x.id!==id);
+    saveStorage();renderItems();renderPos();showToast(t('toast_product_deleted'));
 }
-
 function openProductModal(id=null){
     if(id){const i=items.find(x=>x.id==id);document.getElementById('p-id').value=i.id;document.getElementById('p-barcode').value=i.barcode||'';document.getElementById('p-name').value=i.name;document.getElementById('p-cost').value=i.cost||0;document.getElementById('p-price').value=i.price;document.getElementById('p-stock').value=i.stock;renderCategoryOptions();document.getElementById('p-category').value=i.category||'Umum';}
     else{document.getElementById('p-id').value='';document.getElementById('p-barcode').value='';document.getElementById('p-name').value='';document.getElementById('p-cost').value='';document.getElementById('p-price').value='';document.getElementById('p-stock').value='';renderCategoryOptions();}
@@ -2218,7 +1815,7 @@ function openProductModal(id=null){
 }
 async function saveProduct(){const idIn=document.getElementById('p-id').value;const d={id:idIn?Number(idIn):Date.now(),barcode:document.getElementById('p-barcode').value,name:document.getElementById('p-name').value,cost:Number(document.getElementById('p-cost').value),price:Number(document.getElementById('p-price').value),stock:Number(document.getElementById('p-stock').value),category:document.getElementById('p-category').value};if(!d.name)return showToast(t('toast_fill_product_name'));if(idIn){const idx=items.findIndex(x=>x.id==idIn);items[idx]=d;}else items.push(d);saveStorage();closeModal('modal-product');renderItems();renderPos();checkStockAlerts();showToast(t('toast_save_success'));await syncCloud(d);}
 
-// ── Data ──────────────────────────────────────────────────────────────────
+// ── Data ──
 function getFilteredLogs(){const f=(document.getElementById('date-filter')||{value:''}).value;return logs.filter(l=>!f||l.date===f);}
 function renderData(){
     const filtered=getFilteredLogs();const f=(document.getElementById('date-filter')||{value:''}).value;
@@ -2237,72 +1834,49 @@ function renderData(){
         </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
 }
 
-// ── Export ────────────────────────────────────────────────────────────────
+// ── Export ──
 function exportExcel(){if(typeof XLSX==='undefined')return showToast(t('toast_excel_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),rawIDR(l.amount),rawIDR(l.total_cost),rawIDR(l.amount)-rawIDR(l.total_cost),rawIDR(l.pay_cash),rawIDR(l.pay_qris),rawIDR(l.change),l.method]);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);txRows.push([],[" TOTAL","","","",tAmt,tCost,tAmt-tCost,filtered.reduce((a,l)=>a+rawIDR(l.pay_cash),0),filtered.reduce((a,l)=>a+rawIDR(l.pay_qris),0),filtered.reduce((a,l)=>a+rawIDR(l.change),0),""]);const wsTx=XLSX.utils.aoa_to_sheet([...txHeader,...txRows]);const invHeader=[["ID","Barcode","Nama","Kategori","Modal","Jual","Stok","Status","Nilai Stok"]];const invRows=items.map(i=>[i.id,i.barcode||'-',i.name,i.category||'Umum',rawIDR(i.cost),rawIDR(i.price),i.stock,t('badge_'+getStockStatus(i.stock)),rawIDR(i.cost)*i.stock]);const wsInv=XLSX.utils.aoa_to_sheet([...invHeader,...invRows]);const shHeader=[["ID","Produk","Tipe","Qty","Keterangan","Tanggal"]];const shRows=stockHistory.map(h=>[h.id,h.productName,h.type,h.qty,h.note,new Date(h.date).toLocaleString('id-ID')]);const wsSh=XLSX.utils.aoa_to_sheet([...shHeader,...shRows]);const debtHeader=[["ID","Pelanggan","Total","Terbayar","Sisa","Jatuh Tempo","Status"]];const debtRows=debts.map(d=>[d.id,d.customer,rawIDR(d.total),rawIDR(d.paid),rawIDR(d.balance),d.dueDate,d.status]);const wsDebt=XLSX.utils.aoa_to_sheet([...debtHeader,...debtRows]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,wsTx,"Transaksi");XLSX.utils.book_append_sheet(wb,wsInv,"Inventaris");XLSX.utils.book_append_sheet(wb,wsSh,"Riwayat Stok");XLSX.utils.book_append_sheet(wb,wsDebt,"Hutang");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.xlsx`);showToast(t('toast_excel_success'));}catch(e){console.error(e);showToast(t('toast_excel_fail'));}}
+function exportPDF(){if(typeof window.jspdf==='undefined')return showToast(t('toast_pdf_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!==t('debt_paid_status')).reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:t('dash_today_income'),value:formatIDR(tAmt),color:pc},{label:t('dash_net_profit'),value:formatIDR(tAmt-tCost),color:sc},{label:t('dash_total_receivable'),value:formatIDR(tDebt),color:dc},{label:t('nav_reports'),value:`${filtered.length}`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text(t('nav_reports').toUpperCase(),M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`${t('transactions')}: ${f}`:'All',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Date","Items","Total","Profit","Method"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast(t('toast_pdf_success'));}catch(e){console.error(e);showToast(t('toast_pdf_fail'));}}
 
-function exportPDF(){if(typeof window.jspdf==='undefined')return showToast(t('toast_pdf_fail'));const filtered=getFilteredLogs();if(filtered.length===0)return showToast(t('toast_no_data'));try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const sn=config.storeName||'DheKasir',sa=config.storeAddress||'-',sp=config.storePhone||'';const f=(document.getElementById('date-filter')||{value:''}).value;const printed=new Date().toLocaleString('id-ID');const pc=[79,70,229],sc=[16,185,129],dc=[239,68,68];const PW=210,PH=297,M=14,CW=PW-M*2;function hdr(p){doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(sn,M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`${sa}${sp?' | '+sp:''}`,M,15.5);doc.text(`Hal. ${p}`,PW-M,10,{align:'right'});doc.text(`Dicetak: ${printed}`,PW-M,15.5,{align:'right'});}hdr(1);const tAmt=filtered.reduce((a,l)=>a+rawIDR(l.amount),0);const tCost=filtered.reduce((a,l)=>a+rawIDR(l.total_cost),0);const tDebt=debts.filter(d=>d.status!==t('debt_paid_status')).reduce((a,d)=>a+rawIDR(d.balance),0);const kpis=[{label:t('dash_today_income'),value:formatIDR(tAmt),color:pc},{label:t('dash_net_profit'),value:formatIDR(tAmt-tCost),color:sc},{label:t('dash_total_receivable'),value:formatIDR(tDebt),color:dc},{label:t('nav_reports'),value:`${filtered.length}`,color:[100,100,120]}];const bw=(CW-9)/4;doc.setFillColor(245,245,255);doc.roundedRect(M,26,CW,14,3,3,'F');doc.setFontSize(11);doc.setFont('helvetica','bold');doc.setTextColor(...pc);doc.text(t('nav_reports').toUpperCase(),M+4,34);doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,100,120);doc.text(f?`${t('transactions')}: ${f}`:'All',PW-M-4,34,{align:'right'});kpis.forEach((k,i)=>{const x=M+i*(bw+3),y=44;doc.setFillColor(245,245,255);doc.roundedRect(x,y,bw,18,2,2,'F');doc.setFontSize(6.5);doc.setFont('helvetica','normal');doc.setTextColor(120,120,140);doc.text(k.label,x+bw/2,y+6,{align:'center'});doc.setFontSize(8);doc.setFont('helvetica','bold');doc.setTextColor(...k.color);doc.text(k.value,x+bw/2,y+13,{align:'center'});});doc.autoTable({head:[["ID","Date","Items","Total","Profit","Method"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),formatIDR(rawIDR(l.amount)-rawIDR(l.total_cost)),l.method]),startY:68,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]},didDrawPage:(d)=>{if(d.pageNumber>1)hdr(d.pageNumber);}});doc.save(`DheKasir_Laporan${f?'_'+f:''}_${Date.now()}.pdf`);showToast(t('toast_pdf_success'));}catch(e){console.error(e);showToast(t('toast_pdf_fail'));}}
-
-// ══════════════════════════════
-// DEBTS — with search + filter
-// ══════════════════════════════
+// ── Debts ──
 function renderDebts() {
-    const q = (document.getElementById('debt-search') || { value: '' }).value.toLowerCase().trim();
-    const paidStatus = t('debt_paid_status');
-
-    // Update counter label (unpaid only)
-    const unpaidCount = debts.filter(d => d.status !== paidStatus).length;
-    const label = document.getElementById('debt-count-label');
-    if (label) label.innerText = unpaidCount + ' ORANG';
-
-    const list = document.getElementById('debt-list');
-    if (!list) return;
-
-    // Filter by search + tab
-    let filtered = debts.slice().reverse().filter(d => {
-        const matchSearch = !q || d.customer.toLowerCase().includes(q);
-        const matchFilter =
-            debtFilter === 'all' ? true :
-            debtFilter === 'unpaid' ? d.status !== paidStatus :
-            debtFilter === 'paid' ? d.status === paidStatus : true;
-        return matchSearch && matchFilter;
+    const q=(document.getElementById('debt-search')||{value:''}).value.toLowerCase().trim();
+    const paidStatus=t('debt_paid_status');
+    const unpaidCount=debts.filter(d=>d.status!==paidStatus).length;
+    const label=document.getElementById('debt-count-label');
+    if(label)label.innerText=unpaidCount+' ORANG';
+    const list=document.getElementById('debt-list');if(!list)return;
+    let filtered=debts.slice().reverse().filter(d=>{
+        const matchSearch=!q||d.customer.toLowerCase().includes(q);
+        const matchFilter=debtFilter==='all'?true:debtFilter==='unpaid'?d.status!==paidStatus:debtFilter==='paid'?d.status===paidStatus:true;
+        return matchSearch&&matchFilter;
     });
-
-    if (filtered.length === 0) {
-        const emptyMsg = q
-            ? `<div class="text-center py-12 opacity-30"><i class="fa-solid fa-magnifying-glass text-2xl mb-3"></i><p class="text-sm">${t('no_data')}</p></div>`
-            : `<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;
-        list.innerHTML = emptyMsg;
+    if(filtered.length===0){
+        list.innerHTML=q?`<div class="text-center py-12 opacity-30"><i class="fa-solid fa-magnifying-glass text-2xl mb-3"></i><p class="text-sm">${t('no_data')}</p></div>`:`<p class="text-center opacity-30 py-10">${t('debt_book_empty')}</p>`;
         return;
     }
-
-    list.innerHTML = filtered.map(d => {
-        const isOverdue = d.dueDate !== '-' && new Date(d.dueDate) < new Date() && d.status !== paidStatus;
-        const isPaid = d.status === paidStatus;
-        return `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm transition-all ${isOverdue ? 'border-rose-300' : ''}">
+    list.innerHTML=filtered.map(d=>{
+        const isOverdue=d.dueDate!=='-'&&new Date(d.dueDate)<new Date()&&d.status!==paidStatus;
+        const isPaid=d.status===paidStatus;
+        return `<div onclick="openDebtDetail('${d.id}')" class="card p-5 flex justify-between items-center active:scale-95 cursor-pointer shadow-sm transition-all ${isOverdue?'border-rose-300':''}">
             <div class="flex items-center gap-4">
-                <div class="w-10 h-10 ${isPaid ? 'bg-emerald-100 text-emerald-600' : isOverdue ? 'bg-red-100 text-red-600' : 'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs">
-                    <i class="fa-solid ${isPaid ? 'fa-check-circle' : 'fa-user-clock'}"></i>
-                </div>
-                <div>
-                    <p class="text-xs font-black">${d.customer}</p>
-                    <p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}${isOverdue ? ' ⚠' : ''}</p>
-                </div>
+                <div class="w-10 h-10 ${isPaid?'bg-emerald-100 text-emerald-600':isOverdue?'bg-red-100 text-red-600':'bg-rose-100 text-rose-600'} rounded-2xl flex items-center justify-center text-xs"><i class="fa-solid ${isPaid?'fa-check-circle':'fa-user-clock'}"></i></div>
+                <div><p class="text-xs font-black">${d.customer}</p><p class="text-[8px] uppercase text-muted">${t('deadline')}: ${d.dueDate}${isOverdue?' ⚠':''}</p></div>
             </div>
             <div class="text-right">
-                <p class="text-xs font-black ${isPaid ? 'text-emerald-600' : 'text-rose-500'}">${formatIDR(d.balance)}</p>
-                <span class="text-[7px] font-black uppercase px-2 py-0.5 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-500'}">${d.status}</span>
+                <p class="text-xs font-black ${isPaid?'text-emerald-600':'text-rose-500'}">${formatIDR(d.balance)}</p>
+                <span class="text-[7px] font-black uppercase px-2 py-0.5 rounded-full ${isPaid?'bg-emerald-100 text-emerald-600':'bg-rose-100 text-rose-500'}">${d.status}</span>
             </div>
         </div>`;
     }).join('');
 }
-
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast(t('toast_fill_data'));const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status=t('debt_paid_status');saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
 
-// ── WhatsApp ──────────────────────────────────────────────────────────────
+// ── WhatsApp ──
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n`;m+=`${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*${t('total')}: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
-// ── Init ──────────────────────────────────────────────────────────────────
+// ── Init ──
 window.onload = async () => {
     applyTranslations();
     loadSettings();
