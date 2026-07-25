@@ -103,6 +103,12 @@
         /* ── Card ── */
         .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; transition: background 0.3s, border-color 0.3s; }
 
+        /* Panel keranjang kasir versi desktop — disembunyikan secara default (mobile).
+           Baru ditampilkan lewat @media (min-width:1024px) di bawah. Tanpa baris ini,
+           kontennya (mis. "Belum ada barang dipilih") tetap muncul mentah tanpa styling
+           di halaman Kasir/POS pada layar HP. */
+        #pos-desktop-cart-panel { display: none; }
+
         /* ── HEADER ── */
         #app-header { position: sticky; top: 0; z-index: 40; background: var(--header-bg); border-bottom: 1px solid var(--card-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 0 16px; height: 62px; display: flex; align-items: center; justify-content: space-between; transition: background 0.3s, border-color 0.3s; }
         #hamburger-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; flex-shrink: 0; }
