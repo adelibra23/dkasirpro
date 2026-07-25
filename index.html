@@ -344,7 +344,7 @@
             border-radius: 18px; cursor: pointer; transition: all 0.2s; color: white;
             flex: 1;
         }
-        .scan-ctrl-btn:active { transform: scale(0.93); background: rgba(255,255,255,0.16); }
+        .scan-ctrl-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.16); }
         .scan-ctrl-btn.active-ctrl { background: rgba(254,240,138,0.16); border-color: rgba(253,224,71,0.4); }
         .scan-ctrl-icon { font-size: 20px; transition: color 0.2s; color: rgba(255,255,255,0.6); }
         .scan-ctrl-btn.active-ctrl .scan-ctrl-icon { color: #fde047; }
@@ -937,6 +937,7 @@
                 <div onclick="openMinStockSettings()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-amber-500"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div><span class="text-sm font-bold">Batas Minimum Stok</span></div><span id="min-stock-display" class="text-[10px] font-black text-muted">5</span></div>
                 <div onclick="openPrinterModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon" id="printer-icon-wrap" style="color:var(--text-muted)"><i class="fa-solid fa-print text-sm"></i></div><div><span class="text-sm font-bold block">Printer Thermal</span><span id="printer-device-name" class="text-[9px] text-muted font-semibold">Belum terhubung</span></div></div><div class="flex items-center gap-2"><span id="printer-status" class="text-[8px] font-black printer-offline uppercase">OFFLINE</span><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div></div>
                 <div onclick="openRemoteScanModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-mobile-screen-button text-sm"></i></div><div><span class="text-sm font-bold block">HP sebagai Scanner</span><span id="remote-scan-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="openLoginIdModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-cloud-arrow-up text-sm"></i></div><div><span class="text-sm font-bold block">Login ID (Sinkron Perangkat)</span><span id="login-id-status-display" class="text-[9px] text-muted font-semibold">Belum login</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openLanguageModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div><div><span class="text-sm font-bold block">Bahasa / Language</span><span id="current-lang-display" class="text-[9px] text-muted font-semibold">Bahasa Indonesia</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
@@ -1134,6 +1135,51 @@
         </div>
 
         <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Buka "Layar Live" di monitor kedua agar pelanggan bisa melihat barang & total belanja secara real-time, persis seperti layar kasir di minimarket.</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     LOGIN ID MODAL (Sinkron data antar perangkat — HP & Desktop)
+═══════════════════════════════════════════════════════════════ -->
+<div id="modal-login-id" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="text-lg font-black">Login ID Toko</h3>
+            <button onclick="closeModal('modal-login-id')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
+        </div>
+        <p class="text-xs text-muted mb-5">Gunakan <strong class="text-indigo-500">Login ID</strong> yang sama di HP dan Desktop agar data produk, transaksi, stok, dan hutang otomatis tersinkron secara realtime antar perangkat.</p>
+
+        <div id="login-id-logged-out">
+            <div class="p-4 rounded-2xl surface mb-4">
+                <label class="text-[8px] font-black uppercase ml-1 text-muted">Login ID</label>
+                <input type="text" id="login-id-input" placeholder="Contoh: TOKO-BUDI-01" class="w-full p-4 mt-1 rounded-2xl text-sm font-bold outline-none border uppercase" style="background:var(--input-bg);">
+            </div>
+            <div class="flex gap-3 mb-3">
+                <button onclick="doLoginWithId()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase premium-gradient text-white shadow-lg"><i class="fa-solid fa-right-to-bracket mr-1"></i> Login / Sambungkan</button>
+            </div>
+            <button onclick="generateNewLoginId()" class="w-full py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Buatkan ID Baru</button>
+        </div>
+
+        <div id="login-id-logged-in" class="hidden">
+            <div class="flex justify-center mb-4">
+                <span class="remote-status-pill connected" id="login-id-status-pill">
+                    <span class="remote-dot"></span><span id="login-id-status-text">Tersambung</span>
+                </span>
+            </div>
+            <div class="p-5 rounded-2xl surface text-center mb-4">
+                <p class="text-[8px] font-black uppercase text-muted mb-2">ID Login Aktif</p>
+                <p class="text-lg font-black text-indigo-500 tracking-wide" id="login-id-current-display">-</p>
+            </div>
+            <div class="flex gap-3 mb-3">
+                <button onclick="copyLoginId()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-copy mr-1"></i> Salin ID</button>
+                <button onclick="forceSyncNow()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Sinkron Sekarang</button>
+            </div>
+            <button onclick="logoutLoginId()" class="w-full py-3.5 rounded-2xl font-black text-[10px] uppercase text-rose-500" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);"><i class="fa-solid fa-right-from-bracket mr-1"></i> Logout dari Perangkat Ini</button>
+            <p class="text-[9px] text-center mt-3 text-muted" id="login-id-lastsync">Belum pernah sinkron</p>
+        </div>
+
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Buka Pengaturan → Login ID di HP, masukkan ID yang sama seperti di Desktop, lalu tekan Login. Data otomatis tersinkron dua arah setiap ada perubahan (produk, transaksi, stok, hutang).</div>
     </div>
 </div>
 
@@ -1467,7 +1513,7 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 2.0</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> yang tetap tersambung meski modal ditutup, serta <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket yang menampilkan barang & total belanja setiap kali HP memindai barcode, lengkap dengan total belanja yang juga tampil langsung di layar HP.</p>
+            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> yang tetap tersambung meski modal ditutup, <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket, serta <strong class="text-indigo-500">Login ID</strong> untuk menyinkronkan seluruh data toko (produk, transaksi, stok, hutang) secara otomatis antara HP dan Desktop.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1486,7 +1532,8 @@
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">3. Kamera:</strong> Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">4. Bluetooth:</strong> Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner & Layar Live:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode dan total belanja, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan maupun di layar HP.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Login ID & Sinkronisasi Antar Perangkat:</strong> Jika Anda mengaktifkan Login ID, seluruh data toko (produk, transaksi, stok, hutang, kategori) akan disimpan pada jaringan realtime pihak ketiga menggunakan Login ID sebagai kunci akses, agar dapat diakses dari perangkat lain dengan ID yang sama. Jangan bagikan Login ID Anda ke pihak yang tidak berkepentingan.</p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">7. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
         </div>
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Saya Mengerti</button>
     </div>
@@ -2271,7 +2318,7 @@ function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',cur
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',2500);}
 function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
 function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
-function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
+function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));syncPushDebounced();}
 
 // ══════════════════════════════════════════════════════════════
 // TAB NAVIGATION
@@ -2297,8 +2344,8 @@ function renderPosCategoryChips(){const c=document.getElementById('pos-category-
 function setPosCategory(c){activePosCategory=c;renderPosCategoryChips();renderPos();}
 function renderCategoryList(){const list=document.getElementById('category-list');list.innerHTML=categories.filter(c=>c!=='Semua').map(c=>`<div class="flex items-center justify-between p-4 rounded-2xl surface"><span class="text-sm font-bold">${c}</span>${c!=='Umum'?`<button onclick="deleteCategory('${c}')" class="text-rose-500 p-2"><i class="fa-solid fa-trash-can text-xs"></i></button>`:''}</div>`).join('');}
 function openCategoryModal(){renderCategoryList();openModal('modal-category');}
-function addCategory(){const input=document.getElementById('new-cat-name');const val=input.value.trim();if(!val)return showToast('Isi nama kategori!');if(categories.includes(val))return showToast('Kategori sudah ada!');categories.push(val);input.value='';localStorage.setItem('dk_categories',JSON.stringify(categories));renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
-function deleteCategory(name){categories=categories.filter(c=>c!==name);localStorage.setItem('dk_categories',JSON.stringify(categories));renderCategoryList();renderCategoryOptions();renderPosCategoryChips();}
+function addCategory(){const input=document.getElementById('new-cat-name');const val=input.value.trim();if(!val)return showToast('Isi nama kategori!');if(categories.includes(val))return showToast('Kategori sudah ada!');categories.push(val);input.value='';localStorage.setItem('dk_categories',JSON.stringify(categories));renderCategoryList();renderCategoryOptions();renderPosCategoryChips();syncPushDebounced();}
+function deleteCategory(name){categories=categories.filter(c=>c!==name);localStorage.setItem('dk_categories',JSON.stringify(categories));renderCategoryList();renderCategoryOptions();renderPosCategoryChips();syncPushDebounced();}
 
 // ══════════════════════════════════════════════════════════════
 // POS
@@ -2554,14 +2601,14 @@ function openOpnameModal(){
 }
 function submitOpname(){const entries=Object.values(opnameData);if(entries.length===0)return showToast('Belum ada data!');let changed=0;entries.forEach(e=>{const item=items.find(i=>i.id==e.id);if(!item)return;const diff=e.physical-e.system;if(diff===0)return;addStockHistory(item.id,item.name,'opname',Math.abs(diff),`Opname: ${e.system} → ${e.physical}`);item.stock=e.physical;changed++;});if(changed===0)return showToast('Tidak ada perubahan!');saveStorage();showToast(`Opname selesai — ${changed} produk diperbarui`);closeModal('modal-opname');renderStockTab();renderItems();renderPos();checkStockAlerts();}
 function openMinStockSettings(){document.getElementById('min-stock-input').value=config.minStock||5;openModal('modal-minstock');}
-function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast('Isi nilai yang benar!');config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast('Batas minimum disimpan!');checkStockAlerts();}
+function saveMinStock(){const val=Number(document.getElementById('min-stock-input').value);if(!val||val<1)return showToast('Isi nilai yang benar!');config.minStock=val;localStorage.setItem('dk_config',JSON.stringify(config));const el=document.getElementById('min-stock-display');if(el)el.innerText=val;closeModal('modal-minstock');showToast('Batas minimum disimpan!');checkStockAlerts();syncPushDebounced();}
 
 // ══════════════════════════════════════════════════════════════
 // SETTINGS
 // ══════════════════════════════════════════════════════════════
 function toggleDarkMode(){config.darkMode=document.getElementById('dark-mode-toggle').checked;document.body.classList.toggle('dark',config.darkMode);localStorage.setItem('dk_config',JSON.stringify(config));renderHome();}
 function openStoreSettings(){openModal('modal-store-cfg');document.getElementById('cfg-name').value=config.storeName;document.getElementById('cfg-address').value=config.storeAddress;document.getElementById('cfg-phone').value=config.storePhone;document.getElementById('cfg-url').value=config.url||'';}
-async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast('Berhasil disimpan!');}
+async function saveSettings(){config={...config,storeName:document.getElementById('cfg-name').value,storeAddress:document.getElementById('cfg-address').value,storePhone:document.getElementById('cfg-phone').value,url:document.getElementById('cfg-url').value};localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();closeModal('modal-store-cfg');showToast('Berhasil disimpan!');syncPushDebounced();}
 function loadSettings(){
     const s=config;
     const darkToggle=document.getElementById('dark-mode-toggle');if(darkToggle)darkToggle.checked=s.darkMode;
@@ -2577,7 +2624,7 @@ function loadSettings(){
     const langNames={id:'🇮🇩 Bahasa Indonesia',en:'🇬🇧 English'};
     const langEl=document.getElementById('current-lang-display');if(langEl)langEl.textContent=langNames[currentLang]||'Bahasa Indonesia';
 }
-function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();};r.readAsDataURL(input.files[0]);}}
+function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();syncPushDebounced();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
 
 // ══════════════════════════════════════════════════════════════
@@ -2673,6 +2720,219 @@ async function payInstallment(){const amt=Number(document.getElementById('ins-am
 function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let m=`*${config.storeName}*\n${new Date(d.created_at||Date.now()).toLocaleString('id-ID')}\n\n`;(d.items||[]).forEach(i=>{m+=`• ${i.name} x${i.qty} = ${formatIDR(i.price*i.qty)}\n`;});m+=`\n*TOTAL: ${formatIDR(d.amount)}*`;window.open(`https://wa.me/?text=${encodeURIComponent(m)}`,'_blank');}
 
 // ══════════════════════════════════════════════════════════════
+// LOGIN ID — SINKRONISASI DATA ANTAR PERANGKAT (HP & DESKTOP)
+// ══════════════════════════════════════════════════════════════
+// Menggunakan PubNub App Context (Objects) sebagai penyimpanan cloud ringan,
+// dikunci dengan "Login ID" yang dipilih pengguna, plus siaran realtime agar
+// perubahan di satu perangkat langsung sampai ke perangkat lain yang login
+// dengan ID yang sama.
+const LOGIN_ID_KEY = 'dk_login_id';
+let loginId = localStorage.getItem(LOGIN_ID_KEY) || null;
+let loginPubnub = null;
+let loginLastSyncedAt = 0;
+let loginSyncing = false;
+let loginPushTimer = null;
+let loginLastPushedHash = '';
+
+function _loginChannel(id, part){ return 'dhekasir-sync-' + id + (part?('-'+part):''); }
+function _loginGenId(){
+    const adj = ['toko','kios','warung','usaha','dagang'];
+    const rnd = Math.random().toString(36).slice(2,7).toUpperCase();
+    return (adj[Math.floor(Math.random()*adj.length)]+'-'+rnd).toUpperCase();
+}
+
+function openLoginIdModal(){
+    renderLoginIdUI();
+    openModal('modal-login-id');
+}
+
+function renderLoginIdUI(){
+    const out = document.getElementById('login-id-logged-out');
+    const inn = document.getElementById('login-id-logged-in');
+    const statusDisplay = document.getElementById('login-id-status-display');
+    if(loginId){
+        if(out) out.classList.add('hidden');
+        if(inn) inn.classList.remove('hidden');
+        const disp = document.getElementById('login-id-current-display'); if(disp) disp.innerText = loginId;
+        if(statusDisplay) statusDisplay.innerText = 'Login sebagai: ' + loginId;
+        const lastSyncEl = document.getElementById('login-id-lastsync');
+        if(lastSyncEl) lastSyncEl.innerText = loginLastSyncedAt ? ('Terakhir sinkron: '+new Date(loginLastSyncedAt).toLocaleTimeString('id-ID')) : 'Belum pernah sinkron';
+    } else {
+        if(out) out.classList.remove('hidden');
+        if(inn) inn.classList.add('hidden');
+        if(statusDisplay) statusDisplay.innerText = 'Belum login';
+        const input = document.getElementById('login-id-input'); if(input) input.value = '';
+    }
+}
+
+function generateNewLoginId(){
+    const input = document.getElementById('login-id-input');
+    if(input) input.value = _loginGenId();
+    showToast('ID baru dibuat, tekan Login untuk aktifkan');
+}
+
+function copyLoginId(){
+    if(!loginId) return;
+    if(navigator.clipboard) navigator.clipboard.writeText(loginId).then(()=>showToast('Login ID disalin!')).catch(()=>showToast(loginId));
+    else showToast(loginId);
+}
+
+function _loginGetPubnub(){
+    if(typeof PubNub === 'undefined') return null;
+    if(!loginPubnub){
+        loginPubnub = new PubNub({ publishKey:'demo', subscribeKey:'demo', uuid:'dk-login-'+Math.random().toString(36).slice(2,10) });
+        loginPubnub.addListener({
+            message: (evt) => {
+                const msg = evt.message || {};
+                if(msg.type === 'data_changed' && msg.from !== loginPubnub.getUUID()){
+                    // Perangkat lain baru saja push data baru — tarik ulang
+                    pullCloudData(true);
+                }
+            }
+        });
+    }
+    return loginPubnub;
+}
+
+async function doLoginWithId(){
+    const input = document.getElementById('login-id-input');
+    let id = (input?.value||'').trim().toUpperCase().replace(/\s+/g,'-');
+    if(!id) return showToast('Isi atau buat Login ID dulu!');
+    if(id.length < 3) return showToast('Login ID terlalu pendek!');
+    loginId = id;
+    localStorage.setItem(LOGIN_ID_KEY, loginId);
+    await connectLoginSync(true);
+}
+
+async function connectLoginSync(isFreshLogin){
+    const pn = _loginGetPubnub();
+    if(!pn){ showToast('Gagal memuat modul sinkronisasi'); return; }
+    pn.subscribe({ channels:[_loginChannel(loginId)] });
+    renderLoginIdUI();
+    showToast('Menyambungkan ke cloud...');
+    try{
+        const remoteExists = await pullCloudData(false, isFreshLogin);
+        if(!remoteExists){
+            // Belum ada data di cloud untuk ID ini — unggah data lokal sebagai data awal
+            await pushCloudData(true);
+            showToast('✓ Login berhasil — data lokal diunggah ke cloud');
+        }
+    }catch(e){
+        showToast('Gagal menyambung ke cloud, coba lagi');
+    }
+    renderLoginIdUI();
+}
+
+async function pullCloudData(isLiveUpdate, isFreshLogin){
+    const pn = _loginGetPubnub();
+    if(!pn || !loginId) return false;
+    if(loginSyncing) return true;
+    loginSyncing = true;
+    try{
+        const parts = ['items','logs','debts','categories','config','stockhistory'];
+        const results = {};
+        let anyFound = false;
+        for(const part of parts){
+            try{
+                const res = await pn.objects.getChannelMetadata({ channel:_loginChannel(loginId, part), include:{ customFields:true } });
+                const raw = res?.data?.custom?.payload;
+                if(raw){ results[part] = JSON.parse(raw); anyFound = true; }
+            }catch(e){ /* channel/metadata belum ada — wajar untuk login pertama kali */ }
+        }
+        if(!anyFound){ loginSyncing=false; return false; }
+
+        if(isLiveUpdate){
+            const ok = await showConfirm('Data Baru Tersedia', 'Perangkat lain baru saja memperbarui data toko. Muat data terbaru sekarang? Data lokal yang belum tersinkron akan ditimpa.', 'Muat Sekarang');
+            if(!ok){ loginSyncing=false; return true; }
+        } else if(!isFreshLogin){
+            // sinkron biasa saat load awal — langsung terapkan
+        } else {
+            const ok = await showConfirm('Data Ditemukan di Cloud', 'Login ID ini sudah memiliki data toko tersimpan. Muat data tersebut ke perangkat ini? Data lokal saat ini akan ditimpa.', 'Muat Data Cloud');
+            if(!ok){ loginSyncing=false; return true; }
+        }
+
+        if(results.items) items = results.items;
+        if(results.logs) logs = results.logs;
+        if(results.debts) debts = results.debts;
+        if(results.categories) categories = results.categories;
+        if(results.stockhistory) stockHistory = results.stockhistory;
+        if(results.config) config = { ...config, ...results.config };
+
+        localStorage.setItem('dk_items', JSON.stringify(items));
+        localStorage.setItem('dk_logs', JSON.stringify(logs));
+        localStorage.setItem('dk_debts', JSON.stringify(debts));
+        localStorage.setItem('dk_categories', JSON.stringify(categories));
+        localStorage.setItem('dk_stock_history', JSON.stringify(stockHistory));
+        localStorage.setItem('dk_config', JSON.stringify(config));
+
+        loginLastSyncedAt = Date.now();
+        loadSettings(); renderCategoryOptions(); renderPosCategoryChips(); checkStockAlerts();
+        const activeTab = localStorage.getItem('dk_active_tab')||'home';
+        switchTab(activeTab);
+        renderLoginIdUI();
+        showToast('✓ Data disinkron dari cloud');
+    } finally {
+        loginSyncing = false;
+    }
+    return true;
+}
+
+async function pushCloudData(silent){
+    const pn = _loginGetPubnub();
+    if(!pn || !loginId) return;
+    const payloadMap = {
+        items: items, logs: logs, debts: debts, categories: categories,
+        stockhistory: stockHistory,
+        config: { storeName:config.storeName, storeAddress:config.storeAddress, storePhone:config.storePhone, minStock:config.minStock, logo:config.logo }
+    };
+    try{
+        for(const part of Object.keys(payloadMap)){
+            const json = JSON.stringify(payloadMap[part]);
+            // Batasi ukuran per-bagian agar aman untuk penyimpanan metadata realtime (±30KB)
+            if(json.length > 30000){
+                if(!silent) showToast(`⚠ Data "${part}" terlalu besar untuk disinkron otomatis`);
+                continue;
+            }
+            await pn.objects.setChannelMetadata({
+                channel: _loginChannel(loginId, part),
+                data: { name: 'dhekasir-'+part, custom: { payload: json, updatedAt: Date.now() } }
+            });
+        }
+        await pn.publish({ channel:_loginChannel(loginId), message:{ type:'data_changed', from: pn.getUUID(), ts:Date.now() } }).catch(()=>{});
+        loginLastSyncedAt = Date.now();
+        renderLoginIdUI();
+    }catch(e){
+        if(!silent) showToast('Gagal sinkron ke cloud');
+    }
+}
+
+function syncPushDebounced(){
+    if(!loginId) return;
+    clearTimeout(loginPushTimer);
+    loginPushTimer = setTimeout(() => { pushCloudData(true); }, 1200);
+}
+
+function forceSyncNow(){
+    if(!loginId) return showToast('Belum login!');
+    showToast('Menyinkronkan...');
+    pushCloudData(false).then(()=>showToast('✓ Sinkron selesai'));
+}
+
+function logoutLoginId(){
+    if(loginPubnub && loginId){ try{ loginPubnub.unsubscribeAll(); }catch(e){} }
+    loginId = null;
+    localStorage.removeItem(LOGIN_ID_KEY);
+    renderLoginIdUI();
+    closeModal('modal-login-id');
+    showToast('Logout dari Login ID berhasil');
+}
+
+async function autoConnectLoginOnLoad(){
+    if(!loginId) return;
+    await connectLoginSync(false);
+}
+
+// ══════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════
 window.onload = async () => {
@@ -2695,6 +2955,8 @@ window.onload = async () => {
     updateScanSoundUI();
     updateScanVibrateUI();
     await btAutoReconnectOnLoad();
+    renderLoginIdUI();
+    await autoConnectLoginOnLoad();
 
     // Pastikan status sidebar bersih saat pindah antar breakpoint (resize / rotate)
     window.addEventListener('resize', () => {
