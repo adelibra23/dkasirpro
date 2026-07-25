@@ -125,6 +125,11 @@
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
         .hdr-btn:active { transform: scale(0.92); }
 
+        /* Judul halaman & aksi cepat khusus header desktop — disembunyikan di mobile, dimunculkan lewat @media (min-width:1024px) */
+        .header-page-title { display: none; }
+        .hdr-quick-add { display: none; }
+        .hdr-divider { display: none; }
+
         /* ── SIDEBAR ── */
         #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
         #sidebar-overlay.open { opacity: 1; pointer-events: all; }
@@ -622,13 +627,28 @@
             body.sidebar-open { overflow: visible !important; position: static !important; width: auto !important; }
 
             /* Header + main content shift right to make room for the sidebar */
-            #app-header { margin-left: 272px; padding: 0 28px; height: 68px; }
+            #app-header { margin-left: 272px; padding: 0 28px; height: 72px; gap: 20px; }
             main { margin-left: 272px; }
             .header-brand { display: none; }
             .header-actions { margin-left: auto; gap: 10px; }
 
+            /* Judul halaman dinamis di header — menggantikan brand mobile, memberi konteks "sedang di halaman apa" ala aplikasi desktop */
+            .header-page-title { display: flex; align-items: center; gap: 12px; min-width: 0; }
+            .header-page-title .dpt-icon { width: 40px; height: 40px; border-radius: 13px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+            .header-page-title h1 { font-size: 16px; font-weight: 800; line-height: 1.2; letter-spacing: -0.2px; margin: 0; }
+            .header-page-title p { font-size: 11px; font-weight: 600; color: var(--text-muted); margin: 1px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+            /* Tombol aksi cepat "Tambah Produk" + pemisah, hanya relevan di layar lebar */
+            .hdr-quick-add { display: flex; align-items: center; gap: 8px; padding: 0 16px; height: 40px; border-radius: 12px; border: none; cursor: pointer; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%); box-shadow: 0 8px 20px rgba(79,70,229,0.3); transition: all 0.15s; white-space: nowrap; }
+            .hdr-quick-add:hover { transform: translateY(-1px); box-shadow: 0 10px 24px rgba(79,70,229,0.4); }
+            .hdr-quick-add:active { transform: translateY(0) scale(0.97); }
+            .hdr-quick-add.hidden { display: none; }
+            .hdr-divider { display: block; width: 1px; height: 26px; background: var(--card-border); margin: 0 2px; }
+
             /* Sidebar: sedikit kedalaman agar terpisah jelas dari konten (nuansa aplikasi web/dashboard) */
             #sidebar { box-shadow: 1px 0 0 var(--card-border); }
+            /* Header sidebar dipadatkan — padding besar di atas hanya diperlukan untuk status bar HP */
+            .sidebar-header { padding: 26px 20px 20px; }
 
             /* Hover state untuk perangkat dengan mouse — kartu, tombol header, baris pengaturan, produk */
             .card:hover { box-shadow: 0 6px 22px rgba(20,20,50,0.07); }
@@ -647,13 +667,15 @@
             /* Content area: comfortable max width, centered, generous padding */
             .tab-content { max-width: 1180px; margin: 0 auto; padding: 28px 32px 60px; }
 
-            /* Dashboard: hero + widgets side-by-side — hanya saat tab ini aktif */
-            #tab-home.active { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 20px; align-items: start; }
+            /* Dashboard: hero KPI di kiri (menumpuk penuh tinggi), status stok + chart + produk terlaris
+               tersusun 2 kolom di kanan — memakai class semantik, bukan nth-child, agar layout tidak
+               mudah "patah" saat markup berubah */
+            #tab-home.active { display: grid; grid-template-columns: minmax(320px, 400px) 1fr 1fr; gap: 20px; align-items: start; }
             #tab-home.active > * { margin: 0 !important; }
-            #tab-home.active .dash-hero,
-            #tab-home.active > div:nth-child(2) { grid-column: 1; }
-            #tab-home.active > div:nth-child(3),
-            #tab-home.active > div:nth-child(4) { grid-column: 2; }
+            #tab-home.active .dash-widget-hero { grid-column: 1; grid-row: 1 / span 2; }
+            #tab-home.active .dash-widget-alert { grid-column: 2 / span 2; grid-row: 1; }
+            #tab-home.active .dash-widget-chart { grid-column: 2; grid-row: 2; }
+            #tab-home.active .dash-widget-top { grid-column: 3; grid-row: 2; }
 
             /* Product / grid views scale to available width */
             #pos-grid { grid-template-columns: repeat(4, minmax(0,1fr)) !important; gap: 16px; }
@@ -773,6 +795,8 @@
             #pos-grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
             #item-list, #stock-product-list, #debt-list, #data-list { grid-template-columns: repeat(3, minmax(0,1fr)); }
             #tab-pos.active { max-width: 1520px; }
+            /* Dashboard sedikit dilebarkan proporsinya di layar sangat lebar agar hero tidak terlihat kekecilan */
+            #tab-home.active { grid-template-columns: minmax(360px, 460px) 1fr 1fr; gap: 24px; }
         }
 
         /* Small phones: tighten padding a touch */
@@ -889,7 +913,18 @@
             <div class="header-app-logo">D</div>
             <span class="header-app-title">DheKasir</span>
         </div>
+        <div class="header-page-title" id="desktop-page-title">
+            <div class="dpt-icon" id="dpt-icon"><i class="fa-solid fa-house"></i></div>
+            <div>
+                <h1 id="dpt-text">Beranda</h1>
+                <p id="dpt-sub">Ringkasan performa toko hari ini</p>
+            </div>
+        </div>
         <div class="header-actions">
+            <button onclick="openProductModal()" id="hdr-quick-add-btn" class="hdr-quick-add">
+                <i class="fa-solid fa-plus"></i><span>Tambah Produk</span>
+            </button>
+            <span class="hdr-divider"></span>
             <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
                 <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
@@ -909,7 +944,7 @@
 
         <!-- HOME -->
         <section id="tab-home" class="tab-content active space-y-5">
-            <div class="dash-hero" id="dash-hero-wrap">
+            <div class="dash-hero dash-widget-hero" id="dash-hero-wrap">
                 <div class="dash-hero-grid"></div>
                 <div class="dash-hero-orb-1"></div>
                 <div class="dash-hero-orb-2"></div>
@@ -948,18 +983,18 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
+            <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer dash-widget-alert" onclick="switchTab('stock')">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
                     <p class="text-xs font-black uppercase text-muted">Status Stok</p>
                 </div>
                 <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
             </div>
-            <div class="card p-5 shadow-sm">
+            <div class="card p-5 shadow-sm dash-widget-chart">
                 <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
                 <canvas id="hourChart" height="140"></canvas>
             </div>
-            <div class="card p-5 space-y-3 shadow-sm">
+            <div class="card p-5 space-y-3 shadow-sm dash-widget-top">
                 <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
                 <div id="top-products" class="space-y-2"></div>
             </div>
@@ -2781,6 +2816,24 @@ function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));lo
 // ══════════════════════════════════════════════════════════════
 // TAB NAVIGATION
 // ══════════════════════════════════════════════════════════════
+const DESKTOP_PAGE_META = {
+    home:     { icon:'fa-house',              title:'Beranda',        sub:'Ringkasan performa toko hari ini' },
+    pos:      { icon:'fa-cash-register',      title:'Kasir / POS',    sub:'Buat transaksi penjualan baru' },
+    items:    { icon:'fa-box',                title:'Inventaris',     sub:'Kelola daftar dan harga produk' },
+    stock:    { icon:'fa-warehouse',          title:'Manajemen Stok', sub:'Pantau stok masuk, keluar, dan opname' },
+    debts:    { icon:'fa-user-clock',         title:'Buku Hutang',    sub:'Catatan piutang pelanggan' },
+    data:     { icon:'fa-chart-bar',          title:'Laporan & Data', sub:'Riwayat transaksi dan ekspor data' },
+    settings: { icon:'fa-user-gear',          title:'Pengaturan',     sub:'Konfigurasi toko dan aplikasi' },
+};
+function updateDesktopPageTitle(tab){
+    const meta = DESKTOP_PAGE_META[tab] || DESKTOP_PAGE_META.home;
+    const iconEl=document.getElementById('dpt-icon'), textEl=document.getElementById('dpt-text'), subEl=document.getElementById('dpt-sub');
+    if(iconEl)iconEl.innerHTML=`<i class="fa-solid ${meta.icon}"></i>`;
+    if(textEl)textEl.innerText=meta.title;
+    if(subEl)subEl.innerText=meta.sub;
+    const quickAdd=document.getElementById('hdr-quick-add-btn');
+    if(quickAdd)quickAdd.classList.toggle('hidden', tab==='settings');
+}
 function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
@@ -2789,6 +2842,7 @@ function switchTab(tab){
     document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
     const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');
     localStorage.setItem('dk_active_tab',tab);
+    updateDesktopPageTitle(tab);
     if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
     if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
     if(window.innerWidth<1024)window.scrollTo({top:0,behavior:'smooth'});
