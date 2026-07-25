@@ -444,6 +444,20 @@
         /* ── Keyboard shortcut badges (panel bantuan desktop) ── */
         .kbd-key { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 7px; background: var(--card); border: 1px solid var(--card-border); border-bottom-width: 2px; font-size: 10px; font-weight: 800; color: var(--text); font-family: inherit; }
         .kbd-plus { font-size: 10px; font-weight: 800; color: var(--text-muted); margin: 0 3px; }
+
+        /* ── Halaman Informasi (Tutorial/Tentang/Privasi/Kontak) yang bisa dikustom Admin ── */
+        .content-edit-fab { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--surface); color: var(--primary); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; transition: all 0.15s; z-index: 2; }
+        .content-edit-fab:hover { background: var(--primary-soft); transform: translateY(-1px); }
+        .content-edit-fab.hidden { display: none !important; }
+        .tutorial-step-row { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid var(--card-border); text-align: left; }
+        .tutorial-step-row:last-child { border-bottom: none; }
+        .tutorial-step-num { width: 30px; height: 30px; border-radius: 11px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px; flex-shrink: 0; }
+        .tutorial-step-title { font-size: 12.5px; font-weight: 800; margin-bottom: 2px; }
+        .tutorial-step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
+        .content-edit-hint { font-size: 9px; font-weight: 700; color: var(--text-muted); background: var(--surface); padding: 10px 12px; border-radius: 12px; margin-bottom: 14px; line-height: 1.5; }
+        .content-edit-label { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 6px; display: block; }
+        .content-edit-input, .content-edit-textarea { width: 100%; border: 1px solid var(--input-border); background: var(--input-bg); border-radius: 14px; padding: 12px 14px; font-size: 12px; font-weight: 600; outline: none; color: var(--text); font-family: inherit; margin-bottom: 14px; }
+        .content-edit-textarea { resize: vertical; line-height: 1.6; }
         .printer-card { border-radius: 20px; border: 1px solid var(--card-border); background: var(--card); overflow: hidden; transition: all 0.3s; }
         .printer-status-bar { height: 4px; transition: background 0.4s; border-radius: 0; }
         .printer-status-bar.ready { background: linear-gradient(90deg,#10b981,#34d399); } .printer-status-bar.connecting { background: linear-gradient(90deg,#f59e0b,#fbbf24); animation: shimmer 1s linear infinite; background-size: 200% 100%; } .printer-status-bar.error { background: linear-gradient(90deg,#ef4444,#f87171); } .printer-status-bar.offline { background: var(--card-border); }
@@ -1078,7 +1092,7 @@
             <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div><span>Pengaturan</span>
             </div>
-            <div class="sidebar-item" onclick="openModal('modal-about'); closeSidebar()">
+            <div class="sidebar-item" onclick="renderAboutModal();openModal('modal-about'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-circle-info" style="font-size:13px;"></i></div><span>Tentang Aplikasi</span>
             </div>
         </div>
@@ -1437,9 +1451,10 @@
             </div>
             <div class="card p-2 space-y-1">
                 <p class="dk-section-label">Informasi</p>
-                <div onclick="openModal('modal-about')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
-                <div onclick="openModal('modal-contact')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-headset text-sm"></i></div><span class="text-sm font-bold">Hubungi Kami</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
-                <div onclick="openModal('modal-privacy')" class="settings-row" style="border-bottom:none"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-shield-halved text-sm"></i></div><span class="text-sm font-bold">Privasi & Kebijakan</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="renderTutorialModal();openModal('modal-tutorial')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-emerald-500"><i class="fa-solid fa-graduation-cap text-sm"></i></div><span class="text-sm font-bold">Cara Menggunakan Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="renderAboutModal();openModal('modal-about')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="renderContactModal();openModal('modal-contact')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-headset text-sm"></i></div><span class="text-sm font-bold">Hubungi Kami</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="renderPrivacyModal();openModal('modal-privacy')" class="settings-row" style="border-bottom:none"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-shield-halved text-sm"></i></div><span class="text-sm font-bold">Privasi & Kebijakan</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
             </div>
         </section>
     </main>
@@ -2156,15 +2171,26 @@
 
 <!-- ABOUT -->
 <div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center" style="position:relative;">
+        <button onclick="openEditAbout()" id="about-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
         <h3 class="font-black text-xl mb-1">DheKasir</h3>
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 2.0</p>
-        <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
-            <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> yang tetap tersambung meski modal ditutup, <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket, serta <strong class="text-indigo-500">Login ID</strong> untuk menyinkronkan seluruh data toko (produk, transaksi, stok, hutang) secara otomatis antara HP dan Desktop.</p>
-        </div>
+        <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted" id="about-content-body"></div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
+    </div>
+</div>
+
+<!-- CARA MENGGUNAKAN APLIKASI -->
+<div id="modal-tutorial" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+        <button onclick="openEditTutorial()" id="tutorial-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
+        <div class="flex items-center gap-3 mb-4 shrink-0">
+            <div class="w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-graduation-cap text-emerald-600"></i></div>
+            <div><h3 class="font-black text-base">Cara Menggunakan Aplikasi</h3><p class="text-[9px] text-muted font-bold uppercase tracking-widest">Panduan singkat DheKasir</p></div>
+        </div>
+        <div class="flex-1 overflow-y-auto pr-1 hide-scrollbar" id="tutorial-content-body"></div>
+        <button onclick="closeModal('modal-tutorial')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Tutup</button>
     </div>
 </div>
 
@@ -2195,33 +2221,88 @@
 
 <!-- PRIVACY -->
 <div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+        <button onclick="openEditPrivacy()" id="privacy-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <div class="flex items-center gap-3 mb-5 shrink-0">
             <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-shield-halved text-indigo-600"></i></div>
-            <div><h3 class="font-black text-base">Kebijakan Privasi</h3><p class="text-[9px] text-muted font-bold uppercase tracking-widest">Berlaku sejak 1 Januari 2025</p></div>
+            <div><h3 class="font-black text-base">Kebijakan Privasi</h3><p class="text-[9px] text-muted font-bold uppercase tracking-widest" id="privacy-date-label">Berlaku sejak 1 Januari 2025</p></div>
         </div>
-        <div class="flex-1 overflow-y-auto pr-1 space-y-4 hide-scrollbar text-[11px] leading-relaxed text-muted">
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">1. Data Lokal:</strong> Semua data tersimpan di perangkat Anda (LocalStorage). Tidak ada data dikirim ke server tanpa persetujuan Anda.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">2. Cloud (Opsional):</strong> Sinkronisasi Google Spreadsheet hanya aktif jika Anda memasukkan Google Apps Script URL sendiri.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">3. Kamera:</strong> Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">4. Bluetooth:</strong> Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner & Layar Live:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode dan total belanja, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan maupun di layar HP.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Login ID & Sinkronisasi Antar Perangkat:</strong> Jika Anda mengaktifkan Login ID, seluruh data toko (produk, transaksi, stok, hutang, kategori) akan disimpan pada jaringan realtime pihak ketiga menggunakan Login ID sebagai kunci akses, agar dapat diakses dari perangkat lain dengan ID yang sama. Jangan bagikan Login ID Anda ke pihak yang tidak berkepentingan.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">7. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
-        </div>
+        <div class="flex-1 overflow-y-auto pr-1 space-y-4 hide-scrollbar text-[11px] leading-relaxed text-muted" id="privacy-content-body"></div>
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Saya Mengerti</button>
     </div>
 </div>
 
 <!-- CONTACT -->
 <div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl" style="position:relative;">
+        <button onclick="openEditContact()" id="contact-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <h3 class="font-black text-lg mb-5 text-center">Hubungi Kami</h3>
         <div class="space-y-5 mb-7">
-            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-500 shrink-0 surface"><i class="fa-solid fa-envelope"></i></div><div><p class="text-[9px] font-black uppercase text-muted">Email</p><p class="text-sm font-bold">support@dhekasir.app</p></div></div>
-            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500 shrink-0 surface"><i class="fa-solid fa-location-dot"></i></div><div><p class="text-[9px] font-black uppercase text-muted">Alamat</p><p class="text-xs font-bold leading-relaxed">Jalan Babul Huda Sekeladi, Tanah Putih, Rohil, Riau.</p></div></div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-500 shrink-0 surface"><i class="fa-solid fa-envelope"></i></div><div><p class="text-[9px] font-black uppercase text-muted">Email</p><p class="text-sm font-bold" id="contact-email-display">support@dhekasir.app</p></div></div>
+            <div class="flex items-start gap-4 hidden" id="contact-phone-row"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-500 shrink-0 surface"><i class="fa-brands fa-whatsapp"></i></div><div><p class="text-[9px] font-black uppercase text-muted">Telepon / WhatsApp</p><p class="text-sm font-bold" id="contact-phone-display">-</p></div></div>
+            <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-rose-500 shrink-0 surface"><i class="fa-solid fa-location-dot"></i></div><div><p class="text-[9px] font-black uppercase text-muted">Alamat</p><p class="text-xs font-bold leading-relaxed" id="contact-address-display">Jalan Babul Huda Sekeladi, Tanah Putih, Rohil, Riau.</p></div></div>
         </div>
         <button onclick="closeModal('modal-contact')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
+    </div>
+</div>
+
+<!-- ══ EDIT HALAMAN INFORMASI (khusus Admin) ══ -->
+<div id="modal-edit-about" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+        <h3 class="font-black text-base mb-4">Edit Halaman Tentang</h3>
+        <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Pisahkan antar paragraf dengan baris kosong.</p>
+        <label class="content-edit-label">Isi Halaman Tentang Aplikasi</label>
+        <textarea id="edit-about-text" rows="8" class="content-edit-textarea"></textarea>
+        <div class="flex gap-2">
+            <button onclick="closeModal('modal-edit-about');renderAboutModal();openModal('modal-about')" class="flex-1 py-4 rounded-2xl text-xs uppercase font-black text-muted surface">Batal</button>
+            <button onclick="saveEditAbout()" class="flex-1 py-4 premium-gradient text-white rounded-2xl text-xs uppercase font-black shadow-lg">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-edit-tutorial" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+        <h3 class="font-black text-base mb-4">Edit Cara Menggunakan Aplikasi</h3>
+        <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Satu langkah per baris, format: <strong>Judul Langkah :: Penjelasan langkah</strong></p>
+        <label class="content-edit-label">Daftar Langkah</label>
+        <textarea id="edit-tutorial-text" rows="10" class="content-edit-textarea"></textarea>
+        <div class="flex gap-2">
+            <button onclick="closeModal('modal-edit-tutorial');renderTutorialModal();openModal('modal-tutorial')" class="flex-1 py-4 rounded-2xl text-xs uppercase font-black text-muted surface">Batal</button>
+            <button onclick="saveEditTutorial()" class="flex-1 py-4 premium-gradient text-white rounded-2xl text-xs uppercase font-black shadow-lg">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-edit-privacy" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]">
+        <h3 class="font-black text-base mb-4 shrink-0">Edit Kebijakan Privasi</h3>
+        <div class="flex-1 overflow-y-auto pr-1 hide-scrollbar">
+            <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Pisahkan antar poin dengan baris kosong. Awali poin dengan "1. Judul:" agar judul tercetak tebal.</p>
+            <label class="content-edit-label">Berlaku Sejak</label>
+            <input type="text" id="edit-privacy-date" class="content-edit-input" placeholder="Berlaku sejak 1 Januari 2025">
+            <label class="content-edit-label">Isi Kebijakan Privasi</label>
+            <textarea id="edit-privacy-text" rows="12" class="content-edit-textarea"></textarea>
+        </div>
+        <div class="flex gap-2 shrink-0 mt-2">
+            <button onclick="closeModal('modal-edit-privacy');renderPrivacyModal();openModal('modal-privacy')" class="flex-1 py-4 rounded-2xl text-xs uppercase font-black text-muted surface">Batal</button>
+            <button onclick="saveEditPrivacy()" class="flex-1 py-4 premium-gradient text-white rounded-2xl text-xs uppercase font-black shadow-lg">Simpan</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-edit-contact" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+        <h3 class="font-black text-base mb-4">Edit Hubungi Kami</h3>
+        <label class="content-edit-label">Email</label>
+        <input type="text" id="edit-contact-email" class="content-edit-input" placeholder="support@tokoanda.com">
+        <label class="content-edit-label">Telepon / WhatsApp (opsional)</label>
+        <input type="text" id="edit-contact-phone" class="content-edit-input" placeholder="0812xxxxxxx">
+        <label class="content-edit-label">Alamat</label>
+        <textarea id="edit-contact-address" rows="3" class="content-edit-textarea" placeholder="Alamat toko Anda"></textarea>
+        <div class="flex gap-2">
+            <button onclick="closeModal('modal-edit-contact');renderContactModal();openModal('modal-contact')" class="flex-1 py-4 rounded-2xl text-xs uppercase font-black text-muted surface">Batal</button>
+            <button onclick="saveEditContact()" class="flex-1 py-4 premium-gradient text-white rounded-2xl text-xs uppercase font-black shadow-lg">Simpan</button>
+        </div>
     </div>
 </div>
 
@@ -3702,6 +3783,113 @@ function loadSettings(){
 }
 function handleLogoUpload(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=(e)=>{config.logo=e.target.result;localStorage.setItem('dk_config',JSON.stringify(config));loadSettings();syncPushDebounced();};r.readAsDataURL(input.files[0]);}}
 async function syncCloud(d){if(!config.url)return;try{await fetch(config.url,{method:'POST',mode:'no-cors',body:JSON.stringify(d)});}catch(e){}}
+
+// ══════════════════════════════════════════════════════════════
+// HALAMAN INFORMASI KUSTOM ADMIN (Cara Menggunakan, Tentang, Privasi, Hubungi Kami)
+// ══════════════════════════════════════════════════════════════
+const DEFAULT_ABOUT_TEXT = `DheKasir adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.
+
+Fitur baru v2.0: Scanner barcode redesign total, HP sebagai Scanner yang tetap tersambung meski modal ditutup, Layar Live Pelanggan ala kasir minimarket, serta Login ID untuk menyinkronkan seluruh data toko (produk, transaksi, stok, hutang) secara otomatis antara HP dan Desktop.`;
+const DEFAULT_PRIVACY_DATE = 'Berlaku sejak 1 Januari 2025';
+const DEFAULT_PRIVACY_TEXT = `1. Data Lokal: Semua data tersimpan di perangkat Anda (LocalStorage). Tidak ada data dikirim ke server tanpa persetujuan Anda.
+
+2. Cloud (Opsional): Sinkronisasi Google Spreadsheet hanya aktif jika Anda memasukkan Google Apps Script URL sendiri.
+
+3. Kamera: Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.
+
+4. Bluetooth: Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.
+
+5. HP sebagai Scanner & Layar Live: Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode dan total belanja, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan maupun di layar HP.
+
+6. Login ID & Sinkronisasi Antar Perangkat: Jika Anda mengaktifkan Login ID, seluruh data toko (produk, transaksi, stok, hutang, kategori) akan disimpan pada jaringan realtime pihak ketiga menggunakan Login ID sebagai kunci akses, agar dapat diakses dari perangkat lain dengan ID yang sama. Jangan bagikan Login ID Anda ke pihak yang tidak berkepentingan.
+
+7. Kontak: support@dhekasir.app`;
+const DEFAULT_CONTACT = { email:'support@dhekasir.app', phone:'', address:'Jalan Babul Huda Sekeladi, Tanah Putih, Rohil, Riau.' };
+const DEFAULT_TUTORIAL_TEXT = `Kasir / POS :: Cari produk lewat kolom pencarian atau scan barcode, ketuk produk untuk menambah ke keranjang, lalu tekan "Lanjutkan Pembayaran" dan pilih metode Tunai, QRIS, atau Hutang.
+Inventaris :: Tambahkan produk baru lewat tombol "+ Tambah", atau impor banyak produk sekaligus lewat menu Import Excel memakai template yang tersedia.
+Manajemen Stok :: Gunakan Stok Masuk saat barang datang, Stok Keluar untuk barang rusak/hilang, dan Opname untuk mencocokkan stok fisik dengan sistem secara berkala.
+Buku Hutang :: Hutang otomatis tercatat saat transaksi kasir memilih metode Hutang. Buka detail pelanggan untuk mencatat cicilan pembayaran.
+Laporan & Data :: Pilih tanggal untuk memfilter transaksi, lalu ekspor ke Excel atau PDF kapan saja untuk kebutuhan pembukuan.
+Multi-Kasir & Shift :: Aktifkan Mode Multi-Kasir di Pengaturan agar setiap karyawan login dengan PIN dan membuka/menutup shift sendiri sebelum mulai berjualan.
+Pengaturan :: Sesuaikan nama & logo toko, batas minimum stok, printer thermal, dan sinkronisasi antar perangkat lewat Login ID di halaman ini.`;
+
+function loadCustomContent(){
+    let contact=DEFAULT_CONTACT;
+    try{ contact=JSON.parse(localStorage.getItem('dk_content_contact'))||DEFAULT_CONTACT; }catch(e){}
+    return {
+        about: localStorage.getItem('dk_content_about') || DEFAULT_ABOUT_TEXT,
+        privacyDate: localStorage.getItem('dk_content_privacy_date') || DEFAULT_PRIVACY_DATE,
+        privacy: localStorage.getItem('dk_content_privacy') || DEFAULT_PRIVACY_TEXT,
+        contact: contact,
+        tutorial: localStorage.getItem('dk_content_tutorial') || DEFAULT_TUTORIAL_TEXT,
+    };
+}
+let customContent = loadCustomContent();
+
+function isAdminUser(){
+    if(!config.staffModeEnabled) return true;
+    const s=getActiveStaff();
+    return !s || s.role==='admin';
+}
+function _applyContentEditFabVisibility(){
+    const show=isAdminUser();
+    ['about-edit-btn','tutorial-edit-btn','privacy-edit-btn','contact-edit-btn'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.classList.toggle('hidden', !show);
+    });
+}
+function _escapeHtml(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function _paragraphsToHTML(text){
+    return (text||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>`<p>${_escapeHtml(p).replace(/\n/g,'<br>')}</p>`).join('');
+}
+function _privacyToHTML(text){
+    return (text||'').split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>{
+        const m=p.match(/^(\d+\.\s*[^:]+:)([\s\S]*)$/);
+        const body = m ? `<strong class="text-indigo-500">${_escapeHtml(m[1])}</strong>${_escapeHtml(m[2]).replace(/\n/g,'<br>')}` : _escapeHtml(p).replace(/\n/g,'<br>');
+        return `<div class="p-4 rounded-2xl" style="background:var(--surface)"><p>${body}</p></div>`;
+    }).join('');
+}
+function renderAboutModal(){
+    customContent=loadCustomContent();
+    const el=document.getElementById('about-content-body'); if(el) el.innerHTML=_paragraphsToHTML(customContent.about);
+    _applyContentEditFabVisibility();
+}
+function renderPrivacyModal(){
+    customContent=loadCustomContent();
+    const dateEl=document.getElementById('privacy-date-label'); if(dateEl) dateEl.innerText=customContent.privacyDate;
+    const el=document.getElementById('privacy-content-body'); if(el) el.innerHTML=_privacyToHTML(customContent.privacy);
+    _applyContentEditFabVisibility();
+}
+function renderContactModal(){
+    customContent=loadCustomContent();
+    const c=customContent.contact||DEFAULT_CONTACT;
+    const emailEl=document.getElementById('contact-email-display'); if(emailEl) emailEl.innerText=c.email||'-';
+    const addrEl=document.getElementById('contact-address-display'); if(addrEl) addrEl.innerText=c.address||'-';
+    const phoneRow=document.getElementById('contact-phone-row'), phoneEl=document.getElementById('contact-phone-display');
+    if(phoneRow){ if(c.phone){ phoneRow.classList.remove('hidden'); if(phoneEl) phoneEl.innerText=c.phone; } else phoneRow.classList.add('hidden'); }
+    _applyContentEditFabVisibility();
+}
+function renderTutorialModal(){
+    customContent=loadCustomContent();
+    const list=document.getElementById('tutorial-content-body'); if(!list) return;
+    const steps=(customContent.tutorial||'').split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{
+        const idx=l.indexOf('::');
+        return idx>-1 ? {title:l.slice(0,idx).trim(), desc:l.slice(idx+2).trim()} : {title:l, desc:''};
+    });
+    list.innerHTML = steps.length ? steps.map((s,i)=>`<div class="tutorial-step-row"><div class="tutorial-step-num">${i+1}</div><div><p class="tutorial-step-title">${_escapeHtml(s.title)}</p>${s.desc?`<p class="tutorial-step-desc">${_escapeHtml(s.desc)}</p>`:''}</div></div>`).join('') : `<p class="text-center opacity-30 py-8 text-sm">Belum ada panduan</p>`;
+    _applyContentEditFabVisibility();
+}
+
+function openEditAbout(){ if(!isAdminUser())return; customContent=loadCustomContent(); document.getElementById('edit-about-text').value=customContent.about; closeModal('modal-about'); openModal('modal-edit-about'); }
+function saveEditAbout(){ const v=document.getElementById('edit-about-text').value.trim(); localStorage.setItem('dk_content_about', v||DEFAULT_ABOUT_TEXT); closeModal('modal-edit-about'); renderAboutModal(); openModal('modal-about'); showToast('Halaman Tentang diperbarui!'); }
+
+function openEditTutorial(){ if(!isAdminUser())return; customContent=loadCustomContent(); document.getElementById('edit-tutorial-text').value=customContent.tutorial; closeModal('modal-tutorial'); openModal('modal-edit-tutorial'); }
+function saveEditTutorial(){ const v=document.getElementById('edit-tutorial-text').value.trim(); localStorage.setItem('dk_content_tutorial', v||DEFAULT_TUTORIAL_TEXT); closeModal('modal-edit-tutorial'); renderTutorialModal(); openModal('modal-tutorial'); showToast('Panduan Penggunaan diperbarui!'); }
+
+function openEditPrivacy(){ if(!isAdminUser())return; customContent=loadCustomContent(); document.getElementById('edit-privacy-date').value=customContent.privacyDate; document.getElementById('edit-privacy-text').value=customContent.privacy; closeModal('modal-privacy'); openModal('modal-edit-privacy'); }
+function saveEditPrivacy(){ const d=document.getElementById('edit-privacy-date').value.trim(); const v=document.getElementById('edit-privacy-text').value.trim(); localStorage.setItem('dk_content_privacy_date', d||DEFAULT_PRIVACY_DATE); localStorage.setItem('dk_content_privacy', v||DEFAULT_PRIVACY_TEXT); closeModal('modal-edit-privacy'); renderPrivacyModal(); openModal('modal-privacy'); showToast('Kebijakan Privasi diperbarui!'); }
+
+function openEditContact(){ if(!isAdminUser())return; customContent=loadCustomContent(); const c=customContent.contact||DEFAULT_CONTACT; document.getElementById('edit-contact-email').value=c.email||''; document.getElementById('edit-contact-phone').value=c.phone||''; document.getElementById('edit-contact-address').value=c.address||''; closeModal('modal-contact'); openModal('modal-edit-contact'); }
+function saveEditContact(){ const c={ email:document.getElementById('edit-contact-email').value.trim(), phone:document.getElementById('edit-contact-phone').value.trim(), address:document.getElementById('edit-contact-address').value.trim() }; localStorage.setItem('dk_content_contact', JSON.stringify(c)); closeModal('modal-edit-contact'); renderContactModal(); openModal('modal-contact'); showToast('Info Kontak diperbarui!'); }
 
 // ══════════════════════════════════════════════════════════════
 // ITEMS
