@@ -305,6 +305,7 @@
         .scan-result-icon.success { background: rgba(16,185,129,0.2); color: #34d399; }
         .scan-result-icon.warning { background: rgba(245,158,11,0.2); color: #fbbf24; }
         .scan-result-icon.error { background: rgba(239,68,68,0.2); color: #f87171; }
+        .scan-result-icon.cooldown { background: rgba(99,102,241,0.2); color: #a5b4fc; }
         .scan-result-info { flex: 1; min-width: 0; }
         .scan-result-name { font-size: 13px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .scan-result-detail { font-size: 10px; color: rgba(255,255,255,0.5); margin-top: 2px; font-weight: 600; }
@@ -313,6 +314,7 @@
         .scan-result-badge.empty { background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
         .scan-result-badge.notfound { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
         .scan-result-badge.sku { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+        .scan-result-badge.wait { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
 
         /* Scan history mini */
         .scan-history-strip {
@@ -326,9 +328,18 @@
             border-radius: 12px; padding: 6px 10px; flex-shrink: 0;
             font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.6);
             white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .scan-history-chip.cooling {
+            background: rgba(99,102,241,0.14); border-color: rgba(99,102,241,0.35);
+            opacity: 0.75;
         }
         .scan-history-chip .chip-qty {
             background: rgba(99,102,241,0.4); color: #fff;
+            border-radius: 6px; padding: 1px 5px; font-size: 8px; font-weight: 900;
+        }
+        .scan-history-chip .chip-cd {
+            background: rgba(255,255,255,0.15); color: #fff;
             border-radius: 6px; padding: 1px 5px; font-size: 8px; font-weight: 900;
         }
 
@@ -1771,6 +1782,11 @@ let scanSoundOn = localStorage.getItem('dk_scan_sound') !== '0';
 let scanVibrateOn = localStorage.getItem('dk_scan_vibrate') !== '0';
 let skuCallback = null;   // callback setelah scan SKU
 
+// Jeda scan per-barcode: mencegah barcode yang sama tertambah berkali-kali
+// akibat kamera membaca ulang kode yang sama saat masih di depan lensa.
+let scanCooldownMap = {};        // { [barcode]: timestampTerakhirDitambahkan }
+let scanCooldownTickTimer = null; // interval untuk memperbarui hitung mundur di UI
+
 // ══════════════════════════════════════════════════════════════
 // SCANNER - FITUR LENGKAP
 // ══════════════════════════════════════════════════════════════
@@ -1802,6 +1818,9 @@ async function openScanner(mode='cart') {
     lastScannedCode = "";
     lastScannedTime = 0;
     flashOn = false; flashTrack = null;
+    scanCooldownMap = {};
+    clearInterval(scanCooldownTickTimer);
+    scanCooldownTickTimer = setInterval(renderScanHistoryStrip, 1000);
 
     // Reset UI
     const fb = document.getElementById('flash-btn');
@@ -1852,6 +1871,14 @@ async function openScanner(mode='cart') {
     }
 }
 
+// Sisa waktu jeda (detik) untuk barcode tertentu di mode kasir. 0 = boleh discan lagi.
+function getScanCooldownRemaining(code) {
+    const last = scanCooldownMap[code];
+    if(!last) return 0;
+    const remain = SCAN_COOLDOWN - (Date.now() - last);
+    return remain > 0 ? Math.ceil(remain/1000) : 0;
+}
+
 function onScanSuccess(text) {
     const now = Date.now();
 
@@ -1884,20 +1911,35 @@ function onScanSuccess(text) {
         return;
     }
 
-    // Mode KASIR (default)
-    if(text === lastScannedCode && (now - lastScannedTime) < SCAN_COOLDOWN) return;
+    // Mode KASIR (default) — beri jeda (cooldown) per produk agar barcode yang
+    // sama tidak masuk berkali-kali hanya karena kamera membaca ulang kode
+    // yang masih berada di depan lensa.
+    const remaining = getScanCooldownRemaining(text);
+    if(remaining > 0) {
+        const found = items.find(i => String(i.barcode) === String(text));
+        showScanResult({
+            type: 'cooldown',
+            name: found ? found.name : text,
+            detail: `Tunggu ${remaining} detik untuk scan ulang produk yang sama`,
+            badge: 'wait',
+            badgeText: `${remaining}s`
+        });
+        return; // tidak ditambahkan selama masih dalam jeda
+    }
+
     const found = items.find(i => String(i.barcode) === String(text));
 
     if(found && found.stock > 0) {
         addToCart(found.id);
         lastScannedCode = text;
         lastScannedTime = now;
+        scanCooldownMap[text] = now; // mulai jeda untuk barcode ini
         if(scanSoundOn) beepScan();
         if(scanVibrateOn && navigator.vibrate) navigator.vibrate([60]);
         // Update scan history
         const existing = scanHistory.find(h => h.id === found.id);
         if(existing) existing.qty++;
-        else scanHistory.push({ id:found.id, name:found.name, qty:1, price:found.price });
+        else scanHistory.push({ id:found.id, code:text, name:found.name, qty:1, price:found.price });
         renderScanHistoryStrip();
         showScanResult({ type:'success', name:found.name, detail:`${formatIDR(found.price)} • Stok: ${found.stock-1}`, badge:'added', badgeText:`+1` });
     } else if(found) {
@@ -1914,7 +1956,7 @@ function onScanSuccess(text) {
 function showScanResult(opt) {
     const wrap = document.getElementById('scan-result-wrap');
     if(!wrap) return;
-    const iconMap = { success:'fa-circle-check', warning:'fa-triangle-exclamation', error:'fa-circle-xmark', sku:'fa-tag' };
+    const iconMap = { success:'fa-circle-check', warning:'fa-triangle-exclamation', error:'fa-circle-xmark', sku:'fa-tag', cooldown:'fa-clock' };
     const icon = iconMap[opt.type] || 'fa-circle-check';
     wrap.innerHTML = `
         <div class="scan-result-card">
@@ -1929,10 +1971,10 @@ function showScanResult(opt) {
         </div>
     `;
     wrap.classList.remove('hidden');
-    // Auto-hide setelah 3 detik untuk mode kasir
+    // Auto-hide setelah beberapa detik (lebih singkat untuk mode kasir/cooldown)
     if(scannerMode === 'cart') {
         clearTimeout(wrap._timeout);
-        wrap._timeout = setTimeout(() => { wrap.classList.add('hidden'); wrap.innerHTML=''; }, 3000);
+        wrap._timeout = setTimeout(() => { wrap.classList.add('hidden'); wrap.innerHTML=''; }, opt.type==='cooldown' ? 1800 : 3000);
     }
 }
 
@@ -1940,12 +1982,16 @@ function renderScanHistoryStrip() {
     const strip = document.getElementById('scan-history-strip');
     if(!strip) return;
     if(scanHistory.length === 0) { strip.innerHTML=''; return; }
-    strip.innerHTML = scanHistory.map(h => `
-        <div class="scan-history-chip">
+    strip.innerHTML = scanHistory.map(h => {
+        const remaining = h.code ? getScanCooldownRemaining(h.code) : 0;
+        const cooling = remaining > 0;
+        return `
+        <div class="scan-history-chip ${cooling?'cooling':''}">
             <span>${h.name.length>14?h.name.slice(0,14)+'…':h.name}</span>
+            ${cooling?`<span class="chip-cd"><i class="fa-solid fa-clock" style="font-size:7px;"></i> ${remaining}s</span>`:''}
             <span class="chip-qty">×${h.qty}</span>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
     strip.scrollLeft = strip.scrollWidth;
 }
 
@@ -1964,6 +2010,8 @@ async function closeScanner() {
     flashOn = false; flashTrack = null;
     if(html5QrCode) try { await html5QrCode.stop(); } catch(e){}
     html5QrCode = null;
+    clearInterval(scanCooldownTickTimer);
+    scanCooldownTickTimer = null;
     const modal = document.getElementById('modal-scanner');
     modal.style.display = 'none';
     modal.classList.add('hidden');
@@ -2238,12 +2286,29 @@ function publishRemoteUpdate(){
     remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'update', total } }).catch(()=>{});
 }
 
+// Jeda scan per-barcode untuk HP sebagai Scanner (mode remote), agar konsisten
+// dengan jeda pada scanner kamera bawaan.
+let remoteScanCooldownMap = {};
+function getRemoteScanCooldownRemaining(code) {
+    const last = remoteScanCooldownMap[code];
+    if(!last) return 0;
+    const remain = SCAN_COOLDOWN - (Date.now() - last);
+    return remain > 0 ? Math.ceil(remain/1000) : 0;
+}
+
 function handleRemoteScan(code){
+    const remaining = getRemoteScanCooldownRemaining(code);
+    if(remaining > 0){
+        const found = items.find(i => String(i.barcode) === String(code));
+        updateLiveScanCurrent({ type:'warning', name: found ? found.name : code, priceLabel:`Tunggu ${remaining} detik...` });
+        return;
+    }
     remoteScanCount++;
     const found = items.find(i => String(i.barcode) === String(code));
     let logHtml = '';
     if(found && found.stock > 0){
         addToCart(found.id);
+        remoteScanCooldownMap[code] = Date.now();
         if(scanSoundOn) beepScan();
         if(navigator.vibrate) navigator.vibrate([60]);
         showToast(`📱 ${found.name} ditambahkan!`);
