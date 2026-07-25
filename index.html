@@ -568,6 +568,90 @@
         .lsd-list { width: 100%; max-width: 720px; margin-top: 16px; max-height: 160px; overflow-y: auto; }
         .lsd-list::-webkit-scrollbar { display: none; }
         .lsd-list-item { display: flex; justify-content: space-between; padding: 9px 6px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); border-bottom: 1px solid rgba(255,255,255,0.06); animation: slideUpFade 0.3s ease; }
+
+        /* ══════════════════════════════════════════════════════════════
+           RESPONSIVE / DESKTOP LAYOUT (>=1024px)
+           Mobile-first design stays untouched below this breakpoint.
+        ═══════════════════════════════════════════════════════════════ */
+        @media (min-width: 1024px) {
+            #app { max-width: 100% !important; margin: 0 !important; }
+
+            /* Sidebar becomes a permanent, static navigation rail */
+            #sidebar-overlay { display: none !important; }
+            #hamburger-btn { display: none !important; }
+            #sidebar {
+                transform: translateX(0) !important;
+                box-shadow: none;
+            }
+            body.sidebar-open { overflow: visible !important; position: static !important; width: auto !important; }
+
+            /* Header + main content shift right to make room for the sidebar */
+            #app-header { margin-left: 272px; padding: 0 28px; }
+            main { margin-left: 272px; }
+            .header-brand { display: none; }
+            .header-actions { margin-left: auto; }
+
+            /* Bottom tab bar not needed — sidebar covers navigation */
+            #bottom-nav { display: none !important; }
+
+            /* Cart float + live-scan FAB repositioned relative to content area, not full viewport */
+            #cart-float { left: 296px; right: 24px; margin: 0 auto; max-width: 480px; }
+            #live-scan-fab { bottom: 24px; }
+
+            /* Content area: comfortable max width, centered, generous padding */
+            .tab-content { max-width: 1180px; margin: 0 auto; padding: 28px 32px 60px; }
+
+            /* Dashboard: hero + widgets side-by-side */
+            #tab-home { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 20px; align-items: start; }
+            #tab-home > * { margin: 0 !important; }
+            #tab-home .dash-hero,
+            #tab-home > div:nth-child(2) { grid-column: 1; }
+            #tab-home > div:nth-child(3),
+            #tab-home > div:nth-child(4) { grid-column: 2; }
+
+            /* Product / grid views scale to available width */
+            #pos-grid { grid-template-columns: repeat(4, minmax(0,1fr)) !important; gap: 16px; }
+
+            #item-list, #stock-product-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; align-content: start; }
+            #item-list > div, #stock-product-list > div { margin: 0 !important; }
+
+            #debt-list, #data-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+            #debt-list > div, #data-list > div { margin: 0 !important; }
+
+            #stock-history-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+            #stock-history-list > div { margin: 0 !important; }
+
+            .pos-search-wrap, #pos-category-chips { max-width: 1180px; margin-left: auto; margin-right: auto; }
+
+            /* Bottom-sheet modals become centered dialogs on larger screens */
+            #modal-remote-scan, #modal-scan-stats, #modal-notif, #modal-printer,
+            #modal-opname, #modal-cart-details, #modal-checkout {
+                align-items: center;
+                padding: 24px;
+            }
+            #modal-remote-scan .modal-sheet, #modal-scan-stats .modal-sheet,
+            #modal-notif .modal-sheet, #modal-printer .modal-sheet,
+            #modal-opname .modal-sheet, #modal-cart-details .modal-sheet,
+            #modal-checkout .modal-sheet {
+                border-radius: 32px;
+                max-height: 85vh;
+            }
+
+            /* Toast centers within the visible content column, not full viewport */
+            #toast { left: calc(272px + (100% - 272px) / 2); }
+        }
+
+        @media (min-width: 1440px) {
+            .tab-content { max-width: 1320px; }
+            #pos-grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
+            #item-list, #stock-product-list, #debt-list, #data-list { grid-template-columns: repeat(3, minmax(0,1fr)); }
+        }
+
+        /* Small phones: tighten padding a touch */
+        @media (max-width: 380px) {
+            .tab-content { padding: 14px 12px 110px; }
+            .dash-hero { padding: 20px; }
+        }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -751,14 +835,14 @@
 
         <!-- POS -->
         <section id="tab-pos" class="tab-content space-y-4">
-            <div class="sticky top-0 pb-2 z-20 space-y-3" style="background:var(--bg);">
+            <div class="sticky top-0 pb-2 z-20 space-y-3 pos-search-wrap" style="background:var(--bg);">
                 <div class="relative">
                     <input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari barang atau scan..." class="w-full p-4 pl-11 card rounded-2xl outline-none text-sm">
                     <i class="fa-solid fa-search absolute left-4 top-4 text-sm" style="color:var(--text-muted)"></i>
                 </div>
                 <div id="pos-category-chips" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1"></div>
             </div>
-            <div id="pos-grid" class="grid grid-cols-2 gap-3 pb-10"></div>
+            <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-10"></div>
         </section>
 
         <!-- ITEMS -->
@@ -2159,8 +2243,8 @@ function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 // SCROLL LOCK
 // ══════════════════════════════════════════════════════════════
 let _sidebarScrollY=0;
-function _lockSidebarScroll(){_sidebarScrollY=window.scrollY;document.body.classList.add('sidebar-open');document.body.style.top=`-${_sidebarScrollY}px`;}
-function _unlockSidebarScroll(){document.body.classList.remove('sidebar-open');document.body.style.top='';window.scrollTo(0,_sidebarScrollY);}
+function _lockSidebarScroll(){if(window.innerWidth>=1024)return;_sidebarScrollY=window.scrollY;document.body.classList.add('sidebar-open');document.body.style.top=`-${_sidebarScrollY}px`;}
+function _unlockSidebarScroll(){if(window.innerWidth>=1024)return;document.body.classList.remove('sidebar-open');document.body.style.top='';window.scrollTo(0,_sidebarScrollY);}
 let _modalOpenCount=0,_scrollYBeforeLock=0;
 function _lockBodyScroll(){_modalOpenCount++;if(_modalOpenCount===1){_scrollYBeforeLock=window.scrollY;document.body.classList.add('modal-open');document.body.style.top=`-${_scrollYBeforeLock}px`;}}
 function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_modalOpenCount===0){document.body.classList.remove('modal-open');document.body.style.top='';window.scrollTo(0,_scrollYBeforeLock);}}
@@ -2168,8 +2252,8 @@ function _unlockBodyScroll(){_modalOpenCount=Math.max(0,_modalOpenCount-1);if(_m
 // ══════════════════════════════════════════════════════════════
 // SIDEBAR + HEADER
 // ══════════════════════════════════════════════════════════════
-function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open'))closeSidebar();else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');_lockSidebarScroll();}}
-function closeSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');sb.classList.remove('open');ov.classList.remove('open');btn.classList.remove('open');_unlockSidebarScroll();}
+function toggleSidebar(){if(window.innerWidth>=1024)return;const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');if(sb.classList.contains('open'))closeSidebar();else{sb.classList.add('open');ov.classList.add('open');btn.classList.add('open');_lockSidebarScroll();}}
+function closeSidebar(){if(window.innerWidth>=1024)return;const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');sb.classList.remove('open');ov.classList.remove('open');btn.classList.remove('open');_unlockSidebarScroll();}
 
 // ══════════════════════════════════════════════════════════════
 // AUDIO
@@ -2202,6 +2286,7 @@ function switchTab(tab){
     localStorage.setItem('dk_active_tab',tab);
     if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
     if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
+    if(window.innerWidth<1024)window.scrollTo({top:0,behavior:'smooth'});
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2610,6 +2695,16 @@ window.onload = async () => {
     updateScanSoundUI();
     updateScanVibrateUI();
     await btAutoReconnectOnLoad();
+
+    // Pastikan status sidebar bersih saat pindah antar breakpoint (resize / rotate)
+    window.addEventListener('resize', () => {
+        if(window.innerWidth>=1024){
+            document.body.classList.remove('sidebar-open');
+            document.body.style.top='';
+            const sb=document.getElementById('sidebar'),ov=document.getElementById('sidebar-overlay'),btn=document.getElementById('hamburger-btn');
+            if(sb)sb.classList.remove('open'); if(ov)ov.classList.remove('open'); if(btn)btn.classList.remove('open');
+        }
+    });
 };
 </script>
 </body>
