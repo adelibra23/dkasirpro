@@ -601,13 +601,13 @@
             /* Content area: comfortable max width, centered, generous padding */
             .tab-content { max-width: 1180px; margin: 0 auto; padding: 28px 32px 60px; }
 
-            /* Dashboard: hero + widgets side-by-side */
-            #tab-home { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 20px; align-items: start; }
-            #tab-home > * { margin: 0 !important; }
-            #tab-home .dash-hero,
-            #tab-home > div:nth-child(2) { grid-column: 1; }
-            #tab-home > div:nth-child(3),
-            #tab-home > div:nth-child(4) { grid-column: 2; }
+            /* Dashboard: hero + widgets side-by-side — hanya saat tab ini aktif */
+            #tab-home.active { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 20px; align-items: start; }
+            #tab-home.active > * { margin: 0 !important; }
+            #tab-home.active .dash-hero,
+            #tab-home.active > div:nth-child(2) { grid-column: 1; }
+            #tab-home.active > div:nth-child(3),
+            #tab-home.active > div:nth-child(4) { grid-column: 2; }
 
             /* Product / grid views scale to available width */
             #pos-grid { grid-template-columns: repeat(4, minmax(0,1fr)) !important; gap: 16px; }
@@ -640,16 +640,16 @@
             /* Toast centers within the visible content column, not full viewport */
             #toast { left: calc(272px + (100% - 272px) / 2); }
 
-            /* ── POS DESKTOP: layout kasir 2 kolom — grid produk + panel keranjang tetap ── */
-            #tab-pos {
+            /* ── POS DESKTOP: layout kasir 2 kolom — hanya saat tab Kasir aktif ── */
+            #tab-pos.active {
                 display: grid;
                 grid-template-columns: 1fr 360px;
                 gap: 24px;
                 align-items: start;
                 max-width: 1400px;
             }
-            #tab-pos .pos-search-wrap { grid-column: 1; max-width: none; margin: 0; position: sticky; top: 0; }
-            #pos-grid { grid-column: 1; padding-bottom: 24px; }
+            #tab-pos.active .pos-search-wrap { grid-column: 1; max-width: none; margin: 0; position: sticky; top: 0; }
+            #tab-pos.active #pos-grid { grid-column: 1; padding-bottom: 24px; }
 
             /* Panel kasir tetap (sticky) di kolom kanan, menggantikan cart-float mengambang */
             #pos-desktop-cart-panel {
@@ -705,6 +705,9 @@
             .pdcp-qty-num { font-size: 12px; font-weight: 800; width: 18px; text-align: center; }
             .pdcp-item-subtotal { font-size: 12px; font-weight: 800; color: var(--primary); width: 76px; text-align: right; flex-shrink: 0; }
 
+            /* Sembunyikan panel keranjang desktop kecuali saat tab Kasir sedang aktif */
+            #tab-pos:not(.active) #pos-desktop-cart-panel { display: none !important; }
+
             /* Sembunyikan cart-float mengambang bergaya mobile pada layar besar — digantikan panel di atas */
             #cart-float { display: none !important; }
         }
@@ -713,7 +716,7 @@
             .tab-content { max-width: 1320px; }
             #pos-grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
             #item-list, #stock-product-list, #debt-list, #data-list { grid-template-columns: repeat(3, minmax(0,1fr)); }
-            #tab-pos { max-width: 1520px; }
+            #tab-pos.active { max-width: 1520px; }
         }
 
         /* Small phones: tighten padding a touch */
