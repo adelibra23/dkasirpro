@@ -799,6 +799,70 @@
             #cart-float { display: none !important; }
         }
 
+        /* ══════════════════════════════════════════════════════════════
+           DESKTOP SIDE PANEL — fitur baru khusus desktop (>=1024px):
+           panel ringkasan/aksi cepat yang menempel (sticky) di kanan
+           untuk halaman Inventaris, Manajemen Stok, Buku Hutang, dan
+           Laporan/Data — mengikuti pola panel keranjang di Kasir/POS.
+        ═══════════════════════════════════════════════════════════════ */
+        .desktop-side-panel { display: none; }
+        @media (min-width: 1024px) {
+            .desktop-side-panel {
+                display: flex; flex-direction: column;
+                position: sticky; top: 90px;
+                background: var(--card); border: 1px solid var(--card-border); border-radius: 28px;
+                box-shadow: 0 8px 30px rgba(20,20,50,0.06);
+                max-height: calc(100vh - 110px); overflow-y: auto;
+            }
+            .desktop-side-panel::-webkit-scrollbar { display: none; }
+            .dsp-header { padding: 22px 22px 16px; border-bottom: 1px solid var(--card-border); flex-shrink: 0; }
+            .dsp-title { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+            .dsp-title i { color: var(--primary); font-size: 14px; width: 18px; text-align: center; }
+            .dsp-body { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 18px; }
+            .dsp-section-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 10px; }
+            .dsp-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--card-border); }
+            .dsp-stat-row:last-child { border-bottom: none; }
+            .dsp-stat-label { font-size: 11px; font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+            .dsp-stat-value { font-size: 13px; font-weight: 900; white-space: nowrap; }
+            .dsp-action-btn { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border-radius: 16px; background: var(--surface); cursor: pointer; transition: all 0.15s; font-size: 12px; font-weight: 700; border: 1px solid transparent; }
+            .dsp-action-btn:hover { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+            .dsp-action-btn i { width: 18px; text-align: center; }
+            .dsp-mini-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; transition: opacity 0.15s; }
+            .dsp-mini-row:hover { opacity: 0.65; }
+            .dsp-mini-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+            .dsp-mini-name { flex: 1; min-width: 0; font-size: 11px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .dsp-mini-val { font-size: 10px; font-weight: 800; color: var(--text-muted); flex-shrink: 0; }
+            .dsp-empty { text-align: center; padding: 16px 6px; opacity: 0.4; font-size: 11px; font-weight: 700; }
+            .dsp-chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
+            .dsp-chip { padding: 7px 12px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; background: var(--surface); cursor: pointer; transition: all 0.15s; }
+            .dsp-chip:hover { background: var(--surface-hover); }
+            .dsp-chip.active { background: var(--primary); color: #fff; }
+
+            /* ── Inventaris: daftar produk + panel ringkasan nilai stok & stok kritis ── */
+            #tab-items.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
+            #tab-items.active > *:not(#items-desktop-panel) { grid-column: 1; margin: 0 !important; }
+            #items-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+
+            /* ── Manajemen Stok: daftar produk penuh + panel aksi cepat, statistik, riwayat terbaru ── */
+            #tab-stock.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
+            #tab-stock.active > *:not(#stock-desktop-panel) { grid-column: 1; margin: 0 !important; }
+            #stock-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            /* Aksi cepat & statistik pindah ke panel di desktop, agar tak dobel dengan versi mobile */
+            #tab-stock.active #stock-quick-actions, #tab-stock.active #stock-stat-cards { display: none !important; }
+
+            /* ── Buku Hutang: daftar piutang + panel ringkasan total & pelanggan piutang terbesar ── */
+            #tab-debts.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
+            #tab-debts.active > *:not(#debts-desktop-panel) { grid-column: 1; margin: 0 !important; }
+            #debts-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+
+            /* ── Laporan/Data: riwayat transaksi + panel ringkasan angka & ekspor cepat ── */
+            #tab-data.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
+            #tab-data.active > *:not(#data-desktop-panel) { grid-column: 1; margin: 0 !important; }
+            #data-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            /* Tombol ekspor bawaan pindah ke panel di desktop */
+            #tab-data.active #data-export-row { display: none !important; }
+        }
+
         @media (min-width: 1440px) {
             .tab-content { max-width: 1320px; }
             #pos-grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
@@ -1208,6 +1272,24 @@
                 <i class="fa-solid fa-search absolute left-4 top-4 text-sm" style="color:var(--text-muted)"></i>
             </div>
             <div id="item-list" class="space-y-3"></div>
+
+            <!-- Panel ringkasan inventaris — hanya tampil di layar desktop (>=1024px) -->
+            <aside id="items-desktop-panel" class="desktop-side-panel">
+                <div class="dsp-header"><div class="dsp-title"><i class="fa-solid fa-box"></i><span>Ringkasan Inventaris</span></div></div>
+                <div class="dsp-body">
+                    <div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-boxes-stacked"></i>Total Produk</span><span class="dsp-stat-value" id="idp-total-products">0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-sack-dollar"></i>Total Nilai Stok</span><span class="dsp-stat-value" id="idp-stock-value">Rp 0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-tags"></i>Kategori Aktif</span><span class="dsp-stat-value" id="idp-category-count">0</span></div>
+                    </div>
+                    <div>
+                        <p class="dsp-section-label">Perlu Perhatian</p>
+                        <div id="idp-attention-list"></div>
+                    </div>
+                    <div class="dsp-action-btn" onclick="openCategoryModal()"><i class="fa-solid fa-tags"></i><span>Kelola Kategori</span></div>
+                    <div class="dsp-action-btn" onclick="triggerImportProducts()"><i class="fa-solid fa-file-import" style="color:#16a34a;"></i><span>Import Produk (Excel)</span></div>
+                </div>
+            </aside>
         </section>
 
         <!-- STOCK -->
@@ -1216,12 +1298,12 @@
                 <h2 class="page-title">Manajemen Stok</h2>
                 <div id="stock-alert-badge" class="hidden bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[10px] font-black"></div>
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-3 gap-3" id="stock-quick-actions">
                 <button onclick="openStockModal('in')" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card"><div class="w-10 h-10 bg-emerald-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-down text-sm"></i></div><span class="text-[9px] font-black text-emerald-500 uppercase">Stok Masuk</span></button>
                 <button onclick="openStockModal('out')" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card"><div class="w-10 h-10 bg-rose-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-arrow-up text-sm"></i></div><span class="text-[9px] font-black text-rose-500 uppercase">Stok Keluar</span></button>
                 <button onclick="openOpnameModal()" class="flex flex-col items-center gap-2 p-4 rounded-2xl active:scale-95 transition-all card"><div class="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center shadow-sm"><i class="fa-solid fa-clipboard-check text-sm"></i></div><span class="text-[9px] font-black text-indigo-500 uppercase">Opname</span></button>
             </div>
-            <div class="grid grid-cols-3 gap-3">
+            <div class="grid grid-cols-3 gap-3" id="stock-stat-cards">
                 <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black uppercase mb-1 text-muted">Produk</p><p class="text-2xl font-black text-indigo-600" id="stat-total-products">0</p></div>
                 <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black text-amber-500 uppercase mb-1">Menipis</p><p class="text-2xl font-black text-amber-500" id="stat-low-stock">0</p></div>
                 <div class="card p-4 text-center shadow-sm"><p class="text-[9px] font-black text-red-500 uppercase mb-1">Habis</p><p class="text-2xl font-black text-red-500" id="stat-empty-stock">0</p></div>
@@ -1236,6 +1318,25 @@
                 <button onclick="clearStockHistory()" class="text-[9px] font-black text-red-400 uppercase">Hapus</button>
             </div>
             <div id="stock-history-list" class="space-y-2"></div>
+
+            <!-- Panel ringkasan stok — hanya tampil di layar desktop (>=1024px) -->
+            <aside id="stock-desktop-panel" class="desktop-side-panel">
+                <div class="dsp-header"><div class="dsp-title"><i class="fa-solid fa-warehouse"></i><span>Ringkasan Stok</span></div></div>
+                <div class="dsp-body">
+                    <div class="dsp-action-btn" onclick="openStockModal('in')"><i class="fa-solid fa-arrow-down" style="color:#10b981;"></i><span>Stok Masuk</span></div>
+                    <div class="dsp-action-btn" onclick="openStockModal('out')"><i class="fa-solid fa-arrow-up" style="color:#f43f5e;"></i><span>Stok Keluar</span></div>
+                    <div class="dsp-action-btn" onclick="openOpnameModal()"><i class="fa-solid fa-clipboard-check" style="color:#6366f1;"></i><span>Stok Opname</span></div>
+                    <div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-boxes-stacked"></i>Total Produk</span><span class="dsp-stat-value" id="sdp-total-products">0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-triangle-exclamation" style="color:#f59e0b;"></i>Menipis</span><span class="dsp-stat-value" id="sdp-low-stock">0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-circle-xmark" style="color:#ef4444;"></i>Habis</span><span class="dsp-stat-value" id="sdp-empty-stock">0</span></div>
+                    </div>
+                    <div>
+                        <p class="dsp-section-label">Riwayat Terbaru</p>
+                        <div id="sdp-recent-history"></div>
+                    </div>
+                </div>
+            </aside>
         </section>
 
         <!-- DEBTS -->
@@ -1254,6 +1355,22 @@
                 <div class="debt-filter-tab" id="dft-paid" onclick="setDebtFilter('paid')">Lunas</div>
             </div>
             <div id="debt-list" class="space-y-3"></div>
+
+            <!-- Panel ringkasan piutang — hanya tampil di layar desktop (>=1024px) -->
+            <aside id="debts-desktop-panel" class="desktop-side-panel">
+                <div class="dsp-header"><div class="dsp-title"><i class="fa-solid fa-user-clock"></i><span>Ringkasan Piutang</span></div></div>
+                <div class="dsp-body">
+                    <div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-sack-dollar"></i>Total Piutang</span><span class="dsp-stat-value" id="ddp-total-piutang">Rp 0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-users"></i>Belum Lunas</span><span class="dsp-stat-value" id="ddp-unpaid-count">0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;"></i>Jatuh Tempo</span><span class="dsp-stat-value" id="ddp-overdue-count">0</span></div>
+                    </div>
+                    <div>
+                        <p class="dsp-section-label">Piutang Terbesar</p>
+                        <div id="ddp-top-debtor-list"></div>
+                    </div>
+                </div>
+            </aside>
         </section>
 
         <!-- DATA -->
@@ -1262,13 +1379,31 @@
                 <h2 class="page-title">Laporan</h2>
                 <input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none rounded-xl">
             </div>
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-2 gap-3" id="data-export-row">
                 <button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
                 <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
             </div>
             <div id="export-info" class="text-[9px] font-bold uppercase text-center text-muted"></div>
             <div id="staff-sales-report" class="card p-2 space-y-1 hidden"></div>
             <div id="data-list" class="space-y-3"></div>
+
+            <!-- Panel ringkasan laporan — hanya tampil di layar desktop (>=1024px) -->
+            <aside id="data-desktop-panel" class="desktop-side-panel">
+                <div class="dsp-header"><div class="dsp-title"><i class="fa-solid fa-chart-bar"></i><span>Ringkasan Laporan</span></div></div>
+                <div class="dsp-body">
+                    <div class="dsp-chip-row">
+                        <span class="dsp-chip" id="rdp-chip-today" onclick="rdpSetToday()">Hari Ini</span>
+                        <span class="dsp-chip" id="rdp-chip-all" onclick="rdpSetAll()">Semua Tanggal</span>
+                    </div>
+                    <div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-sack-dollar"></i>Total Penjualan</span><span class="dsp-stat-value" id="rdp-total-sales">Rp 0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-receipt"></i>Total Transaksi</span><span class="dsp-stat-value" id="rdp-total-tx">0</span></div>
+                        <div class="dsp-stat-row"><span class="dsp-stat-label"><i class="fa-solid fa-calculator"></i>Rata-rata/Transaksi</span><span class="dsp-stat-value" id="rdp-avg-tx">Rp 0</span></div>
+                    </div>
+                    <div class="dsp-action-btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i><span>Export Excel</span></div>
+                    <div class="dsp-action-btn" onclick="exportPDF()"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i><span>Export PDF</span></div>
+                </div>
+            </aside>
         </section>
 
         <!-- SETTINGS -->
@@ -3442,7 +3577,21 @@ function renderStockTab(){
     const set=(id,v)=>{const el=document.getElementById(id);if(el)el.innerText=v;};
     set('stat-total-products',items.length);set('stat-low-stock',low);set('stat-empty-stock',critical);
     const alertBadge=document.getElementById('stock-alert-badge');if(alertBadge){const n=critical+low;if(n>0){alertBadge.innerText=n+' ⚠';alertBadge.classList.remove('hidden');}else alertBadge.classList.add('hidden');}
-    renderStockList();renderStockHistory();checkStockAlerts();
+    renderStockList();renderStockHistory();checkStockAlerts();renderStockDesktopPanel();
+}
+function renderStockDesktopPanel(){
+    const el=document.getElementById('sdp-total-products');if(!el)return;
+    const minS=config.minStock,critical=items.filter(i=>i.stock<=0).length,low=items.filter(i=>i.stock>0&&i.stock<=minS).length;
+    el.innerText=items.length;
+    const lowEl=document.getElementById('sdp-low-stock');if(lowEl)lowEl.innerText=low;
+    const critEl=document.getElementById('sdp-empty-stock');if(critEl)critEl.innerText=critical;
+    const histWrap=document.getElementById('sdp-recent-history');if(!histWrap)return;
+    if(stockHistory.length===0){histWrap.innerHTML=`<p class="dsp-empty">Belum ada riwayat</p>`;return;}
+    histWrap.innerHTML=stockHistory.slice(0,6).map(h=>{
+        const isIn=h.type==='in',isOpname=h.type==='opname';
+        const color=isOpname?'#6366f1':isIn?'#10b981':'#ef4444';
+        return `<div class="dsp-mini-row" style="cursor:default;"><span class="dsp-mini-dot" style="background:${color}"></span><span class="dsp-mini-name">${h.productName}</span><span class="dsp-mini-val">${isIn||isOpname?'+':'-'}${h.qty}</span></div>`;
+    }).join('');
 }
 function renderStockList(){
     const filter=document.getElementById('stock-filter')?.value||'all';
@@ -3574,6 +3723,21 @@ function renderItems(){
             </div>
         </div>`;
     }).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
+    renderItemsDesktopPanel();
+}
+function renderItemsDesktopPanel(){
+    const totalEl=document.getElementById('idp-total-products');if(!totalEl)return;
+    totalEl.innerText=items.length;
+    const totalValue=items.reduce((a,i)=>a+(Number(i.price)||0)*(Number(i.stock)||0),0);
+    const valEl=document.getElementById('idp-stock-value');if(valEl)valEl.innerText=formatIDR(totalValue);
+    const catEl=document.getElementById('idp-category-count');if(catEl)catEl.innerText=categories.filter(c=>c!=='Semua').length;
+    const attention=items.filter(i=>getStockStatus(i.stock)!=='ok').sort((a,b)=>a.stock-b.stock).slice(0,6);
+    const list=document.getElementById('idp-attention-list');if(!list)return;
+    if(attention.length===0){list.innerHTML=`<p class="dsp-empty">Semua stok aman ✓</p>`;return;}
+    list.innerHTML=attention.map(i=>{
+        const s=getStockStatus(i.stock);const dot=s==='critical'?'#ef4444':'#f59e0b';
+        return `<div class="dsp-mini-row" onclick="openStockModal('in','${i.id}')"><span class="dsp-mini-dot" style="background:${dot}"></span><span class="dsp-mini-name">${i.name}</span><span class="dsp-mini-val">${i.stock} unit</span></div>`;
+    }).join('');
 }
 async function deleteProduct(id){
     const item=items.find(x=>x.id==id);const name=item?item.name:'';
@@ -3604,7 +3768,25 @@ function renderData(){
             </div>
             <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
         </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
+    renderDataDesktopPanel();
 }
+function renderDataDesktopPanel(){
+    const el=document.getElementById('rdp-total-sales');if(!el)return;
+    const filtered=getFilteredLogs();
+    const totalSales=filtered.reduce((a,l)=>a+(Number(l.amount)||0),0);
+    const count=filtered.length;
+    const avg=count>0?totalSales/count:0;
+    el.innerText=formatIDR(totalSales);
+    const txEl=document.getElementById('rdp-total-tx');if(txEl)txEl.innerText=count;
+    const avgEl=document.getElementById('rdp-avg-tx');if(avgEl)avgEl.innerText=formatIDR(avg);
+    const f=(document.getElementById('date-filter')||{value:''}).value;
+    const todayStr=new Date().toISOString().slice(0,10);
+    const chipToday=document.getElementById('rdp-chip-today'),chipAll=document.getElementById('rdp-chip-all');
+    if(chipToday)chipToday.classList.toggle('active',f===todayStr);
+    if(chipAll)chipAll.classList.toggle('active',!f);
+}
+function rdpSetToday(){const el=document.getElementById('date-filter');if(el){el.value=new Date().toISOString().slice(0,10);renderData();}}
+function rdpSetAll(){const el=document.getElementById('date-filter');if(el){el.value='';renderData();}}
 function exportExcel(){if(typeof XLSX==='undefined')return showToast('Gagal export Excel!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const txHeader=["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),Number(l.amount||0),Number(l.total_cost||0),Number(l.amount||0)-Number(l.total_cost||0),Number(l.pay_cash||0),Number(l.pay_qris||0),Number(l.change||0),l.method]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([txHeader,...txRows]),"Transaksi");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_v2${f?'_'+f:''}_${Date.now()}.xlsx`);showToast('Excel berhasil diunduh!');}catch(e){showToast('Gagal export Excel!');}}
 
 // ══════════════════════════════════════════════════════════════
@@ -3722,6 +3904,21 @@ function renderDebts(){
             </div>
         </div>`;
     }).join('');
+    renderDebtsDesktopPanel();
+}
+function renderDebtsDesktopPanel(){
+    const el=document.getElementById('ddp-total-piutang');if(!el)return;
+    const paidStatus=t('debt_paid_status');
+    const unpaid=debts.filter(d=>d.status!==paidStatus);
+    const totalPiutang=unpaid.reduce((a,d)=>a+(Number(d.balance)||0),0);
+    const overdue=unpaid.filter(d=>d.dueDate!=='-'&&new Date(d.dueDate)<new Date());
+    el.innerText=formatIDR(totalPiutang);
+    const unpaidEl=document.getElementById('ddp-unpaid-count');if(unpaidEl)unpaidEl.innerText=unpaid.length;
+    const overdueEl=document.getElementById('ddp-overdue-count');if(overdueEl)overdueEl.innerText=overdue.length;
+    const top=unpaid.slice().sort((a,b)=>b.balance-a.balance).slice(0,6);
+    const list=document.getElementById('ddp-top-debtor-list');if(!list)return;
+    if(top.length===0){list.innerHTML=`<p class="dsp-empty">Tidak ada piutang aktif</p>`;return;}
+    list.innerHTML=top.map(d=>`<div class="dsp-mini-row" onclick="openDebtDetail('${d.id}')"><span class="dsp-mini-dot" style="background:#f43f5e"></span><span class="dsp-mini-name">${d.customer}</span><span class="dsp-mini-val">${formatIDR(d.balance)}</span></div>`).join('');
 }
 function openDebtDetail(id){const d=debts.find(x=>x.id===id);currentDebtId=id;document.getElementById('det-debt-name').innerText=d.customer;document.getElementById('det-debt-id').innerText=d.id;document.getElementById('det-debt-total').innerText=formatIDR(d.total);document.getElementById('det-debt-paid').innerText=formatIDR(d.paid);document.getElementById('det-debt-rem').innerText=formatIDR(d.balance);openModal('modal-debt-detail');}
 async function payInstallment(){const amt=Number(document.getElementById('ins-amt').value);if(!amt||amt<=0)return showToast('Isi nominal!');const d=debts.find(x=>x.id===currentDebtId);d.paid+=amt;d.balance=d.total-d.paid;if(d.balance<=0)d.status=t('debt_paid_status');saveStorage();closeModal('modal-debt-detail');renderDebts();await syncCloud({type:'debt_record',...d});}
