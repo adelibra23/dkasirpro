@@ -494,6 +494,30 @@
         .scan-action-btn.secondary { background: rgba(16,185,129,0.18); border: 1px solid rgba(16,185,129,0.3); color: #34d399; }
         .scan-action-btn.danger { background: rgba(239,68,68,0.18); border: 1px solid rgba(239,68,68,0.3); color: #f87171; }
         .scan-action-btn.neutral { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); }
+
+        /* ── REMOTE SCAN (HP sebagai Scanner) ── */
+        .remote-qr-wrap { width: 176px; height: 176px; background: #fff; border-radius: 24px; padding: 12px; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+        .remote-code-box { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:14px; }
+        .remote-code-digit { width: 34px; height: 42px; border-radius: 12px; display:flex; align-items:center; justify-content:center; font-size: 18px; font-weight: 900; letter-spacing: 0; background: var(--primary-soft); color: var(--primary); }
+        .remote-status-pill { display:inline-flex; align-items:center; gap:6px; padding:6px 14px; border-radius:20px; font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.05em; }
+        .remote-status-pill.waiting { background: rgba(245,158,11,0.12); color:#d97706; }
+        .remote-status-pill.connected { background: rgba(16,185,129,0.12); color:#059669; }
+        .remote-dot { width:7px; height:7px; border-radius:50%; background:currentColor; display:inline-block; }
+        .remote-dot.pulse { animation: pulse-notif 1.2s infinite; }
+        .remote-scan-item { display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:16px; background:var(--surface); }
+
+        /* ── REMOTE SCANNER FULLSCREEN (mode HP) ── */
+        #remote-scanner-app { position: fixed; inset:0; z-index: 10000; background:#000; display:none; flex-direction:column; }
+        #remote-scanner-app.open { display:flex; }
+        .rs-header { padding: 20px 20px 16px; text-align:center; background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent); position:relative; z-index:2; }
+        .rs-header .rs-logo { width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px;margin:0 auto 8px; }
+        .rs-header h2 { color:#fff; font-size:15px; font-weight:900; }
+        .rs-header p { color:rgba(255,255,255,0.5); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
+        .rs-camera-wrap { flex:1; position:relative; }
+        .rs-footer { position:absolute; bottom:0; left:0; right:0; padding:20px 20px 40px; background: linear-gradient(0deg, rgba(0,0,0,0.92), transparent); z-index:2; }
+        .rs-sent-toast { background: rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.35); color:#34d399; border-radius:18px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:12px; animation: slideUpFade 0.3s ease; }
+        .rs-count-chip { background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:10px; font-weight:800; padding:6px 12px; border-radius:14px; display:inline-block; margin-bottom:10px; }
+        .rs-exit-btn { position:absolute; top:16px; right:16px; z-index:3; width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;display:flex;align-items:center;justify-content:center; }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -604,6 +628,10 @@
             <span class="header-app-title">DheKasir</span>
         </div>
         <div class="header-actions">
+            <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
+                <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
+                <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
+            </button>
             <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
                 <span id="notif-count-badge" style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:8px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--nav-bg);">0</span>
@@ -774,6 +802,7 @@
                 <div onclick="openStoreSettings()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-store text-sm"></i></div><span class="text-sm font-bold">Setelan Toko</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openMinStockSettings()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-amber-500"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div><span class="text-sm font-bold">Batas Minimum Stok</span></div><span id="min-stock-display" class="text-[10px] font-black text-muted">5</span></div>
                 <div onclick="openPrinterModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon" id="printer-icon-wrap" style="color:var(--text-muted)"><i class="fa-solid fa-print text-sm"></i></div><div><span class="text-sm font-bold block">Printer Thermal</span><span id="printer-device-name" class="text-[9px] text-muted font-semibold">Belum terhubung</span></div></div><div class="flex items-center gap-2"><span id="printer-status" class="text-[8px] font-black printer-offline uppercase">OFFLINE</span><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div></div>
+                <div onclick="openRemoteScanModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-mobile-screen-button text-sm"></i></div><div><span class="text-sm font-bold block">HP sebagai Scanner</span><span id="remote-scan-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openLanguageModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div><div><span class="text-sm font-bold block">Bahasa / Language</span><span id="current-lang-display" class="text-[9px] text-muted font-semibold">Bahasa Indonesia</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
@@ -896,8 +925,73 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════
-     SCAN STATS MODAL
+     REMOTE SCAN MODAL (Desktop side — HP sebagai Scanner)
 ═══════════════════════════════════════════════════════════════ -->
+<div id="modal-remote-scan" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="text-lg font-black">HP sebagai Scanner</h3>
+            <button onclick="closeModal('modal-remote-scan')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
+        </div>
+        <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini.</p>
+
+        <div class="remote-qr-wrap" id="remote-qr-box"></div>
+
+        <div class="remote-code-box" id="remote-code-display"></div>
+
+        <div class="flex justify-center mt-4">
+            <span class="remote-status-pill waiting" id="remote-status-pill">
+                <span class="remote-dot pulse"></span><span id="remote-status-text">Menunggu HP...</span>
+            </span>
+        </div>
+
+        <div class="flex gap-3 mt-6">
+            <button onclick="regenerateRemoteCode()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Kode Baru</button>
+            <button onclick="copyRemoteLink()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-link mr-1"></i> Salin Tautan</button>
+        </div>
+
+        <div class="mt-6">
+            <h4 class="text-[10px] font-black uppercase tracking-widest text-muted mb-3">Riwayat Scan dari HP</h4>
+            <div id="remote-scan-log" class="space-y-2"><p class="text-center opacity-30 text-[11px] py-6">Belum ada scan masuk</p></div>
+        </div>
+
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Kode ini berlaku selama modal terbuka pada sesi ini.</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     REMOTE SCANNER FULLSCREEN (Mode HP — dibuka via tautan/kode)
+═══════════════════════════════════════════════════════════════ -->
+<div id="remote-scanner-app">
+    <button class="rs-exit-btn" onclick="exitRemoteScannerMode()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="rs-header">
+        <div class="rs-logo">D</div>
+        <h2 id="rs-title">Mode Scanner Kasir</h2>
+        <p id="rs-subtitle">Menyambung ke kasir...</p>
+    </div>
+    <div class="rs-camera-wrap">
+        <div id="rs-reader" style="position:absolute;inset:0;"></div>
+        <div class="scanner-overlay">
+            <div class="scan-vignette-top"></div>
+            <div class="scan-vignette-bottom"></div>
+            <div class="scan-vignette-left"></div>
+            <div class="scan-vignette-right"></div>
+            <div class="scan-corner-frame">
+                <div class="scan-corner tl"></div><div class="scan-corner tr"></div>
+                <div class="scan-corner bl"></div><div class="scan-corner br"></div>
+            </div>
+            <div class="scan-line"></div>
+        </div>
+        <div class="rs-footer">
+            <div id="rs-sent-list"></div>
+            <div class="rs-count-chip" id="rs-count-chip">0 barcode terkirim</div>
+            <input type="text" id="rs-manual-input" class="scanner-manual-input" placeholder="Ketik barcode manual...">
+        </div>
+    </div>
+</div>
+
+<!-- SCAN STATS MODAL -->
 <div id="modal-scan-stats" class="fixed inset-0 z-[200] bg-slate-900/70 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[80vh]">
         <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
@@ -1195,7 +1289,7 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 2.0</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, dan tombol langsung bayar dari scanner.</p>
+            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, serta fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> — jadikan HP kamu sebagai alat pindai barcode nirkabel untuk kasir di layar ini.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1213,7 +1307,8 @@
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">2. Cloud (Opsional):</strong> Sinkronisasi Google Spreadsheet hanya aktif jika Anda memasukkan Google Apps Script URL sendiri.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">3. Kamera:</strong> Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">4. Bluetooth:</strong> Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode, tanpa foto atau data pribadi.</p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
         </div>
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Saya Mengerti</button>
     </div>
@@ -1231,6 +1326,8 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.4.5.min.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════
 // TRANSLATIONS (ringkas)
@@ -1301,6 +1398,9 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
     try{const cfg=JSON.parse(localStorage.getItem('dk_config')||'{}');if(cfg.darkMode)document.body.classList.add('dark');}catch(e){}
     const tagEl=document.getElementById('splash-tagline');
     if(tagEl)tagEl.textContent=TRANSLATIONS[lang]?.splash_tagline||TRANSLATIONS.id.splash_tagline;
+    // Jika halaman dibuka dalam mode Remote Scanner (via tautan HP), lewati splash sepenuhnya
+    const params=new URLSearchParams(location.search);
+    if(params.get('remote')){splash.classList.add('skip-instant');app.style.opacity='0';app.style.transition='none';return;}
     if(sessionStorage.getItem(SPLASH_KEY)==='1'){splash.classList.add('skip-instant');app.style.opacity='1';app.style.transition='none';return;}
     const steps=[
         {pct:15,label:TRANSLATIONS[lang]?.splash_loading||'Memuat...'},
@@ -1620,6 +1720,184 @@ function showScanStats() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// HP SEBAGAI SCANNER (REMOTE SCAN) — via PubNub realtime relay
+// ══════════════════════════════════════════════════════════════
+const RS_PUBNUB_KEYS = { publishKey:'demo', subscribeKey:'demo', uuid:'dk-' + Math.random().toString(36).slice(2,10) };
+let remotePubnub = null;
+let remoteRoomCode = null;
+let remoteConnected = false;
+let remoteScanCount = 0;
+
+function _rsChannelName(code){ return 'dhekasir-scan-' + code; }
+function _rsGenCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
+
+function _rsGetPubnub(){
+    if(typeof PubNub === 'undefined') return null;
+    if(!remotePubnub) remotePubnub = new PubNub(RS_PUBNUB_KEYS);
+    return remotePubnub;
+}
+
+function openRemoteScanModal(){
+    if(!remoteRoomCode) remoteRoomCode = _rsGenCode();
+    renderRemoteCodeUI();
+    subscribeRemoteChannel();
+    openModal('modal-remote-scan');
+}
+
+function renderRemoteCodeUI(){
+    // Kode digit
+    const box = document.getElementById('remote-code-display');
+    if(box) box.innerHTML = remoteRoomCode.split('').map(c=>`<span class="remote-code-digit">${c}</span>`).join('');
+    // QR
+    const qrBox = document.getElementById('remote-qr-box');
+    if(qrBox){
+        qrBox.innerHTML = '';
+        const url = _rsRemoteUrl();
+        if(typeof QRCode !== 'undefined'){
+            new QRCode(qrBox, { text:url, width:150, height:150, correctLevel: QRCode.CorrectLevel.M });
+        } else {
+            qrBox.innerHTML = `<span class="text-[9px] font-bold text-center text-muted p-2">${remoteRoomCode}</span>`;
+        }
+    }
+    updateRemoteStatusUI(false);
+}
+
+function _rsRemoteUrl(){
+    const u = new URL(location.href);
+    u.searchParams.set('remote', remoteRoomCode);
+    return u.toString();
+}
+
+function regenerateRemoteCode(){
+    unsubscribeRemoteChannel();
+    remoteRoomCode = _rsGenCode();
+    remoteScanCount = 0;
+    document.getElementById('remote-scan-log').innerHTML = `<p class="text-center opacity-30 text-[11px] py-6">Belum ada scan masuk</p>`;
+    renderRemoteCodeUI();
+    subscribeRemoteChannel();
+    showToast('Kode baru dibuat!');
+}
+
+function copyRemoteLink(){
+    const url = _rsRemoteUrl();
+    if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>showToast('Tautan disalin!')).catch(()=>showToast(url));
+    else showToast(url);
+}
+
+function updateRemoteStatusUI(connected){
+    remoteConnected = connected;
+    const pill = document.getElementById('remote-status-pill');
+    const txt = document.getElementById('remote-status-text');
+    const dot = document.getElementById('remote-scan-dot');
+    const settingsStatus = document.getElementById('remote-scan-status-display');
+    if(pill){ pill.classList.toggle('waiting', !connected); pill.classList.toggle('connected', connected); }
+    if(txt) txt.textContent = connected ? 'HP tersambung ✓' : 'Menunggu HP...';
+    if(dot) dot.classList.toggle('hidden', !connected);
+    if(settingsStatus) settingsStatus.textContent = connected ? `Tersambung (${remoteRoomCode})` : 'Belum tersambung';
+}
+
+function subscribeRemoteChannel(){
+    const pn = _rsGetPubnub();
+    if(!pn) return showToast('Gagal memuat modul HP Scanner');
+    unsubscribeRemoteChannel();
+    const channel = _rsChannelName(remoteRoomCode);
+    pn.addListener({
+        message: (evt) => {
+            const msg = evt.message || {};
+            if(msg.type === 'hello'){ updateRemoteStatusUI(true); showToast('📱 HP tersambung sebagai scanner!'); return; }
+            if(msg.type === 'scan' && msg.code){
+                updateRemoteStatusUI(true);
+                handleRemoteScan(String(msg.code));
+            }
+        }
+    });
+    pn.subscribe({ channels:[channel] });
+}
+function unsubscribeRemoteChannel(){
+    if(remotePubnub){ try{ remotePubnub.unsubscribeAll(); }catch(e){} }
+    updateRemoteStatusUI(false);
+}
+
+function handleRemoteScan(code){
+    remoteScanCount++;
+    const found = items.find(i => String(i.barcode) === String(code));
+    let logHtml = '';
+    if(found && found.stock > 0){
+        addToCart(found.id);
+        if(scanSoundOn) beepScan();
+        if(navigator.vibrate) navigator.vibrate([60]);
+        showToast(`📱 ${found.name} ditambahkan!`);
+        logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(16,185,129,0.12);color:#10b981;"><i class="fa-solid fa-check text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${found.name}</p><p class="text-[9px] text-muted">${formatIDR(found.price)} • ditambahkan ke keranjang</p></div></div>`;
+    } else if(found){
+        if(scanSoundOn) beepError();
+        showToast(`📱 ${found.name} — stok habis!`);
+        logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(239,68,68,0.12);color:#ef4444;"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${found.name}</p><p class="text-[9px] text-muted">Stok habis</p></div></div>`;
+    } else {
+        if(scanSoundOn) beepError();
+        showToast(`📱 Kode tidak dikenal: ${code}`);
+        logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.12);color:#f59e0b;"><i class="fa-solid fa-question text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${code}</p><p class="text-[9px] text-muted">Produk tidak ditemukan</p></div></div>`;
+    }
+    const logBox = document.getElementById('remote-scan-log');
+    if(logBox){ if(remoteScanCount===1) logBox.innerHTML=''; logBox.insertAdjacentHTML('afterbegin', logHtml); }
+}
+
+// ══════════════════════════════════════════════════════════════
+// REMOTE SCANNER — MODE HP (dibuka lewat tautan/kode ?remote=)
+// ══════════════════════════════════════════════════════════════
+let rsPubnub = null;
+let rsRoomCode = null;
+let rsHtml5QrCode = null;
+let rsSentCount = 0;
+
+async function enterRemoteScannerMode(code){
+    rsRoomCode = code.toUpperCase();
+    document.getElementById('remote-scanner-app').classList.add('open');
+    document.getElementById('rs-subtitle').textContent = 'Kode: ' + rsRoomCode;
+    document.getElementById('rs-count-chip').textContent = '0 barcode terkirim';
+
+    const pn = _rsGetPubnub();
+    if(pn){
+        rsPubnub = pn;
+        pn.publish({ channel:_rsChannelName(rsRoomCode), message:{ type:'hello' } }).catch(()=>{});
+    }
+
+    const manualInput = document.getElementById('rs-manual-input');
+    manualInput.onkeydown = (e) => { if(e.key==='Enter'){ const v=manualInput.value.trim(); if(v){ sendRemoteScan(v); manualInput.value=''; } } };
+
+    if(location.protocol!=='https:' && location.hostname!=='localhost'){ showToast('⚠ Wajib HTTPS untuk kamera!'); return; }
+    try{
+        rsHtml5QrCode = new Html5Qrcode("rs-reader");
+        await rsHtml5QrCode.start(
+            { facingMode:"environment" },
+            { fps:24, qrbox:{ width:260, height:160 } },
+            (text) => sendRemoteScan(text)
+        );
+    }catch(e){ showToast('⚠ Gagal membuka kamera HP!'); }
+}
+
+function sendRemoteScan(code){
+    if(!rsPubnub || !rsRoomCode) return;
+    rsPubnub.publish({ channel:_rsChannelName(rsRoomCode), message:{ type:'scan', code:String(code), ts:Date.now() } }).catch(()=>{});
+    rsSentCount++;
+    document.getElementById('rs-count-chip').textContent = rsSentCount + ' barcode terkirim';
+    if(scanSoundOn) beepScan();
+    if(navigator.vibrate) navigator.vibrate([60]);
+    const list = document.getElementById('rs-sent-list');
+    const toastHtml = `<div class="rs-sent-toast"><i class="fa-solid fa-paper-plane"></i><div><p style="font-weight:800;font-size:12px;">Terkirim ke kasir</p><p style="font-size:10px;opacity:0.7;">${code}</p></div></div>`;
+    list.innerHTML = toastHtml;
+    clearTimeout(list._t);
+    list._t = setTimeout(()=>{ list.innerHTML=''; }, 2200);
+}
+
+async function exitRemoteScannerMode(){
+    if(rsHtml5QrCode){ try{ await rsHtml5QrCode.stop(); }catch(e){} rsHtml5QrCode=null; }
+    if(rsPubnub){ try{ rsPubnub.unsubscribeAll(); }catch(e){} }
+    document.getElementById('remote-scanner-app').classList.remove('open');
+    const u = new URL(location.href); u.searchParams.delete('remote'); history.replaceState({}, '', u.toString());
+    location.reload();
+}
+
+// ══════════════════════════════════════════════════════════════
 // BLUETOOTH PRINTER
 // ══════════════════════════════════════════════════════════════
 const BT_PREFS_KEY = 'dk_bt_prefs';
@@ -1675,7 +1953,7 @@ function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',2500);}
 function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
-function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
+function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();if(id==='modal-remote-scan')unsubscribeRemoteChannel();}}
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ══════════════════════════════════════════════════════════════
@@ -2073,6 +2351,14 @@ function shareWhatsApp(){if(!lastReceiptData)return;const d=lastReceiptData;let 
 // INIT
 // ══════════════════════════════════════════════════════════════
 window.onload = async () => {
+    // Jika dibuka via tautan HP (?remote=KODE), langsung masuk mode Remote Scanner
+    const params = new URLSearchParams(location.search);
+    const remoteCode = params.get('remote');
+    if(remoteCode){
+        await enterRemoteScannerMode(remoteCode);
+        return; // Jangan jalankan init aplikasi kasir normal
+    }
+
     loadSettings();
     const saved = localStorage.getItem('dk_active_tab') || 'home';
     switchTab(saved);
