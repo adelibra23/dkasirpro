@@ -129,6 +129,8 @@
         .header-page-title { display: none; }
         .hdr-quick-add { display: none; }
         .hdr-divider { display: none; }
+        /* Utility umum: elemen fitur khusus desktop (pintasan keyboard, cetak browser, dll) — disembunyikan di mobile */
+        .desktop-only { display: none !important; }
 
         /* ── SIDEBAR ── */
         #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
@@ -438,6 +440,10 @@
         input:checked + .slider:before { transform:translateX(20px); }
 
         .printer-ready { color: #10b981 !important; } .printer-connecting { color: #f59e0b !important; animation: pulse-notif 1s infinite; } .printer-error { color: #ef4444 !important; } .printer-offline { color: var(--text-muted) !important; }
+
+        /* ── Keyboard shortcut badges (panel bantuan desktop) ── */
+        .kbd-key { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 7px; background: var(--card); border: 1px solid var(--card-border); border-bottom-width: 2px; font-size: 10px; font-weight: 800; color: var(--text); font-family: inherit; }
+        .kbd-plus { font-size: 10px; font-weight: 800; color: var(--text-muted); margin: 0 3px; }
         .printer-card { border-radius: 20px; border: 1px solid var(--card-border); background: var(--card); overflow: hidden; transition: all 0.3s; }
         .printer-status-bar { height: 4px; transition: background 0.4s; border-radius: 0; }
         .printer-status-bar.ready { background: linear-gradient(90deg,#10b981,#34d399); } .printer-status-bar.connecting { background: linear-gradient(90deg,#f59e0b,#fbbf24); animation: shimmer 1s linear infinite; background-size: 200% 100%; } .printer-status-bar.error { background: linear-gradient(90deg,#ef4444,#f87171); } .printer-status-bar.offline { background: var(--card-border); }
@@ -644,6 +650,8 @@
             .hdr-quick-add:active { transform: translateY(0) scale(0.97); }
             .hdr-quick-add.hidden { display: none; }
             .hdr-divider { display: block; width: 1px; height: 26px; background: var(--card-border); margin: 0 2px; }
+            .desktop-only { display: flex !important; }
+            .desktop-only.desktop-only-block { display: block !important; }
 
             /* Sidebar: sedikit kedalaman agar terpisah jelas dari konten (nuansa aplikasi web/dashboard) */
             #sidebar { box-shadow: 1px 0 0 var(--card-border); }
@@ -925,6 +933,9 @@
                 <i class="fa-solid fa-plus"></i><span>Tambah Produk</span>
             </button>
             <span class="hdr-divider"></span>
+            <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)">
+                <i class="fa-solid fa-keyboard" style="font-size:15px;"></i>
+            </button>
             <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
                 <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
@@ -1682,6 +1693,10 @@
                 <span>Print Bluetooth</span>
                 <span id="print-bt-status" class="ml-1 text-[8px] opacity-60"></span>
             </button>
+            <button onclick="printReceiptBrowser()" class="desktop-only w-full py-3 bg-white border border-slate-200 text-slate-700 rounded-2xl font-bold text-[10px] uppercase tracking-wide items-center justify-center gap-2">
+                <i class="fa-solid fa-desktop"></i>
+                <span>Cetak dari Browser</span>
+            </button>
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="shareWhatsApp()" class="py-3 bg-emerald-500 text-white rounded-2xl font-bold text-[10px] uppercase flex items-center justify-center gap-1"><i class="fa-brands fa-whatsapp"></i> WA</button>
                 <button onclick="closeModal('modal-receipt')" class="py-3 bg-slate-100 text-slate-500 rounded-2xl font-bold text-[10px] uppercase">Tutup</button>
@@ -1776,6 +1791,31 @@
             <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> yang tetap tersambung meski modal ditutup, <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket, serta <strong class="text-indigo-500">Login ID</strong> untuk menyinkronkan seluruh data toko (produk, transaksi, stok, hutang) secara otomatis antara HP dan Desktop.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
+    </div>
+</div>
+
+<!-- KEYBOARD SHORTCUTS (khusus desktop) -->
+<div id="modal-shortcuts" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-11 h-11 bg-indigo-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-keyboard text-indigo-600"></i></div>
+            <div><h3 class="font-black text-base">Pintasan Keyboard</h3><p class="text-[9px] text-muted font-bold uppercase tracking-widest">Khusus tampilan desktop</p></div>
+        </div>
+        <div class="space-y-2 mb-6">
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Fokus pencarian</span><span class="flex items-center"><span class="kbd-key">Ctrl</span><span class="kbd-plus">+</span><span class="kbd-key">K</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Fokus pencarian (cepat)</span><span class="kbd-key">/</span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Beranda</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">1</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Kasir</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">2</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Inventaris</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">3</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Stok</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">4</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Hutang</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">5</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Laporan</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">6</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Pindah ke Pengaturan</span><span class="flex items-center"><span class="kbd-key">Alt</span><span class="kbd-plus">+</span><span class="kbd-key">7</span></span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Lanjut ke pembayaran (di Kasir)</span><span class="kbd-key">F2</span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Tutup modal / panel</span><span class="kbd-key">Esc</span></div>
+            <div class="flex items-center justify-between p-3 rounded-2xl surface"><span class="text-xs font-bold">Buka panel ini</span><span class="kbd-key">?</span></div>
+        </div>
+        <button onclick="closeModal('modal-shortcuts')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
 </div>
 
@@ -2776,6 +2816,42 @@ async function btAutoReconnectOnLoad(){if(!btPrefs.autoReconnect)return;if(!navi
 async function btWrite(data){if(!btCharacteristic)throw new Error('Hubungkan printer dulu!');if(btDevice&&!btDevice.gatt.connected){await _doConnect(btDevice);if(!btCharacteristic)throw new Error('Reconnect gagal');}const CHUNK=512;const useWithout=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithout)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
 async function btTestPrint(){const testData={id:'TEST-'+Date.now(),items:[{name:'Test Item',qty:1,price:10000,cost:0}],amount:10000,total_cost:0,pay_cash:10000,pay_qris:0,change:0,method:'Cash/QRIS',created_at:new Date().toISOString()};showToast('Mengirim test print...');try{const data=buildEscPosReceipt(testData);await btWrite(data);showToast("✓ Test print berhasil!");beepScan();}catch(e){showToast('Gagal test print: '+(e.message||'Error'));_setPrinterUI('error',btDevice?.name||'');}}
 async function printBluetoothReceipt(){if(!lastReceiptData)return showToast('Tidak ada data struk!');if(!btCharacteristic&&!btDevice){showToast('Hubungkan printer dulu di Pengaturan!');return;}if(!btConnected){showToast('Reconnecting...');try{await btReconnect();}catch(e){return showToast('Gagal reconnect!');}}showToast('Mengirim ke printer...');try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){showToast('Gagal cetak: '+(e.message||'Error'));btCharacteristic=null;btConnected=false;_setPrinterUI('error',btDevice?.name||'');}}
+
+// Cetak struk lewat dialog print browser — fitur khusus desktop, alternatif untuk yang tidak
+// punya printer thermal Bluetooth (langsung ke printer biasa / simpan sebagai PDF).
+function printReceiptBrowser(){
+    const area=document.getElementById('receipt-area');
+    if(!area||!lastReceiptData)return showToast('Tidak ada data struk!');
+    const win=window.open('','_blank','width=420,height=680');
+    if(!win)return showToast('Popup diblokir browser — izinkan popup untuk mencetak');
+    win.document.write(`<!DOCTYPE html><html><head><title>Struk - ${(config.storeName||'DheKasir')}</title><meta charset="UTF-8">
+    <style>
+        @page{margin:12mm;}
+        body{margin:0;padding:16px;background:#fff;font-family:'Courier New',Courier,monospace;}
+        .receipt-paper{font-family:'Courier New',Courier,monospace;font-size:12px;line-height:1.55;color:#111;background:#fff;width:100%;max-width:320px;margin:0 auto;}
+        .receipt-paper .rec-header{text-align:center;padding-bottom:8px;border-bottom:1px dashed #bbb;margin-bottom:8px;}
+        .receipt-paper .rec-logo{display:flex;justify-content:center;align-items:center;margin-bottom:6px;}
+        .receipt-paper .rec-logo img{max-height:52px;max-width:120px;object-fit:contain;}
+        .receipt-paper .rec-logo-placeholder{width:48px;height:48px;background:#4f46e5;border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:900;font-family:Arial,sans-serif;}
+        .receipt-paper .rec-storename{font-size:15px;font-weight:900;font-family:Arial,sans-serif;letter-spacing:0.5px;text-transform:uppercase;margin:0;}
+        .receipt-paper .rec-addr{font-size:10px;color:#555;margin:1px 0 0;}
+        .receipt-paper .rec-phone{font-size:10px;color:#555;margin:1px 0;}
+        .receipt-paper .rec-meta{font-size:9px;color:#888;margin-top:4px;}
+        .receipt-paper .rec-divider{border:none;border-top:1px dashed #bbb;margin:6px 0;}
+        .receipt-paper .rec-section-title{font-size:9px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.08em;margin:4px 0 3px;}
+        .receipt-paper .rec-item-row{display:flex;justify-content:space-between;align-items:flex-start;padding:1px 0;}
+        .receipt-paper .rec-item-name{flex:1;padding-right:8px;word-break:break-word;}
+        .receipt-paper .rec-item-subtotal{white-space:nowrap;font-weight:700;}
+        .receipt-paper .rec-item-detail{font-size:10px;color:#666;padding-left:6px;}
+        .receipt-paper .rec-total-row{display:flex;justify-content:space-between;font-size:14px;font-weight:900;font-family:Arial,sans-serif;padding:4px 0;}
+        .receipt-paper .rec-pay-row{display:flex;justify-content:space-between;font-size:11px;color:#444;padding:1px 0;}
+        .receipt-paper .rec-change-row{display:flex;justify-content:space-between;font-size:12px;font-weight:700;border-top:1px dotted #bbb;padding:4px 0 0;margin-top:3px;}
+        .receipt-paper .rec-footer{text-align:center;font-size:9px;color:#999;margin-top:8px;padding-top:6px;border-top:1px dashed #bbb;}
+        .receipt-paper .rec-debt-badge{display:inline-block;background:#fef2f2;color:#dc2626;border:1px solid #fca5a5;border-radius:6px;font-size:11px;font-weight:700;padding:3px 12px;margin:4px auto;font-family:Arial,sans-serif;text-align:center;}
+    </style></head><body>${area.outerHTML}</body></html>`);
+    win.document.close();
+    win.onload=()=>{ win.focus(); win.print(); };
+}
 function buildEscPosReceipt(d){const enc=new TextEncoder();const bytes=[];const ESC=0x1B,GS=0x1D,LF=0x0A;function cmd(...args){bytes.push(...args);}function text(s){bytes.push(...enc.encode(s.replace(/[^\x00-\x7F]/g,c=>{const map={'Rp':'Rp','×':'x'};return map[c]||'?';})));}function lf(n=1){for(let i=0;i<n;i++)bytes.push(LF);}const sname=config.storeName||'DheKasir',saddr=config.storeAddress||'',sphone=config.storePhone||'';cmd(ESC,0x40);cmd(ESC,0x61,0x01);cmd(ESC,0x45,0x01);cmd(GS,0x21,0x11);text(sname.toUpperCase());lf();cmd(GS,0x21,0x00);cmd(ESC,0x45,0x00);if(saddr&&saddr!=='-'){text(saddr);lf();}if(sphone){text('Telp: '+sphone);lf();}const dt=new Date(d.created_at||Date.now());text(dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}));lf();text('No: '+d.id);lf();cmd(ESC,0x61,0x00);text('--------------------------------');lf();text(t('receipt_items'));lf();(d.items||[]).forEach(item=>{text(item.name);lf();const left=`  ${item.qty} x ${formatIDRRaw(item.price)}`;const right=formatIDRRaw(item.price*item.qty);text(left+'.'.repeat(Math.max(1,32-left.length-right.length))+right);lf();});text('--------------------------------');lf();cmd(ESC,0x45,0x01);const tl='TOTAL',tr=formatIDRRaw(d.amount);text(tl+' '.repeat(Math.max(1,32-tl.length-tr.length))+tr);lf();cmd(ESC,0x45,0x00);if(d.method==='Hutang'||d.method==='Debt'){text(t('rec_debt'));lf();}else{if(d.pay_cash>0){const l=t('rec_cash'),r=formatIDRRaw(d.pay_cash);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}if(d.pay_qris>0){const l=t('rec_qris'),r=formatIDRRaw(d.pay_qris);text(l+' '.repeat(Math.max(1,32-l.length-r.length))+r);lf();}}const cl=t('rec_change'),cr=formatIDRRaw(d.change);text(cl+' '.repeat(Math.max(1,32-cl.length-cr.length))+cr);lf();text('--------------------------------');lf();cmd(ESC,0x61,0x01);text(t('receipt_thank'));lf();text(t('receipt_no_return'));lf();text('* DheKasir v2.0 *');lf();cmd(ESC,0x61,0x00);lf(4);cmd(GS,0x56,0x42,0x00);return new Uint8Array(bytes);}
 function formatIDRRaw(n){return'Rp'+Number(n||0).toLocaleString('id-ID');}
 
@@ -2834,6 +2910,49 @@ function updateDesktopPageTitle(tab){
     const quickAdd=document.getElementById('hdr-quick-add-btn');
     if(quickAdd)quickAdd.classList.toggle('hidden', tab==='settings');
 }
+// ══════════════════════════════════════════════════════════════
+// PINTASAN KEYBOARD (khusus tampilan desktop >=1024px)
+// ══════════════════════════════════════════════════════════════
+const DESKTOP_TAB_SHORTCUTS = {'1':'home','2':'pos','3':'items','4':'stock','5':'debts','6':'data','7':'settings'};
+function _isTypingContext(){
+    const el=document.activeElement;
+    if(!el)return false;
+    const tag=el.tagName;
+    return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||el.isContentEditable;
+}
+function focusActiveSearch(){
+    const activeTab=document.querySelector('.tab-content.active');
+    if(!activeTab)return;
+    const map={'tab-pos':'pos-search','tab-items':'item-search','tab-debts':'debt-search'};
+    const id=map[activeTab.id];
+    const input=id?document.getElementById(id):null;
+    if(input){input.focus();input.select&&input.select();}
+}
+function handleDesktopEscape(){
+    const confirmEl=document.getElementById('modal-confirm');
+    if(confirmEl&&confirmEl.classList.contains('open')){confirmCancel();return;}
+    const scannerEl=document.getElementById('modal-scanner');
+    if(scannerEl&&scannerEl.classList.contains('open')){closeScanner();return;}
+    const openModalEl=Array.from(document.querySelectorAll('[id^="modal-"]')).find(m=>m.id!=='modal-scanner'&&m.id!=='modal-confirm'&&!m.classList.contains('hidden'));
+    if(openModalEl){closeModal(openModalEl.id);return;}
+    const sidebarEl=document.getElementById('sidebar');
+    if(sidebarEl&&sidebarEl.classList.contains('open')){closeSidebar();}
+}
+document.addEventListener('keydown',(e)=>{
+    if(window.innerWidth<1024)return; // pintasan ini khusus untuk tampilan desktop
+    if(e.key==='Escape'){handleDesktopEscape();return;}
+    if(e.altKey&&DESKTOP_TAB_SHORTCUTS[e.key]){e.preventDefault();switchTab(DESKTOP_TAB_SHORTCUTS[e.key]);return;}
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();focusActiveSearch();return;}
+    if((e.key==='F2')||(e.ctrlKey&&e.key==='Enter')){
+        const posTab=document.getElementById('tab-pos');
+        if(posTab&&posTab.classList.contains('active')&&cart.length>0){e.preventDefault();openCheckout();}
+        return;
+    }
+    if(_isTypingContext())return; // sisanya jangan aktif saat sedang mengetik di form
+    if(e.key==='/'){e.preventDefault();focusActiveSearch();return;}
+    if(e.key==='?'){e.preventDefault();openModal('modal-shortcuts');return;}
+});
+
 function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
