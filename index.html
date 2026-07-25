@@ -518,6 +518,8 @@
         .rs-sent-toast { background: rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.35); color:#34d399; border-radius:18px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:12px; animation: slideUpFade 0.3s ease; }
         .rs-count-chip { background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:10px; font-weight:800; padding:6px 12px; border-radius:14px; display:inline-block; margin-bottom:10px; }
         .rs-exit-btn { position:absolute; top:16px; right:16px; z-index:3; width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;display:flex;align-items:center;justify-content:center; }
+        .rs-total-badge { background: rgba(79,70,229,0.22); border:1px solid rgba(99,102,241,0.4); color:#fff; font-size:12px; font-weight:900; padding:10px 14px; border-radius:16px; display:none; margin-bottom:10px; text-align:center; letter-spacing:0.02em; }
+        .rs-total-badge span { color:#a5b4fc; margin-left:4px; }
 
         /* ── LIVE SCAN DISPLAY (customer-facing screen, ala kasir Indomaret) ── */
         #live-scan-fab {
@@ -1021,7 +1023,7 @@
             <h3 class="text-lg font-black">HP sebagai Scanner</h3>
             <button onclick="closeModal('modal-remote-scan')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
-        <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini — dan muncul LIVE di layar pelanggan.</p>
+        <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini — dan muncul LIVE di layar pelanggan. Koneksi tetap aktif meski modal ini ditutup.</p>
 
         <div class="remote-qr-wrap" id="remote-qr-box"></div>
 
@@ -1039,6 +1041,8 @@
             <button onclick="regenerateRemoteCode()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Kode Baru</button>
             <button onclick="copyRemoteLink()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-link mr-1"></i> Salin Tautan</button>
         </div>
+
+        <button onclick="disconnectRemoteScan()" class="w-full mt-3 py-3.5 rounded-2xl font-black text-[10px] uppercase text-rose-500" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);"><i class="fa-solid fa-link-slash mr-1"></i> Putuskan Koneksi HP</button>
 
         <div class="mt-6">
             <h4 class="text-[10px] font-black uppercase tracking-widest text-muted mb-3">Riwayat Scan dari HP</h4>
@@ -1073,6 +1077,7 @@
             <div class="scan-line"></div>
         </div>
         <div class="rs-footer">
+            <div class="rs-total-badge" id="rs-total-badge">TOTAL BELANJA <span id="rs-total-value">Rp 0</span></div>
             <div id="rs-sent-list"></div>
             <div class="rs-count-chip" id="rs-count-chip">0 barcode terkirim</div>
             <input type="text" id="rs-manual-input" class="scanner-manual-input" placeholder="Ketik barcode manual...">
@@ -1378,7 +1383,7 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 2.0</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong>, serta <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket yang menampilkan barang & total belanja setiap kali HP memindai barcode.</p>
+            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> yang tetap tersambung meski modal ditutup, serta <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket yang menampilkan barang & total belanja setiap kali HP memindai barcode, lengkap dengan total belanja yang juga tampil langsung di layar HP.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1396,7 +1401,7 @@
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">2. Cloud (Opsional):</strong> Sinkronisasi Google Spreadsheet hanya aktif jika Anda memasukkan Google Apps Script URL sendiri.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">3. Kamera:</strong> Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">4. Bluetooth:</strong> Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner & Layar Live:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan.</p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner & Layar Live:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode dan total belanja, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan maupun di layar HP.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
         </div>
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Saya Mengerti</button>
@@ -1883,16 +1888,39 @@ let remoteScanCount = 0;
 function _rsChannelName(code){ return 'dhekasir-scan-' + code; }
 function _rsGenCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
 
+// Listener pusat (dibuat sekali per instance PubNub) agar tidak menumpuk duplikat
+// setiap kali modal dibuka ulang / kode di-regenerate.
 function _rsGetPubnub(){
     if(typeof PubNub === 'undefined') return null;
-    if(!remotePubnub) remotePubnub = new PubNub(RS_PUBNUB_KEYS);
+    if(!remotePubnub){
+        remotePubnub = new PubNub(RS_PUBNUB_KEYS);
+        remotePubnub.addListener({
+            message: (evt) => {
+                const msg = evt.message || {};
+                if(msg.type === 'hello'){
+                    updateRemoteStatusUI(true);
+                    showToast('📱 HP tersambung sebagai scanner!');
+                    resetLiveScanCurrent();
+                    openLiveScanDisplay();
+                    sendRemoteAck();
+                    return;
+                }
+                if(msg.type === 'scan' && msg.code){
+                    updateRemoteStatusUI(true);
+                    handleRemoteScan(String(msg.code));
+                }
+            }
+        });
+    }
     return remotePubnub;
 }
 
 function openRemoteScanModal(){
     if(!remoteRoomCode) remoteRoomCode = _rsGenCode();
     renderRemoteCodeUI();
-    subscribeRemoteChannel();
+    if(!remoteConnected){
+        subscribeRemoteChannel();
+    }
     openModal('modal-remote-scan');
 }
 
@@ -1911,7 +1939,8 @@ function renderRemoteCodeUI(){
             qrBox.innerHTML = `<span class="text-[9px] font-bold text-center text-muted p-2">${remoteRoomCode}</span>`;
         }
     }
-    updateRemoteStatusUI(false);
+    // Pertahankan status koneksi saat ini (jangan reset ke "menunggu" jika sudah tersambung)
+    updateRemoteStatusUI(remoteConnected);
 }
 
 function _rsRemoteUrl(){
@@ -1952,29 +1981,35 @@ function updateRemoteStatusUI(connected){
 function subscribeRemoteChannel(){
     const pn = _rsGetPubnub();
     if(!pn) return showToast('Gagal memuat modul HP Scanner');
-    unsubscribeRemoteChannel();
+    if(remotePubnub){ try{ remotePubnub.unsubscribeAll(); }catch(e){} }
     const channel = _rsChannelName(remoteRoomCode);
-    pn.addListener({
-        message: (evt) => {
-            const msg = evt.message || {};
-            if(msg.type === 'hello'){
-                updateRemoteStatusUI(true);
-                showToast('📱 HP tersambung sebagai scanner!');
-                resetLiveScanCurrent();
-                openLiveScanDisplay();
-                return;
-            }
-            if(msg.type === 'scan' && msg.code){
-                updateRemoteStatusUI(true);
-                handleRemoteScan(String(msg.code));
-            }
-        }
-    });
     pn.subscribe({ channels:[channel] });
 }
 function unsubscribeRemoteChannel(){
     if(remotePubnub){ try{ remotePubnub.unsubscribeAll(); }catch(e){} }
     updateRemoteStatusUI(false);
+}
+
+// Diputuskan secara eksplisit oleh kasir (tombol "Putuskan Koneksi HP")
+function disconnectRemoteScan(){
+    unsubscribeRemoteChannel();
+    hideLiveScanFab();
+    closeLiveScanDisplay();
+    showToast('Koneksi HP diputuskan');
+}
+
+// Kirim balasan "ack" ke HP berisi total belanja saat ini, supaya HP tahu sudah tersambung
+function sendRemoteAck(){
+    if(!remotePubnub || !remoteRoomCode) return;
+    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+    remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'ack', total } }).catch(()=>{});
+}
+
+// Kirim update total belanja terbaru ke HP setiap kali keranjang berubah dari hasil scan HP
+function publishRemoteUpdate(){
+    if(!remotePubnub || !remoteRoomCode || !remoteConnected) return;
+    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+    remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'update', total } }).catch(()=>{});
 }
 
 function handleRemoteScan(code){
@@ -2001,6 +2036,8 @@ function handleRemoteScan(code){
     }
     const logBox = document.getElementById('remote-scan-log');
     if(logBox){ if(remoteScanCount===1) logBox.innerHTML=''; logBox.insertAdjacentHTML('afterbegin', logHtml); }
+    // Kirim total belanja terbaru kembali ke HP agar tampil live juga di layar HP
+    publishRemoteUpdate();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -2011,15 +2048,49 @@ let rsRoomCode = null;
 let rsHtml5QrCode = null;
 let rsSentCount = 0;
 
+function showRsTotal(total){
+    const badge=document.getElementById('rs-total-badge');
+    const val=document.getElementById('rs-total-value');
+    if(badge) badge.style.display='block';
+    if(val) val.textContent=formatIDR(total||0);
+}
+function hideRsTotal(){
+    const badge=document.getElementById('rs-total-badge');
+    if(badge) badge.style.display='none';
+}
+
 async function enterRemoteScannerMode(code){
     rsRoomCode = code.toUpperCase();
     document.getElementById('remote-scanner-app').classList.add('open');
-    document.getElementById('rs-subtitle').textContent = 'Kode: ' + rsRoomCode;
+    document.getElementById('rs-subtitle').textContent = 'Menyambung ke kasir...';
     document.getElementById('rs-count-chip').textContent = '0 barcode terkirim';
+    hideRsTotal();
 
     const pn = _rsGetPubnub();
     if(pn){
         rsPubnub = pn;
+        pn.addListener({
+            message: (evt) => {
+                const msg = evt.message || {};
+                if(msg.type === 'ack'){
+                    document.getElementById('rs-subtitle').textContent = 'Tersambung ke kasir ✓';
+                    showRsTotal(msg.total||0);
+                    return;
+                }
+                if(msg.type === 'update'){
+                    showRsTotal(msg.total||0);
+                    return;
+                }
+                if(msg.type === 'checkout_done'){
+                    showToast('✓ Pembayaran selesai di kasir!');
+                    rsSentCount = 0;
+                    document.getElementById('rs-count-chip').textContent = '0 barcode terkirim';
+                    hideRsTotal();
+                    return;
+                }
+            }
+        });
+        pn.subscribe({ channels:[_rsChannelName(rsRoomCode)] });
         pn.publish({ channel:_rsChannelName(rsRoomCode), message:{ type:'hello' } }).catch(()=>{});
     }
 
@@ -2115,7 +2186,7 @@ function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',2500);}
 function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
-function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();if(id==='modal-remote-scan')unsubscribeRemoteChannel();}}
+function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));}
 
 // ══════════════════════════════════════════════════════════════
@@ -2201,7 +2272,12 @@ async function finishCheckout(){
     if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}
     for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
     logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
-    if(remoteConnected){ updateLiveScanCurrentSuccessMsg(total); }
+    if(remoteConnected){
+        updateLiveScanCurrentSuccessMsg(total);
+        if(remotePubnub && remoteRoomCode){
+            remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'checkout_done', total } }).catch(()=>{});
+        }
+    }
     await syncCloud(log);
 }
 
