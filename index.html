@@ -518,6 +518,54 @@
         .rs-sent-toast { background: rgba(16,185,129,0.18); border:1px solid rgba(16,185,129,0.35); color:#34d399; border-radius:18px; padding:14px 16px; display:flex; align-items:center; gap:12px; margin-bottom:12px; animation: slideUpFade 0.3s ease; }
         .rs-count-chip { background: rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:10px; font-weight:800; padding:6px 12px; border-radius:14px; display:inline-block; margin-bottom:10px; }
         .rs-exit-btn { position:absolute; top:16px; right:16px; z-index:3; width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);color:#fff;display:flex;align-items:center;justify-content:center; }
+
+        /* ── LIVE SCAN DISPLAY (customer-facing screen, ala kasir Indomaret) ── */
+        #live-scan-fab {
+            position: fixed; bottom: 100px; right: 16px; z-index: 130;
+            display: none; align-items: center; gap: 8px;
+            background: #0f172a; color: #fff; padding: 10px 16px 10px 12px;
+            border-radius: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+            animation: slideUpFade 0.3s ease;
+        }
+        #live-scan-fab.show { display: flex; }
+        #live-scan-fab:active { transform: scale(0.94); }
+        .lsf-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; animation: pulse-notif 1.2s infinite; flex-shrink: 0; }
+        .lsf-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        #live-scan-display {
+            position: fixed; inset: 0; z-index: 9500; display: none;
+            background: linear-gradient(160deg,#0b0f1a 0%,#111827 55%,#1e1b4b 100%);
+            flex-direction: column; color: #fff;
+        }
+        #live-scan-display.open { display: flex; }
+        .lsd-topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; flex-shrink: 0; }
+        .lsd-brand { display: flex; align-items: center; gap: 10px; }
+        .lsd-brand-logo { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg,#4f46e5,#7c3aed); display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+        .lsd-brand-name { font-size: 13px; font-weight: 800; }
+        .lsd-brand-sub { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px; }
+        .lsd-live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #34d399; }
+        .lsd-close { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; transition: all 0.15s; }
+        .lsd-close:active { transform: scale(0.9); background: rgba(255,255,255,0.16); }
+
+        .lsd-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 28px 32px; text-align: center; overflow: hidden; }
+        .lsd-current-wrap { min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .lsd-current-icon { width: 100px; height: 100px; border-radius: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 42px; margin-bottom: 18px; }
+        .lsd-current-name { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; max-width: 640px; line-height: 1.25; }
+        .lsd-current-price { font-size: 18px; font-weight: 700; color: #a5b4fc; margin-top: 8px; }
+        .lsd-current-empty { opacity: 0.35; font-size: 15px; font-weight: 700; }
+        .lsd-item-anim { animation: lsdPop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes lsdPop { 0%{opacity:0;transform:scale(0.7) translateY(20px);} 100%{opacity:1;transform:scale(1) translateY(0);} }
+
+        .lsd-footer { width: 100%; max-width: 720px; margin-top: 30px; flex-shrink: 0; }
+        .lsd-total-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; }
+        .lsd-total-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); text-align: left; }
+        .lsd-total-value { font-size: 30px; font-weight: 900; }
+        .lsd-count-label { font-size: 10px; color: rgba(255,255,255,0.4); font-weight: 700; margin-top: 4px; text-align: left; }
+
+        .lsd-list { width: 100%; max-width: 720px; margin-top: 16px; max-height: 160px; overflow-y: auto; }
+        .lsd-list::-webkit-scrollbar { display: none; }
+        .lsd-list-item { display: flex; justify-content: space-between; padding: 9px 6px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); border-bottom: 1px solid rgba(255,255,255,0.06); animation: slideUpFade 0.3s ease; }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -842,6 +890,45 @@
     <div id="toast" class="fixed top-16 left-1/2 -translate-x-1/2 px-6 py-3 bg-slate-900/90 text-white text-[10px] font-bold rounded-full opacity-0 transition-all pointer-events-none z-[200] uppercase shadow-2xl"></div>
 </div>
 
+<!-- LIVE SCAN FAB (muncul saat HP scanner tersambung) -->
+<div id="live-scan-fab" onclick="openLiveScanDisplay()">
+    <span class="lsf-dot"></span>
+    <span class="lsf-label">Live Scan Aktif</span>
+</div>
+
+<!-- LIVE SCAN DISPLAY (layar pelanggan, ala kasir Indomaret) -->
+<div id="live-scan-display">
+    <div class="lsd-topbar">
+        <div class="lsd-brand">
+            <div class="lsd-brand-logo">D</div>
+            <div>
+                <p class="lsd-brand-name">DheKasir</p>
+                <p class="lsd-brand-sub">Layar Pelanggan</p>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <span class="lsd-live-badge"><span class="lsf-dot" style="width:6px;height:6px;"></span> Live</span>
+            <div class="lsd-close" onclick="closeLiveScanDisplay()"><i class="fa-solid fa-xmark"></i></div>
+        </div>
+    </div>
+    <div class="lsd-body">
+        <div class="lsd-current-wrap" id="lsd-current-wrap">
+            <div class="lsd-current-icon">🛒</div>
+            <p class="lsd-current-empty">Menunggu barang dipindai dari HP...</p>
+        </div>
+        <div class="lsd-footer">
+            <div class="lsd-total-row">
+                <div>
+                    <div class="lsd-total-label">Total Belanja</div>
+                    <div class="lsd-count-label" id="lsd-count">0 item</div>
+                </div>
+                <div class="lsd-total-value" id="lsd-total">Rp 0</div>
+            </div>
+            <div class="lsd-list" id="lsd-list"></div>
+        </div>
+    </div>
+</div>
+
 <!-- ══════════════════════════════════════════════════════════════
      SCANNER MODAL - REDESIGN TOTAL
 ═══════════════════════════════════════════════════════════════ -->
@@ -934,7 +1021,7 @@
             <h3 class="text-lg font-black">HP sebagai Scanner</h3>
             <button onclick="closeModal('modal-remote-scan')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
-        <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini.</p>
+        <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini — dan muncul LIVE di layar pelanggan.</p>
 
         <div class="remote-qr-wrap" id="remote-qr-box"></div>
 
@@ -946,7 +1033,9 @@
             </span>
         </div>
 
-        <div class="flex gap-3 mt-6">
+        <button onclick="openLiveScanDisplay()" class="w-full mt-5 py-3.5 rounded-2xl font-black text-[10px] uppercase premium-gradient text-white shadow-lg flex items-center justify-center gap-2"><i class="fa-solid fa-tv"></i> Buka Layar Live (Customer Display)</button>
+
+        <div class="flex gap-3 mt-3">
             <button onclick="regenerateRemoteCode()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Kode Baru</button>
             <button onclick="copyRemoteLink()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-link mr-1"></i> Salin Tautan</button>
         </div>
@@ -956,7 +1045,7 @@
             <div id="remote-scan-log" class="space-y-2"><p class="text-center opacity-30 text-[11px] py-6">Belum ada scan masuk</p></div>
         </div>
 
-        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Kode ini berlaku selama modal terbuka pada sesi ini.</div>
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Buka "Layar Live" di monitor kedua agar pelanggan bisa melihat barang & total belanja secara real-time, persis seperti layar kasir di minimarket.</div>
     </div>
 </div>
 
@@ -1289,7 +1378,7 @@
         <p class="text-[10px] mb-5 font-bold uppercase tracking-widest text-muted">Version 2.0</p>
         <div class="text-[11px] leading-relaxed mb-7 space-y-3 text-left text-muted">
             <p><strong class="text-indigo-500">DheKasir</strong> adalah ekosistem kasir retail digital modern yang dirancang khusus untuk mempercepat transformasi digital UMKM di Indonesia.</p>
-            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, serta fitur <strong class="text-indigo-500">HP sebagai Scanner</strong> — jadikan HP kamu sebagai alat pindai barcode nirkabel untuk kasir di layar ini.</p>
+            <p>Fitur baru v2.0: Scanner barcode redesign total — mode Kasir/SKU/Stok, live scan result card, scan history strip, manual input barcode, flash, suara & getar, ringkasan scan, tombol langsung bayar dari scanner, fitur <strong class="text-indigo-500">HP sebagai Scanner</strong>, serta <strong class="text-indigo-500">Layar Live Pelanggan</strong> — tampilan customer display real-time ala kasir minimarket yang menampilkan barang & total belanja setiap kali HP memindai barcode.</p>
         </div>
         <button onclick="closeModal('modal-about')" class="w-full py-4 rounded-2xl text-xs uppercase font-black text-indigo-500 surface">Tutup</button>
     </div>
@@ -1307,7 +1396,7 @@
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">2. Cloud (Opsional):</strong> Sinkronisasi Google Spreadsheet hanya aktif jika Anda memasukkan Google Apps Script URL sendiri.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">3. Kamera:</strong> Hanya untuk scan barcode secara real-time. Tidak ada foto/rekaman yang disimpan.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">4. Bluetooth:</strong> Hanya untuk printer thermal. Tidak ada data dibagikan ke pihak ketiga.</p></div>
-            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode, tanpa foto atau data pribadi.</p></div>
+            <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">5. HP sebagai Scanner & Layar Live:</strong> Kode barcode yang dipindai dari HP dikirim lewat jaringan realtime pihak ketiga hanya berupa teks kode, tanpa foto atau data pribadi, lalu ditampilkan secara live di layar pelanggan.</p></div>
             <div class="p-4 rounded-2xl" style="background:var(--surface)"><p><strong class="text-indigo-500">6. Kontak:</strong> <strong class="text-indigo-500">support@dhekasir.app</strong></p></div>
         </div>
         <button onclick="closeModal('modal-privacy')" class="w-full py-4 mt-5 rounded-2xl text-xs uppercase font-black text-indigo-500 surface shrink-0">Saya Mengerti</button>
@@ -1720,6 +1809,69 @@ function showScanStats() {
 }
 
 // ══════════════════════════════════════════════════════════════
+// LIVE SCAN DISPLAY (Layar Pelanggan, ala kasir Indomaret)
+// ══════════════════════════════════════════════════════════════
+function showLiveScanFab(){ const el=document.getElementById('live-scan-fab'); if(el) el.classList.add('show'); }
+function hideLiveScanFab(){ const el=document.getElementById('live-scan-fab'); if(el) el.classList.remove('show'); }
+
+function openLiveScanDisplay(){
+    const el = document.getElementById('live-scan-display');
+    if(!el) return;
+    el.classList.add('open');
+    _lockBodyScroll();
+    renderLiveScanTotals();
+    renderLiveScanList();
+}
+function closeLiveScanDisplay(){
+    const el = document.getElementById('live-scan-display');
+    if(!el) return;
+    el.classList.remove('open');
+    _unlockBodyScroll();
+}
+
+function updateLiveScanCurrent(opt){
+    const wrap = document.getElementById('lsd-current-wrap');
+    if(!wrap) return;
+    const iconMap = { success:'✅', warning:'⚠️', error:'❓' };
+    const icon = opt.icon || iconMap[opt.type] || '📦';
+    wrap.innerHTML = `
+        <div class="lsd-current-icon lsd-item-anim">${icon}</div>
+        <div class="lsd-current-name lsd-item-anim">${opt.name}</div>
+        <div class="lsd-current-price lsd-item-anim">${opt.priceLabel || (opt.price!==undefined ? formatIDR(opt.price) : (opt.detail||''))}</div>
+    `;
+    renderLiveScanTotals();
+    renderLiveScanList();
+}
+
+function resetLiveScanCurrent(){
+    const wrap = document.getElementById('lsd-current-wrap');
+    if(!wrap) return;
+    wrap.innerHTML = `<div class="lsd-current-icon">🛒</div><p class="lsd-current-empty">Menunggu barang dipindai dari HP...</p>`;
+}
+
+function renderLiveScanTotals(){
+    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+    const count = cart.reduce((a,b) => a+b.qty, 0);
+    const totalEl = document.getElementById('lsd-total'); if(totalEl) totalEl.innerText = formatIDR(total);
+    const countEl = document.getElementById('lsd-count'); if(countEl) countEl.innerText = count + ' item';
+}
+
+function renderLiveScanList(){
+    const list = document.getElementById('lsd-list');
+    if(!list) return;
+    list.innerHTML = cart.slice().reverse().slice(0,8).map(c => `
+        <div class="lsd-list-item"><span>${c.name}${c.qty>1?` ×${c.qty}`:''}</span><span>${formatIDR(c.price*c.qty)}</span></div>
+    `).join('') || `<div class="lsd-list-item" style="opacity:0.35;justify-content:center;border-bottom:none;">Belum ada barang</div>`;
+}
+
+function updateLiveScanCurrentSuccessMsg(total){
+    const wrap = document.getElementById('lsd-current-wrap');
+    if(!wrap) return;
+    wrap.innerHTML = `<div class="lsd-current-icon lsd-item-anim">🎉</div><div class="lsd-current-name lsd-item-anim">Pembayaran Berhasil!</div><div class="lsd-current-price lsd-item-anim">${formatIDR(total)}</div>`;
+    setTimeout(resetLiveScanCurrent, 3000);
+}
+
+// ══════════════════════════════════════════════════════════════
 // HP SEBAGAI SCANNER (REMOTE SCAN) — via PubNub realtime relay
 // ══════════════════════════════════════════════════════════════
 const RS_PUBNUB_KEYS = { publishKey:'demo', subscribeKey:'demo', uuid:'dk-' + Math.random().toString(36).slice(2,10) };
@@ -1794,6 +1946,7 @@ function updateRemoteStatusUI(connected){
     if(txt) txt.textContent = connected ? 'HP tersambung ✓' : 'Menunggu HP...';
     if(dot) dot.classList.toggle('hidden', !connected);
     if(settingsStatus) settingsStatus.textContent = connected ? `Tersambung (${remoteRoomCode})` : 'Belum tersambung';
+    if(connected){ showLiveScanFab(); } else { hideLiveScanFab(); }
 }
 
 function subscribeRemoteChannel(){
@@ -1804,7 +1957,13 @@ function subscribeRemoteChannel(){
     pn.addListener({
         message: (evt) => {
             const msg = evt.message || {};
-            if(msg.type === 'hello'){ updateRemoteStatusUI(true); showToast('📱 HP tersambung sebagai scanner!'); return; }
+            if(msg.type === 'hello'){
+                updateRemoteStatusUI(true);
+                showToast('📱 HP tersambung sebagai scanner!');
+                resetLiveScanCurrent();
+                openLiveScanDisplay();
+                return;
+            }
             if(msg.type === 'scan' && msg.code){
                 updateRemoteStatusUI(true);
                 handleRemoteScan(String(msg.code));
@@ -1827,14 +1986,17 @@ function handleRemoteScan(code){
         if(scanSoundOn) beepScan();
         if(navigator.vibrate) navigator.vibrate([60]);
         showToast(`📱 ${found.name} ditambahkan!`);
+        updateLiveScanCurrent({ type:'success', name:found.name, price:found.price });
         logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(16,185,129,0.12);color:#10b981;"><i class="fa-solid fa-check text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${found.name}</p><p class="text-[9px] text-muted">${formatIDR(found.price)} • ditambahkan ke keranjang</p></div></div>`;
     } else if(found){
         if(scanSoundOn) beepError();
         showToast(`📱 ${found.name} — stok habis!`);
+        updateLiveScanCurrent({ type:'warning', name:found.name, priceLabel:'Stok habis!' });
         logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(239,68,68,0.12);color:#ef4444;"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${found.name}</p><p class="text-[9px] text-muted">Stok habis</p></div></div>`;
     } else {
         if(scanSoundOn) beepError();
         showToast(`📱 Kode tidak dikenal: ${code}`);
+        updateLiveScanCurrent({ type:'error', name:'Produk tidak ditemukan', priceLabel:code });
         logHtml = `<div class="remote-scan-item"><div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.12);color:#f59e0b;"><i class="fa-solid fa-question text-xs"></i></div><div class="flex-1 min-w-0"><p class="text-[11px] font-black truncate">${code}</p><p class="text-[9px] text-muted">Produk tidak ditemukan</p></div></div>`;
     }
     const logBox = document.getElementById('remote-scan-log');
@@ -2003,7 +2165,7 @@ function renderPos(){
 }
 function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast('Stok habis!');}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();}
 function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast('Maksimal!');}if(cart[idx].qty<=0)cart.splice(idx,1);updateCartUI();renderCartDetails();renderPos();}
-function updateCartUI(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const count=cart.reduce((a,b)=>a+b.qty,0);document.getElementById('cart-count').innerText=count;document.getElementById('cart-total').innerText=formatIDR(total);document.getElementById('cart-float').classList.toggle('hidden',cart.length===0);}
+function updateCartUI(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const count=cart.reduce((a,b)=>a+b.qty,0);document.getElementById('cart-count').innerText=count;document.getElementById('cart-total').innerText=formatIDR(total);document.getElementById('cart-float').classList.toggle('hidden',cart.length===0);renderLiveScanTotals();renderLiveScanList();}
 function openCartDetails(){renderCartDetails();openModal('modal-cart-details');}
 function renderCartDetails(){
     const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
@@ -2038,7 +2200,9 @@ async function finishCheckout(){
     const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString()};
     if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}
     for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
-    logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();await syncCloud(log);
+    logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
+    if(remoteConnected){ updateLiveScanCurrentSuccessMsg(total); }
+    await syncCloud(log);
 }
 
 // ══════════════════════════════════════════════════════════════
