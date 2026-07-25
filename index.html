@@ -115,9 +115,13 @@
         .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
         .header-app-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; flex-shrink: 0; }
         .header-app-title { font-size: 15px; font-weight: 800; color: var(--text); }
+        .header-page-title { display: none; flex-direction: column; gap: 1px; }
+        .header-page-eyebrow { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+        .header-page-name { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
         .hdr-btn:active { transform: scale(0.92); }
+        .hdr-btn-label { display: none; }
 
         /* ── SIDEBAR ── */
         #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
@@ -429,6 +433,11 @@
         .settings-icon { width:38px; height:38px; background:var(--surface); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.3s; }
 
         #cart-float { background: var(--card) !important; border-color: var(--card-border) !important; }
+        /* Default (mobile/tablet <1024px): panel kasir desktop disembunyikan.
+           Tanpa ini, <aside id="pos-desktop-cart-panel"> tampil sebagai blok
+           polos tanpa styling di layar kecil karena style aslinya hanya
+           didefinisikan di dalam @media (min-width:1024px). */
+        #pos-desktop-cart-panel { display: none; }
         .cat-chip-active { background:#4f46e5 !important; color:#fff !important; } .cat-chip-inactive { background:var(--card) !important; color:var(--text-muted) !important; border:1px solid var(--card-border); }
         .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
         .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
@@ -664,7 +673,7 @@
 
             /* Panel kasir tetap (sticky) di kolom kanan, menggantikan cart-float mengambang */
             #pos-desktop-cart-panel {
-                display: flex;
+                display: flex !important;
                 grid-column: 2;
                 grid-row: 1 / span 2;
                 position: sticky;
@@ -721,6 +730,66 @@
 
             /* Sembunyikan cart-float mengambang bergaya mobile pada layar besar — digantikan panel di atas */
             #cart-float { display: none !important; }
+
+            /* ── DESKTOP POLISH: header lebih lega + judul halaman ── */
+            #app-header { height: 72px; box-shadow: 0 1px 0 rgba(20,20,50,0.02), 0 4px 16px rgba(20,20,50,0.03); }
+            .header-page-title { display: flex; }
+
+            /* ── Sidebar: kesan lebih premium (garis pemisah halus + active state lebih tegas) ── */
+            #sidebar { box-shadow: 1px 0 0 rgba(20,20,50,0.03); }
+            .sidebar-header { padding: 26px 20px 20px; }
+            .sidebar-item { font-size: 13.5px; }
+            .sidebar-item.active { box-shadow: inset 0 0 0 1px rgba(79,70,229,0.12); }
+            .sidebar-store-logo { box-shadow: 0 6px 18px rgba(79,70,229,0.28); }
+
+            /* ── Interaksi hover (mouse) — hanya untuk perangkat yang benar-benar punya hover ── */
+        }
+
+        @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
+            /* Card generik: sedikit terangkat saat disorot kursor */
+            .card { transition: background 0.3s, border-color 0.3s, box-shadow 0.2s, transform 0.2s; }
+            .card:hover { box-shadow: 0 10px 28px rgba(20,20,50,0.07); }
+
+            /* Produk kasir: efek angkat, bukan sekadar tekan */
+            #pos-grid > div.cursor-pointer:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(79,70,229,0.12); border-color: rgba(79,70,229,0.25); }
+
+            /* Baris list (inventaris, hutang, laporan, riwayat stok) */
+            #item-list > div:hover, #debt-list > div:hover, #data-list > div:hover, #stock-product-list > div:hover, #stock-history-list > div:hover { box-shadow: 0 10px 26px rgba(20,20,50,0.06); border-color: rgba(79,70,229,0.18); }
+
+            /* Sidebar item */
+            .sidebar-item:not(.active):hover { transform: translateX(2px); }
+
+            /* Tombol header & aksi lain */
+            .hdr-btn:hover { background: var(--primary-soft); border-color: rgba(79,70,229,0.25); color: var(--primary); transform: translateY(-1px); }
+            .settings-row:hover { background: var(--surface); }
+            .hero-qa-btn:hover { background: rgba(255,255,255,0.13); transform: translateY(-2px); }
+
+            /* Tombol utama (gradient) — highlight halus + naik sedikit */
+            .premium-gradient:hover, #pos-desktop-cart-panel .pdcp-pay-btn:not(:disabled):hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 14px 28px rgba(79,70,229,0.28); }
+
+            /* Kategori chip kasir */
+            .cat-chip-inactive:hover { border-color: rgba(79,70,229,0.3); color: var(--primary); }
+
+            /* Scrollbar tipis khusus desktop (bukan disembunyikan total, agar terasa seperti aplikasi profesional) */
+            .sidebar-nav, #pdcp-items, .modal-sheet, #opname-list, #ss-list, #notif-list, #category-list, #lang-list, #remote-scan-log {
+                scrollbar-width: thin !important;
+                scrollbar-color: var(--card-border) transparent;
+            }
+            .sidebar-nav::-webkit-scrollbar, #pdcp-items::-webkit-scrollbar, .modal-sheet::-webkit-scrollbar, #opname-list::-webkit-scrollbar, #ss-list::-webkit-scrollbar, #notif-list::-webkit-scrollbar, #category-list::-webkit-scrollbar, #lang-list::-webkit-scrollbar, #remote-scan-log::-webkit-scrollbar {
+                display: block !important; width: 6px;
+            }
+            .sidebar-nav::-webkit-scrollbar-thumb, #pdcp-items::-webkit-scrollbar-thumb, .modal-sheet::-webkit-scrollbar-thumb, #opname-list::-webkit-scrollbar-thumb, #ss-list::-webkit-scrollbar-thumb, #notif-list::-webkit-scrollbar-thumb, #category-list::-webkit-scrollbar-thumb, #lang-list::-webkit-scrollbar-thumb, #remote-scan-log::-webkit-scrollbar-thumb {
+                background: var(--card-border); border-radius: 8px;
+            }
+            .sidebar-nav::-webkit-scrollbar-thumb:hover, #pdcp-items::-webkit-scrollbar-thumb:hover, .modal-sheet::-webkit-scrollbar-thumb:hover, #opname-list::-webkit-scrollbar-thumb:hover, #ss-list::-webkit-scrollbar-thumb:hover, #notif-list::-webkit-scrollbar-thumb:hover, #category-list::-webkit-scrollbar-thumb:hover, #lang-list::-webkit-scrollbar-thumb:hover, #remote-scan-log::-webkit-scrollbar-thumb:hover {
+                background: var(--text-muted);
+            }
+        }
+
+        /* ── Aksesibilitas: focus terlihat jelas via keyboard di semua ukuran layar ── */
+        button:focus-visible, .sidebar-item:focus-visible, .nav-item:focus-visible, input:focus-visible, select:focus-visible, [onclick]:focus-visible {
+            outline: 2px solid var(--primary) !important;
+            outline-offset: 2px;
         }
 
         @media (min-width: 1440px) {
@@ -844,7 +913,14 @@
             <div class="header-app-logo">D</div>
             <span class="header-app-title">DheKasir</span>
         </div>
+        <div id="header-page-title" class="header-page-title">
+            <span class="header-page-eyebrow" id="header-page-eyebrow">Menu</span>
+            <span class="header-page-name" id="header-page-name">Beranda</span>
+        </div>
         <div class="header-actions">
+            <button onclick="openScanner('cart')" id="header-scan-btn" class="hdr-btn">
+                <i class="fa-solid fa-barcode" style="font-size:15px;"></i>
+            </button>
             <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
                 <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
@@ -899,20 +975,22 @@
                     </div>
                 </div>
             </div>
-            <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
-                    <p class="text-xs font-black uppercase text-muted">Status Stok</p>
+            <div class="dash-secondary-col">
+                <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
+                        <p class="text-xs font-black uppercase text-muted">Status Stok</p>
+                    </div>
+                    <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
                 </div>
-                <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
-            </div>
-            <div class="card p-5 shadow-sm">
-                <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
-                <canvas id="hourChart" height="140"></canvas>
-            </div>
-            <div class="card p-5 space-y-3 shadow-sm">
-                <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
-                <div id="top-products" class="space-y-2"></div>
+                <div class="card p-5 shadow-sm">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
+                    <canvas id="hourChart" height="140"></canvas>
+                </div>
+                <div class="card p-5 space-y-3 shadow-sm">
+                    <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
+                    <div id="top-products" class="space-y-2"></div>
+                </div>
             </div>
         </section>
 
@@ -2483,6 +2561,20 @@ function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));lo
 // ══════════════════════════════════════════════════════════════
 // TAB NAVIGATION
 // ══════════════════════════════════════════════════════════════
+const TAB_TITLES = {
+    home:   { eyebrow:'Menu Utama',  name:'Beranda' },
+    pos:    { eyebrow:'Menu Utama',  name:'Kasir / POS' },
+    items:  { eyebrow:'Menu Utama',  name:'Inventaris' },
+    stock:  { eyebrow:'Operasional', name:'Manajemen Stok' },
+    debts:  { eyebrow:'Operasional', name:'Buku Hutang' },
+    data:   { eyebrow:'Operasional', name:'Laporan & Data' },
+    settings:{ eyebrow:'Akun',       name:'Pengaturan' },
+};
+function updateHeaderPageTitle(tab){
+    const info = TAB_TITLES[tab] || { eyebrow:'Menu', name:'DheKasir' };
+    const eb = document.getElementById('header-page-eyebrow'); if(eb) eb.textContent = info.eyebrow;
+    const nm = document.getElementById('header-page-name'); if(nm) nm.textContent = info.name;
+}
 function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
@@ -2491,6 +2583,7 @@ function switchTab(tab){
     document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
     const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');
     localStorage.setItem('dk_active_tab',tab);
+    updateHeaderPageTitle(tab);
     if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
     if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
     if(window.innerWidth<1024)window.scrollTo({top:0,behavior:'smooth'});
