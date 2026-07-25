@@ -639,12 +639,81 @@
 
             /* Toast centers within the visible content column, not full viewport */
             #toast { left: calc(272px + (100% - 272px) / 2); }
+
+            /* ── POS DESKTOP: layout kasir 2 kolom — grid produk + panel keranjang tetap ── */
+            #tab-pos {
+                display: grid;
+                grid-template-columns: 1fr 360px;
+                gap: 24px;
+                align-items: start;
+                max-width: 1400px;
+            }
+            #tab-pos .pos-search-wrap { grid-column: 1; max-width: none; margin: 0; position: sticky; top: 0; }
+            #pos-grid { grid-column: 1; padding-bottom: 24px; }
+
+            /* Panel kasir tetap (sticky) di kolom kanan, menggantikan cart-float mengambang */
+            #pos-desktop-cart-panel {
+                display: flex;
+                grid-column: 2;
+                grid-row: 1 / span 2;
+                position: sticky;
+                top: 90px;
+                flex-direction: column;
+                background: var(--card);
+                border: 1px solid var(--card-border);
+                border-radius: 28px;
+                box-shadow: 0 8px 30px rgba(20,20,50,0.06);
+                max-height: calc(100vh - 110px);
+                overflow: hidden;
+            }
+            #pos-desktop-cart-panel .pdcp-header {
+                padding: 22px 22px 16px;
+                border-bottom: 1px solid var(--card-border);
+                display: flex; align-items: center; justify-content: space-between;
+            }
+            #pos-desktop-cart-panel .pdcp-title { font-size: 15px; font-weight: 800; display:flex; align-items:center; gap:8px; }
+            #pos-desktop-cart-panel .pdcp-count-chip { background: var(--primary-soft); color: var(--primary); font-size: 10px; font-weight: 900; padding: 3px 10px; border-radius: 20px; }
+            #pos-desktop-cart-panel .pdcp-items {
+                flex: 1; overflow-y: auto; padding: 14px 18px; min-height: 120px;
+            }
+            #pos-desktop-cart-panel .pdcp-items::-webkit-scrollbar { display: none; }
+            #pos-desktop-cart-panel .pdcp-empty { text-align: center; padding: 40px 10px; opacity: 0.35; font-size: 12px; font-weight: 700; }
+            #pos-desktop-cart-panel .pdcp-footer { padding: 18px 22px 22px; border-top: 1px solid var(--card-border); }
+            #pos-desktop-cart-panel .pdcp-total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+            #pos-desktop-cart-panel .pdcp-total-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); }
+            #pos-desktop-cart-panel .pdcp-total-value { font-size: 24px; font-weight: 900; }
+            #pos-desktop-cart-panel .pdcp-actions { display: flex; gap: 10px; }
+            #pos-desktop-cart-panel .pdcp-clear-btn { width: 52px; flex-shrink: 0; border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #f43f5e; background: var(--surface); cursor: pointer; transition: all 0.15s; }
+            #pos-desktop-cart-panel .pdcp-clear-btn:active { transform: scale(0.92); }
+            #pos-desktop-cart-panel .pdcp-pay-btn {
+                flex: 1; padding: 15px; border-radius: 16px; border: none; cursor: pointer;
+                font-weight: 900; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em;
+                color: #fff; background: linear-gradient(135deg,#4f46e5 0%,#7c3aed 100%);
+                box-shadow: 0 10px 24px rgba(79,70,229,0.35);
+                transition: all 0.15s; display:flex; align-items:center; justify-content:center; gap:8px;
+            }
+            #pos-desktop-cart-panel .pdcp-pay-btn:active { transform: scale(0.97); }
+            #pos-desktop-cart-panel .pdcp-pay-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+            .pdcp-item-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--card-border); }
+            .pdcp-item-row:last-child { border-bottom: none; }
+            .pdcp-item-info { flex: 1; min-width: 0; }
+            .pdcp-item-name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+            .pdcp-item-price { font-size: 10px; color: var(--text-muted); font-weight: 600; margin-top: 1px; }
+            .pdcp-item-qty-ctrl { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+            .pdcp-qty-btn { width: 24px; height: 24px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: var(--surface); cursor: pointer; font-size: 10px; transition: all 0.15s; }
+            .pdcp-qty-btn:active { transform: scale(0.88); }
+            .pdcp-qty-num { font-size: 12px; font-weight: 800; width: 18px; text-align: center; }
+            .pdcp-item-subtotal { font-size: 12px; font-weight: 800; color: var(--primary); width: 76px; text-align: right; flex-shrink: 0; }
+
+            /* Sembunyikan cart-float mengambang bergaya mobile pada layar besar — digantikan panel di atas */
+            #cart-float { display: none !important; }
         }
 
         @media (min-width: 1440px) {
             .tab-content { max-width: 1320px; }
             #pos-grid { grid-template-columns: repeat(5, minmax(0,1fr)) !important; }
             #item-list, #stock-product-list, #debt-list, #data-list { grid-template-columns: repeat(3, minmax(0,1fr)); }
+            #tab-pos { max-width: 1520px; }
         }
 
         /* Small phones: tighten padding a touch */
@@ -843,6 +912,29 @@
                 <div id="pos-category-chips" class="flex gap-2 overflow-x-auto hide-scrollbar pb-1"></div>
             </div>
             <div id="pos-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 pb-10"></div>
+
+            <!-- Panel keranjang kasir tetap — hanya tampil di layar desktop (>=1024px) -->
+            <aside id="pos-desktop-cart-panel">
+                <div class="pdcp-header">
+                    <div class="pdcp-title"><i class="fa-solid fa-cash-register text-indigo-500"></i> Keranjang Kasir</div>
+                    <span class="pdcp-count-chip" id="pdcp-count-chip">0 item</span>
+                </div>
+                <div class="pdcp-items" id="pdcp-items">
+                    <div class="pdcp-empty">Belum ada barang dipilih<br>Klik produk di sebelah kiri untuk menambahkan</div>
+                </div>
+                <div class="pdcp-footer">
+                    <div class="pdcp-total-row">
+                        <span class="pdcp-total-label">Total Belanja</span>
+                        <span class="pdcp-total-value" id="pdcp-total-value">Rp 0</span>
+                    </div>
+                    <div class="pdcp-actions">
+                        <div class="pdcp-clear-btn" onclick="resetCart()" title="Kosongkan keranjang"><i class="fa-solid fa-trash-can text-sm"></i></div>
+                        <button class="pdcp-pay-btn" id="pdcp-pay-btn" onclick="openCheckout()" disabled>
+                            <i class="fa-solid fa-arrow-right-to-bracket"></i> Lanjutkan Pembayaran
+                        </button>
+                    </div>
+                </div>
+            </aside>
         </section>
 
         <!-- ITEMS -->
@@ -1667,7 +1759,7 @@ let flashOn = false;
 let opnameData = {};
 let debtFilter = 'all';
 let balanceHidden = localStorage.getItem('dk_balance_hidden')==='1';
-const SCAN_COOLDOWN = 2500;
+const SCAN_COOLDOWN = 5000;
 
 // ── SCANNER STATE ──
 let scannerMode = 'cart'; // 'cart' | 'sku' | 'stock-product'
@@ -2368,7 +2460,45 @@ function renderPos(){
 }
 function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast('Stok habis!');}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();}
 function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast('Maksimal!');}if(cart[idx].qty<=0)cart.splice(idx,1);updateCartUI();renderCartDetails();renderPos();}
-function updateCartUI(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const count=cart.reduce((a,b)=>a+b.qty,0);document.getElementById('cart-count').innerText=count;document.getElementById('cart-total').innerText=formatIDR(total);document.getElementById('cart-float').classList.toggle('hidden',cart.length===0);renderLiveScanTotals();renderLiveScanList();}
+function updateCartUI(){
+    const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const count=cart.reduce((a,b)=>a+b.qty,0);
+    document.getElementById('cart-count').innerText=count;
+    document.getElementById('cart-total').innerText=formatIDR(total);
+    document.getElementById('cart-float').classList.toggle('hidden',cart.length===0);
+    renderLiveScanTotals();
+    renderLiveScanList();
+    renderDesktopCartPanel();
+}
+
+// Panel keranjang kasir tetap untuk layar desktop (menggantikan cart-float mengambang)
+function renderDesktopCartPanel(){
+    const itemsWrap=document.getElementById('pdcp-items');
+    const totalEl=document.getElementById('pdcp-total-value');
+    const countChip=document.getElementById('pdcp-count-chip');
+    const payBtn=document.getElementById('pdcp-pay-btn');
+    if(!itemsWrap)return;
+    const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const count=cart.reduce((a,b)=>a+b.qty,0);
+    if(totalEl)totalEl.innerText=formatIDR(total);
+    if(countChip)countChip.innerText=count+' item';
+    if(payBtn)payBtn.disabled=cart.length===0;
+    itemsWrap.innerHTML=cart.length===0
+        ? `<div class="pdcp-empty">Belum ada barang dipilih<br>Klik produk di sebelah kiri untuk menambahkan</div>`
+        : cart.map(c=>`
+            <div class="pdcp-item-row">
+                <div class="pdcp-item-info">
+                    <p class="pdcp-item-name">${c.name}</p>
+                    <p class="pdcp-item-price">${formatIDR(c.price)}</p>
+                </div>
+                <div class="pdcp-item-qty-ctrl">
+                    <div class="pdcp-qty-btn" onclick="updateCartItem(${c.id},-1)"><i class="fa-solid fa-minus"></i></div>
+                    <span class="pdcp-qty-num">${c.qty}</span>
+                    <div class="pdcp-qty-btn" onclick="updateCartItem(${c.id},1)"><i class="fa-solid fa-plus"></i></div>
+                </div>
+                <span class="pdcp-item-subtotal">${formatIDR(c.price*c.qty)}</span>
+            </div>`).join('');
+}
 function openCartDetails(){renderCartDetails();openModal('modal-cart-details');}
 function renderCartDetails(){
     const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
@@ -2389,7 +2519,7 @@ function resetCart(){cart=[];updateCartUI();renderPos();}
 // ══════════════════════════════════════════════════════════════
 // CHECKOUT
 // ══════════════════════════════════════════════════════════════
-function openCheckout(){const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
+function openCheckout(){if(cart.length===0)return;const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
 function setPayMethod(m){payMethod=m;const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt'),ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(bd){bd.style.background=m==='debt'?'var(--card)':'transparent';bd.style.color=m==='debt'?'#ef4444':'var(--text-muted)';bd.style.boxShadow=m==='debt'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(ac)ac.classList.toggle('hidden',m!=='cash');if(ad)ad.classList.toggle('hidden',m!=='debt');calcChange();}
 function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
 async function finishCheckout(){
@@ -2954,6 +3084,7 @@ window.onload = async () => {
     applyBalanceUI();
     updateScanSoundUI();
     updateScanVibrateUI();
+    updateCartUI();
     await btAutoReconnectOnLoad();
     renderLoginIdUI();
     await autoConnectLoginOnLoad();
