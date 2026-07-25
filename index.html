@@ -191,8 +191,8 @@
         /* Header scanner */
         .scanner-top-bar {
             position: absolute; top: 0; left: 0; right: 0; z-index: 10;
-            padding: 52px 20px 20px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 100%);
+            padding: 52px 20px 22px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 65%, transparent 100%);
             display: flex; align-items: center; justify-content: space-between;
         }
         .scanner-close-btn {
@@ -213,6 +213,7 @@
             background: rgba(255,255,255,0.08);
             border: 1px solid rgba(255,255,255,0.12);
             border-radius: 20px; backdrop-filter: blur(10px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
         }
         .scanner-mode-pill {
             padding: 6px 12px; border-radius: 14px;
@@ -220,8 +221,8 @@
             cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.5);
         }
         .scanner-mode-pill.active {
-            background: #4f46e5; color: #fff;
-            box-shadow: 0 2px 10px rgba(79,70,229,0.5);
+            background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff;
+            box-shadow: 0 2px 12px rgba(79,70,229,0.55);
         }
         .scanner-mode-pill:active { transform: scale(0.95); }
 
@@ -239,23 +240,23 @@
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             width: 260px; height: 160px;
+            border-radius: 18px;
+            box-shadow: 0 0 0 2000px rgba(0,0,0,0);
+            filter: drop-shadow(0 0 14px rgba(99,102,241,0.35));
         }
-        .scan-corner {
-            position: absolute; width: 22px; height: 22px;
-            border-color: #fff; border-style: solid; border-width: 0;
-        }
-        .scan-corner.tl { top: 0; left: 0; border-top-width: 3px; border-left-width: 3px; border-radius: 4px 0 0 0; }
-        .scan-corner.tr { top: 0; right: 0; border-top-width: 3px; border-right-width: 3px; border-radius: 0 4px 0 0; }
-        .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3px; border-left-width: 3px; border-radius: 0 0 0 4px; }
-        .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3px; border-right-width: 3px; border-radius: 0 0 4px 0; }
+        .scan-corner { position: absolute; width: 26px; height: 26px; border-color: #fff; border-style: solid; border-width: 0; }
+        .scan-corner.tl { top: 0; left: 0; border-top-width: 3.5px; border-left-width: 3.5px; border-radius: 8px 0 0 0; }
+        .scan-corner.tr { top: 0; right: 0; border-top-width: 3.5px; border-right-width: 3.5px; border-radius: 0 8px 0 0; }
+        .scan-corner.bl { bottom: 0; left: 0; border-bottom-width: 3.5px; border-left-width: 3.5px; border-radius: 0 0 0 8px; }
+        .scan-corner.br { bottom: 0; right: 0; border-bottom-width: 3.5px; border-right-width: 3.5px; border-radius: 0 0 8px 0; }
         .scan-line {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 240px; height: 2px;
-            background: linear-gradient(90deg, transparent, #4f46e5, #7c3aed, #4f46e5, transparent);
+            width: 240px; height: 2.5px;
+            background: linear-gradient(90deg, transparent, #818cf8, #a78bfa, #818cf8, transparent);
             border-radius: 2px;
             animation: scanLine 2s ease-in-out infinite;
-            box-shadow: 0 0 12px rgba(99,102,241,0.8);
+            box-shadow: 0 0 16px rgba(129,140,248,0.9);
         }
         @keyframes scanLine {
             0% { transform: translate(-50%, -50%) translateY(-68px); opacity: 0; }
@@ -291,7 +292,7 @@
         .scanner-bottom-panel {
             position: absolute; bottom: 0; left: 0; right: 0; z-index: 10;
             padding: 20px 20px 44px;
-            background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, transparent 100%);
+            background: linear-gradient(to top, rgba(0,0,0,0.94) 0%, rgba(0,0,0,0.55) 60%, transparent 100%);
         }
         /* Hasil scan */
         .scan-result-card {
@@ -302,6 +303,7 @@
             display: flex; align-items: center; gap: 14px;
             animation: slideUpFade 0.3s ease;
             margin-bottom: 14px;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.35);
         }
         @keyframes slideUpFade { from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);} }
         .scan-result-icon {
@@ -378,8 +380,16 @@
             padding: 12px 16px !important; width: 100%; outline: none !important;
             backdrop-filter: blur(10px);
             margin-bottom: 10px;
+            transition: border-color 0.2s, background 0.2s;
         }
         .scanner-manual-input::placeholder { color: rgba(255,255,255,0.35) !important; }
+        .scanner-manual-input:focus { border-color: rgba(129,140,248,0.6) !important; background: rgba(255,255,255,0.14) !important; }
+
+        @media (hover:hover) and (pointer:fine) {
+            .scanner-close-btn:hover { background: rgba(255,255,255,0.25); }
+            .scan-ctrl-btn:not(:disabled):hover { background: rgba(255,255,255,0.14); border-color: rgba(255,255,255,0.22); }
+            .scanner-mode-pill:not(.active):hover { color: #fff; background: rgba(255,255,255,0.08); }
+        }
 
         /* ── RECEIPT ── */
         .receipt-paper { font-family: 'Courier New',Courier,monospace; font-size: 12px; line-height: 1.55; color: #111; background: #fff; width: 100%; }
@@ -612,10 +622,20 @@
             body.sidebar-open { overflow: visible !important; position: static !important; width: auto !important; }
 
             /* Header + main content shift right to make room for the sidebar */
-            #app-header { margin-left: 272px; padding: 0 28px; }
+            #app-header { margin-left: 272px; padding: 0 28px; height: 68px; }
             main { margin-left: 272px; }
             .header-brand { display: none; }
-            .header-actions { margin-left: auto; }
+            .header-actions { margin-left: auto; gap: 10px; }
+
+            /* Sidebar: sedikit kedalaman agar terpisah jelas dari konten (nuansa aplikasi web/dashboard) */
+            #sidebar { box-shadow: 1px 0 0 var(--card-border); }
+
+            /* Hover state untuk perangkat dengan mouse — kartu, tombol header, baris pengaturan, produk */
+            .card:hover { box-shadow: 0 6px 22px rgba(20,20,50,0.07); }
+            .hdr-btn:hover { background: var(--surface-hover); color: var(--primary); border-color: var(--primary); }
+            .settings-row:hover { background: var(--surface); }
+            #pos-grid > div.cursor-pointer:hover { box-shadow: 0 10px 26px rgba(20,20,50,0.10); border-color: var(--primary); transform: translateY(-2px); }
+            #pos-grid > div { transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
 
             /* Bottom tab bar not needed — sidebar covers navigation */
             #bottom-nav { display: none !important; }
@@ -665,6 +685,16 @@
 
             /* Toast centers within the visible content column, not full viewport */
             #toast { left: calc(272px + (100% - 272px) / 2); }
+
+            /* ── SCANNER MODAL: HUD mengambang & terpusat di layar lebar, bukan mentok tepi ── */
+            .scanner-top-bar, .scanner-bottom-panel {
+                left: 50%; right: auto; transform: translateX(-50%);
+                width: 100%; max-width: 760px;
+            }
+            .scanner-top-bar { border-radius: 0 0 28px 28px; }
+            .scanner-bottom-panel { border-radius: 28px 28px 0 0; padding-bottom: 32px; }
+            .scan-corner-frame { width: 320px; height: 190px; }
+            .scan-line { width: 300px; }
 
             /* ── POS DESKTOP: layout kasir 2 kolom — hanya saat tab Kasir aktif ── */
             #tab-pos.active {
