@@ -738,10 +738,11 @@
             #tab-pos.active #pos-grid { grid-column: 1; padding-bottom: 24px; }
 
             /* Panel kasir tetap (sticky) di kolom kanan, menggantikan cart-float mengambang */
+            #tab-pos.active #pos-shift-bar { grid-column: 1; }
             #pos-desktop-cart-panel {
                 display: flex;
                 grid-column: 2;
-                grid-row: 1 / span 2;
+                grid-row: 1 / -1;
                 position: sticky;
                 top: 90px;
                 flex-direction: column;
@@ -812,6 +813,76 @@
             .tab-content { padding: 14px 12px 110px; }
             .dash-hero { padding: 20px; }
         }
+
+        /* ══════════════════════════════════════════════════════════════
+           MULTI-KASIR & SHIFT
+        ═══════════════════════════════════════════════════════════════ */
+
+        /* Item sidebar/tab yang dibatasi untuk peran Kasir (non-admin) */
+        .staff-restricted { opacity: 0.35; }
+
+        /* ── Shift status bar (tab Kasir/POS) ── */
+        #pos-shift-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; border-radius: 18px; border: 1px solid var(--card-border); background: var(--card); margin-bottom: 2px; }
+        #pos-shift-bar.psb-open { border-color: rgba(16,185,129,0.35); background: rgba(16,185,129,0.06); }
+        #pos-shift-bar.psb-closed { border-color: rgba(245,158,11,0.35); background: rgba(245,158,11,0.06); }
+        .psb-info { display: flex; align-items: center; gap: 10px; min-width: 0; }
+        .psb-icon { width: 34px; height: 34px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: var(--surface); color: var(--primary); font-size: 13px; }
+        .psb-text { display: flex; flex-direction: column; min-width: 0; }
+        .psb-staff { font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .psb-status { font-size: 9px; font-weight: 700; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .psb-btn { flex-shrink: 0; padding: 9px 16px; border-radius: 12px; border: none; cursor: pointer; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.03em; color: #fff; transition: all 0.15s; }
+        .psb-btn:active { transform: scale(0.95); }
+        .psb-btn-open { background: linear-gradient(135deg,#f59e0b,#f97316); box-shadow: 0 6px 16px rgba(245,158,11,0.3); }
+        .psb-btn-close { background: linear-gradient(135deg,#10b981,#059669); box-shadow: 0 6px 16px rgba(16,185,129,0.3); }
+
+        /* ── Header staff chip (siapa yang sedang bertugas + ganti kasir) ── */
+        .staff-chip { display: none; align-items: center; gap: 8px; padding: 0 14px 0 6px; height: 40px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); cursor: pointer; transition: all 0.15s; }
+        .staff-chip:hover { border-color: var(--primary); background: var(--surface-hover); }
+        .staff-chip-avatar { width: 26px; height: 26px; border-radius: 9px; background: var(--primary-soft); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+        .staff-chip-name { font-size: 11px; font-weight: 800; max-width: 110px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* ── Staff Lock Screen ── */
+        #staff-lock-screen { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; background: linear-gradient(160deg,#0b0f1a 0%,#111827 55%,#1e1b4b 100%); overflow: hidden; padding: 24px; }
+        #staff-lock-screen.open { display: flex; }
+        .sls-orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.35; }
+        .sls-orb-1 { width: 320px; height: 320px; background: #4f46e5; top: -100px; right: -80px; }
+        .sls-orb-2 { width: 260px; height: 260px; background: #7c3aed; bottom: -80px; left: -80px; }
+        .sls-card { position: relative; z-index: 2; width: 100%; max-width: 420px; background: rgba(255,255,255,0.06); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.12); border-radius: 32px; padding: 34px 28px; color: #fff; text-align: center; }
+        .sls-logo { width: 54px; height: 54px; margin: 0 auto 16px; border-radius: 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        .sls-title { font-size: 19px; font-weight: 900; margin-bottom: 4px; }
+        .sls-sub { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 600; margin-bottom: 22px; }
+        .staff-pick-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; max-height: 300px; overflow-y: auto; }
+        .staff-avatar-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 6px; border-radius: 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.15s; }
+        .staff-avatar-btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+        .staff-avatar-btn:active { transform: scale(0.95); }
+        .staff-avatar-circle { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg,#4f46e5,#7c3aed); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; }
+        .staff-avatar-btn span { font-size: 10px; font-weight: 800; line-height: 1.2; }
+        .staff-avatar-role { font-size: 8px !important; font-weight: 700 !important; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+        .sls-back-btn { position: absolute; top: 18px; left: 18px; width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.08); border: none; color: #fff; cursor: pointer; }
+        #staff-pin-card { position: relative; }
+        .pin-shake { animation: pinShake 0.4s; }
+        @keyframes pinShake { 0%,100%{transform:translateX(0);} 20%,60%{transform:translateX(-8px);} 40%,80%{transform:translateX(8px);} }
+        .pin-dots { display: flex; justify-content: center; gap: 10px; margin-bottom: 24px; }
+        .pin-dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.3); transition: all 0.15s; }
+        .pin-dot.filled { background: #fff; border-color: #fff; transform: scale(1.1); }
+        .pin-pad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 260px; margin: 0 auto; }
+        .pin-key { height: 56px; border-radius: 18px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: #fff; font-size: 19px; font-weight: 800; cursor: pointer; transition: all 0.12s; }
+        .pin-key:hover { background: rgba(255,255,255,0.14); }
+        .pin-key:active { transform: scale(0.92); }
+        .pin-key-del { font-size: 15px; }
+
+        @media (min-width: 1024px) {
+            .staff-chip { display: flex; }
+            .staff-chip.hidden { display: none !important; }
+            .staff-pick-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
+            .sls-card { max-width: 460px; padding: 40px 36px; }
+            #pos-shift-bar { padding: 14px 20px; border-radius: 20px; }
+
+            /* Pengaturan: tata letak 2 kolom di desktop, kartu profil melebar penuh */
+            #tab-settings.active { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+            #tab-settings.active > * { margin: 0 !important; }
+            #tab-settings.active .settings-profile-card { grid-column: 1 / -1; }
+        }
     </style>
 </head>
 <body class="hide-scrollbar">
@@ -840,6 +911,47 @@
         <div class="splash-progress-track"><div class="splash-progress-bar" id="splash-progress"></div></div>
     </div>
     <div class="splash-version">DheKasir v2.0 • © 2025</div>
+</div>
+
+<!-- STAFF LOCK SCREEN (Mode Multi-Kasir) -->
+<div id="staff-lock-screen">
+    <div class="sls-orb sls-orb-1"></div>
+    <div class="sls-orb sls-orb-2"></div>
+    <div class="sls-card">
+        <!-- Tahap 1: pilih karyawan -->
+        <div id="staff-pick-stage">
+            <div class="sls-logo"><i class="fa-solid fa-user-lock"></i></div>
+            <h2 class="sls-title">Siapa yang bertugas?</h2>
+            <p class="sls-sub">Pilih nama kamu untuk mulai berjualan</p>
+            <div id="staff-pick-list" class="staff-pick-grid"></div>
+        </div>
+        <!-- Tahap 2: PIN -->
+        <div id="staff-pin-stage" class="hidden">
+            <div id="staff-pin-card">
+                <button class="sls-back-btn" onclick="backToStaffPick()"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="sls-logo"><i class="fa-solid fa-key"></i></div>
+                <h2 class="sls-title" id="staff-pin-name">—</h2>
+                <p class="sls-sub">Masukkan PIN 4-6 digit</p>
+                <div class="pin-dots" id="pin-dots">
+                    <span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span><span class="pin-dot"></span>
+                </div>
+                <div class="pin-pad-grid">
+                    <button class="pin-key" onclick="pinKeyPress(1)">1</button>
+                    <button class="pin-key" onclick="pinKeyPress(2)">2</button>
+                    <button class="pin-key" onclick="pinKeyPress(3)">3</button>
+                    <button class="pin-key" onclick="pinKeyPress(4)">4</button>
+                    <button class="pin-key" onclick="pinKeyPress(5)">5</button>
+                    <button class="pin-key" onclick="pinKeyPress(6)">6</button>
+                    <button class="pin-key" onclick="pinKeyPress(7)">7</button>
+                    <button class="pin-key" onclick="pinKeyPress(8)">8</button>
+                    <button class="pin-key" onclick="pinKeyPress(9)">9</button>
+                    <span></span>
+                    <button class="pin-key" onclick="pinKeyPress(0)">0</button>
+                    <button class="pin-key pin-key-del" onclick="pinKeyBackspace()"><i class="fa-solid fa-delete-left"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- CONFIRM -->
@@ -892,6 +1004,13 @@
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div><span>Laporan & Data</span>
             </div>
             <div class="sidebar-section-label">Akun</div>
+            <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()">
+                <div class="sidebar-icon" style="color:#10b981;"><i class="fa-solid fa-id-badge" style="font-size:13px;"></i></div>
+                <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;">
+                    <span class="sb-staff-name" style="font-size:12.5px;font-weight:800;">—</span>
+                    <span class="sb-staff-role" style="font-size:9px;opacity:.55;font-weight:700;text-transform:uppercase;"></span>
+                </span>
+            </div>
             <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div><span>Pengaturan</span>
             </div>
@@ -929,6 +1048,11 @@
             </div>
         </div>
         <div class="header-actions">
+            <button onclick="switchStaffUser()" id="hdr-staff-chip" class="staff-chip hidden" title="Ganti Kasir">
+                <span class="staff-chip-avatar"><i class="fa-solid fa-user"></i></span>
+                <span class="staff-chip-name">—</span>
+                <i class="fa-solid fa-right-left" style="font-size:9px;opacity:.55;"></i>
+            </button>
             <button onclick="openProductModal()" id="hdr-quick-add-btn" class="hdr-quick-add">
                 <i class="fa-solid fa-plus"></i><span>Tambah Produk</span>
             </button>
@@ -1013,6 +1137,16 @@
 
         <!-- POS -->
         <section id="tab-pos" class="tab-content space-y-4">
+            <div id="pos-shift-bar" class="hidden psb-closed">
+                <div class="psb-info">
+                    <div class="psb-icon"><i class="fa-solid fa-user-clock"></i></div>
+                    <div class="psb-text">
+                        <span class="psb-staff" id="psb-staff">Belum login</span>
+                        <span class="psb-status" id="psb-status">Shift belum dibuka</span>
+                    </div>
+                </div>
+                <button class="psb-btn psb-btn-open" id="psb-btn" onclick="openShiftPanel()">Buka Shift</button>
+            </div>
             <div class="sticky top-0 pb-2 z-20 space-y-3 pos-search-wrap" style="background:var(--bg);">
                 <div class="relative">
                     <input type="text" id="pos-search" oninput="renderPos()" placeholder="Cari barang atau scan..." class="w-full p-4 pl-11 card rounded-2xl outline-none text-sm">
@@ -1133,12 +1267,13 @@
                 <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
             </div>
             <div id="export-info" class="text-[9px] font-bold uppercase text-center text-muted"></div>
+            <div id="staff-sales-report" class="card p-2 space-y-1 hidden"></div>
             <div id="data-list" class="space-y-3"></div>
         </section>
 
         <!-- SETTINGS -->
         <section id="tab-settings" class="tab-content space-y-5">
-            <div class="flex items-center gap-4 card p-5 shadow-sm">
+            <div class="flex items-center gap-4 card p-5 shadow-sm settings-profile-card">
                 <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)"><span class="text-xl font-black text-white">A</span></div>
                 <div>
                     <h2 class="font-black text-base" id="profile-name">Admin Toko</h2>
@@ -1154,7 +1289,18 @@
                 <div onclick="openRemoteScanModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-mobile-screen-button text-sm"></i></div><div><span class="text-sm font-bold block">HP sebagai Scanner</span><span id="remote-scan-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openCustomerDisplayModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-emerald-500"><i class="fa-solid fa-tv text-sm"></i></div><div><span class="text-sm font-bold block">Layar Pelanggan (Halaman Terpisah)</span><span id="cd-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openLoginIdModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-cloud-arrow-up text-sm"></i></div><div><span class="text-sm font-bold block">Login ID (Sinkron Perangkat)</span><span id="login-id-status-display" class="text-[9px] text-muted font-semibold">Belum login</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
-                <div onclick="openLanguageModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div><div><span class="text-sm font-bold block">Bahasa / Language</span><span id="current-lang-display" class="text-[9px] text-muted font-semibold">Bahasa Indonesia</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="openLanguageModal()" class="settings-row" style="border-bottom:none"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div><div><span class="text-sm font-bold block">Bahasa / Language</span><span id="current-lang-display" class="text-[9px] text-muted font-semibold">Bahasa Indonesia</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+            </div>
+            <div class="card p-2 space-y-1">
+                <p class="dk-section-label">Karyawan & Shift</p>
+                <div class="settings-row">
+                    <div class="flex items-center gap-3"><div class="settings-icon text-emerald-500"><i class="fa-solid fa-users text-sm"></i></div><div><span class="text-sm font-bold block">Mode Multi-Kasir</span><span class="text-[9px] text-muted font-semibold">Wajib login PIN & buka shift sebelum jualan</span></div></div>
+                    <label class="switch" onclick="event.stopPropagation()"><input type="checkbox" id="staff-mode-toggle" onchange="toggleStaffMode()"><span class="slider"></span></label>
+                </div>
+                <div onclick="openStaffManage()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-user-group text-sm"></i></div><span class="text-sm font-bold">Kelola Karyawan</span></div><span class="text-[10px] font-black text-muted" id="staff-count-display">1 orang</span></div>
+                <div onclick="openShiftPanel()" class="settings-row" style="border-bottom:none"><div class="flex items-center gap-3"><div class="settings-icon text-amber-500"><i class="fa-solid fa-clock text-sm"></i></div><span class="text-sm font-bold">Shift Kasir</span></div><span class="text-[10px] font-black text-muted" id="shift-status-display">Belum dibuka</span></div>
+            </div>
+            <div class="card p-2 space-y-1">
                 <p class="dk-section-label">Informasi</p>
                 <div onclick="openModal('modal-about')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-circle-info text-sm"></i></div><span class="text-sm font-bold">Tentang Aplikasi</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openModal('modal-contact')" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-headset text-sm"></i></div><span class="text-sm font-bold">Hubungi Kami</span></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
@@ -1636,6 +1782,85 @@
     </div>
 </div>
 
+<!-- KELOLA KARYAWAN -->
+<div id="modal-staff-manage" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-black text-lg">Kelola Karyawan</h3>
+            <button onclick="closeModal('modal-staff-manage')" class="w-8 h-8 rounded-full surface flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
+        </div>
+        <div id="staff-manage-list" class="space-y-1 overflow-y-auto flex-1 mb-4"></div>
+        <button onclick="openStaffForm(null)" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl"><i class="fa-solid fa-plus mr-2"></i>Tambah Karyawan</button>
+    </div>
+</div>
+
+<!-- FORM TAMBAH/EDIT KARYAWAN -->
+<div id="modal-staff-form" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
+        <h3 class="font-black text-lg" id="staff-form-title">Tambah Karyawan</h3>
+        <div class="space-y-2">
+            <label class="text-[8px] font-black uppercase ml-2 text-muted">Nama Karyawan</label>
+            <input type="text" id="sf-name" placeholder="Contoh: Budi" class="w-full p-4 border rounded-2xl text-sm outline-none" style="background:var(--input-bg);border-color:var(--input-border);">
+        </div>
+        <div class="space-y-2">
+            <label class="text-[8px] font-black uppercase ml-2 text-muted">PIN (4-6 digit angka)</label>
+            <input type="password" inputmode="numeric" maxlength="6" id="sf-pin" placeholder="••••" class="w-full p-4 border rounded-2xl text-sm outline-none tracking-widest" style="background:var(--input-bg);border-color:var(--input-border);">
+        </div>
+        <div class="space-y-2">
+            <label class="text-[8px] font-black uppercase ml-2 text-muted">Peran</label>
+            <select id="sf-role" class="w-full p-4 border rounded-2xl text-sm outline-none" style="background:var(--input-bg);border-color:var(--input-border);">
+                <option value="kasir">Kasir (akses terbatas — Kasir, Stok, Hutang)</option>
+                <option value="admin">Admin (akses penuh, termasuk Laporan & Pengaturan)</option>
+            </select>
+        </div>
+        <button onclick="saveStaffForm()" class="w-full py-4 premium-gradient text-white rounded-2xl font-black text-xs uppercase shadow-xl">Simpan Karyawan</button>
+        <button onclick="closeModal('modal-staff-form')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Batal</button>
+    </div>
+</div>
+
+<!-- BUKA SHIFT -->
+<div id="modal-shift-open" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
+        <div class="text-center">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center" style="background:rgba(245,158,11,0.12);color:#f59e0b;"><i class="fa-solid fa-cash-register text-xl"></i></div>
+            <h3 class="font-black text-lg">Buka Shift Kasir</h3>
+            <p class="text-xs text-muted mt-1">Kasir bertugas: <strong id="so-staff-name">-</strong></p>
+        </div>
+        <div class="space-y-2">
+            <label class="text-[8px] font-black uppercase ml-2 text-muted">Kas Awal (Modal Laci)</label>
+            <input type="number" id="so-start-cash" placeholder="0" class="w-full p-5 border-2 border-amber-400 rounded-2xl text-2xl font-black text-center outline-none" style="background:var(--input-bg)">
+        </div>
+        <button onclick="submitShiftOpen()" class="w-full py-4 rounded-2xl font-black text-xs uppercase shadow-xl text-white" style="background:linear-gradient(135deg,#f59e0b,#f97316);">Mulai Shift</button>
+        <button onclick="closeModal('modal-shift-open')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Batal</button>
+    </div>
+</div>
+
+<!-- TUTUP SHIFT -->
+<div id="modal-shift-close" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
+    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="text-center">
+            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center" style="background:rgba(16,185,129,0.12);color:#10b981;"><i class="fa-solid fa-flag-checkered text-xl"></i></div>
+            <h3 class="font-black text-lg">Tutup Shift Kasir</h3>
+            <p class="text-xs text-muted mt-1">Kasir bertugas: <strong id="sc-staff-name">-</strong></p>
+        </div>
+        <div class="space-y-1 p-4 rounded-2xl surface">
+            <div class="flex justify-between text-xs py-1"><span class="text-muted font-semibold">Kas Awal</span><span class="font-black" id="sc-start-cash">Rp 0</span></div>
+            <div class="flex justify-between text-xs py-1"><span class="text-muted font-semibold">Jumlah Transaksi</span><span class="font-black" id="sc-tx-count">0</span></div>
+            <div class="flex justify-between text-xs py-1"><span class="text-muted font-semibold">Total Penjualan</span><span class="font-black" id="sc-total-sales">Rp 0</span></div>
+            <div class="flex justify-between text-xs py-1"><span class="text-muted font-semibold">Penjualan Tunai</span><span class="font-black" id="sc-cash-sales">Rp 0</span></div>
+            <div class="flex justify-between text-xs py-1"><span class="text-muted font-semibold">Penjualan QRIS</span><span class="font-black" id="sc-qris-sales">Rp 0</span></div>
+            <div class="flex justify-between text-xs py-1 border-t dk-divider pt-2 mt-1"><span class="text-muted font-semibold">Estimasi Kas Akhir</span><span class="font-black text-indigo-600" id="sc-expected-cash">Rp 0</span></div>
+        </div>
+        <div class="space-y-2">
+            <label class="text-[8px] font-black uppercase ml-2 text-muted">Kas Fisik Dihitung</label>
+            <input type="number" id="sc-actual-cash" oninput="calcShiftDiff()" placeholder="0" class="w-full p-5 border-2 border-emerald-400 rounded-2xl text-2xl font-black text-center outline-none" style="background:var(--input-bg)">
+        </div>
+        <div id="sc-diff-row" class="hidden flex justify-between text-xs px-2"><span class="text-muted font-semibold">Selisih Kas</span><span class="font-black" id="sc-diff-value">Rp 0</span></div>
+        <button onclick="submitShiftClose()" class="w-full py-4 rounded-2xl font-black text-xs uppercase shadow-xl text-white" style="background:linear-gradient(135deg,#10b981,#059669);">Tutup Shift</button>
+        <button onclick="closeModal('modal-shift-close')" class="w-full py-2 font-bold text-[10px] uppercase text-center text-muted">Nanti Dulu</button>
+    </div>
+</div>
+
 <!-- CART DETAILS -->
 <div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
     <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
@@ -1964,7 +2189,7 @@ let items        = JSON.parse(localStorage.getItem('dk_items'))         || [];
 let logs         = JSON.parse(localStorage.getItem('dk_logs'))          || [];
 let debts        = JSON.parse(localStorage.getItem('dk_debts'))         || [];
 let categories   = JSON.parse(localStorage.getItem('dk_categories'))    || ['Semua','Umum','Makanan','Minuman'];
-let config       = JSON.parse(localStorage.getItem('dk_config'))        || {darkMode:false,storeName:'DheKasir',storeAddress:'-',storePhone:'',url:'',logo:null,minStock:5};
+let config       = JSON.parse(localStorage.getItem('dk_config'))        || {darkMode:false,storeName:'DheKasir',storeAddress:'-',storePhone:'',url:'',logo:null,minStock:5,staffModeEnabled:false};
 let stockHistory = JSON.parse(localStorage.getItem('dk_stock_history')) || [];
 let cart = [];
 let payMethod = 'cash';
@@ -1982,6 +2207,15 @@ let opnameData = {};
 let debtFilter = 'all';
 let balanceHidden = localStorage.getItem('dk_balance_hidden')==='1';
 const SCAN_COOLDOWN = 5000;
+
+// ── STAFF & SHIFT STATE (Multi-Kasir) ──
+let staff        = JSON.parse(localStorage.getItem('dk_staff'))  || [{id:'ST-owner',name:'Pemilik Toko',pin:'1234',role:'admin'}];
+let shifts       = JSON.parse(localStorage.getItem('dk_shifts')) || [];
+let activeStaffId = localStorage.getItem('dk_active_staff_id') || null;
+let activeShiftId = localStorage.getItem('dk_active_shift_id') || null;
+let pinInputBuffer = '';
+let pendingStaffLoginId = null;
+let editingStaffId = null;
 
 // ── SCANNER STATE ──
 let scannerMode = 'cart'; // 'cart' | 'sku' | 'stock-product'
@@ -2968,6 +3202,12 @@ document.addEventListener('keydown',(e)=>{
 });
 
 function switchTab(tab){
+    if(config.staffModeEnabled){
+        const s=getActiveStaff();
+        if(s&&s.role!=='admin'&&(tab==='data'||tab==='settings')){
+            beepError();showToast('Akses terbatas — hubungi Admin');return;
+        }
+    }
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
@@ -3072,7 +3312,7 @@ function resetCart(){cart=[];updateCartUI();renderPos();syncCustomerDisplay(null
 // ══════════════════════════════════════════════════════════════
 // CHECKOUT
 // ══════════════════════════════════════════════════════════════
-function openCheckout(){if(cart.length===0)return;const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
+function openCheckout(){if(cart.length===0)return;if(config.staffModeEnabled&&!getActiveShift()){beepError();showToast('Buka shift terlebih dahulu di atas!');return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
 function setPayMethod(m){payMethod=m;const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt'),ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(bd){bd.style.background=m==='debt'?'var(--card)':'transparent';bd.style.color=m==='debt'?'#ef4444':'var(--text-muted)';bd.style.boxShadow=m==='debt'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(ac)ac.classList.toggle('hidden',m!=='cash');if(ad)ad.classList.toggle('hidden',m!=='debt');calcChange();}
 function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
 async function finishCheckout(){
@@ -3083,7 +3323,8 @@ async function finishCheckout(){
     if(payMethod==='cash'&&(cash+qris)<total){beepError();return showToast('Uang kurang!');}
     if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer){beepError();return showToast('Isi nama pelanggan!');}cash=0;qris=0;change=0;}
     const tid="T-"+Date.now();
-    const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString()};
+    const activeS=getActiveStaff(),activeSh=getActiveShift();
+    const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString(),staffId:activeS?activeS.id:null,staffName:activeS?activeS.name:null,shiftId:activeSh?activeSh.id:null};
     if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}
     for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
     logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
@@ -3351,6 +3592,7 @@ async function saveProduct(){const idIn=document.getElementById('p-id').value;co
 // ══════════════════════════════════════════════════════════════
 function getFilteredLogs(){const f=(document.getElementById('date-filter')||{value:''}).value;return logs.filter(l=>!f||l.date===f);}
 function renderData(){
+    renderStaffSalesReport();
     const filtered=getFilteredLogs();const f=(document.getElementById('date-filter')||{value:''}).value;
     const infoEl=document.getElementById('export-info');if(infoEl)infoEl.innerText=f?`${filtered.length} ${t('transactions')} ${f}`:`${t('all_transactions')} ${filtered.length}`;
     const list=document.getElementById('data-list');if(!list)return;
@@ -3703,6 +3945,289 @@ async function autoConnectLoginOnLoad(){
 }
 
 // ══════════════════════════════════════════════════════════════
+// MULTI-KASIR & SHIFT
+// ══════════════════════════════════════════════════════════════
+function saveStaffStorage(){ localStorage.setItem('dk_staff', JSON.stringify(staff)); }
+function saveShiftStorage(){ localStorage.setItem('dk_shifts', JSON.stringify(shifts)); }
+function getActiveStaff(){ return staff.find(s=>s.id===activeStaffId) || null; }
+function getActiveShift(){ return shifts.find(s=>s.id===activeShiftId && s.status==='open') || null; }
+
+function toggleStaffMode(){
+    const val = document.getElementById('staff-mode-toggle').checked;
+    config.staffModeEnabled = val;
+    localStorage.setItem('dk_config', JSON.stringify(config));
+    if(val){
+        showToast('✓ Mode Multi-Kasir diaktifkan');
+        if(!activeStaffId){ closeModal('modal-staff-manage'); showStaffLockScreen(); }
+    } else {
+        showToast('Mode Multi-Kasir dinonaktifkan');
+        hideStaffLockScreen();
+    }
+    renderStaffModeUI();
+}
+
+function renderStaffModeUI(){
+    const enabled = !!config.staffModeEnabled;
+    const activeS = getActiveStaff();
+    const chip = document.getElementById('hdr-staff-chip');
+    if(chip){ chip.classList.toggle('hidden', !enabled); const nm=chip.querySelector('.staff-chip-name'); if(nm) nm.innerText = activeS?activeS.name:'Belum login'; }
+    const sbChip = document.getElementById('sb-staff-chip');
+    if(sbChip){
+        sbChip.classList.toggle('hidden', !enabled);
+        const nm=sbChip.querySelector('.sb-staff-name'); if(nm) nm.innerText = activeS?activeS.name:'Belum login';
+        const rl=sbChip.querySelector('.sb-staff-role'); if(rl) rl.innerText = activeS?(activeS.role==='admin'?'Admin':'Kasir'):'';
+    }
+    const toggle=document.getElementById('staff-mode-toggle'); if(toggle) toggle.checked = enabled;
+    const cntEl=document.getElementById('staff-count-display'); if(cntEl) cntEl.innerText = staff.length+' orang';
+    const shiftDisp=document.getElementById('shift-status-display'); if(shiftDisp) shiftDisp.innerText = getActiveShift()?'Sedang berjalan':'Belum dibuka';
+    const restrict = enabled && activeS && activeS.role!=='admin';
+    ['sb-data','sb-settings'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.toggle('staff-restricted', restrict); });
+    const navData=document.getElementById('n-data'); if(navData) navData.classList.toggle('staff-restricted', restrict);
+    renderShiftBar();
+}
+
+// ── LOCK SCREEN ──
+function showStaffLockScreen(){
+    renderStaffLockChips();
+    document.getElementById('staff-lock-screen').classList.add('open');
+    document.body.classList.add('modal-open');
+    pendingStaffLoginId=null; pinInputBuffer='';
+    updatePinDots();
+    document.getElementById('staff-pin-stage').classList.add('hidden');
+    document.getElementById('staff-pick-stage').classList.remove('hidden');
+}
+function hideStaffLockScreen(){
+    document.getElementById('staff-lock-screen').classList.remove('open');
+    document.body.classList.remove('modal-open');
+}
+function renderStaffLockChips(){
+    const wrap=document.getElementById('staff-pick-list');
+    if(!wrap) return;
+    wrap.innerHTML = staff.map(s=>`
+        <div class="staff-avatar-btn" onclick="pickStaffForLogin('${s.id}')">
+            <div class="staff-avatar-circle">${(s.name[0]||'?').toUpperCase()}</div>
+            <span>${s.name}</span>
+            <span class="staff-avatar-role">${s.role==='admin'?'Admin':'Kasir'}</span>
+        </div>`).join('') || `<p class="text-center opacity-40 text-xs py-6" style="grid-column:1/-1;">Belum ada karyawan.</p>`;
+}
+function pickStaffForLogin(id){
+    pendingStaffLoginId=id; pinInputBuffer=''; updatePinDots();
+    const s=staff.find(x=>x.id===id);
+    document.getElementById('staff-pin-name').innerText = s?s.name:'';
+    document.getElementById('staff-pick-stage').classList.add('hidden');
+    document.getElementById('staff-pin-stage').classList.remove('hidden');
+}
+function backToStaffPick(){
+    document.getElementById('staff-pin-stage').classList.add('hidden');
+    document.getElementById('staff-pick-stage').classList.remove('hidden');
+    pinInputBuffer=''; updatePinDots();
+}
+function pinKeyPress(k){
+    if(pinInputBuffer.length>=6) return;
+    pinInputBuffer+=String(k);
+    updatePinDots();
+    if(pinInputBuffer.length>=4) setTimeout(submitStaffPin, 120);
+}
+function pinKeyBackspace(){ pinInputBuffer=pinInputBuffer.slice(0,-1); updatePinDots(); }
+function updatePinDots(){
+    const wrap=document.getElementById('pin-dots'); if(!wrap) return;
+    wrap.querySelectorAll('.pin-dot').forEach((d,i)=>d.classList.toggle('filled', i<pinInputBuffer.length));
+}
+function submitStaffPin(){
+    const s=staff.find(x=>x.id===pendingStaffLoginId);
+    if(!s) return;
+    if(s.pin!==pinInputBuffer){
+        beepError(); showToast('PIN salah!');
+        pinInputBuffer=''; updatePinDots();
+        const card=document.getElementById('staff-pin-card');
+        if(card){ card.classList.add('pin-shake'); setTimeout(()=>card.classList.remove('pin-shake'),400); }
+        return;
+    }
+    activeStaffId=s.id;
+    localStorage.setItem('dk_active_staff_id', activeStaffId);
+    hideStaffLockScreen();
+    chimeSuccess();
+    showToast(`Selamat bekerja, ${s.name}!`);
+    renderStaffModeUI();
+    if(!getActiveShift()) setTimeout(openShiftOpenModal, 400);
+}
+function switchStaffUser(){
+    if(!config.staffModeEnabled) return showToast('Mode Multi-Kasir belum aktif!');
+    if(getActiveShift()){ showToast('Tutup shift dahulu sebelum ganti kasir!'); openShiftCloseModal(); return; }
+    activeStaffId=null;
+    localStorage.removeItem('dk_active_staff_id');
+    closeSidebar();
+    showStaffLockScreen();
+}
+
+// ── STAFF CRUD (Pengaturan) ──
+function openStaffManage(){ renderStaffManageList(); openModal('modal-staff-manage'); }
+function renderStaffManageList(){
+    const wrap=document.getElementById('staff-manage-list'); if(!wrap) return;
+    wrap.innerHTML = staff.map(s=>`
+        <div class="settings-row">
+            <div class="flex items-center gap-3">
+                <div class="settings-icon" style="color:${s.role==='admin'?'#4f46e5':'#10b981'}"><i class="fa-solid ${s.role==='admin'?'fa-user-shield':'fa-user'} text-sm"></i></div>
+                <div><span class="text-sm font-bold block">${s.name}</span><span class="text-[9px] text-muted font-semibold">${s.role==='admin'?'Admin • akses penuh':'Kasir • akses terbatas'}</span></div>
+            </div>
+            <div class="flex items-center gap-1">
+                <button onclick="openStaffForm('${s.id}')" class="p-2 text-indigo-500"><i class="fa-solid fa-pen text-xs"></i></button>
+                <button onclick="deleteStaffConfirm('${s.id}')" class="p-2 text-rose-500"><i class="fa-solid fa-trash-can text-xs"></i></button>
+            </div>
+        </div>`).join('') || `<p class="text-center opacity-40 text-xs py-6">Belum ada karyawan</p>`;
+}
+function openStaffForm(id){
+    editingStaffId = id || null;
+    const s = editingStaffId ? staff.find(x=>x.id===editingStaffId) : null;
+    document.getElementById('staff-form-title').innerText = s ? 'Edit Karyawan' : 'Tambah Karyawan';
+    document.getElementById('sf-name').value = s ? s.name : '';
+    document.getElementById('sf-pin').value = s ? s.pin : '';
+    document.getElementById('sf-role').value = s ? s.role : 'kasir';
+    openModal('modal-staff-form');
+}
+function saveStaffForm(){
+    const name=document.getElementById('sf-name').value.trim();
+    const pin=document.getElementById('sf-pin').value.trim();
+    const role=document.getElementById('sf-role').value;
+    if(!name) return showToast('Isi nama karyawan!');
+    if(!/^\d{4,6}$/.test(pin)) return showToast('PIN harus 4-6 digit angka!');
+    if(staff.some(x=>x.pin===pin && x.id!==editingStaffId)) return showToast('PIN sudah dipakai karyawan lain!');
+    if(editingStaffId){
+        const s=staff.find(x=>x.id===editingStaffId);
+        if(s){ s.name=name; s.pin=pin; s.role=role; }
+    } else {
+        staff.push({id:'ST-'+Date.now(), name, pin, role});
+    }
+    saveStaffStorage();
+    closeModal('modal-staff-form');
+    renderStaffManageList();
+    renderStaffLockChips();
+    renderStaffModeUI();
+    showToast('✓ Data karyawan disimpan!');
+}
+async function deleteStaffConfirm(id){
+    const s=staff.find(x=>x.id===id); if(!s) return;
+    if(staff.length<=1) return showToast('Minimal harus ada 1 karyawan!');
+    const ok=await showConfirm('Hapus Karyawan', `Hapus data karyawan "${s.name}"? Riwayat transaksi miliknya tetap tersimpan.`, 'Hapus');
+    if(!ok) return;
+    staff=staff.filter(x=>x.id!==id);
+    if(activeStaffId===id){ activeStaffId=null; localStorage.removeItem('dk_active_staff_id'); }
+    saveStaffStorage();
+    renderStaffManageList();
+    renderStaffLockChips();
+    renderStaffModeUI();
+    showToast('Karyawan dihapus');
+}
+
+// ── SHIFT KASIR ──
+function openShiftPanel(){
+    if(!config.staffModeEnabled) return showToast('Aktifkan Mode Multi-Kasir dahulu!');
+    if(!getActiveStaff()) return showStaffLockScreen();
+    if(getActiveShift()) openShiftCloseModal(); else openShiftOpenModal();
+}
+function openShiftOpenModal(){
+    const s=getActiveStaff();
+    document.getElementById('so-staff-name').innerText = s?s.name:'-';
+    document.getElementById('so-start-cash').value='';
+    openModal('modal-shift-open');
+}
+function submitShiftOpen(){
+    const cash=Number(document.getElementById('so-start-cash').value)||0;
+    const s=getActiveStaff();
+    const shift={ id:'SH-'+Date.now(), staffId:s?s.id:null, staffName:s?s.name:'—', startCash:cash, startTime:new Date().toISOString(), endCash:null, endTime:null, status:'open' };
+    shifts.push(shift);
+    activeShiftId=shift.id;
+    localStorage.setItem('dk_active_shift_id', activeShiftId);
+    saveShiftStorage();
+    closeModal('modal-shift-open');
+    showToast('✓ Shift dibuka. Selamat berjualan!');
+    renderShiftBar(); renderStaffModeUI();
+}
+function getShiftLogs(shiftId){ return logs.filter(l=>l.shiftId===shiftId); }
+function openShiftCloseModal(){
+    const shift=getActiveShift(); if(!shift) return;
+    const shiftLogs=getShiftLogs(shift.id);
+    const cashSales=shiftLogs.reduce((a,l)=>a+Math.max(0,(Number(l.pay_cash)||0)-(Number(l.change)||0)),0);
+    const qrisSales=shiftLogs.reduce((a,l)=>a+(Number(l.pay_qris)||0),0);
+    const totalSales=shiftLogs.reduce((a,l)=>a+(Number(l.amount)||0),0);
+    const expected=shift.startCash+cashSales;
+    document.getElementById('sc-staff-name').innerText=shift.staffName;
+    document.getElementById('sc-start-cash').innerText=formatIDR(shift.startCash);
+    document.getElementById('sc-tx-count').innerText=shiftLogs.length+' transaksi';
+    document.getElementById('sc-total-sales').innerText=formatIDR(totalSales);
+    document.getElementById('sc-cash-sales').innerText=formatIDR(cashSales);
+    document.getElementById('sc-qris-sales').innerText=formatIDR(qrisSales);
+    document.getElementById('sc-expected-cash').innerText=formatIDR(expected);
+    document.getElementById('sc-actual-cash').value='';
+    document.getElementById('sc-diff-row').classList.add('hidden');
+    openModal('modal-shift-close');
+}
+function calcShiftDiff(){
+    const shift=getActiveShift(); if(!shift) return;
+    const actual=Number(document.getElementById('sc-actual-cash').value)||0;
+    const expectedText=document.getElementById('sc-expected-cash').innerText;
+    const expected=Number(expectedText.replace(/[^0-9-]/g,''))||0;
+    const diff=actual-expected;
+    document.getElementById('sc-diff-row').classList.remove('hidden');
+    const el=document.getElementById('sc-diff-value');
+    el.innerText=(diff>=0?'+':'')+formatIDR(diff);
+    el.style.color = diff===0?'var(--text)':(diff>0?'#10b981':'#ef4444');
+}
+function submitShiftClose(){
+    const shift=getActiveShift(); if(!shift) return;
+    const actual=Number(document.getElementById('sc-actual-cash').value);
+    if(document.getElementById('sc-actual-cash').value===''||isNaN(actual)) return showToast('Isi jumlah kas fisik!');
+    const shiftLogs=getShiftLogs(shift.id);
+    const cashSales=shiftLogs.reduce((a,l)=>a+Math.max(0,(Number(l.pay_cash)||0)-(Number(l.change)||0)),0);
+    const totalSales=shiftLogs.reduce((a,l)=>a+(Number(l.amount)||0),0);
+    const expected=shift.startCash+cashSales;
+    shift.endCash=actual; shift.endTime=new Date().toISOString(); shift.status='closed';
+    shift.totalSales=totalSales; shift.txCount=shiftLogs.length; shift.expectedCash=expected; shift.diff=actual-expected;
+    activeShiftId=null;
+    localStorage.removeItem('dk_active_shift_id');
+    saveShiftStorage();
+    closeModal('modal-shift-close');
+    showToast('✓ Shift ditutup. Sampai jumpa lagi!');
+    activeStaffId=null;
+    localStorage.removeItem('dk_active_staff_id');
+    renderShiftBar(); renderStaffModeUI();
+    if(config.staffModeEnabled) showStaffLockScreen();
+}
+function renderShiftBar(){
+    const bar=document.getElementById('pos-shift-bar');
+    if(!bar) return;
+    if(!config.staffModeEnabled){ bar.classList.add('hidden'); return; }
+    bar.classList.remove('hidden');
+    const shift=getActiveShift();
+    const activeS=getActiveStaff();
+    const staffEl=document.getElementById('psb-staff');
+    const statusEl=document.getElementById('psb-status');
+    const btnEl=document.getElementById('psb-btn');
+    if(staffEl) staffEl.innerText = activeS?activeS.name:'Belum login';
+    if(shift){
+        if(statusEl) statusEl.innerText = 'Shift aktif sejak '+new Date(shift.startTime).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});
+        if(btnEl){ btnEl.innerText='Tutup Shift'; btnEl.className='psb-btn psb-btn-close'; }
+        bar.classList.remove('psb-closed'); bar.classList.add('psb-open');
+    } else {
+        if(statusEl) statusEl.innerText = 'Shift belum dibuka — buka shift untuk mulai transaksi';
+        if(btnEl){ btnEl.innerText='Buka Shift'; btnEl.className='psb-btn psb-btn-open'; }
+        bar.classList.remove('psb-open'); bar.classList.add('psb-closed');
+    }
+}
+function renderStaffSalesReport(){
+    const wrap=document.getElementById('staff-sales-report');
+    if(!wrap) return;
+    if(!config.staffModeEnabled || staff.length===0){ wrap.innerHTML=''; wrap.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden');
+    const filtered=getFilteredLogs();
+    const byStaff={};
+    filtered.forEach(l=>{ const name=l.staffName||'Tanpa Kasir'; if(!byStaff[name]) byStaff[name]={count:0,total:0}; byStaff[name].count++; byStaff[name].total+=Number(l.amount)||0; });
+    const rows=Object.entries(byStaff).sort((a,b)=>b[1].total-a[1].total);
+    wrap.innerHTML = `<p class="dk-section-label">Penjualan per Kasir</p>` + (rows.length? rows.map(([name,d])=>`
+        <div class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-user text-sm"></i></div><div><span class="text-sm font-bold block">${name}</span><span class="text-[9px] text-muted font-semibold">${d.count} transaksi</span></div></div><span class="text-xs font-black text-indigo-600">${formatIDR(d.total)}</span></div>`).join('') : `<p class="text-center opacity-40 text-xs py-4">Belum ada data</p>`);
+}
+
+// ══════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════
 window.onload = async () => {
@@ -3733,6 +4258,8 @@ window.onload = async () => {
     await btAutoReconnectOnLoad();
     renderLoginIdUI();
     await autoConnectLoginOnLoad();
+    renderStaffModeUI();
+    if(config.staffModeEnabled && !getActiveStaff()) showStaffLockScreen();
 
     // Pastikan status sidebar bersih saat pindah antar breakpoint (resize / rotate)
     window.addEventListener('resize', () => {
