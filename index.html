@@ -115,13 +115,9 @@
         .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
         .header-app-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; flex-shrink: 0; }
         .header-app-title { font-size: 15px; font-weight: 800; color: var(--text); }
-        .header-page-title { display: none; flex-direction: column; gap: 1px; }
-        .header-page-eyebrow { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
-        .header-page-name { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: var(--text); }
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
         .hdr-btn:active { transform: scale(0.92); }
-        .hdr-btn-label { display: none; }
 
         /* ── SIDEBAR ── */
         #sidebar-overlay { position: fixed; inset: 0; z-index: 80; background: var(--sidebar-overlay); opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
@@ -433,11 +429,6 @@
         .settings-icon { width:38px; height:38px; background:var(--surface); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.3s; }
 
         #cart-float { background: var(--card) !important; border-color: var(--card-border) !important; }
-        /* Default (mobile/tablet <1024px): panel kasir desktop disembunyikan.
-           Tanpa ini, <aside id="pos-desktop-cart-panel"> tampil sebagai blok
-           polos tanpa styling di layar kecil karena style aslinya hanya
-           didefinisikan di dalam @media (min-width:1024px). */
-        #pos-desktop-cart-panel { display: none; }
         .cat-chip-active { background:#4f46e5 !important; color:#fff !important; } .cat-chip-inactive { background:var(--card) !important; color:var(--text-muted) !important; border:1px solid var(--card-border); }
         .dk-section-label { font-size:9px; font-weight:900; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-muted); padding:1.25rem 12px 0.5rem; }
         .page-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
@@ -589,6 +580,15 @@
         .lsd-list::-webkit-scrollbar { display: none; }
         .lsd-list-item { display: flex; justify-content: space-between; padding: 9px 6px; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.65); border-bottom: 1px solid rgba(255,255,255,0.06); animation: slideUpFade 0.3s ease; }
 
+        /* ── CUSTOMER DISPLAY APP (halaman terpisah utk layar pelanggan, dibuka via ?display=KODE) ── */
+        #customer-display-app {
+            position: fixed; inset: 0; z-index: 10000; display: none;
+            background: linear-gradient(160deg,#0b0f1a 0%,#111827 55%,#1e1b4b 100%);
+            flex-direction: column; color: #fff;
+        }
+        #customer-display-app.open { display: flex; }
+        .cda-code-footer { text-align: center; padding-bottom: 16px; flex-shrink: 0; }
+
         /* ══════════════════════════════════════════════════════════════
            RESPONSIVE / DESKTOP LAYOUT (>=1024px)
            Mobile-first design stays untouched below this breakpoint.
@@ -673,7 +673,7 @@
 
             /* Panel kasir tetap (sticky) di kolom kanan, menggantikan cart-float mengambang */
             #pos-desktop-cart-panel {
-                display: flex !important;
+                display: flex;
                 grid-column: 2;
                 grid-row: 1 / span 2;
                 position: sticky;
@@ -730,66 +730,6 @@
 
             /* Sembunyikan cart-float mengambang bergaya mobile pada layar besar — digantikan panel di atas */
             #cart-float { display: none !important; }
-
-            /* ── DESKTOP POLISH: header lebih lega + judul halaman ── */
-            #app-header { height: 72px; box-shadow: 0 1px 0 rgba(20,20,50,0.02), 0 4px 16px rgba(20,20,50,0.03); }
-            .header-page-title { display: flex; }
-
-            /* ── Sidebar: kesan lebih premium (garis pemisah halus + active state lebih tegas) ── */
-            #sidebar { box-shadow: 1px 0 0 rgba(20,20,50,0.03); }
-            .sidebar-header { padding: 26px 20px 20px; }
-            .sidebar-item { font-size: 13.5px; }
-            .sidebar-item.active { box-shadow: inset 0 0 0 1px rgba(79,70,229,0.12); }
-            .sidebar-store-logo { box-shadow: 0 6px 18px rgba(79,70,229,0.28); }
-
-            /* ── Interaksi hover (mouse) — hanya untuk perangkat yang benar-benar punya hover ── */
-        }
-
-        @media (min-width: 1024px) and (hover: hover) and (pointer: fine) {
-            /* Card generik: sedikit terangkat saat disorot kursor */
-            .card { transition: background 0.3s, border-color 0.3s, box-shadow 0.2s, transform 0.2s; }
-            .card:hover { box-shadow: 0 10px 28px rgba(20,20,50,0.07); }
-
-            /* Produk kasir: efek angkat, bukan sekadar tekan */
-            #pos-grid > div.cursor-pointer:hover { transform: translateY(-3px); box-shadow: 0 14px 30px rgba(79,70,229,0.12); border-color: rgba(79,70,229,0.25); }
-
-            /* Baris list (inventaris, hutang, laporan, riwayat stok) */
-            #item-list > div:hover, #debt-list > div:hover, #data-list > div:hover, #stock-product-list > div:hover, #stock-history-list > div:hover { box-shadow: 0 10px 26px rgba(20,20,50,0.06); border-color: rgba(79,70,229,0.18); }
-
-            /* Sidebar item */
-            .sidebar-item:not(.active):hover { transform: translateX(2px); }
-
-            /* Tombol header & aksi lain */
-            .hdr-btn:hover { background: var(--primary-soft); border-color: rgba(79,70,229,0.25); color: var(--primary); transform: translateY(-1px); }
-            .settings-row:hover { background: var(--surface); }
-            .hero-qa-btn:hover { background: rgba(255,255,255,0.13); transform: translateY(-2px); }
-
-            /* Tombol utama (gradient) — highlight halus + naik sedikit */
-            .premium-gradient:hover, #pos-desktop-cart-panel .pdcp-pay-btn:not(:disabled):hover { filter: brightness(1.06); transform: translateY(-1px); box-shadow: 0 14px 28px rgba(79,70,229,0.28); }
-
-            /* Kategori chip kasir */
-            .cat-chip-inactive:hover { border-color: rgba(79,70,229,0.3); color: var(--primary); }
-
-            /* Scrollbar tipis khusus desktop (bukan disembunyikan total, agar terasa seperti aplikasi profesional) */
-            .sidebar-nav, #pdcp-items, .modal-sheet, #opname-list, #ss-list, #notif-list, #category-list, #lang-list, #remote-scan-log {
-                scrollbar-width: thin !important;
-                scrollbar-color: var(--card-border) transparent;
-            }
-            .sidebar-nav::-webkit-scrollbar, #pdcp-items::-webkit-scrollbar, .modal-sheet::-webkit-scrollbar, #opname-list::-webkit-scrollbar, #ss-list::-webkit-scrollbar, #notif-list::-webkit-scrollbar, #category-list::-webkit-scrollbar, #lang-list::-webkit-scrollbar, #remote-scan-log::-webkit-scrollbar {
-                display: block !important; width: 6px;
-            }
-            .sidebar-nav::-webkit-scrollbar-thumb, #pdcp-items::-webkit-scrollbar-thumb, .modal-sheet::-webkit-scrollbar-thumb, #opname-list::-webkit-scrollbar-thumb, #ss-list::-webkit-scrollbar-thumb, #notif-list::-webkit-scrollbar-thumb, #category-list::-webkit-scrollbar-thumb, #lang-list::-webkit-scrollbar-thumb, #remote-scan-log::-webkit-scrollbar-thumb {
-                background: var(--card-border); border-radius: 8px;
-            }
-            .sidebar-nav::-webkit-scrollbar-thumb:hover, #pdcp-items::-webkit-scrollbar-thumb:hover, .modal-sheet::-webkit-scrollbar-thumb:hover, #opname-list::-webkit-scrollbar-thumb:hover, #ss-list::-webkit-scrollbar-thumb:hover, #notif-list::-webkit-scrollbar-thumb:hover, #category-list::-webkit-scrollbar-thumb:hover, #lang-list::-webkit-scrollbar-thumb:hover, #remote-scan-log::-webkit-scrollbar-thumb:hover {
-                background: var(--text-muted);
-            }
-        }
-
-        /* ── Aksesibilitas: focus terlihat jelas via keyboard di semua ukuran layar ── */
-        button:focus-visible, .sidebar-item:focus-visible, .nav-item:focus-visible, input:focus-visible, select:focus-visible, [onclick]:focus-visible {
-            outline: 2px solid var(--primary) !important;
-            outline-offset: 2px;
         }
 
         @media (min-width: 1440px) {
@@ -913,17 +853,14 @@
             <div class="header-app-logo">D</div>
             <span class="header-app-title">DheKasir</span>
         </div>
-        <div id="header-page-title" class="header-page-title">
-            <span class="header-page-eyebrow" id="header-page-eyebrow">Menu</span>
-            <span class="header-page-name" id="header-page-name">Beranda</span>
-        </div>
         <div class="header-actions">
-            <button onclick="openScanner('cart')" id="header-scan-btn" class="hdr-btn">
-                <i class="fa-solid fa-barcode" style="font-size:15px;"></i>
-            </button>
             <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
                 <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
+            </button>
+            <button onclick="openCustomerDisplayModal()" id="cd-btn" class="hdr-btn">
+                <i class="fa-solid fa-tv" style="font-size:15px;"></i>
+                <span id="cd-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
             </button>
             <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
@@ -975,22 +912,20 @@
                     </div>
                 </div>
             </div>
-            <div class="dash-secondary-col">
-                <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
-                        <p class="text-xs font-black uppercase text-muted">Status Stok</p>
-                    </div>
-                    <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
+            <div class="flex justify-between items-center px-5 py-4 card shadow-sm cursor-pointer" onclick="switchTab('stock')">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-amber-100 text-amber-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-triangle-exclamation text-xs"></i></div>
+                    <p class="text-xs font-black uppercase text-muted">Status Stok</p>
                 </div>
-                <div class="card p-5 shadow-sm">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
-                    <canvas id="hourChart" height="140"></canvas>
-                </div>
-                <div class="card p-5 space-y-3 shadow-sm">
-                    <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
-                    <div id="top-products" class="space-y-2"></div>
-                </div>
+                <p class="text-xs font-black text-rose-500" id="dash-low-stock">0 Item Menipis</p>
+            </div>
+            <div class="card p-5 shadow-sm">
+                <h3 class="text-[10px] font-black uppercase tracking-widest mb-4 text-center text-muted">Jam Sibuk</h3>
+                <canvas id="hourChart" height="140"></canvas>
+            </div>
+            <div class="card p-5 space-y-3 shadow-sm">
+                <h3 class="text-[10px] font-black uppercase tracking-widest text-muted">3 Produk Terlaris</h3>
+                <div id="top-products" class="space-y-2"></div>
             </div>
         </section>
 
@@ -1121,6 +1056,7 @@
                 <div onclick="openMinStockSettings()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-amber-500"><i class="fa-solid fa-triangle-exclamation text-sm"></i></div><span class="text-sm font-bold">Batas Minimum Stok</span></div><span id="min-stock-display" class="text-[10px] font-black text-muted">5</span></div>
                 <div onclick="openPrinterModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon" id="printer-icon-wrap" style="color:var(--text-muted)"><i class="fa-solid fa-print text-sm"></i></div><div><span class="text-sm font-bold block">Printer Thermal</span><span id="printer-device-name" class="text-[9px] text-muted font-semibold">Belum terhubung</span></div></div><div class="flex items-center gap-2"><span id="printer-status" class="text-[8px] font-black printer-offline uppercase">OFFLINE</span><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div></div>
                 <div onclick="openRemoteScanModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-mobile-screen-button text-sm"></i></div><div><span class="text-sm font-bold block">HP sebagai Scanner</span><span id="remote-scan-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
+                <div onclick="openCustomerDisplayModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-emerald-500"><i class="fa-solid fa-tv text-sm"></i></div><div><span class="text-sm font-bold block">Layar Pelanggan (Halaman Terpisah)</span><span id="cd-status-display" class="text-[9px] text-muted font-semibold">Belum tersambung</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openLoginIdModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-cloud-arrow-up text-sm"></i></div><div><span class="text-sm font-bold block">Login ID (Sinkron Perangkat)</span><span id="login-id-status-display" class="text-[9px] text-muted font-semibold">Belum login</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <div onclick="openLanguageModal()" class="settings-row"><div class="flex items-center gap-3"><div class="settings-icon text-indigo-500"><i class="fa-solid fa-globe text-sm"></i></div><div><span class="text-sm font-bold block">Bahasa / Language</span><span id="current-lang-display" class="text-[9px] text-muted font-semibold">Bahasa Indonesia</span></div></div><i class="fa-solid fa-chevron-right text-xs text-muted"></i></div>
                 <p class="dk-section-label">Informasi</p>
@@ -1304,7 +1240,7 @@
             </span>
         </div>
 
-        <button onclick="openLiveScanDisplay()" class="w-full mt-5 py-3.5 rounded-2xl font-black text-[10px] uppercase premium-gradient text-white shadow-lg flex items-center justify-center gap-2"><i class="fa-solid fa-tv"></i> Buka Layar Live (Customer Display)</button>
+        <button onclick="closeModal('modal-remote-scan'); openCustomerDisplayModal();" class="w-full mt-5 py-3.5 rounded-2xl font-black text-[10px] uppercase premium-gradient text-white shadow-lg flex items-center justify-center gap-2"><i class="fa-solid fa-tv"></i> Buka Layar Pelanggan (Halaman Terpisah)</button>
 
         <div class="flex gap-3 mt-3">
             <button onclick="regenerateRemoteCode()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Kode Baru</button>
@@ -1318,7 +1254,42 @@
             <div id="remote-scan-log" class="space-y-2"><p class="text-center opacity-30 text-[11px] py-6">Belum ada scan masuk</p></div>
         </div>
 
-        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Buka "Layar Live" di monitor kedua agar pelanggan bisa melihat barang & total belanja secara real-time, persis seperti layar kasir di minimarket.</div>
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Pastikan HP dan perangkat ini sama-sama terhubung internet. Buka "Layar Pelanggan" di monitor kedua agar pelanggan bisa melihat barang & total belanja secara real-time, persis seperti layar kasir di minimarket.</div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     CUSTOMER DISPLAY MODAL (Desktop side — buat & kelola halaman Layar Pelanggan)
+═══════════════════════════════════════════════════════════════ -->
+<div id="modal-customer-display" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+        <div class="flex items-center justify-between mb-1">
+            <h3 class="text-lg font-black">Layar Pelanggan</h3>
+            <button onclick="closeModal('modal-customer-display')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
+        </div>
+        <p class="text-xs text-muted mb-5">Buka tautan/kode ini sebagai <strong class="text-indigo-500">halaman terpisah</strong> di monitor kedua, tablet, atau layar apa pun yang menghadap pelanggan. Setiap barang yang di-scan kasir — lewat kamera perangkat ini maupun HP Scanner — otomatis tampil live di layar tersebut lengkap dengan total belanja, persis seperti layar kasir di minimarket. Tidak perlu install apa pun, cukup buka tautannya di browser.</p>
+
+        <div class="remote-qr-wrap" id="cd-qr-box"></div>
+
+        <div class="remote-code-box" id="cd-code-display"></div>
+
+        <div class="flex justify-center mt-4">
+            <span class="remote-status-pill waiting" id="cd-status-pill">
+                <span class="remote-dot pulse"></span><span id="cd-status-text">Menunggu layar tersambung...</span>
+            </span>
+        </div>
+
+        <button onclick="openLiveScanDisplay()" class="w-full mt-5 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500 flex items-center justify-center gap-2"><i class="fa-solid fa-desktop"></i> Tampilkan di Layar Ini Juga</button>
+
+        <div class="flex gap-3 mt-3">
+            <button onclick="regenerateCustomerDisplayCode()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-rotate mr-1"></i> Kode Baru</button>
+            <button onclick="copyCustomerDisplayLink()" class="flex-1 py-3.5 rounded-2xl font-black text-[10px] uppercase surface text-indigo-500"><i class="fa-solid fa-link mr-1"></i> Salin Tautan</button>
+        </div>
+
+        <button onclick="disconnectCustomerDisplay()" class="w-full mt-3 py-3.5 rounded-2xl font-black text-[10px] uppercase text-rose-500" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);"><i class="fa-solid fa-link-slash mr-1"></i> Putuskan Layar Pelanggan</button>
+
+        <div class="p-4 rounded-2xl surface text-[9px] text-muted leading-relaxed mt-5"><strong class="text-indigo-500">Tip:</strong> Kode ini bisa dipakai bersamaan dengan "HP sebagai Scanner" — kasir bisa scan pakai kamera HP, sementara layar pelanggan tetap menampilkan barang & total secara real-time di perangkat terpisah.</div>
     </div>
 </div>
 
@@ -1397,6 +1368,40 @@
             <input type="text" id="rs-manual-input" class="scanner-manual-input" placeholder="Ketik barcode manual...">
         </div>
     </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     CUSTOMER DISPLAY APP (Halaman terpisah utk pelanggan — dibuka via tautan/kode ?display=)
+═══════════════════════════════════════════════════════════════ -->
+<div id="customer-display-app">
+    <button class="rs-exit-btn" onclick="exitCustomerDisplayMode()"><i class="fa-solid fa-xmark"></i></button>
+    <div class="lsd-topbar">
+        <div class="lsd-brand">
+            <div class="lsd-brand-logo">D</div>
+            <div>
+                <p class="lsd-brand-name">DheKasir</p>
+                <p class="lsd-brand-sub">Layar Pelanggan</p>
+            </div>
+        </div>
+        <span class="lsd-live-badge"><span class="lsf-dot" style="width:6px;height:6px;"></span> Live</span>
+    </div>
+    <div class="lsd-body">
+        <div class="lsd-current-wrap" id="cda-current-wrap">
+            <div class="lsd-current-icon">🛒</div>
+            <p class="lsd-current-empty">Menunggu barang dipindai kasir...</p>
+        </div>
+        <div class="lsd-footer">
+            <div class="lsd-total-row">
+                <div>
+                    <div class="lsd-total-label">Total Belanja</div>
+                    <div class="lsd-count-label" id="cda-count">0 item</div>
+                </div>
+                <div class="lsd-total-value" id="cda-total">Rp 0</div>
+            </div>
+            <div class="lsd-list" id="cda-list"></div>
+        </div>
+    </div>
+    <div class="cda-code-footer"><span style="font-size:9px;font-weight:800;color:rgba(255,255,255,0.25);letter-spacing:0.08em;text-transform:uppercase;">Kode Sesi: <span id="cda-code-label"></span></span></div>
 </div>
 
 <!-- SCAN STATS MODAL -->
@@ -2237,11 +2242,19 @@ let remoteRoomCode = null;
 let remoteConnected = false;
 let remoteScanCount = 0;
 
+// Customer Display (Layar Pelanggan — halaman terpisah)
+let customerDisplayRoomCode = null;
+let cdConnected = false;
+let cdRole = null; // 'host' (sisi kasir) atau 'viewer' (halaman layar pelanggan)
+
 function _rsChannelName(code){ return 'dhekasir-scan-' + code; }
+function _cdChannelName(code){ return 'dhekasir-display-' + code; }
 function _rsGenCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<6;i++) s+=chars[Math.floor(Math.random()*chars.length)]; return s; }
 
 // Listener pusat (dibuat sekali per instance PubNub) agar tidak menumpuk duplikat
-// setiap kali modal dibuka ulang / kode di-regenerate.
+// setiap kali modal dibuka ulang / kode di-regenerate. Instance ini dipakai bersama
+// oleh fitur "HP sebagai Scanner" dan "Layar Pelanggan" — routing pesan dibedakan
+// berdasarkan nama channel (evt.channel) dan peran (cdRole) agar tidak saling tabrak.
 function _rsGetPubnub(){
     if(typeof PubNub === 'undefined') return null;
     if(!remotePubnub){
@@ -2249,17 +2262,39 @@ function _rsGetPubnub(){
         remotePubnub.addListener({
             message: (evt) => {
                 const msg = evt.message || {};
-                if(msg.type === 'hello'){
-                    updateRemoteStatusUI(true);
-                    showToast('📱 HP tersambung sebagai scanner!');
-                    resetLiveScanCurrent();
-                    openLiveScanDisplay();
-                    sendRemoteAck();
+                const chan = evt.channel;
+
+                // ── Channel "HP sebagai Scanner" ──
+                if(remoteRoomCode && chan === _rsChannelName(remoteRoomCode)){
+                    if(msg.type === 'hello'){
+                        updateRemoteStatusUI(true);
+                        showToast('📱 HP tersambung sebagai scanner!');
+                        resetLiveScanCurrent();
+                        openLiveScanDisplay();
+                        sendRemoteAck();
+                        return;
+                    }
+                    if(msg.type === 'scan' && msg.code){
+                        updateRemoteStatusUI(true);
+                        handleRemoteScan(String(msg.code));
+                    }
                     return;
                 }
-                if(msg.type === 'scan' && msg.code){
-                    updateRemoteStatusUI(true);
-                    handleRemoteScan(String(msg.code));
+
+                // ── Channel "Layar Pelanggan" — sisi kasir (host) ──
+                if(cdRole === 'host' && customerDisplayRoomCode && chan === _cdChannelName(customerDisplayRoomCode)){
+                    if(msg.type === 'viewer_hello'){
+                        updateCustomerDisplayStatusUI(true);
+                        showToast('🖥️ Layar pelanggan tersambung!');
+                        syncCustomerDisplay(null);
+                    }
+                    return;
+                }
+
+                // ── Channel "Layar Pelanggan" — sisi layar pelanggan (viewer) ──
+                if(cdRole === 'viewer' && customerDisplayRoomCode && chan === _cdChannelName(customerDisplayRoomCode)){
+                    if(msg.type === 'state'){ renderCustomerDisplayViewerState(msg); return; }
+                    if(msg.type === 'checkout_done'){ showCustomerDisplayCheckoutSuccess(msg.total||0); return; }
                 }
             }
         });
@@ -2333,12 +2368,10 @@ function updateRemoteStatusUI(connected){
 function subscribeRemoteChannel(){
     const pn = _rsGetPubnub();
     if(!pn) return showToast('Gagal memuat modul HP Scanner');
-    if(remotePubnub){ try{ remotePubnub.unsubscribeAll(); }catch(e){} }
-    const channel = _rsChannelName(remoteRoomCode);
-    pn.subscribe({ channels:[channel] });
+    pn.subscribe({ channels:[_rsChannelName(remoteRoomCode)] });
 }
 function unsubscribeRemoteChannel(){
-    if(remotePubnub){ try{ remotePubnub.unsubscribeAll(); }catch(e){} }
+    if(remotePubnub && remoteRoomCode){ try{ remotePubnub.unsubscribe({ channels:[_rsChannelName(remoteRoomCode)] }); }catch(e){} }
     updateRemoteStatusUI(false);
 }
 
@@ -2362,6 +2395,157 @@ function publishRemoteUpdate(){
     if(!remotePubnub || !remoteRoomCode || !remoteConnected) return;
     const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
     remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'update', total } }).catch(()=>{});
+}
+
+// ══════════════════════════════════════════════════════════════
+// LAYAR PELANGGAN (CUSTOMER DISPLAY) — halaman terpisah, sisi kasir (host)
+// Dipakai bersamaan dengan atau tanpa "HP sebagai Scanner"; setiap perubahan
+// keranjang (scan kamera, scan HP, tambah/kurang manual, checkout) disiarkan
+// via PubNub ke halaman ?display=KODE yang dibuka di perangkat lain.
+// ══════════════════════════════════════════════════════════════
+function openCustomerDisplayModal(){
+    cdRole = 'host';
+    if(!customerDisplayRoomCode) customerDisplayRoomCode = _rsGenCode();
+    renderCustomerDisplayCodeUI();
+    if(!cdConnected) subscribeCustomerDisplayChannel();
+    openModal('modal-customer-display');
+}
+
+function renderCustomerDisplayCodeUI(){
+    const box = document.getElementById('cd-code-display');
+    if(box) box.innerHTML = customerDisplayRoomCode.split('').map(c=>`<span class="remote-code-digit">${c}</span>`).join('');
+    const qrBox = document.getElementById('cd-qr-box');
+    if(qrBox){
+        qrBox.innerHTML = '';
+        const url = _cdRemoteUrl();
+        if(typeof QRCode !== 'undefined'){
+            new QRCode(qrBox, { text:url, width:150, height:150, correctLevel: QRCode.CorrectLevel.M });
+        } else {
+            qrBox.innerHTML = `<span class="text-[9px] font-bold text-center text-muted p-2">${customerDisplayRoomCode}</span>`;
+        }
+    }
+    updateCustomerDisplayStatusUI(cdConnected);
+}
+
+function _cdRemoteUrl(){
+    const u = new URL(location.href);
+    u.searchParams.set('display', customerDisplayRoomCode);
+    return u.toString();
+}
+
+function subscribeCustomerDisplayChannel(){
+    const pn = _rsGetPubnub();
+    if(!pn) return showToast('Gagal memuat modul Layar Pelanggan');
+    pn.subscribe({ channels:[_cdChannelName(customerDisplayRoomCode)] });
+}
+
+function regenerateCustomerDisplayCode(){
+    if(remotePubnub && customerDisplayRoomCode){ try{ remotePubnub.unsubscribe({ channels:[_cdChannelName(customerDisplayRoomCode)] }); }catch(e){} }
+    customerDisplayRoomCode = _rsGenCode();
+    updateCustomerDisplayStatusUI(false);
+    renderCustomerDisplayCodeUI();
+    subscribeCustomerDisplayChannel();
+    showToast('Kode layar pelanggan baru dibuat!');
+}
+
+function copyCustomerDisplayLink(){
+    const url = _cdRemoteUrl();
+    if(navigator.clipboard) navigator.clipboard.writeText(url).then(()=>showToast('Tautan disalin!')).catch(()=>showToast(url));
+    else showToast(url);
+}
+
+function updateCustomerDisplayStatusUI(connected){
+    cdConnected = connected;
+    const pill = document.getElementById('cd-status-pill');
+    const txt = document.getElementById('cd-status-text');
+    const dot = document.getElementById('cd-dot');
+    const settingsStatus = document.getElementById('cd-status-display');
+    if(pill){ pill.classList.toggle('waiting', !connected); pill.classList.toggle('connected', connected); }
+    if(txt) txt.textContent = connected ? 'Layar pelanggan tersambung ✓' : 'Menunggu layar tersambung...';
+    if(dot) dot.classList.toggle('hidden', !connected);
+    if(settingsStatus) settingsStatus.textContent = connected ? `Tersambung (${customerDisplayRoomCode})` : 'Belum tersambung';
+}
+
+// Diputuskan secara eksplisit oleh kasir (tombol "Putuskan Layar Pelanggan")
+function disconnectCustomerDisplay(){
+    if(remotePubnub && customerDisplayRoomCode){ try{ remotePubnub.unsubscribe({ channels:[_cdChannelName(customerDisplayRoomCode)] }); }catch(e){} }
+    updateCustomerDisplayStatusUI(false);
+    showToast('Layar pelanggan diputuskan');
+}
+
+// Siarkan kondisi keranjang terbaru ke halaman Layar Pelanggan (dipanggil dari
+// addToCart, updateCartItem, resetCart, dsb — no-op jika belum ada layar tersambung)
+function syncCustomerDisplay(lastAction){
+    if(cdRole !== 'host' || !cdConnected || !customerDisplayRoomCode || !remotePubnub) return;
+    const total = cart.reduce((a,b) => a+(b.price*b.qty), 0);
+    const count = cart.reduce((a,b) => a+b.qty, 0);
+    remotePubnub.publish({
+        channel: _cdChannelName(customerDisplayRoomCode),
+        message: { type:'state', lastAction: lastAction||null, cart: cart.map(c=>({name:c.name,price:c.price,qty:c.qty})), total, count }
+    }).catch(()=>{});
+}
+
+// ══════════════════════════════════════════════════════════════
+// LAYAR PELANGGAN — sisi halaman terpisah (viewer), dibuka via ?display=KODE
+// ══════════════════════════════════════════════════════════════
+async function enterCustomerDisplayMode(code){
+    cdRole = 'viewer';
+    customerDisplayRoomCode = String(code).toUpperCase();
+    document.getElementById('customer-display-app').classList.add('open');
+    const codeLabel = document.getElementById('cda-code-label');
+    if(codeLabel) codeLabel.textContent = customerDisplayRoomCode;
+    resetCustomerDisplayViewer();
+
+    const pn = _rsGetPubnub();
+    if(pn){
+        pn.subscribe({ channels:[_cdChannelName(customerDisplayRoomCode)] });
+        pn.publish({ channel:_cdChannelName(customerDisplayRoomCode), message:{ type:'viewer_hello' } }).catch(()=>{});
+    } else {
+        showToast('⚠ Gagal memuat modul realtime');
+    }
+}
+
+function renderCustomerDisplayViewerState(msg){
+    const wrap = document.getElementById('cda-current-wrap');
+    if(wrap){
+        if(msg.lastAction){
+            const iconMap = { success:'✅', warning:'⚠️', error:'❓', info:'🛒' };
+            const icon = iconMap[msg.lastAction.type] || '📦';
+            wrap.innerHTML = `
+                <div class="lsd-current-icon lsd-item-anim">${icon}</div>
+                <div class="lsd-current-name lsd-item-anim">${msg.lastAction.name||''}</div>
+                <div class="lsd-current-price lsd-item-anim">${msg.lastAction.priceLabel || (msg.lastAction.price!==undefined ? formatIDR(msg.lastAction.price) : '')}</div>
+            `;
+        } else {
+            wrap.innerHTML = `<div class="lsd-current-icon">🛒</div><p class="lsd-current-empty">Menunggu barang dipindai kasir...</p>`;
+        }
+    }
+    const totalEl = document.getElementById('cda-total'); if(totalEl) totalEl.innerText = formatIDR(msg.total||0);
+    const countEl = document.getElementById('cda-count'); if(countEl) countEl.innerText = (msg.count||0) + ' item';
+    const list = document.getElementById('cda-list');
+    if(list){
+        const rows = (msg.cart||[]).slice().reverse().slice(0,8);
+        list.innerHTML = rows.map(c => `<div class="lsd-list-item"><span>${c.name}${c.qty>1?` ×${c.qty}`:''}</span><span>${formatIDR(c.price*c.qty)}</span></div>`).join('')
+            || `<div class="lsd-list-item" style="opacity:0.35;justify-content:center;border-bottom:none;">Belum ada barang</div>`;
+    }
+}
+
+function resetCustomerDisplayViewer(){
+    renderCustomerDisplayViewerState({ lastAction:null, total:0, count:0, cart:[] });
+}
+
+function showCustomerDisplayCheckoutSuccess(total){
+    const wrap = document.getElementById('cda-current-wrap');
+    if(wrap) wrap.innerHTML = `<div class="lsd-current-icon lsd-item-anim">🎉</div><div class="lsd-current-name lsd-item-anim">Pembayaran Berhasil!</div><div class="lsd-current-price lsd-item-anim">${formatIDR(total)}</div>`;
+    setTimeout(resetCustomerDisplayViewer, 3000);
+}
+
+function exitCustomerDisplayMode(){
+    if(remotePubnub && customerDisplayRoomCode){ try{ remotePubnub.unsubscribe({ channels:[_cdChannelName(customerDisplayRoomCode)] }); }catch(e){} }
+    const el = document.getElementById('customer-display-app');
+    if(el) el.classList.remove('open');
+    const u = new URL(location.href); u.searchParams.delete('display'); history.replaceState({}, '', u.toString());
+    location.reload();
 }
 
 // Jeda scan per-barcode untuk HP sebagai Scanner (mode remote), agar konsisten
@@ -2561,20 +2745,6 @@ function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));lo
 // ══════════════════════════════════════════════════════════════
 // TAB NAVIGATION
 // ══════════════════════════════════════════════════════════════
-const TAB_TITLES = {
-    home:   { eyebrow:'Menu Utama',  name:'Beranda' },
-    pos:    { eyebrow:'Menu Utama',  name:'Kasir / POS' },
-    items:  { eyebrow:'Menu Utama',  name:'Inventaris' },
-    stock:  { eyebrow:'Operasional', name:'Manajemen Stok' },
-    debts:  { eyebrow:'Operasional', name:'Buku Hutang' },
-    data:   { eyebrow:'Operasional', name:'Laporan & Data' },
-    settings:{ eyebrow:'Akun',       name:'Pengaturan' },
-};
-function updateHeaderPageTitle(tab){
-    const info = TAB_TITLES[tab] || { eyebrow:'Menu', name:'DheKasir' };
-    const eb = document.getElementById('header-page-eyebrow'); if(eb) eb.textContent = info.eyebrow;
-    const nm = document.getElementById('header-page-name'); if(nm) nm.textContent = info.name;
-}
 function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
@@ -2583,7 +2753,6 @@ function switchTab(tab){
     document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
     const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');
     localStorage.setItem('dk_active_tab',tab);
-    updateHeaderPageTitle(tab);
     if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
     if(tab==='pos')renderPos();if(tab==='debts')renderDebts();if(tab==='stock')renderStockTab();
     if(window.innerWidth<1024)window.scrollTo({top:0,behavior:'smooth'});
@@ -2619,8 +2788,8 @@ function renderPos(){
         </div>`;
     }).join('')||`<div class="col-span-2 text-center py-12 opacity-30 text-sm">${t('no_data')}</div>`;
 }
-function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast('Stok habis!');}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();}
-function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast('Maksimal!');}if(cart[idx].qty<=0)cart.splice(idx,1);updateCartUI();renderCartDetails();renderPos();}
+function addToCart(id){const it=items.find(i=>i.id==id);const inC=cart.find(c=>c.id==id);if(inC){if(inC.qty>=it.stock){beepError();return showToast('Stok habis!');}inC.qty++;}else{cart.push({...it,qty:1});}updateCartUI();renderPos();syncCustomerDisplay({type:'success',name:it.name,price:it.price});}
+function updateCartItem(id,change){const idx=cart.findIndex(c=>c.id==id);if(idx===-1)return;const orig=items.find(i=>i.id==id);cart[idx].qty+=change;if(cart[idx].qty>orig.stock){cart[idx].qty=orig.stock;beepError();showToast('Maksimal!');}let removed=false;if(cart[idx].qty<=0){cart.splice(idx,1);removed=true;}updateCartUI();renderCartDetails();renderPos();syncCustomerDisplay({type:'info',name:orig.name,priceLabel:removed?'Dihapus dari keranjang':`Qty diubah: ${cart.find(c=>c.id==id)?cart.find(c=>c.id==id).qty:0}`});}
 function updateCartUI(){
     const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
     const count=cart.reduce((a,b)=>a+b.qty,0);
@@ -2675,7 +2844,7 @@ function renderCartDetails(){
         </div>`).join('');
     if(cart.length===0)closeModal('modal-cart-details');
 }
-function resetCart(){cart=[];updateCartUI();renderPos();}
+function resetCart(){cart=[];updateCartUI();renderPos();syncCustomerDisplay(null);}
 
 // ══════════════════════════════════════════════════════════════
 // CHECKOUT
@@ -2700,6 +2869,9 @@ async function finishCheckout(){
         if(remotePubnub && remoteRoomCode){
             remotePubnub.publish({ channel:_rsChannelName(remoteRoomCode), message:{ type:'checkout_done', total } }).catch(()=>{});
         }
+    }
+    if(cdConnected && customerDisplayRoomCode && remotePubnub){
+        remotePubnub.publish({ channel:_cdChannelName(customerDisplayRoomCode), message:{ type:'checkout_done', total } }).catch(()=>{});
     }
     await syncCloud(log);
 }
@@ -3233,6 +3405,11 @@ window.onload = async () => {
     if(remoteCode){
         await enterRemoteScannerMode(remoteCode);
         return; // Jangan jalankan init aplikasi kasir normal
+    }
+    const displayCode = params.get('display');
+    if(displayCode){
+        await enterCustomerDisplayMode(displayCode);
+        return; // Jangan jalankan init aplikasi kasir normal — ini halaman Layar Pelanggan terpisah
     }
 
     loadSettings();
