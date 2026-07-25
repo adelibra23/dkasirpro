@@ -1047,10 +1047,24 @@
         </section>
 
         <!-- ITEMS -->
-        <section id="tab-items" class="tab-content space-y-4">
-            <div class="flex justify-between items-center">
+        <section id="tab-items" class="tab-content space-y-4" ondragover="handleItemsDragOver(event)" ondragleave="handleItemsDragLeave(event)" ondrop="handleItemsDrop(event)">
+            <div id="items-drop-hint" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(79,70,229,0.12);backdrop-filter:blur(2px);align-items:center;justify-content:center;pointer-events:none;">
+                <div style="background:var(--card);border:2px dashed var(--primary);border-radius:28px;padding:36px 48px;text-align:center;box-shadow:0 20px 50px rgba(20,20,50,0.15);">
+                    <i class="fa-solid fa-file-excel" style="font-size:32px;color:#16a34a;"></i>
+                    <p class="font-black text-sm mt-3">Lepas file di sini untuk impor produk</p>
+                    <p class="text-[10px] text-muted font-bold uppercase mt-1">Format .xlsx / .xls / .csv</p>
+                </div>
+            </div>
+            <div class="flex justify-between items-center flex-wrap gap-2">
                 <h2 class="page-title">Inventaris</h2>
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
+                    <input type="file" id="import-products-input" class="hidden" accept=".xlsx,.xls,.csv" onchange="handleImportProductsFile(this)">
+                    <button onclick="downloadProductTemplate()" class="desktop-only px-3 py-2 rounded-xl font-bold text-[10px] uppercase shadow-sm surface text-muted items-center gap-1.5" title="Unduh template Excel untuk impor massal">
+                        <i class="fa-solid fa-file-arrow-down"></i><span>Template</span>
+                    </button>
+                    <button onclick="triggerImportProducts()" class="desktop-only px-3 py-2 rounded-xl font-bold text-[10px] uppercase shadow-sm surface text-emerald-600 items-center gap-1.5" title="Impor banyak produk sekaligus dari file Excel/CSV">
+                        <i class="fa-solid fa-file-import"></i><span>Import Excel</span>
+                    </button>
                     <button onclick="openCategoryModal()" class="px-3 py-2 rounded-xl font-bold text-[10px] uppercase shadow-sm surface text-indigo-500">Kategori</button>
                     <button onclick="openProductModal()" class="px-4 py-2 premium-gradient text-white rounded-xl font-bold text-[10px] uppercase shadow-lg">+ Tambah</button>
                 </div>
@@ -3349,7 +3363,91 @@ function renderData(){
             <p class="text-xs font-black text-indigo-600">${formatIDR(l.amount)}</p>
         </div>`).join('')||`<p class="text-center opacity-30 py-10">${t('no_data')}</p>`;
 }
-function exportExcel(){if(typeof XLSX==='undefined')return showToast('Gagal export Excel!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const txHeader=[["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"]];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),Number(l.amount||0),Number(l.total_cost||0),Number(l.amount||0)-Number(l.total_cost||0),Number(l.pay_cash||0),Number(l.pay_qris||0),Number(l.change||0),l.method]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([...txHeader,...txRows]),"Transaksi");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_v2${f?'_'+f:''}_${Date.now()}.xlsx`);showToast('Excel berhasil diunduh!');}catch(e){showToast('Gagal export Excel!');}}
+function exportExcel(){if(typeof XLSX==='undefined')return showToast('Gagal export Excel!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const txHeader=["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),Number(l.amount||0),Number(l.total_cost||0),Number(l.amount||0)-Number(l.total_cost||0),Number(l.pay_cash||0),Number(l.pay_qris||0),Number(l.change||0),l.method]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([txHeader,...txRows]),"Transaksi");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_v2${f?'_'+f:''}_${Date.now()}.xlsx`);showToast('Excel berhasil diunduh!');}catch(e){showToast('Gagal export Excel!');}}
+
+// ══════════════════════════════════════════════════════════════
+// IMPORT PRODUK MASSAL DARI EXCEL/CSV (khusus desktop — tombol impor + drag & drop)
+// ══════════════════════════════════════════════════════════════
+function downloadProductTemplate(){
+    if(typeof XLSX==='undefined')return showToast('Gagal membuat template!');
+    const header=["Barcode","Nama Produk","Kategori","Harga Modal","Harga Jual","Stok"];
+    const example=["8991002123456","Contoh Produk","Umum",8000,10000,20];
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([header,example]),"Produk");
+    XLSX.writeFile(wb,`DheKasir_Template_Produk.xlsx`);
+    showToast('Template berhasil diunduh!');
+}
+function triggerImportProducts(){const el=document.getElementById('import-products-input');if(el)el.click();}
+function handleImportProductsFile(input){
+    const file=input.files&&input.files[0];
+    if(file)importProductsFromFile(file);
+    input.value='';
+}
+function importProductsFromFile(file){
+    if(typeof XLSX==='undefined')return showToast('Gagal membaca file!');
+    const validExt=/\.(xlsx|xls|csv)$/i.test(file.name);
+    if(!validExt)return showToast('Format tidak didukung — gunakan .xlsx, .xls, atau .csv');
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+        try{
+            const data=new Uint8Array(e.target.result);
+            const wb=XLSX.read(data,{type:'array'});
+            const sheet=wb.Sheets[wb.SheetNames[0]];
+            const rows=XLSX.utils.sheet_to_json(sheet,{defval:''});
+            if(!rows.length){showToast('File kosong atau format tidak dikenali!');return;}
+            const pick=(row,keys)=>{for(const rk of Object.keys(row)){const norm=rk.trim().toLowerCase();if(keys.includes(norm))return row[rk];}return '';};
+            let added=0,updated=0,skipped=0;const newCats=[];
+            rows.forEach(r=>{
+                const barcode=String(pick(r,['barcode','kode','sku'])||'').trim();
+                const name=String(pick(r,['nama produk','nama','name'])||'').trim();
+                if(!name){skipped++;return;}
+                const category=String(pick(r,['kategori','category'])||'Umum').trim()||'Umum';
+                const cost=Number(pick(r,['harga modal','modal','cost']))||0;
+                const price=Number(pick(r,['harga jual','harga jual (rp)','harga','price']))||0;
+                const stock=Number(pick(r,['stok','stock','qty']))||0;
+                let existing=barcode?items.find(i=>String(i.barcode)===barcode&&barcode!==''):null;
+                if(!existing)existing=items.find(i=>i.name.trim().toLowerCase()===name.toLowerCase());
+                if(existing){
+                    existing.name=name;existing.category=category;existing.cost=cost;existing.price=price;existing.stock=stock;
+                    if(barcode)existing.barcode=barcode;
+                    updated++;
+                }else{
+                    items.push({id:Date.now()+items.length+Math.floor(Math.random()*1000),barcode,name,cost,price,stock,category});
+                    added++;
+                }
+                if(category&&!categories.includes(category)&&!newCats.includes(category))newCats.push(category);
+            });
+            if(newCats.length){categories.push(...newCats);localStorage.setItem('dk_categories',JSON.stringify(categories));}
+            saveStorage();
+            renderItems();renderPos();renderCategoryOptions();renderPosCategoryChips();checkStockAlerts();renderHome();
+            const skippedNote=skipped?`, ${skipped} baris dilewati`:'';
+            showToast(`✓ Impor selesai: ${added} produk baru, ${updated} diperbarui${skippedNote}`);
+        }catch(err){
+            showToast('Gagal membaca file! Pastikan formatnya sesuai template.');
+        }
+    };
+    reader.onerror=()=>showToast('Gagal membaca file!');
+    reader.readAsArrayBuffer(file);
+}
+// Drag & drop file Excel langsung ke halaman Inventaris — interaksi yang praktis di desktop, tidak relevan di HP
+function handleItemsDragOver(e){
+    if(window.innerWidth<1024)return;
+    if(!e.dataTransfer||!Array.from(e.dataTransfer.types||[]).includes('Files'))return;
+    e.preventDefault();
+    const hint=document.getElementById('items-drop-hint');if(hint)hint.style.display='flex';
+}
+function handleItemsDragLeave(e){
+    if(e.target&&e.target.id==='items-drop-hint'){
+        const hint=document.getElementById('items-drop-hint');if(hint)hint.style.display='none';
+    }
+}
+function handleItemsDrop(e){
+    if(window.innerWidth<1024)return;
+    e.preventDefault();
+    const hint=document.getElementById('items-drop-hint');if(hint)hint.style.display='none';
+    const file=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(file)importProductsFromFile(file);
+}
 function exportPDF(){if(typeof window.jspdf==='undefined')return showToast('Gagal export PDF!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const pc=[79,70,229];const PW=210,M=14,CW=PW-M*2;doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(config.storeName||'DheKasir',M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`,M,15.5);doc.autoTable({head:[["ID","Tanggal","Item","Total","Metode"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),l.method]),startY:28,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]}});const f=(document.getElementById('date-filter')||{value:''}).value;doc.save(`DheKasir_v2${f?'_'+f:''}_${Date.now()}.pdf`);showToast('PDF berhasil diunduh!');}catch(e){showToast('Gagal export PDF!');}}
 
 // ══════════════════════════════════════════════════════════════
