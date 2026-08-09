@@ -2201,6 +2201,15 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-xl font-black mb-5 text-center uppercase tracking-widest">Konfirmasi Bayar</h3>
         <div class="space-y-4">
+            <div class="flex justify-between text-xs font-bold text-muted px-1"><span>Subtotal</span><span id="co-subtotal">Rp 0</span></div>
+            <div class="flex items-center gap-2">
+                <div class="flex-1"><label class="text-[8px] font-black uppercase ml-2 text-muted">Diskon (opsional)</label><input type="number" id="co-discount-value" oninput="updateCheckoutDiscount()" placeholder="0" min="0" class="w-full p-4 text-amber-600 font-black rounded-2xl outline-none border"></div>
+                <div class="flex rounded-xl overflow-hidden border shrink-0 self-end">
+                    <button type="button" onclick="setDiscountType('percent')" id="disc-type-percent" class="px-4 py-4 text-xs font-black">%</button>
+                    <button type="button" onclick="setDiscountType('nominal')" id="disc-type-nominal" class="px-4 py-4 text-xs font-black">Rp</button>
+                </div>
+            </div>
+            <div class="flex justify-between text-xs font-bold text-rose-500 px-1 hidden" id="co-discount-row"><span>Diskon</span><span id="co-discount-amount">- Rp 0</span></div>
             <div class="flex justify-between font-black text-2xl border-b pb-4 dk-divider"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
             <div class="grid grid-cols-2 gap-2 rounded-2xl p-1 surface">
                 <button onclick="setPayMethod('cash')" id="m-cash" class="py-3 rounded-xl font-black text-[10px] uppercase" style="background:var(--card);color:#4f46e5;box-shadow:0 1px 3px rgba(0,0,0,0.1)">Tunai/QRIS</button>
@@ -2243,6 +2252,8 @@
                 <p class="rec-section-title" id="rec-items-title">ITEM PEMBELIAN</p>
                 <div id="rec-items"></div>
                 <hr class="rec-divider">
+                <div class="rec-total-row hidden" id="rec-subtotal-row" style="font-weight:600;font-size:11px;"><span>Subtotal</span><span id="rec-subtotal">Rp 0</span></div>
+                <div class="rec-total-row hidden" id="rec-discount-row" style="font-weight:600;font-size:11px;"><span>Diskon</span><span id="rec-discount">- Rp 0</span></div>
                 <div class="rec-total-row"><span id="rec-total-label">TOTAL</span><span id="rec-total">Rp 0</span></div>
                 <div id="rec-payment-details"></div>
                 <div class="rec-change-row"><span id="rec-change-label">Kembalian</span><span id="rec-change">Rp 0</span></div>
@@ -2703,6 +2714,7 @@ let categories   = JSON.parse(localStorage.getItem('dk_categories'))    || ['Sem
 let config       = JSON.parse(localStorage.getItem('dk_config'))        || {darkMode:false,storeName:'DheKasir',storeAddress:'-',storePhone:'',url:'',logo:null,minStock:5,staffModeEnabled:false};
 let stockHistory = JSON.parse(localStorage.getItem('dk_stock_history')) || [];
 let cart = [];
+let cartDiscount = {type:'percent', value:0};
 let payMethod = 'cash';
 let activePosCategory = 'Semua';
 let mainChart = null;
@@ -3984,11 +3996,39 @@ function resetCart(){cart=[];updateCartUI();renderPos();syncCustomerDisplay(null
 // ══════════════════════════════════════════════════════════════
 // CHECKOUT
 // ══════════════════════════════════════════════════════════════
-function openCheckout(){if(cart.length===0)return;if(config.staffModeEnabled&&!getActiveShift()){beepError();showToast('Buka shift terlebih dahulu di atas!');return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);document.getElementById('co-grandtotal').innerText=formatIDR(total);['pay-amt-cash','pay-amt-qris','debt-customer','debt-due'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setPayMethod('cash');openModal('modal-checkout');}
+function getCartSubtotal(){return cart.reduce((a,b)=>a+(b.price*b.qty),0);}
+function getDiscountAmount(subtotal){
+    let val=Number(cartDiscount.value)||0;
+    if(val<0)val=0;
+    let amt=cartDiscount.type==='percent'?subtotal*Math.min(val,100)/100:val;
+    return Math.min(Math.max(0,amt),subtotal);
+}
+function setDiscountType(type){
+    cartDiscount.type=type;
+    const bp=document.getElementById('disc-type-percent'),bn=document.getElementById('disc-type-nominal');
+    if(bp){bp.style.background=type==='percent'?'#4f46e5':'transparent';bp.style.color=type==='percent'?'#fff':'var(--text-muted)';}
+    if(bn){bn.style.background=type==='nominal'?'#4f46e5':'transparent';bn.style.color=type==='nominal'?'#fff':'var(--text-muted)';}
+    updateCheckoutDiscount();
+}
+function updateCheckoutDiscount(){
+    cartDiscount.value=Number(document.getElementById('co-discount-value').value)||0;
+    const subtotal=getCartSubtotal();
+    const discAmt=getDiscountAmount(subtotal);
+    const total=subtotal-discAmt;
+    document.getElementById('co-subtotal').innerText=formatIDR(subtotal);
+    const row=document.getElementById('co-discount-row');
+    if(discAmt>0){row.classList.remove('hidden');document.getElementById('co-discount-amount').innerText='- '+formatIDR(discAmt);}
+    else{row.classList.add('hidden');}
+    document.getElementById('co-grandtotal').innerText=formatIDR(total);
+    calcChange();
+}
+function openCheckout(){if(cart.length===0)return;if(config.staffModeEnabled&&!getActiveShift()){beepError();showToast('Buka shift terlebih dahulu di atas!');return;}cartDiscount={type:'percent',value:0};['pay-amt-cash','pay-amt-qris','debt-customer','debt-due','co-discount-value'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});document.getElementById('pay-change').innerText='Rp 0';setDiscountType('percent');updateCheckoutDiscount();setPayMethod('cash');openModal('modal-checkout');}
 function setPayMethod(m){payMethod=m;const bc=document.getElementById('m-cash'),bd=document.getElementById('m-debt'),ac=document.getElementById('pay-cash-area'),ad=document.getElementById('pay-debt-area');if(bc){bc.style.background=m==='cash'?'var(--card)':'transparent';bc.style.color=m==='cash'?'#4f46e5':'var(--text-muted)';bc.style.boxShadow=m==='cash'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(bd){bd.style.background=m==='debt'?'var(--card)':'transparent';bd.style.color=m==='debt'?'#ef4444':'var(--text-muted)';bd.style.boxShadow=m==='debt'?'0 1px 3px rgba(0,0,0,0.1)':'none';}if(ac)ac.classList.toggle('hidden',m!=='cash');if(ad)ad.classList.toggle('hidden',m!=='debt');calcChange();}
-function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
+function calcChange(){if(payMethod!=='cash'){document.getElementById('pay-change').innerText='Rp 0';return;}const subtotal=getCartSubtotal();const total=subtotal-getDiscountAmount(subtotal);const cash=Number(document.getElementById('pay-amt-cash').value)||0;const qris=Number(document.getElementById('pay-amt-qris').value)||0;document.getElementById('pay-change').innerText=formatIDR(Math.max(0,(cash+qris)-total));}
 async function finishCheckout(){
-    const total=cart.reduce((a,b)=>a+(b.price*b.qty),0);
+    const subtotal=getCartSubtotal();
+    const discAmt=getDiscountAmount(subtotal);
+    const total=subtotal-discAmt;
     let cash=Number(document.getElementById('pay-amt-cash').value)||0;
     let qris=Number(document.getElementById('pay-amt-qris').value)||0;
     let change=Math.max(0,(cash+qris)-total);
@@ -3996,7 +4036,7 @@ async function finishCheckout(){
     if(payMethod==='debt'){const customer=document.getElementById('debt-customer').value;if(!customer){beepError();return showToast('Isi nama pelanggan!');}cash=0;qris=0;change=0;}
     const tid="T-"+Date.now();
     const activeS=getActiveStaff(),activeSh=getActiveShift();
-    const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString(),staffId:activeS?activeS.id:null,staffName:activeS?activeS.name:null,shiftId:activeSh?activeSh.id:null};
+    const log={id:tid,items:cart.map(c=>({name:c.name,qty:c.qty,price:c.price,cost:c.cost||0})),amount:total,subtotal:subtotal,discount_type:cartDiscount.type,discount_value:Number(cartDiscount.value)||0,discount_amount:discAmt,total_cost:cart.reduce((a,c)=>a+((Number(c.cost)||0)*c.qty),0),pay_cash:cash,pay_qris:qris,change:change,method:payMethod==='cash'?'Cash/QRIS':'Hutang',date:new Date().toISOString().split('T')[0],created_at:new Date().toISOString(),staffId:activeS?activeS.id:null,staffName:activeS?activeS.name:null,shiftId:activeSh?activeSh.id:null};
     if(payMethod==='debt'){const d={id:"D-"+Date.now(),customer:document.getElementById('debt-customer').value,transactionId:tid,total:total,paid:0,balance:total,dueDate:document.getElementById('debt-due').value||'-',status:t('debt_not_paid')};debts.push(d);await syncCloud({...d,type:'debt_record'});}
     for(const c of cart){const i=items.find(x=>x.id==c.id);if(i){addStockHistory(i.id,i.name,'out',c.qty,`${t('sh_sale')}: ${tid}`);i.stock-=c.qty;syncCloud(i);}}
     logs.push(log);saveStorage();closeModal('modal-checkout');chimeSuccess();showReceipt(log);resetCart();renderHome();renderPos();checkStockAlerts();
@@ -4035,6 +4075,14 @@ function showReceipt(d){
         <div class="rec-item-row"><span class="rec-item-name">${item.name}</span><span class="rec-item-subtotal">${formatIDR(item.price*item.qty)}</span></div>
         <div class="rec-item-detail">${item.qty} × ${formatIDR(item.price)}</div>`).join('');
     document.getElementById('rec-total').innerText=formatIDR(d.amount);
+    const subRow=document.getElementById('rec-subtotal-row'),discRow=document.getElementById('rec-discount-row');
+    if(d.discount_amount>0){
+        subRow.classList.remove('hidden');discRow.classList.remove('hidden');
+        document.getElementById('rec-subtotal').innerText=formatIDR(d.subtotal||d.amount);
+        document.getElementById('rec-discount').innerText='- '+formatIDR(d.discount_amount)+(d.discount_type==='percent'?` (${d.discount_value}%)`:'');
+    } else {
+        subRow.classList.add('hidden');discRow.classList.add('hidden');
+    }
     const pd=document.getElementById('rec-payment-details');
     if(d.method==='Hutang'||d.method==='Debt'){pd.innerHTML=`<div style="text-align:center;margin:4px 0;"><span class="rec-debt-badge">${t('rec_debt')}</span></div>`;}
     else{let rows='';if(d.pay_cash>0)rows+=`<div class="rec-pay-row"><span>${t('rec_cash')}</span><span>${formatIDR(d.pay_cash)}</span></div>`;if(d.pay_qris>0)rows+=`<div class="rec-pay-row"><span>${t('rec_qris')}</span><span>${formatIDR(d.pay_qris)}</span></div>`;pd.innerHTML=rows;}
