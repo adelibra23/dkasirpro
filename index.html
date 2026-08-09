@@ -178,7 +178,7 @@
         #ptr-indicator {
             position: fixed; left: 50%; top: 0; transform: translate(-50%,-64px);
             width: 42px; height: 42px; border-radius: 50%;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            background: linear-gradient(135deg, #818cf8, #a78bfa);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 20px rgba(79,70,229,0.35), 0 0 0 4px var(--bg);
             z-index: 50; opacity: 0; pointer-events: none;
@@ -201,7 +201,7 @@
         #hamburger-btn.open .bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
         #hamburger-btn.open .bar:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
         .header-brand { display: flex; align-items: center; gap: 9px; position: absolute; left: 50%; transform: translateX(-50%); }
-        .header-app-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; flex-shrink: 0; }
+        .header-app-logo { width: 32px; height: 32px; background: linear-gradient(135deg,#818cf8,#a78bfa); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 900; flex-shrink: 0; }
         .header-app-title { font-size: 15px; font-weight: 800; color: var(--text); }
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
@@ -221,7 +221,7 @@
         #sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 272px; background: var(--sidebar-bg); z-index: 90; transform: translateX(-100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; border-right: 1px solid var(--card-border); }
         #sidebar.open { transform: translateX(0); }
         .sidebar-header { padding: 52px 20px 20px; border-bottom: 1px solid var(--card-border); }
-        .sidebar-store-logo { width: 52px; height: 52px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
+        .sidebar-store-logo { width: 52px; height: 52px; background: linear-gradient(135deg,#818cf8,#a78bfa); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: 900; overflow: hidden; margin-bottom: 12px; box-shadow: 0 4px 14px rgba(79,70,229,0.35); }
         .sidebar-store-name { font-size: 16px; font-weight: 800; margin-bottom: 2px; }
         .sidebar-store-addr { font-size: 11px; color: var(--text-muted); font-weight: 500; }
         .sidebar-version { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; background: var(--primary-soft); color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; }
@@ -250,7 +250,7 @@
         .nav-item.active .nav-item-pill { opacity: 1; width: 22px; }
         .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
         .nav-scan-fab { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; position: relative; min-width: 60px; }
-        .nav-scan-fab-btn { width: 52px; height: 52px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; box-shadow: 0 4px 18px rgba(79,70,229,0.45); transition: all 0.2s; margin-top: -18px; border: 3px solid var(--nav-bg); }
+        .nav-scan-fab-btn { width: 52px; height: 52px; background: linear-gradient(135deg,#818cf8,#a78bfa); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; box-shadow: 0 4px 18px rgba(79,70,229,0.45); transition: all 0.2s; margin-top: -18px; border: 3px solid var(--nav-bg); }
         .nav-scan-fab:active .nav-scan-fab-btn { transform: scale(0.9); }
         .nav-scan-fab-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary); margin-top: 2px; }
 
@@ -328,6 +328,29 @@
         .card i.fa-solid, [onclick] > i.fa-solid { transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); }
         button:active i.fa-solid, .card:active i.fa-solid, [onclick]:active > i.fa-solid { transform: scale(0.8); }
 
+        /* ══════════════════════════════════════════════════════════════
+           WARNA IKON VIVID — ikon menu/fitur solid & berwarna seperti
+           aplikasi native (sidebar, quick action, settings, dsp actions)
+        ═══════════════════════════════════════════════════════════════ */
+        .sidebar-icon, .settings-icon, .psb-icon, .dpt-icon, .hero-qa-icon {
+            background: linear-gradient(155deg, color-mix(in srgb, currentColor 92%, white 12%), color-mix(in srgb, currentColor 92%, black 10%)) !important;
+            box-shadow: 0 3px 9px -2px color-mix(in srgb, currentColor 60%, transparent);
+        }
+        .sidebar-icon i, .settings-icon i, .psb-icon i, .dpt-icon i, .hero-qa-icon i {
+            color: #fff !important;
+            text-shadow: 0 1px 1px rgba(0,0,0,0.12);
+        }
+        /* Item sidebar aktif tetap paling menonjol (glow lebih kuat) */
+        .sidebar-item.active .sidebar-icon { box-shadow: 0 4px 14px -2px color-mix(in srgb, currentColor 70%, transparent); }
+        /* Ikon kecil di dalam baris aksi (export, kelola kategori, stok, dsb) — chip warna lembut mengikuti warna ikon aslinya */
+        .dsp-action-btn i {
+            width: 26px; height: 26px; border-radius: 8px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: color-mix(in srgb, currentColor 16%, transparent);
+            font-size: 12px !important;
+        }
+        .dsp-action-btn i:not([style*="color"]) { background: color-mix(in srgb, var(--primary) 14%, transparent); }
+
         /* ── TAB CONTENT ── */
         .tab-content { display: none; padding: 16px 16px 110px; }
         .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
@@ -401,7 +424,7 @@
             cursor: pointer; transition: all 0.2s; color: rgba(255,255,255,0.5);
         }
         .scanner-mode-pill.active {
-            background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff;
+            background: linear-gradient(135deg,#818cf8,#a78bfa); color: #fff;
             box-shadow: 0 2px 12px rgba(79,70,229,0.55);
         }
         .scanner-mode-pill:active { transform: scale(0.95); }
@@ -734,7 +757,7 @@
         #remote-scanner-app { position: fixed; inset:0; z-index: 10000; background:#000; display:none; flex-direction:column; }
         #remote-scanner-app.open { display:flex; }
         .rs-header { padding: 20px 20px 16px; text-align:center; background: linear-gradient(180deg, rgba(0,0,0,0.9), transparent); position:relative; z-index:2; }
-        .rs-header .rs-logo { width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#7c3aed);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px;margin:0 auto 8px; }
+        .rs-header .rs-logo { width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#818cf8,#a78bfa);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px;margin:0 auto 8px; }
         .rs-header h2 { color:#fff; font-size:15px; font-weight:900; }
         .rs-header p { color:rgba(255,255,255,0.5); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; margin-top:2px; }
         .rs-camera-wrap { flex:1; position:relative; }
@@ -767,7 +790,7 @@
         #live-scan-display.open { display: flex; }
         .lsd-topbar { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; flex-shrink: 0; }
         .lsd-brand { display: flex; align-items: center; gap: 10px; }
-        .lsd-brand-logo { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg,#4f46e5,#7c3aed); display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
+        .lsd-brand-logo { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg,#818cf8,#a78bfa); display: flex; align-items: center; justify-content: center; font-weight: 900; flex-shrink: 0; }
         .lsd-brand-name { font-size: 13px; font-weight: 800; }
         .lsd-brand-sub { font-size: 9px; color: rgba(255,255,255,0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 1px; }
         .lsd-live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; border-radius: 20px; background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.3); font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #34d399; }
@@ -1108,7 +1131,7 @@
         .staff-avatar-btn { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 6px; border-radius: 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: all 0.15s; }
         .staff-avatar-btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
         .staff-avatar-btn:active { transform: scale(0.95); }
-        .staff-avatar-circle { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg,#4f46e5,#7c3aed); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; }
+        .staff-avatar-circle { width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg,#818cf8,#a78bfa); display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 16px; }
         .staff-avatar-btn span { font-size: 10px; font-weight: 800; line-height: 1.2; }
         .staff-avatar-role { font-size: 8px !important; font-weight: 700 !important; color: rgba(255,255,255,0.4); text-transform: uppercase; }
         .sls-back-btn { position: absolute; top: 18px; left: 18px; width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.08); border: none; color: #fff; cursor: pointer; }
@@ -1256,51 +1279,51 @@
         </div>
         <div class="sidebar-nav hide-scrollbar">
             <div class="sidebar-section-label">Menu Utama</div>
-            <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()" style="--accent:#4f46e5;">
+            <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()" style="--accent:#818cf8;">
                 <div class="sidebar-icon"><i class="fa-solid fa-house" style="font-size:13px;"></i></div><span>Beranda</span>
             </div>
-            <div class="sidebar-item" id="sb-pos" onclick="switchTab('pos'); closeSidebar()" style="--accent:#8b5cf6;">
+            <div class="sidebar-item" id="sb-pos" onclick="switchTab('pos'); closeSidebar()" style="--accent:#a78bfa;">
                 <div class="sidebar-icon"><i class="fa-solid fa-cash-register" style="font-size:13px;"></i></div><span>Kasir / POS</span>
             </div>
-            <div class="sidebar-item" id="sb-items" onclick="switchTab('items'); closeSidebar()" style="--accent:#0ea5e9;">
+            <div class="sidebar-item" id="sb-items" onclick="switchTab('items'); closeSidebar()" style="--accent:#38bdf8;">
                 <div class="sidebar-icon"><i class="fa-solid fa-box" style="font-size:13px;"></i></div><span>Inventaris</span>
             </div>
             <div class="sidebar-section-label">Operasional</div>
-            <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()" style="--accent:#14b8a6;">
+            <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()" style="--accent:#2dd4bf;">
                 <div class="sidebar-icon"><i class="fa-solid fa-warehouse" style="font-size:13px;"></i></div>
                 <span>Manajemen Stok</span>
                 <span id="sb-stock-badge" class="sidebar-badge hidden">0</span>
             </div>
-            <div class="sidebar-item" id="sb-debts" onclick="switchTab('debts'); closeSidebar()" style="--accent:#f59e0b;">
+            <div class="sidebar-item" id="sb-debts" onclick="switchTab('debts'); closeSidebar()" style="--accent:#fbbf24;">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-clock" style="font-size:13px;"></i></div><span>Buku Hutang</span>
             </div>
-            <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()" style="--accent:#f43f5e;">
+            <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()" style="--accent:#fb7185;">
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div><span>Laporan & Data</span>
             </div>
             <div class="sidebar-section-label">Perangkat</div>
-            <div class="sidebar-item" onclick="openRemoteScanModal(); closeSidebar()" style="--accent:#0ea5e9;position:relative;">
+            <div class="sidebar-item" onclick="openRemoteScanModal(); closeSidebar()" style="--accent:#38bdf8;position:relative;">
                 <div class="sidebar-icon"><i class="fa-solid fa-mobile-screen-button" style="font-size:13px;"></i></div><span>HP sebagai Scanner</span>
                 <span id="sb-remote-scan-dot" class="hidden" style="width:8px;height:8px;background:#10b981;border-radius:50%;border:2px solid var(--sidebar-bg);margin-left:auto;"></span>
             </div>
-            <div class="sidebar-item" onclick="openCustomerDisplayModal(); closeSidebar()" style="--accent:#8b5cf6;position:relative;">
+            <div class="sidebar-item" onclick="openCustomerDisplayModal(); closeSidebar()" style="--accent:#a78bfa;position:relative;">
                 <div class="sidebar-icon"><i class="fa-solid fa-tv" style="font-size:13px;"></i></div><span>Layar Pelanggan</span>
                 <span id="sb-cd-dot" class="hidden" style="width:8px;height:8px;background:#10b981;border-radius:50%;border:2px solid var(--sidebar-bg);margin-left:auto;"></span>
             </div>
             <div class="sidebar-section-label">Akun</div>
-            <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()" style="--accent:#10b981;">
+            <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()" style="--accent:#34d399;">
                 <div class="sidebar-icon"><i class="fa-solid fa-id-badge" style="font-size:13px;"></i></div>
                 <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;">
                     <span class="sb-staff-name" style="font-size:12.5px;font-weight:800;">—</span>
                     <span class="sb-staff-role" style="font-size:9px;opacity:.55;font-weight:700;text-transform:uppercase;"></span>
                 </span>
             </div>
-            <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()" style="--accent:#64748b;">
+            <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()" style="--accent:#94a3b8;">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div><span>Pengaturan</span>
             </div>
-            <div class="sidebar-item" onclick="renderAboutModal();openModal('modal-about'); closeSidebar()" style="--accent:#06b6d4;">
+            <div class="sidebar-item" onclick="renderAboutModal();openModal('modal-about'); closeSidebar()" style="--accent:#22d3ee;">
                 <div class="sidebar-icon"><i class="fa-solid fa-circle-info" style="font-size:13px;"></i></div><span>Tentang Aplikasi</span>
             </div>
-            <div class="sidebar-item hidden" id="sb-install-app" onclick="triggerInstallApp(); closeSidebar()" style="--accent:#10b981;">
+            <div class="sidebar-item hidden" id="sb-install-app" onclick="triggerInstallApp(); closeSidebar()" style="--accent:#34d399;">
                 <div class="sidebar-icon"><i class="fa-solid fa-download" style="font-size:13px;"></i></div><span>Instal Aplikasi</span>
             </div>
         </div>
@@ -1343,10 +1366,10 @@
                 <i class="fa-solid fa-plus"></i><span>Tambah Produk</span>
             </button>
             <span class="hdr-divider"></span>
-            <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)" style="--accent:#6366f1;">
+            <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)" style="--accent:#818cf8;">
                 <i class="fa-solid fa-keyboard" style="font-size:15px;"></i>
             </button>
-            <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" style="--accent:#f43f5e;">
+            <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" style="--accent:#fb7185;">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
                 <span id="notif-count-badge" style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:8px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--nav-bg);">0</span>
             </button>
@@ -1389,9 +1412,9 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-3 gap-2">
-                        <div class="hero-qa-btn" onclick="switchTab('pos')"><div class="hero-qa-icon" style="background:rgba(139,92,246,0.3);"><i class="fa-solid fa-cash-register" style="color:#c4b5fd;font-size:13px;"></i></div><span class="hero-qa-label">Kasir</span></div>
-                        <div class="hero-qa-btn" onclick="switchTab('stock')"><div class="hero-qa-icon" style="background:rgba(20,184,166,0.3);"><i class="fa-solid fa-warehouse" style="color:#5eead4;font-size:13px;"></i></div><span class="hero-qa-label">Gudang</span></div>
-                        <div class="hero-qa-btn" onclick="switchTab('debts')"><div class="hero-qa-icon" style="background:rgba(245,158,11,0.3);"><i class="fa-solid fa-user-clock" style="color:#fcd34d;font-size:13px;"></i></div><span class="hero-qa-label">Hutang</span></div>
+                        <div class="hero-qa-btn" onclick="switchTab('pos')"><div class="hero-qa-icon" style="background:linear-gradient(155deg,#a78bfa,#7c3aed);box-shadow:0 3px 9px -2px rgba(124,58,237,0.55);"><i class="fa-solid fa-cash-register" style="color:#fff;font-size:13px;"></i></div><span class="hero-qa-label">Kasir</span></div>
+                        <div class="hero-qa-btn" onclick="switchTab('stock')"><div class="hero-qa-icon" style="background:linear-gradient(155deg,#2dd4bf,#0d9488);box-shadow:0 3px 9px -2px rgba(13,148,136,0.55);"><i class="fa-solid fa-warehouse" style="color:#fff;font-size:13px;"></i></div><span class="hero-qa-label">Gudang</span></div>
+                        <div class="hero-qa-btn" onclick="switchTab('debts')"><div class="hero-qa-icon" style="background:linear-gradient(155deg,#fbbf24,#d97706);box-shadow:0 3px 9px -2px rgba(217,119,6,0.55);"><i class="fa-solid fa-user-clock" style="color:#fff;font-size:13px;"></i></div><span class="hero-qa-label">Hutang</span></div>
                     </div>
                 </div>
             </div>
@@ -1622,7 +1645,7 @@
         <!-- SETTINGS -->
         <section id="tab-settings" class="tab-content space-y-5">
             <div class="flex items-center gap-4 card p-5 shadow-sm settings-profile-card">
-                <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)"><span class="text-xl font-black text-white">A</span></div>
+                <div id="profile-logo-preview" class="w-14 h-14 rounded-2xl flex items-center justify-center border-2 border-white shadow-lg overflow-hidden" style="background:linear-gradient(135deg,#818cf8,#a78bfa)"><span class="text-xl font-black text-white">A</span></div>
                 <div>
                     <h2 class="font-black text-base" id="profile-name">Admin Toko</h2>
                     <p class="text-xs text-muted" id="profile-address-display">-</p>
@@ -1661,14 +1684,14 @@
 
     <!-- BOTTOM NAV -->
     <nav id="bottom-nav">
-        <div class="nav-item active" id="n-home" onclick="switchTab('home')" style="--accent:#4f46e5;"><div class="nav-icon-wrap"><i class="fa-solid fa-house"></i></div><span>Home</span><div class="nav-item-pill"></div></div>
-        <div class="nav-item" id="n-pos" onclick="switchTab('pos')" style="--accent:#8b5cf6;"><div class="nav-icon-wrap"><i class="fa-solid fa-cash-register"></i></div><span>Kasir</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item active" id="n-home" onclick="switchTab('home')" style="--accent:#818cf8;"><div class="nav-icon-wrap"><i class="fa-solid fa-house"></i></div><span>Home</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-pos" onclick="switchTab('pos')" style="--accent:#a78bfa;"><div class="nav-icon-wrap"><i class="fa-solid fa-cash-register"></i></div><span>Kasir</span><div class="nav-item-pill"></div></div>
         <div class="nav-scan-fab" onclick="openScanner('cart')">
             <div class="nav-scan-fab-btn scan-pulse"><i class="fa-solid fa-barcode"></i></div>
             <span class="nav-scan-fab-label">Scan</span>
         </div>
-        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;--accent:#14b8a6;"><div class="nav-icon-wrap"><i class="fa-solid fa-warehouse"></i></div><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
-        <div class="nav-item" id="n-data" onclick="switchTab('data')" style="--accent:#f43f5e;"><div class="nav-icon-wrap"><i class="fa-solid fa-chart-bar"></i></div><span>Data</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;--accent:#2dd4bf;"><div class="nav-icon-wrap"><i class="fa-solid fa-warehouse"></i></div><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
+        <div class="nav-item" id="n-data" onclick="switchTab('data')" style="--accent:#fb7185;"><div class="nav-icon-wrap"><i class="fa-solid fa-chart-bar"></i></div><span>Data</span><div class="nav-item-pill"></div></div>
     </nav>
 
     <!-- CART FLOAT -->
