@@ -227,15 +227,15 @@
         .sidebar-version { display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; background: var(--primary-soft); color: var(--primary); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; }
         .sidebar-nav { flex: 1; overflow-y: auto; padding: 12px 12px; }
         .sidebar-section-label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 12px 8px 6px; }
-        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; cursor: pointer; transition: all 0.15s; color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+        .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; cursor: pointer; transition: all 0.15s; color: var(--accent, var(--text-muted)); font-size: 13px; font-weight: 600; margin-bottom: 2px; }
         .sidebar-item:active { transform: scale(0.97); }
         .sidebar-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
         .sidebar-item.active { background: color-mix(in srgb, var(--accent, var(--primary)) 14%, transparent); color: var(--accent, var(--primary)); }
-        .sidebar-item:not(.active):hover { background: var(--surface); color: var(--text); }
+        .sidebar-item:not(.active):hover { background: var(--surface); }
         .sidebar-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: var(--surface); transition: background 0.15s; }
         .sidebar-icon { color: var(--accent, var(--text-muted)); background: color-mix(in srgb, var(--accent, var(--text-muted)) 15%, var(--surface)); }
-        .sidebar-item.active .sidebar-icon { background: var(--primary); color: #fff; }
-        .sidebar-item.active .sidebar-icon { background: var(--accent, var(--primary)); color: #fff; }
+        .sidebar-item.active .sidebar-icon { background: var(--primary); }
+        .sidebar-item.active .sidebar-icon { background: var(--accent, var(--primary)); }
         .sidebar-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
         .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--card-border); }
         .sidebar-dark-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 14px; background: var(--surface); cursor: pointer; }
