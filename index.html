@@ -629,10 +629,9 @@
         .hero-inner { position: relative; z-index: 2; }
         .balance-mask { display: inline-block; transition: filter 0.4s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease; }
         .balance-hidden .balance-mask { filter: blur(10px); opacity: 0.35; user-select: none; pointer-events: none; }
-        .balance-toggle-btn { display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; cursor: pointer; transition: background 0.2s, transform 0.15s; color: rgba(255,255,255,0.85); flex-shrink: 0; line-height: 1; }
+        .balance-toggle-btn { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; padding: 0; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 50%; cursor: pointer; transition: background 0.2s, transform 0.15s; color: rgba(255,255,255,0.85); flex-shrink: 0; line-height: 1; }
         .balance-toggle-btn:active { transform: scale(0.90); }
         .balance-toggle-btn .btn-eye-icon { font-size: 11px; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.2s; }
-        .balance-toggle-btn .btn-label { font-size: 9px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; }
         .balance-toggle-btn.hiding .btn-eye-icon { transform: scale(0.7) rotate(-20deg); opacity: 0.5; }
         .hero-stat-cell { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 14px; }
         .hero-stat-cell.danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.22); }
@@ -1336,13 +1335,12 @@
                 <div class="hero-inner">
                     <div class="flex items-center justify-between mb-1">
                         <p class="text-[10px] font-black uppercase tracking-widest" style="color:rgba(255,255,255,0.5);">Profit Bersih Toko</p>
-                        <button class="balance-toggle-btn" id="balance-toggle-btn" onclick="toggleBalanceVisibility()">
-                            <i class="fa-solid fa-eye btn-eye-icon" id="balance-eye-icon"></i>
-                            <span class="btn-label" id="balance-toggle-label">Sembunyikan</span>
-                        </button>
                     </div>
-                    <h2 class="text-white font-black mb-2" style="font-size:34px;letter-spacing:-1px;line-height:1;">
+                    <h2 class="text-white font-black mb-2 flex items-center gap-2" style="font-size:34px;letter-spacing:-1px;line-height:1;">
                         <span class="balance-mask" id="dash-profit">Rp 0</span>
+                        <button class="balance-toggle-btn" id="balance-toggle-btn" onclick="toggleBalanceVisibility()" aria-label="Tampilkan/Sembunyikan saldo">
+                            <i class="fa-solid fa-eye btn-eye-icon" id="balance-eye-icon"></i>
+                        </button>
                     </h2>
                     <div class="flex items-center gap-2 mb-5">
                         <span class="hero-trend-chip"><i class="fa-solid fa-arrow-trend-up" style="font-size:8px;"></i><span>Hari Ini</span></span>
@@ -4054,10 +4052,10 @@ let balanceIsHidden = localStorage.getItem('dk_balance_hidden')==='1';
 function applyBalanceUI(){
     const hero=document.getElementById('dash-hero-wrap');
     const icon=document.getElementById('balance-eye-icon');
-    const label=document.getElementById('balance-toggle-label');
+    const btn=document.getElementById('balance-toggle-btn');
     if(!hero)return;
-    if(balanceIsHidden){hero.classList.add('balance-hidden');if(icon)icon.className='fa-solid fa-eye-slash btn-eye-icon';if(label)label.textContent='Tampilkan';}
-    else{hero.classList.remove('balance-hidden');if(icon)icon.className='fa-solid fa-eye btn-eye-icon';if(label)label.textContent='Sembunyikan';}
+    if(balanceIsHidden){hero.classList.add('balance-hidden');if(icon)icon.className='fa-solid fa-eye-slash btn-eye-icon';if(btn)btn.setAttribute('aria-label','Tampilkan saldo');}
+    else{hero.classList.remove('balance-hidden');if(icon)icon.className='fa-solid fa-eye btn-eye-icon';if(btn)btn.setAttribute('aria-label','Sembunyikan saldo');}
 }
 function toggleBalanceVisibility(){
     balanceIsHidden=!balanceIsHidden;
