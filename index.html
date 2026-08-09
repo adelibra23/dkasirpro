@@ -1092,8 +1092,8 @@
             #tab-data.active { display: grid; grid-template-columns: 1fr 300px; align-items: start; max-width: 1400px; }
             #data-main-col { grid-column: 1; margin: 0 !important; min-width: 0; }
             #data-desktop-panel { grid-column: 2; }
-            /* Tombol ekspor bawaan pindah ke panel di desktop */
-            #tab-data.active #data-export-row { display: none !important; }
+            /* Tombol ekspor & impor bawaan pindah ke panel di desktop */
+            #tab-data.active #data-export-row, #tab-data.active #data-import-row { display: none !important; }
         }
 
         @media (min-width: 1440px) {
@@ -1656,6 +1656,10 @@
                 <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
                 <button onclick="exportJSON()" class="py-4 bg-amber-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-code mr-2"></i> JSON</button>
             </div>
+            <input type="file" id="import-json-input" class="hidden" accept=".json,application/json" onchange="handleImportJSONFile(this)">
+            <button onclick="triggerImportJSON()" id="data-import-row" class="w-full py-3.5 rounded-2xl font-black text-[10px] uppercase border-2 flex items-center justify-center gap-2" style="border-color:var(--card-border);color:var(--primary);border-style:dashed;" title="Tambahkan transaksi dari file JSON hasil ekspor sebelumnya (mis. backup atau dari perangkat lain)">
+                <i class="fa-solid fa-file-arrow-up"></i><span>Import JSON</span>
+            </button>
             <div id="export-info" class="text-[9px] font-bold uppercase text-center text-muted"></div>
             <div id="staff-sales-report" class="card p-2 space-y-1 hidden"></div>
             <div id="data-list" class="space-y-3"></div>
@@ -1677,6 +1681,7 @@
                     <div class="dsp-action-btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i><span>Export Excel</span></div>
                     <div class="dsp-action-btn" onclick="exportPDF()"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i><span>Export PDF</span></div>
                     <div class="dsp-action-btn" onclick="exportJSON()"><i class="fa-solid fa-file-code" style="color:#f59e0b;"></i><span>Export JSON</span></div>
+                    <div class="dsp-action-btn" onclick="triggerImportJSON()" title="Tambahkan transaksi dari file JSON hasil ekspor sebelumnya"><i class="fa-solid fa-file-arrow-up" style="color:#6366f1;"></i><span>Import JSON</span></div>
                 </div>
             </aside>
         </section>
@@ -3348,6 +3353,11 @@ function _rsGetPubnub(){
                     }
                     if(msg.type === 'scan' && msg.code){
                         updateRemoteStatusUI(true);
+                        // Setiap kali ada scan masuk dari HP, pastikan halaman Live di desktop otomatis
+                        // terbuka (bukan hanya saat HP pertama tersambung) — supaya kasir langsung
+                        // melihat hasil scan meski panel ini sebelumnya sempat ditutup manual.
+                        const lsd = document.getElementById('live-scan-display');
+                        if(lsd && !lsd.classList.contains('open')) openLiveScanDisplay();
                         handleRemoteScan(String(msg.code));
                     }
                     return;
@@ -4794,6 +4804,60 @@ function renderDataDesktopPanel(){
 function rdpSetToday(){const el=document.getElementById('date-filter');if(el){el.value=new Date().toISOString().slice(0,10);renderData();}}
 function rdpSetAll(){const el=document.getElementById('date-filter');if(el){el.value='';renderData();}}
 function exportExcel(){if(typeof XLSX==='undefined')return showToast('Gagal export Excel!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const txHeader=["ID","Tanggal","Waktu","Item","Total","Modal","Profit","Tunai","QRIS","Kembalian","Metode"];const txRows=filtered.map(l=>[l.id,l.date||'-',l.created_at?new Date(l.created_at).toLocaleTimeString('id-ID'):'-',(l.items||[]).map(i=>`${i.name} x${i.qty}`).join(' | '),Number(l.amount||0),Number(l.total_cost||0),Number(l.amount||0)-Number(l.total_cost||0),Number(l.pay_cash||0),Number(l.pay_qris||0),Number(l.change||0),l.method]);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([txHeader,...txRows]),"Transaksi");const f=(document.getElementById('date-filter')||{value:''}).value;XLSX.writeFile(wb,`DheKasir_v2${f?'_'+f:''}_${Date.now()}.xlsx`);showToast('Excel berhasil diunduh!');}catch(e){showToast('Gagal export Excel!');}}
+
+// Impor transaksi tambahan dari file .json — mendukung format hasil Export JSON di atas
+// ({transactions:[...]}) maupun array transaksi polos ([...]). Transaksi dengan ID yang sudah
+// ada di data lokal akan dilewati (tidak dobel), sisanya digabungkan ke riwayat transaksi.
+function triggerImportJSON(){const el=document.getElementById('import-json-input');if(el)el.click();}
+function handleImportJSONFile(input){
+    const file=input.files&&input.files[0];
+    if(file)importJSONFromFile(file);
+    input.value='';
+}
+function importJSONFromFile(file){
+    const validExt=/\.json$/i.test(file.name);
+    if(!validExt)return showToast('Format tidak didukung — gunakan file .json');
+    const reader=new FileReader();
+    reader.onload=(e)=>{
+        try{
+            const parsed=JSON.parse(e.target.result);
+            const rows=Array.isArray(parsed) ? parsed : (Array.isArray(parsed.transactions) ? parsed.transactions : null);
+            if(!rows){showToast('Struktur JSON tidak dikenali — pastikan berasal dari Export JSON DheKasir.');return;}
+            if(!rows.length){showToast('File JSON kosong, tidak ada transaksi untuk diimpor.');return;}
+            const existingIds=new Set(logs.map(l=>String(l.id)));
+            let added=0,skipped=0,invalid=0;
+            rows.forEach((r,idx)=>{
+                if(!r||typeof r!=='object'||!Array.isArray(r.items)||r.amount==null){invalid++;return;}
+                let id=r.id?String(r.id):`IMPORT-${Date.now()}-${idx}`;
+                if(existingIds.has(id)){skipped++;return;}
+                existingIds.add(id);
+                logs.push({
+                    id,
+                    date: r.date || (r.created_at ? String(r.created_at).slice(0,10) : new Date().toISOString().slice(0,10)),
+                    created_at: r.created_at || new Date().toISOString(),
+                    method: r.method || 'Import',
+                    items: (r.items||[]).map(i=>({name:i.name||'Item', qty:Number(i.qty)||1, price:Number(i.price)||0, cost:Number(i.cost)||0})),
+                    amount: Number(r.amount)||0,
+                    total_cost: Number(r.total_cost)||0,
+                    pay_cash: Number(r.pay_cash)||0,
+                    pay_qris: Number(r.pay_qris)||0,
+                    change: Number(r.change)||0
+                });
+                added++;
+            });
+            if(added>0)saveStorage();
+            renderData();renderHome();
+            const parts=[`${added} transaksi diimpor`];
+            if(skipped)parts.push(`${skipped} dilewati (sudah ada)`);
+            if(invalid)parts.push(`${invalid} baris tidak valid`);
+            showToast((added>0?'✓ ':'⚠ ')+parts.join(', '));
+        }catch(err){
+            showToast('Gagal membaca file! Pastikan formatnya JSON yang valid.');
+        }
+    };
+    reader.onerror=()=>showToast('Gagal membaca file!');
+    reader.readAsText(file);
+}
 
 // ══════════════════════════════════════════════════════════════
 // IMPORT PRODUK MASSAL DARI EXCEL/CSV (khusus desktop — tombol impor + drag & drop)
