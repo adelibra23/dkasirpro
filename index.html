@@ -181,7 +181,22 @@
         input::placeholder, textarea::placeholder { color: var(--text-muted) !important; }
         select option { background: var(--card); color: var(--text); }
 
-        .modal-sheet { background: var(--card) !important; transition: background 0.3s; }
+        .modal-sheet {
+            background: var(--card) !important;
+            width: 100%;
+            transform: translateY(100%);
+            transition: background 0.3s, transform 0.38s cubic-bezier(0.32,0.72,0,1);
+            will-change: transform;
+        }
+        .modal-sheet.sheet-show { transform: translateY(0); }
+        .modal-sheet.sheet-dragging { transition: background 0.3s; }
+        .sheet-handle-wrap { display: flex; justify-content: center; padding: 6px 0 14px; margin: -10px -10px 0; touch-action: none; cursor: grab; }
+        .sheet-handle-wrap:active { cursor: grabbing; }
+        .sheet-handle { width: 40px; height: 5px; border-radius: 4px; background: var(--card-border); transition: background 0.3s; }
+        .sheet-handle-wrap:active .sheet-handle { background: var(--text-muted); }
+        @media (min-width: 1024px) {
+            .bottom-sheet-modal .sheet-handle-wrap { display: none; }
+        }
         .surface { background: var(--surface) !important; transition: background 0.3s; }
         .surface-hover:hover { background: var(--surface-hover) !important; }
         .dk-divider { border-color: var(--card-border) !important; }
@@ -713,18 +728,21 @@
 
             .pos-search-wrap, #pos-category-chips { max-width: 1180px; margin-left: auto; margin-right: auto; }
 
-            /* Bottom-sheet modals become centered dialogs on larger screens */
-            #modal-remote-scan, #modal-scan-stats, #modal-notif, #modal-printer,
-            #modal-opname, #modal-cart-details, #modal-checkout {
+            /* Bottom-sheet modals become centered dialogs on larger screens (mouse/desktop = no swipe) */
+            .bottom-sheet-modal {
                 align-items: center;
                 padding: 24px;
             }
-            #modal-remote-scan .modal-sheet, #modal-scan-stats .modal-sheet,
-            #modal-notif .modal-sheet, #modal-printer .modal-sheet,
-            #modal-opname .modal-sheet, #modal-cart-details .modal-sheet,
-            #modal-checkout .modal-sheet {
+            .bottom-sheet-modal .modal-sheet {
                 border-radius: 32px;
                 max-height: 85vh;
+                transform: translateY(12px) scale(0.97);
+                opacity: 0;
+                transition: background 0.3s, transform 0.25s ease, opacity 0.25s ease;
+            }
+            .bottom-sheet-modal .modal-sheet.sheet-show {
+                transform: translateY(0) scale(1);
+                opacity: 1;
             }
 
             /* Toast centers within the visible content column, not full viewport */
@@ -1613,9 +1631,9 @@
 <!-- ══════════════════════════════════════════════════════════════
      REMOTE SCAN MODAL (Desktop side — HP sebagai Scanner)
 ═══════════════════════════════════════════════════════════════ -->
-<div id="modal-remote-scan" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-remote-scan" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">HP sebagai Scanner</h3>
             <button onclick="closeModal('modal-remote-scan')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
@@ -1653,9 +1671,9 @@
 <!-- ══════════════════════════════════════════════════════════════
      CUSTOMER DISPLAY MODAL (Desktop side — buat & kelola halaman Layar Pelanggan)
 ═══════════════════════════════════════════════════════════════ -->
-<div id="modal-customer-display" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-customer-display" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">Layar Pelanggan</h3>
             <button onclick="closeModal('modal-customer-display')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
@@ -1688,9 +1706,9 @@
 <!-- ══════════════════════════════════════════════════════════════
      LOGIN ID MODAL (Sinkron data antar perangkat — HP & Desktop)
 ═══════════════════════════════════════════════════════════════ -->
-<div id="modal-login-id" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-login-id" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">Login ID Toko</h3>
             <button onclick="closeModal('modal-login-id')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
@@ -1797,9 +1815,9 @@
 </div>
 
 <!-- SCAN STATS MODAL -->
-<div id="modal-scan-stats" class="fixed inset-0 z-[200] bg-slate-900/70 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[80vh]">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-scan-stats" class="bottom-sheet-modal fixed inset-0 z-[200] bg-slate-900/70 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl flex flex-col max-h-[80vh]">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-black uppercase tracking-widest">Ringkasan Scan</h3>
             <button onclick="closeModal('modal-scan-stats')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
@@ -1818,8 +1836,9 @@
 </div>
 
 <!-- LANGUAGE -->
-<div id="modal-language" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
+<div id="modal-language" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-lg">Pilih Bahasa</h3>
         <p class="text-xs text-muted">Pilih bahasa tampilan aplikasi</p>
         <div id="lang-list">
@@ -1831,9 +1850,9 @@
 </div>
 
 <!-- NOTIF -->
-<div id="modal-notif" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[80vh] flex flex-col">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-notif" class="bottom-sheet-modal fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl max-h-[80vh] flex flex-col">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex justify-between items-center mb-5">
             <h3 class="text-lg font-black uppercase tracking-widest">Notifikasi Stok</h3>
             <button onclick="closeModal('modal-notif')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
@@ -1843,9 +1862,9 @@
 </div>
 
 <!-- PRINTER -->
-<div id="modal-printer" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl space-y-5">
-        <div class="w-10 h-1.5 rounded-full mx-auto" style="background:var(--card-border)"></div>
+<div id="modal-printer" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl space-y-5">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="printer-card overflow-hidden">
             <div id="printer-modal-bar" class="printer-status-bar offline"></div>
             <div class="p-4 flex items-center gap-4">
@@ -1878,8 +1897,9 @@
 </div>
 
 <!-- STOCK MOVE -->
-<div id="modal-stock-move" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
+<div id="modal-stock-move" class="bottom-sheet-modal fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-xl font-black" id="stock-move-title">Stok Masuk</h3>
         <div class="space-y-3">
             <div class="space-y-1">
@@ -1905,9 +1925,9 @@
 </div>
 
 <!-- OPNAME -->
-<div id="modal-opname" class="fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl max-h-[90vh] flex flex-col">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-opname" class="bottom-sheet-modal fixed inset-0 z-[130] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl max-h-[90vh] flex flex-col">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-xl font-black uppercase tracking-widest">Stok Opname</h3>
             <button onclick="closeModal('modal-opname')" class="font-bold text-[10px] uppercase text-muted">Batal</button>
@@ -1919,8 +1939,9 @@
 </div>
 
 <!-- MIN STOCK -->
-<div id="modal-minstock" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
+<div id="modal-minstock" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-5">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-lg">Batas Minimum Stok</h3>
         <p class="text-xs text-muted">Produk dengan stok di bawah batas ini akan masuk kategori "Menipis" dan memicu notifikasi.</p>
         <div class="space-y-2">
@@ -1933,8 +1954,9 @@
 </div>
 
 <!-- KELOLA KARYAWAN -->
-<div id="modal-staff-manage" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
+<div id="modal-staff-manage" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-4">
             <h3 class="font-black text-lg">Kelola Karyawan</h3>
             <button onclick="closeModal('modal-staff-manage')" class="w-8 h-8 rounded-full surface flex items-center justify-center"><i class="fa-solid fa-xmark text-xs"></i></button>
@@ -1945,8 +1967,9 @@
 </div>
 
 <!-- FORM TAMBAH/EDIT KARYAWAN -->
-<div id="modal-staff-form" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
+<div id="modal-staff-form" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-lg" id="staff-form-title">Tambah Karyawan</h3>
         <div class="space-y-2">
             <label class="text-[8px] font-black uppercase ml-2 text-muted">Nama Karyawan</label>
@@ -1969,8 +1992,9 @@
 </div>
 
 <!-- BUKA SHIFT -->
-<div id="modal-shift-open" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-5">
+<div id="modal-shift-open" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-5">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="text-center">
             <div class="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center" style="background:rgba(245,158,11,0.12);color:#f59e0b;"><i class="fa-solid fa-cash-register text-xl"></i></div>
             <h3 class="font-black text-lg">Buka Shift Kasir</h3>
@@ -1986,8 +2010,9 @@
 </div>
 
 <!-- TUTUP SHIFT -->
-<div id="modal-shift-close" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[88vh] overflow-y-auto hide-scrollbar">
+<div id="modal-shift-close" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4 max-h-[88vh] overflow-y-auto hide-scrollbar">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="text-center">
             <div class="w-14 h-14 mx-auto mb-3 rounded-2xl flex items-center justify-center" style="background:rgba(16,185,129,0.12);color:#10b981;"><i class="fa-solid fa-flag-checkered text-xl"></i></div>
             <h3 class="font-black text-lg">Tutup Shift Kasir</h3>
@@ -2012,9 +2037,9 @@
 </div>
 
 <!-- CART DETAILS -->
-<div id="modal-cart-details" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl flex flex-col max-h-[85vh]">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-cart-details" class="bottom-sheet-modal fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl flex flex-col max-h-[85vh]">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-xl font-black mb-5 text-center uppercase tracking-widest">Detail Keranjang</h3>
         <div id="cart-items-list" class="flex-1 overflow-y-auto space-y-3 pr-1 mb-5"></div>
         <div class="flex justify-between font-black text-xl border-t pt-5 mt-2 dk-divider"><span>TOTAL</span><span id="cart-detail-total" class="text-indigo-600">Rp 0</span></div>
@@ -2023,9 +2048,9 @@
 </div>
 
 <!-- CHECKOUT -->
-<div id="modal-checkout" class="fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
-    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 animate-pop shadow-2xl">
-        <div class="w-10 h-1.5 rounded-full mx-auto mb-5" style="background:var(--card-border)"></div>
+<div id="modal-checkout" class="bottom-sheet-modal fixed inset-0 z-[100] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-md rounded-t-[40px] p-7 pb-10 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-xl font-black mb-5 text-center uppercase tracking-widest">Konfirmasi Bayar</h3>
         <div class="space-y-4">
             <div class="flex justify-between font-black text-2xl border-b pb-4 dk-divider"><span>TOTAL</span><span id="co-grandtotal">Rp 0</span></div>
@@ -2095,8 +2120,9 @@
 </div>
 
 <!-- DEBT DETAIL -->
-<div id="modal-debt-detail" class="fixed inset-0 z-[80] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl">
+<div id="modal-debt-detail" class="bottom-sheet-modal fixed inset-0 z-[80] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-lg font-black" id="det-debt-name">-</h3>
         <p class="text-[10px] mb-4 font-bold text-muted" id="det-debt-id">-</p>
         <div class="space-y-2 mb-5">
@@ -2113,8 +2139,9 @@
 </div>
 
 <!-- PRODUCT -->
-<div id="modal-product" class="fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop overflow-y-auto max-h-[85vh] shadow-2xl">
+<div id="modal-product" class="bottom-sheet-modal fixed inset-0 z-[120] bg-slate-900/40 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 overflow-y-auto max-h-[85vh] shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="text-xl font-black mb-5">Master Produk</h3>
         <input type="hidden" id="p-id">
         <div class="space-y-4">
@@ -2139,8 +2166,9 @@
 </div>
 
 <!-- CATEGORY -->
-<div id="modal-category" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4">
+<div id="modal-category" class="bottom-sheet-modal fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-lg">Kelola Kategori</h3>
         <div class="flex gap-2">
             <input type="text" id="new-cat-name" placeholder="Kategori Baru" class="flex-1 p-4 rounded-2xl text-sm outline-none border">
@@ -2152,8 +2180,9 @@
 </div>
 
 <!-- STORE CFG -->
-<div id="modal-store-cfg" class="fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
+<div id="modal-store-cfg" class="bottom-sheet-modal fixed inset-0 z-[150] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto hide-scrollbar">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-lg">Setelan Toko</h3>
         <div class="flex flex-col items-center gap-3">
             <div id="logo-preview-cfg" class="w-20 h-20 border rounded-2xl flex items-center justify-center overflow-hidden surface"><i class="fa-solid fa-image text-muted text-2xl"></i></div>
@@ -2170,8 +2199,9 @@
 </div>
 
 <!-- ABOUT -->
-<div id="modal-about" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-9 animate-pop shadow-2xl text-center" style="position:relative;">
+<div id="modal-about" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-9 shadow-2xl text-center" style="position:relative;">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <button onclick="openEditAbout()" id="about-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <div class="w-20 h-20 bg-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-white text-3xl font-black mb-5 shadow-xl">D</div>
         <h3 class="font-black text-xl mb-1">DheKasir</h3>
@@ -2182,8 +2212,9 @@
 </div>
 
 <!-- CARA MENGGUNAKAN APLIKASI -->
-<div id="modal-tutorial" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+<div id="modal-tutorial" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <button onclick="openEditTutorial()" id="tutorial-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <div class="flex items-center gap-3 mb-4 shrink-0">
             <div class="w-10 h-10 bg-emerald-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-graduation-cap text-emerald-600"></i></div>
@@ -2195,8 +2226,9 @@
 </div>
 
 <!-- KEYBOARD SHORTCUTS (khusus desktop) -->
-<div id="modal-shortcuts" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+<div id="modal-shortcuts" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[32px] p-7 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center gap-3 mb-5">
             <div class="w-11 h-11 bg-indigo-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-keyboard text-indigo-600"></i></div>
             <div><h3 class="font-black text-base">Pintasan Keyboard</h3><p class="text-[9px] text-muted font-bold uppercase tracking-widest">Khusus tampilan desktop</p></div>
@@ -2220,8 +2252,9 @@
 </div>
 
 <!-- PRIVACY -->
-<div id="modal-privacy" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+<div id="modal-privacy" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl flex flex-col max-h-[88vh]" style="position:relative;">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <button onclick="openEditPrivacy()" id="privacy-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <div class="flex items-center gap-3 mb-5 shrink-0">
             <div class="w-10 h-10 bg-indigo-100 rounded-2xl flex items-center justify-center"><i class="fa-solid fa-shield-halved text-indigo-600"></i></div>
@@ -2233,8 +2266,9 @@
 </div>
 
 <!-- CONTACT -->
-<div id="modal-contact" class="fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[36px] p-7 animate-pop shadow-2xl" style="position:relative;">
+<div id="modal-contact" class="bottom-sheet-modal fixed inset-0 z-[160] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[36px] p-7 shadow-2xl" style="position:relative;">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <button onclick="openEditContact()" id="contact-edit-btn" class="content-edit-fab hidden" title="Edit halaman (Admin)"><i class="fa-solid fa-pen"></i></button>
         <h3 class="font-black text-lg mb-5 text-center">Hubungi Kami</h3>
         <div class="space-y-5 mb-7">
@@ -2247,8 +2281,9 @@
 </div>
 
 <!-- ══ EDIT HALAMAN INFORMASI (khusus Admin) ══ -->
-<div id="modal-edit-about" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+<div id="modal-edit-about" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[32px] p-7 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-base mb-4">Edit Halaman Tentang</h3>
         <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Pisahkan antar paragraf dengan baris kosong.</p>
         <label class="content-edit-label">Isi Halaman Tentang Aplikasi</label>
@@ -2260,8 +2295,9 @@
     </div>
 </div>
 
-<div id="modal-edit-tutorial" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+<div id="modal-edit-tutorial" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[32px] p-7 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-base mb-4">Edit Cara Menggunakan Aplikasi</h3>
         <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Satu langkah per baris, format: <strong>Judul Langkah :: Penjelasan langkah</strong></p>
         <label class="content-edit-label">Daftar Langkah</label>
@@ -2273,8 +2309,9 @@
     </div>
 </div>
 
-<div id="modal-edit-privacy" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl flex flex-col max-h-[88vh]">
+<div id="modal-edit-privacy" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[32px] p-7 shadow-2xl flex flex-col max-h-[88vh]">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-base mb-4 shrink-0">Edit Kebijakan Privasi</h3>
         <div class="flex-1 overflow-y-auto pr-1 hide-scrollbar">
             <p class="content-edit-hint"><i class="fa-solid fa-circle-info mr-1"></i>Pisahkan antar poin dengan baris kosong. Awali poin dengan "1. Judul:" agar judul tercetak tebal.</p>
@@ -2290,8 +2327,9 @@
     </div>
 </div>
 
-<div id="modal-edit-contact" class="fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-center justify-center p-6">
-    <div class="modal-sheet w-full max-w-sm rounded-[32px] p-7 animate-pop shadow-2xl">
+<div id="modal-edit-contact" class="bottom-sheet-modal fixed inset-0 z-[170] bg-slate-900/60 hidden backdrop-blur-sm flex items-end justify-center">
+    <div class="modal-sheet w-full max-w-sm rounded-t-[32px] p-7 shadow-2xl">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <h3 class="font-black text-base mb-4">Edit Hubungi Kami</h3>
         <label class="content-edit-label">Email</label>
         <input type="text" id="edit-contact-email" class="content-edit-input" placeholder="support@tokoanda.com">
@@ -3349,8 +3387,95 @@ function chimeSuccess(){try{const ctx=getAudioCtx(),notes=[523.25,659.25,783.99,
 // ══════════════════════════════════════════════════════════════
 function formatIDR(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',minimumFractionDigits:0}).format(n||0);}
 function showToast(m){const el=document.getElementById('toast');if(!el)return;el.innerText=m;el.style.opacity='1';clearTimeout(el._t);el._t=setTimeout(()=>el.style.opacity='0',2500);}
-function openModal(id){const el=document.getElementById(id);if(el&&el.classList.contains('hidden')){el.classList.remove('hidden');_lockBodyScroll();}}
-function closeModal(id){const el=document.getElementById(id);if(el&&!el.classList.contains('hidden')){el.classList.add('hidden');_unlockBodyScroll();}}
+function openModal(id){
+    const el=document.getElementById(id);
+    if(!el||!el.classList.contains('hidden'))return;
+    el.classList.remove('hidden');
+    const sheet=el.querySelector(':scope > .modal-sheet');
+    _lockBodyScroll();
+    if(sheet){
+        sheet.style.transform='';
+        sheet.classList.remove('sheet-dragging');
+        // force reflow so the transition from translateY(100%) actually animates
+        void sheet.offsetHeight;
+        requestAnimationFrame(()=>{ sheet.classList.add('sheet-show'); });
+    }
+}
+function closeModal(id){
+    const el=document.getElementById(id);
+    if(!el||el.classList.contains('hidden'))return;
+    const sheet=el.querySelector(':scope > .modal-sheet');
+    _unlockBodyScroll();
+    if(sheet){
+        sheet.classList.remove('sheet-dragging');
+        sheet.style.transform='';
+        sheet.classList.remove('sheet-show');
+        let done=false;
+        const finish=()=>{ if(done)return; done=true; el.classList.add('hidden'); sheet.removeEventListener('transitionend',onEnd); };
+        const onEnd=(e)=>{ if(e.target===sheet && e.propertyName==='transform') finish(); };
+        sheet.addEventListener('transitionend',onEnd);
+        setTimeout(finish,420); // fallback in case transitionend doesn't fire
+    } else {
+        el.classList.add('hidden');
+    }
+}
+
+/* ── SWIPE-TO-DISMISS untuk bottom sheet (ala aplikasi native) ──
+   Geser handle di bagian atas modal ke bawah untuk menutup, gantinya tombol close. */
+(function(){
+    let drag=null;
+    function bindHandle(handle){
+        if(handle.dataset.dragBound)return;
+        handle.dataset.dragBound='1';
+        handle.addEventListener('pointerdown', onDown);
+    }
+    function onDown(e){
+        const handle=e.currentTarget;
+        const sheet=handle.closest('.modal-sheet');
+        const overlay=sheet&&sheet.closest('[id^="modal-"]');
+        if(!sheet||!overlay)return;
+        drag={sheet,overlay,startY:e.clientY,dy:0,startTime:Date.now(),pointerId:e.pointerId,height:sheet.offsetHeight};
+        sheet.classList.add('sheet-dragging');
+        try{handle.setPointerCapture(e.pointerId);}catch(err){}
+        window.addEventListener('pointermove', onMove);
+        window.addEventListener('pointerup', onUp);
+        window.addEventListener('pointercancel', onUp);
+    }
+    function onMove(e){
+        if(!drag)return;
+        let dy=e.clientY-drag.startY;
+        if(dy<0) dy=dy*0.12; // sedikit tahanan kalau geser ke atas
+        drag.dy=dy;
+        drag.sheet.style.transform=`translateY(${dy}px)`;
+    }
+    function onUp(){
+        if(!drag)return;
+        const {sheet,overlay,dy,startTime,height}=drag;
+        const elapsed=Math.max(Date.now()-startTime,1);
+        const velocity=dy/elapsed; // px per ms
+        sheet.classList.remove('sheet-dragging');
+        sheet.style.transform='';
+        const shouldClose = dy > Math.max(80, height*0.22) || velocity > 0.5;
+        if(shouldClose){
+            closeModal(overlay.id);
+        } else {
+            sheet.classList.add('sheet-show');
+        }
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        window.removeEventListener('pointercancel', onUp);
+        drag=null;
+    }
+    function initAll(){
+        document.querySelectorAll('.modal-sheet > .sheet-handle-wrap').forEach(bindHandle);
+    }
+    if(document.readyState==='loading'){
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
+    }
+    window.addEventListener('load', initAll);
+})();
 function saveStorage(){localStorage.setItem('dk_items',JSON.stringify(items));localStorage.setItem('dk_logs',JSON.stringify(logs));localStorage.setItem('dk_debts',JSON.stringify(debts));localStorage.setItem('dk_stock_history',JSON.stringify(stockHistory));syncPushDebounced();}
 
 // ══════════════════════════════════════════════════════════════
