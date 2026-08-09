@@ -1068,27 +1068,30 @@
             .dsp-chip:hover { background: var(--surface-hover); }
             .dsp-chip.active { background: var(--primary); color: #fff; }
 
-            /* ── Inventaris: daftar produk + panel ringkasan nilai stok & stok kritis ── */
-            #tab-items.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
-            #tab-items.active > *:not(#items-desktop-panel) { grid-column: 1; margin: 0 !important; }
-            #items-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            /* ── Inventaris: daftar produk + panel ringkasan nilai stok & stok kritis ──
+               Semua konten utama dibungkus 1 wrapper (#items-main-col) supaya grid cuma
+               punya 2 sel sejajar (bukan banyak baris) — mencegah bug tampilan di mana
+               panel kanan yang tinggi memaksa baris-baris kolom kiri ikut meregang. */
+            #tab-items.active { display: grid; grid-template-columns: 1fr 300px; align-items: start; max-width: 1400px; }
+            #items-main-col { grid-column: 1; margin: 0 !important; min-width: 0; }
+            #items-desktop-panel { grid-column: 2; }
 
             /* ── Manajemen Stok: daftar produk penuh + panel aksi cepat, statistik, riwayat terbaru ── */
-            #tab-stock.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
-            #tab-stock.active > *:not(#stock-desktop-panel) { grid-column: 1; margin: 0 !important; }
-            #stock-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            #tab-stock.active { display: grid; grid-template-columns: 1fr 300px; align-items: start; max-width: 1400px; }
+            #stock-main-col { grid-column: 1; margin: 0 !important; min-width: 0; }
+            #stock-desktop-panel { grid-column: 2; }
             /* Aksi cepat & statistik pindah ke panel di desktop, agar tak dobel dengan versi mobile */
             #tab-stock.active #stock-quick-actions, #tab-stock.active #stock-stat-cards { display: none !important; }
 
             /* ── Buku Hutang: daftar piutang + panel ringkasan total & pelanggan piutang terbesar ── */
-            #tab-debts.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
-            #tab-debts.active > *:not(#debts-desktop-panel) { grid-column: 1; margin: 0 !important; }
-            #debts-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            #tab-debts.active { display: grid; grid-template-columns: 1fr 300px; align-items: start; max-width: 1400px; }
+            #debts-main-col { grid-column: 1; margin: 0 !important; min-width: 0; }
+            #debts-desktop-panel { grid-column: 2; }
 
             /* ── Laporan/Data: riwayat transaksi + panel ringkasan angka & ekspor cepat ── */
-            #tab-data.active { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; max-width: 1400px; }
-            #tab-data.active > *:not(#data-desktop-panel) { grid-column: 1; margin: 0 !important; }
-            #data-desktop-panel { grid-column: 2; grid-row: 1 / -1; }
+            #tab-data.active { display: grid; grid-template-columns: 1fr 300px; align-items: start; max-width: 1400px; }
+            #data-main-col { grid-column: 1; margin: 0 !important; min-width: 0; }
+            #data-desktop-panel { grid-column: 2; }
             /* Tombol ekspor bawaan pindah ke panel di desktop */
             #tab-data.active #data-export-row { display: none !important; }
         }
@@ -1507,6 +1510,9 @@
                     <p class="text-[10px] text-muted font-bold uppercase mt-1">Format .xlsx / .xls / .csv</p>
                 </div>
             </div>
+            <!-- Wrapper kolom kiri: menyatukan semua konten utama jadi 1 sel grid di desktop, agar
+                 panel ringkasan di kanan tidak "meregangkan" baris-baris kolom kiri (bug tampilan). -->
+            <div id="items-main-col" class="space-y-4">
             <div class="flex justify-between items-center flex-wrap gap-2">
                 <h2 class="page-title">Inventaris</h2>
                 <div class="flex gap-2 items-center">
@@ -1526,6 +1532,7 @@
                 <i class="fa-solid fa-search absolute left-4 top-4 text-sm" style="color:var(--text-muted)"></i>
             </div>
             <div id="item-list" class="space-y-3"></div>
+            </div>
 
             <!-- Panel ringkasan inventaris — hanya tampil di layar desktop (>=1024px) -->
             <aside id="items-desktop-panel" class="desktop-side-panel">
@@ -1548,6 +1555,9 @@
 
         <!-- STOCK -->
         <section id="tab-stock" class="tab-content space-y-5">
+            <!-- Wrapper kolom kiri: menyatukan semua konten utama jadi 1 sel grid di desktop, agar
+                 panel ringkasan di kanan tidak "meregangkan" baris-baris kolom kiri (bug tampilan). -->
+            <div id="stock-main-col" class="space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Manajemen Stok</h2>
                 <div id="stock-alert-badge" class="hidden bg-red-50 text-red-500 px-3 py-1 rounded-lg text-[10px] font-black"></div>
@@ -1572,6 +1582,7 @@
                 <button onclick="clearStockHistory()" class="text-[9px] font-black text-red-400 uppercase">Hapus</button>
             </div>
             <div id="stock-history-list" class="space-y-2"></div>
+            </div>
 
             <!-- Panel ringkasan stok — hanya tampil di layar desktop (>=1024px) -->
             <aside id="stock-desktop-panel" class="desktop-side-panel">
@@ -1595,6 +1606,9 @@
 
         <!-- DEBTS -->
         <section id="tab-debts" class="tab-content space-y-4">
+            <!-- Wrapper kolom kiri: menyatukan semua konten utama jadi 1 sel grid di desktop, agar
+                 panel ringkasan di kanan tidak "meregangkan" baris-baris kolom kiri (bug tampilan). -->
+            <div id="debts-main-col" class="space-y-4">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Buku Hutang</h2>
                 <div class="bg-rose-50 text-rose-500 px-3 py-1 rounded-lg text-[10px] font-black" id="debt-count-label">0 ORANG</div>
@@ -1609,6 +1623,7 @@
                 <div class="debt-filter-tab" id="dft-paid" onclick="setDebtFilter('paid')">Lunas</div>
             </div>
             <div id="debt-list" class="space-y-3"></div>
+            </div>
 
             <!-- Panel ringkasan piutang — hanya tampil di layar desktop (>=1024px) -->
             <aside id="debts-desktop-panel" class="desktop-side-panel">
@@ -1629,6 +1644,9 @@
 
         <!-- DATA -->
         <section id="tab-data" class="tab-content space-y-5">
+            <!-- Wrapper kolom kiri: menyatukan semua konten utama jadi 1 sel grid di desktop, agar
+                 panel ringkasan di kanan tidak "meregangkan" baris-baris kolom kiri (bug tampilan). -->
+            <div id="data-main-col" class="space-y-5">
             <div class="flex justify-between items-center">
                 <h2 class="page-title">Laporan</h2>
                 <input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none rounded-xl">
@@ -1640,6 +1658,7 @@
             <div id="export-info" class="text-[9px] font-bold uppercase text-center text-muted"></div>
             <div id="staff-sales-report" class="card p-2 space-y-1 hidden"></div>
             <div id="data-list" class="space-y-3"></div>
+            </div>
 
             <!-- Panel ringkasan laporan — hanya tampil di layar desktop (>=1024px) -->
             <aside id="data-desktop-panel" class="desktop-side-panel">
