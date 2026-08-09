@@ -123,6 +123,7 @@
         .header-app-title { font-size: 15px; font-weight: 800; color: var(--text); }
         .header-actions { display: flex; align-items: center; gap: 8px; }
         .hdr-btn { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--card-border); background: var(--card); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; color: var(--text-muted); position: relative; }
+        .hdr-btn { color: var(--accent, var(--text-muted)); background: color-mix(in srgb, var(--accent, var(--text-muted)) 10%, var(--card)); border-color: color-mix(in srgb, var(--accent, var(--text-muted)) 24%, var(--card-border)); }
         .hdr-btn:active { transform: scale(0.92); }
 
         /* Judul halaman & aksi cepat khusus header desktop — disembunyikan di mobile, dimunculkan lewat @media (min-width:1024px) */
@@ -147,9 +148,12 @@
         .sidebar-item { display: flex; align-items: center; gap: 12px; padding: 11px 12px; border-radius: 14px; cursor: pointer; transition: all 0.15s; color: var(--text-muted); font-size: 13px; font-weight: 600; margin-bottom: 2px; }
         .sidebar-item:active { transform: scale(0.97); }
         .sidebar-item.active { background: var(--primary-soft); color: var(--primary); font-weight: 700; }
+        .sidebar-item.active { background: color-mix(in srgb, var(--accent, var(--primary)) 14%, transparent); color: var(--accent, var(--primary)); }
         .sidebar-item:not(.active):hover { background: var(--surface); color: var(--text); }
         .sidebar-icon { width: 34px; height: 34px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; background: var(--surface); transition: background 0.15s; }
+        .sidebar-icon { color: var(--accent, var(--text-muted)); background: color-mix(in srgb, var(--accent, var(--text-muted)) 15%, var(--surface)); }
         .sidebar-item.active .sidebar-icon { background: var(--primary); color: #fff; }
+        .sidebar-item.active .sidebar-icon { background: var(--accent, var(--primary)); color: #fff; }
         .sidebar-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 9px; font-weight: 800; min-width: 18px; height: 18px; border-radius: 9px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
         .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--card-border); }
         .sidebar-dark-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-radius: 14px; background: var(--surface); cursor: pointer; }
@@ -161,9 +165,10 @@
         .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 10px; border-radius: 14px; cursor: pointer; transition: all 0.2s; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; min-width: 52px; position: relative; }
         .nav-item i { font-size: 18px; transition: all 0.2s; }
         .nav-item.active { color: var(--primary); }
+        .nav-item.active { color: var(--accent, var(--primary)); }
         .nav-item.active i { transform: translateY(-1px); }
         .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--primary); opacity: 0; transition: opacity 0.2s,width 0.2s; }
-        .nav-item.active .nav-item-pill { opacity: 1; }
+        .nav-item.active .nav-item-pill { opacity: 1; background: var(--accent, var(--primary)); }
         .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
         .nav-scan-fab { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; position: relative; min-width: 60px; }
         .nav-scan-fab-btn { width: 52px; height: 52px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; box-shadow: 0 4px 18px rgba(79,70,229,0.45); transition: all 0.2s; margin-top: -18px; border: 3px solid var(--nav-bg); }
@@ -760,7 +765,7 @@
 
             /* Hover state untuk perangkat dengan mouse — kartu, tombol header, baris pengaturan, produk */
             .card:hover { box-shadow: 0 6px 22px rgba(20,20,50,0.07); }
-            .hdr-btn:hover { background: var(--surface-hover); color: var(--primary); border-color: var(--primary); }
+            .hdr-btn:hover { background: color-mix(in srgb, var(--accent, var(--primary)) 18%, var(--card)); color: var(--accent, var(--primary)); border-color: var(--accent, var(--primary)); }
             .settings-row:hover { background: var(--surface); }
             #pos-grid > div.cursor-pointer:hover { box-shadow: 0 10px 26px rgba(20,20,50,0.10); border-color: var(--primary); transform: translateY(-2px); }
             #pos-grid > div { transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; }
@@ -1149,39 +1154,39 @@
         </div>
         <div class="sidebar-nav hide-scrollbar">
             <div class="sidebar-section-label">Menu Utama</div>
-            <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()">
+            <div class="sidebar-item active" id="sb-home" onclick="switchTab('home'); closeSidebar()" style="--accent:#4f46e5;">
                 <div class="sidebar-icon"><i class="fa-solid fa-house" style="font-size:13px;"></i></div><span>Beranda</span>
             </div>
-            <div class="sidebar-item" id="sb-pos" onclick="switchTab('pos'); closeSidebar()">
+            <div class="sidebar-item" id="sb-pos" onclick="switchTab('pos'); closeSidebar()" style="--accent:#8b5cf6;">
                 <div class="sidebar-icon"><i class="fa-solid fa-cash-register" style="font-size:13px;"></i></div><span>Kasir / POS</span>
             </div>
-            <div class="sidebar-item" id="sb-items" onclick="switchTab('items'); closeSidebar()">
+            <div class="sidebar-item" id="sb-items" onclick="switchTab('items'); closeSidebar()" style="--accent:#0ea5e9;">
                 <div class="sidebar-icon"><i class="fa-solid fa-box" style="font-size:13px;"></i></div><span>Inventaris</span>
             </div>
             <div class="sidebar-section-label">Operasional</div>
-            <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()">
+            <div class="sidebar-item" id="sb-stock" onclick="switchTab('stock'); closeSidebar()" style="--accent:#14b8a6;">
                 <div class="sidebar-icon"><i class="fa-solid fa-warehouse" style="font-size:13px;"></i></div>
                 <span>Manajemen Stok</span>
                 <span id="sb-stock-badge" class="sidebar-badge hidden">0</span>
             </div>
-            <div class="sidebar-item" id="sb-debts" onclick="switchTab('debts'); closeSidebar()">
+            <div class="sidebar-item" id="sb-debts" onclick="switchTab('debts'); closeSidebar()" style="--accent:#f59e0b;">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-clock" style="font-size:13px;"></i></div><span>Buku Hutang</span>
             </div>
-            <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()">
+            <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()" style="--accent:#f43f5e;">
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div><span>Laporan & Data</span>
             </div>
             <div class="sidebar-section-label">Akun</div>
-            <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()">
-                <div class="sidebar-icon" style="color:#10b981;"><i class="fa-solid fa-id-badge" style="font-size:13px;"></i></div>
+            <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()" style="--accent:#10b981;">
+                <div class="sidebar-icon"><i class="fa-solid fa-id-badge" style="font-size:13px;"></i></div>
                 <span style="display:flex;flex-direction:column;align-items:flex-start;line-height:1.25;">
                     <span class="sb-staff-name" style="font-size:12.5px;font-weight:800;">—</span>
                     <span class="sb-staff-role" style="font-size:9px;opacity:.55;font-weight:700;text-transform:uppercase;"></span>
                 </span>
             </div>
-            <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()">
+            <div class="sidebar-item" id="sb-settings" onclick="switchTab('settings'); closeSidebar()" style="--accent:#64748b;">
                 <div class="sidebar-icon"><i class="fa-solid fa-user-gear" style="font-size:13px;"></i></div><span>Pengaturan</span>
             </div>
-            <div class="sidebar-item" onclick="renderAboutModal();openModal('modal-about'); closeSidebar()">
+            <div class="sidebar-item" onclick="renderAboutModal();openModal('modal-about'); closeSidebar()" style="--accent:#06b6d4;">
                 <div class="sidebar-icon"><i class="fa-solid fa-circle-info" style="font-size:13px;"></i></div><span>Tentang Aplikasi</span>
             </div>
         </div>
@@ -1224,18 +1229,18 @@
                 <i class="fa-solid fa-plus"></i><span>Tambah Produk</span>
             </button>
             <span class="hdr-divider"></span>
-            <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)">
+            <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)" style="--accent:#6366f1;">
                 <i class="fa-solid fa-keyboard" style="font-size:15px;"></i>
             </button>
-            <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn">
+            <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn" style="--accent:#0ea5e9;">
                 <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
                 <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
             </button>
-            <button onclick="openCustomerDisplayModal()" id="cd-btn" class="hdr-btn">
+            <button onclick="openCustomerDisplayModal()" id="cd-btn" class="hdr-btn" style="--accent:#8b5cf6;">
                 <i class="fa-solid fa-tv" style="font-size:15px;"></i>
                 <span id="cd-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
             </button>
-            <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn">
+            <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" style="--accent:#f43f5e;">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
                 <span id="notif-count-badge" style="position:absolute;top:-3px;right:-3px;width:16px;height:16px;background:#ef4444;color:#fff;border-radius:50%;font-size:8px;font-weight:800;display:none;align-items:center;justify-content:center;border:2px solid var(--nav-bg);">0</span>
             </button>
@@ -1550,14 +1555,14 @@
 
     <!-- BOTTOM NAV -->
     <nav id="bottom-nav">
-        <div class="nav-item active" id="n-home" onclick="switchTab('home')"><i class="fa-solid fa-house"></i><span>Home</span><div class="nav-item-pill"></div></div>
-        <div class="nav-item" id="n-pos" onclick="switchTab('pos')"><i class="fa-solid fa-cash-register"></i><span>Kasir</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item active" id="n-home" onclick="switchTab('home')" style="--accent:#4f46e5;"><i class="fa-solid fa-house"></i><span>Home</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-pos" onclick="switchTab('pos')" style="--accent:#8b5cf6;"><i class="fa-solid fa-cash-register"></i><span>Kasir</span><div class="nav-item-pill"></div></div>
         <div class="nav-scan-fab" onclick="openScanner('cart')">
             <div class="nav-scan-fab-btn scan-pulse"><i class="fa-solid fa-barcode"></i></div>
             <span class="nav-scan-fab-label">Scan</span>
         </div>
-        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;"><i class="fa-solid fa-warehouse"></i><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
-        <div class="nav-item" id="n-data" onclick="switchTab('data')"><i class="fa-solid fa-chart-bar"></i><span>Data</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;--accent:#14b8a6;"><i class="fa-solid fa-warehouse"></i><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
+        <div class="nav-item" id="n-data" onclick="switchTab('data')" style="--accent:#f43f5e;"><i class="fa-solid fa-chart-bar"></i><span>Data</span><div class="nav-item-pill"></div></div>
     </nav>
 
     <!-- CART FLOAT -->
