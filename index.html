@@ -3853,7 +3853,29 @@ async function btPickerScanNew(){
         await btRefreshPickerList();
     }
 }
-async function btAutoReconnectOnLoad(){if(!btPrefs.autoReconnect)return;if(!navigator.bluetooth||typeof navigator.bluetooth.getDevices!=='function')return;try{const devices=await navigator.bluetooth.getDevices();if(!devices||!devices.length)return;let target=devices.find(d=>d.name===btPrefs.lastName)||devices[0];if(!target)return;target.addEventListener('gattserverdisconnected',_onDisconnected);_setPrinterUI('connecting',target.name);await _doConnect(target);showToast(`✓ Auto-connect: "${target.name||'Printer'}"`);}catch(e){_setPrinterUI('offline');}}
+// Menyambungkan kembali ke printer terakhir setiap kali halaman dimuat/di-refresh, SELAMA printer
+// tersebut pernah berhasil terhubung sebelumnya (btPrefs.lastName tersimpan) — tidak lagi bergantung
+// pada toggle "Auto Reconnect" (toggle itu sekarang hanya mengatur reconnect saat printer tiba-tiba
+// terputus di tengah sesi, lihat _onDisconnected). Jadi status "Terhubung" akan tetap terlihat
+// terhubung walau halaman di-refresh, selama browser masih punya izin ke perangkat tsb.
+async function btAutoReconnectOnLoad(){
+    if(!btPrefs.lastName){ _setPrinterUI('offline'); return; } // belum pernah ada printer yang tersambung
+    if(!navigator.bluetooth||typeof navigator.bluetooth.getDevices!=='function'){ _setPrinterUI('offline'); return; }
+    try{
+        const devices=await navigator.bluetooth.getDevices();
+        if(!devices||!devices.length){ _setPrinterUI('offline'); return; }
+        let target=devices.find(d=>d.name===btPrefs.lastName)||devices[0];
+        if(!target){ _setPrinterUI('offline'); return; }
+        target.addEventListener('gattserverdisconnected',_onDisconnected);
+        _setPrinterUI('connecting',target.name);
+        await _doConnect(target);
+        showToast(`✓ Tersambung kembali: "${target.name||'Printer'}"`);
+    }catch(e){
+        // Gagal reconnect otomatis (mis. printer mati/di luar jangkauan) — biarkan status 'error' dari
+        // _doConnect agar user tahu ada printer tersimpan yang gagal tersambung, bukan langsung 'offline'.
+        if(!btDevice) _setPrinterUI('offline');
+    }
+}
 async function btWrite(data){if(!btCharacteristic)throw new Error('Hubungkan printer dulu!');if(btDevice&&!btDevice.gatt.connected){await _doConnect(btDevice);if(!btCharacteristic)throw new Error('Reconnect gagal');}const CHUNK=512;const useWithout=!btCharacteristic.properties.write&&btCharacteristic.properties.writeWithoutResponse;for(let offset=0;offset<data.length;offset+=CHUNK){const chunk=data.slice(offset,offset+CHUNK);try{if(useWithout)await btCharacteristic.writeValueWithoutResponse(chunk);else await btCharacteristic.writeValue(chunk);}catch(e){for(let i=0;i<chunk.length;i+=20){const mini=chunk.slice(i,i+20);try{await btCharacteristic.writeValueWithoutResponse(mini);}catch(e2){await btCharacteristic.writeValue(mini);}await new Promise(r=>setTimeout(r,5));}}if(data.length>CHUNK)await new Promise(r=>setTimeout(r,30));}}
 async function btTestPrint(){const testData={id:'TEST-'+Date.now(),items:[{name:'Test Item',qty:1,price:10000,cost:0}],amount:10000,total_cost:0,pay_cash:10000,pay_qris:0,change:0,method:'Cash/QRIS',created_at:new Date().toISOString()};showToast('Mengirim test print...');try{const data=buildEscPosReceipt(testData);await btWrite(data);showToast("✓ Test print berhasil!");beepScan();}catch(e){showToast('Gagal test print: '+(e.message||'Error'));_setPrinterUI('error',btDevice?.name||'');}}
 async function printBluetoothReceipt(){if(!lastReceiptData)return showToast('Tidak ada data struk!');if(!btCharacteristic&&!btDevice){showToast('Hubungkan printer dulu di Pengaturan!');return;}if(!btConnected){showToast('Reconnecting...');try{await btReconnect();}catch(e){return showToast('Gagal reconnect!');}}showToast('Mengirim ke printer...');try{const data=buildEscPosReceipt(lastReceiptData);await btWrite(data);showToast("✓ Struk berhasil dicetak!");beepScan();}catch(e){showToast('Gagal cetak: '+(e.message||'Error'));btCharacteristic=null;btConnected=false;_setPrinterUI('error',btDevice?.name||'');}}
@@ -5410,7 +5432,7 @@ window.onload = async () => {
     renderCategoryOptions();
     renderPosCategoryChips();
     checkStockAlerts();
-    _setPrinterUI('offline');
+    _setPrinterUI(btPrefs.lastName ? 'connecting' : 'offline'); // hindari kedip ke OFFLINE jika sebelumnya sudah pernah tersambung
     applyBalanceUI();
     updateScanSoundUI();
     updateScanVibrateUI();
