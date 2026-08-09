@@ -170,6 +170,77 @@
         .nav-scan-fab:active .nav-scan-fab-btn { transform: scale(0.9); }
         .nav-scan-fab-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--primary); margin-top: 2px; }
 
+        /* ══════════════════════════════════════════════════════════════
+           ICON LIVELINESS — bottom nav, sidebar, header & action icons
+        ═══════════════════════════════════════════════════════════════ */
+        /* Bottom nav: icon "pops" with a springy bounce when its tab becomes active */
+        .nav-item i { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease; }
+        .nav-item:active i { transform: scale(0.8); }
+        @keyframes navIconPop {
+            0% { transform: scale(1) translateY(0) rotate(0); }
+            40% { transform: scale(1.3) translateY(-4px) rotate(-8deg); }
+            65% { transform: scale(0.92) translateY(0) rotate(4deg); }
+            100% { transform: scale(1) translateY(-1px) rotate(0); }
+        }
+        .nav-item.active i { animation: navIconPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-item-pill { transition: opacity 0.25s ease, width 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-item.active .nav-item-pill { width: 22px; }
+
+        /* Notification dot: pops in then breathes with a soft pulse ring */
+        @keyframes dotPop { 0%{transform:scale(0);} 65%{transform:scale(1.4);} 100%{transform:scale(1);} }
+        @keyframes dotPulseRing { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.55);} 50%{box-shadow:0 0 0 5px rgba(239,68,68,0);} }
+        .nav-dot:not(.hidden) { animation: dotPop 0.35s cubic-bezier(0.34,1.56,0.64,1), dotPulseRing 1.8s ease-in-out 0.35s infinite; }
+
+        /* Scan FAB: gentle float + icon perks up on hover/tap */
+        @keyframes fabFloat { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);} }
+        .nav-scan-fab-btn { animation: fabFloat 2.8s ease-in-out infinite; }
+        .nav-scan-fab-btn i { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-scan-fab:active .nav-scan-fab-btn { animation-play-state: paused; transform: scale(0.88) rotate(-6deg); }
+        .nav-scan-fab:active .nav-scan-fab-btn i { transform: scale(0.85); }
+        @media (hover:hover) and (pointer:fine) { .nav-scan-fab:hover .nav-scan-fab-btn i { transform: rotate(-10deg) scale(1.12); } }
+
+        /* Sidebar menu icons: springy pop when active, playful nudge on hover/tap */
+        .sidebar-icon { transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), background 0.3s; }
+        .sidebar-item:active .sidebar-icon { transform: scale(0.82) rotate(-8deg); }
+        @media (hover:hover) and (pointer:fine) { .sidebar-item:not(.active):hover .sidebar-icon { transform: scale(1.14) rotate(-6deg); } }
+        @keyframes sidebarIconPop {
+            0% { transform: scale(0.6) rotate(-14deg); }
+            55% { transform: scale(1.2) rotate(6deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+        .sidebar-item.active .sidebar-icon { animation: sidebarIconPop 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+
+        /* Header icon buttons (bell, keyboard, remote scan, TV, etc.) */
+        .hdr-btn i { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+        .hdr-btn:active i { transform: scale(0.75) rotate(-10deg); }
+        @media (hover:hover) and (pointer:fine) { .hdr-btn:hover i { transform: scale(1.16) rotate(-6deg); } }
+        @keyframes bellRing {
+            0%,100% { transform: rotate(0); }
+            4% { transform: rotate(-16deg); } 8% { transform: rotate(14deg); }
+            12% { transform: rotate(-11deg); } 16% { transform: rotate(8deg); }
+            20% { transform: rotate(-4deg); } 24% { transform: rotate(0); }
+        }
+        #notif-bell.has-alert i { animation: bellRing 2.6s ease-in-out infinite; transform-origin: 50% 0%; }
+
+        /* Icon boxes used across settings rows, dashboard summaries, quick actions */
+        .settings-icon, .psb-icon, .dpt-icon, .hero-qa-icon { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), background 0.3s; }
+        .settings-row:active .settings-icon { transform: scale(0.85) rotate(-6deg); }
+        @media (hover:hover) and (pointer:fine) {
+            .settings-row:hover .settings-icon { transform: scale(1.14) rotate(-6deg); }
+            .hero-qa-btn:hover .hero-qa-icon { transform: scale(1.14) translateY(-2px); }
+        }
+        .dsp-action-btn { transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), all 0.15s; }
+        .dsp-action-btn i { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1); }
+        .dsp-action-btn:active { transform: scale(0.95); }
+        .dsp-action-btn:active i { transform: scale(0.8) rotate(-8deg); }
+        @media (hover:hover) and (pointer:fine) { .dsp-action-btn:hover i { transform: scale(1.15) rotate(-6deg); } }
+
+        /* Generic springy tap-feedback for icons inside any icon-boxed button across the app
+           (stock quick actions, hero shortcuts, category chips, etc.) */
+        button i.fa-solid, button i.fa-brands, button i.fa-regular,
+        .card i.fa-solid, [onclick] > i.fa-solid { transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+        button:active i.fa-solid, .card:active i.fa-solid, [onclick]:active > i.fa-solid { transform: scale(0.8); }
+
         /* ── TAB CONTENT ── */
         .tab-content { display: none; padding: 16px 16px 110px; }
         .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
@@ -3552,9 +3623,11 @@ function switchTab(tab){
     document.querySelectorAll('.tab-content').forEach(s=>s.classList.remove('active'));
     const target=document.getElementById(`tab-${tab}`);if(target)target.classList.add('active');
     document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
-    const navBtn=document.getElementById(`n-${tab}`);if(navBtn)navBtn.classList.add('active');
+    const navBtn=document.getElementById(`n-${tab}`);
+    if(navBtn){ void navBtn.offsetWidth; navBtn.classList.add('active'); }
     document.querySelectorAll('.sidebar-item[id^="sb-"]').forEach(b=>b.classList.remove('active'));
-    const sbBtn=document.getElementById(`sb-${tab}`);if(sbBtn)sbBtn.classList.add('active');
+    const sbBtn=document.getElementById(`sb-${tab}`);
+    if(sbBtn){ void sbBtn.offsetWidth; sbBtn.classList.add('active'); }
     localStorage.setItem('dk_active_tab',tab);
     updateDesktopPageTitle(tab);
     if(tab==='home')renderHome();if(tab==='data')renderData();if(tab==='items')renderItems();
@@ -3768,6 +3841,7 @@ function checkStockAlerts(){
     const badge=document.getElementById('notif-count-badge'),sbBadge=document.getElementById('sb-stock-badge');
     if(badge){badge.innerText=total;badge.style.display=total>0?'flex':'none';}
     if(sbBadge){sbBadge.innerText=total;sbBadge.classList.toggle('hidden',total===0);}
+    const bellBtn=document.getElementById('notif-bell');if(bellBtn)bellBtn.classList.toggle('has-alert',total>0);
     return{critical,low};
 }
 function openNotifPanel(){
