@@ -85,6 +85,17 @@
         }
         #splash-screen.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
         #splash-screen.skip-instant { display: none !important; }
+        /* ── Quick splash: animasi ringan yang tampil setiap kali pengguna REFRESH halaman
+           (bukan kunjungan pertama). Elemen fitur/versi disembunyikan, gerak logo & spinner
+           dipercepat, dan durasi fade-out lebih singkat agar terasa gesit, bukan flash instan. */
+        #splash-screen.splash-quick { transition: opacity 0.42s ease, transform 0.42s ease; }
+        #splash-screen.splash-quick .splash-feature-area,
+        #splash-screen.splash-quick .splash-version,
+        #splash-screen.splash-quick .splash-tagline { display: none; }
+        #splash-screen.splash-quick .splash-logo-box { animation: logoAppear 0.45s cubic-bezier(0.34,1.56,0.64,1) 0.05s both; }
+        #splash-screen.splash-quick .splash-app-name { animation: textSlideUp 0.4s ease 0.12s both; }
+        #splash-screen.splash-quick .splash-spinner-ring { animation: spinnerRotate 1s linear infinite, spinnerFadeIn 0.3s ease 0.1s forwards; }
+        #splash-screen.splash-quick .splash-ring { animation-duration: 1.1s; }
         .splash-orb { position: absolute; border-radius: 50%; filter: blur(60px); animation: orbFloat 6s ease-in-out infinite; }
         .splash-orb-1 { width: 300px; height: 300px; background: rgba(167,139,250,0.25); top: -80px; right: -60px; }
         .splash-orb-2 { width: 200px; height: 200px; background: rgba(99,102,241,0.3); bottom: 20px; left: -50px; animation-delay: 2s; }
@@ -2589,9 +2600,29 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
     // Jika halaman dibuka dalam mode Remote Scanner (via tautan HP), lewati splash sepenuhnya
     const params=new URLSearchParams(location.search);
     if(params.get('remote')){splash.classList.add('skip-instant');app.style.opacity='0';app.style.transition='none';return;}
-    // Sudah pernah tampil sebelumnya (kapan pun, bukan hanya sesi ini) → lewati
-    if(localStorage.getItem(SPLASH_KEY)==='1'){splash.classList.add('skip-instant');app.style.opacity='1';app.style.transition='none';return;}
-    localStorage.setItem(SPLASH_KEY,'1');
+
+    const alreadyShown = localStorage.getItem(SPLASH_KEY)==='1';
+    if(!alreadyShown) localStorage.setItem(SPLASH_KEY,'1');
+
+    // Kunjungan berikutnya / REFRESH halaman → bukan lagi flash instan, melainkan animasi
+    // singkat "quick splash": logo masuk dengan spring + spinner ring berputar cepat + glow
+    // badge "siap" lalu fade-out halus. Total ±1.1 detik. Splash penuh 7 detik di bawah
+    // hanya berjalan pada kunjungan PERTAMA kali.
+    if(alreadyShown){
+        splash.classList.add('splash-quick');
+        app.style.opacity='0';
+        const QUICK_DURATION=1100, QUICK_FADE=400;
+        setTimeout(()=>{
+            logoBox.classList.add('splash-ready');
+            checkBadge.classList.add('show');
+        }, QUICK_DURATION-QUICK_FADE-300);
+        setTimeout(()=>{
+            splash.classList.add('fade-out');
+            app.style.opacity='1';
+            setTimeout(()=>splash.style.display='none',QUICK_FADE);
+        },QUICK_DURATION-QUICK_FADE);
+        return;
+    }
 
     // 4 highlight fitur aplikasi yang ditampilkan bergantian selama splash (EN fallback jika bahasa Inggris)
     const featuresId=[
