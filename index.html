@@ -1249,6 +1249,15 @@
             <div class="sidebar-item" id="sb-data" onclick="switchTab('data'); closeSidebar()" style="--accent:#f43f5e;">
                 <div class="sidebar-icon"><i class="fa-solid fa-chart-bar" style="font-size:13px;"></i></div><span>Laporan & Data</span>
             </div>
+            <div class="sidebar-section-label">Perangkat</div>
+            <div class="sidebar-item" onclick="openRemoteScanModal(); closeSidebar()" style="--accent:#0ea5e9;position:relative;">
+                <div class="sidebar-icon"><i class="fa-solid fa-mobile-screen-button" style="font-size:13px;"></i></div><span>HP sebagai Scanner</span>
+                <span id="sb-remote-scan-dot" class="hidden" style="width:8px;height:8px;background:#10b981;border-radius:50%;border:2px solid var(--sidebar-bg);margin-left:auto;"></span>
+            </div>
+            <div class="sidebar-item" onclick="openCustomerDisplayModal(); closeSidebar()" style="--accent:#8b5cf6;position:relative;">
+                <div class="sidebar-icon"><i class="fa-solid fa-tv" style="font-size:13px;"></i></div><span>Layar Pelanggan</span>
+                <span id="sb-cd-dot" class="hidden" style="width:8px;height:8px;background:#10b981;border-radius:50%;border:2px solid var(--sidebar-bg);margin-left:auto;"></span>
+            </div>
             <div class="sidebar-section-label">Akun</div>
             <div class="sidebar-item hidden" id="sb-staff-chip" onclick="switchStaffUser()" style="--accent:#10b981;">
                 <div class="sidebar-icon"><i class="fa-solid fa-id-badge" style="font-size:13px;"></i></div>
@@ -1308,14 +1317,6 @@
             <span class="hdr-divider"></span>
             <button onclick="openModal('modal-shortcuts')" id="kbd-shortcuts-btn" class="hdr-btn desktop-only" title="Pintasan Keyboard (?)" style="--accent:#6366f1;">
                 <i class="fa-solid fa-keyboard" style="font-size:15px;"></i>
-            </button>
-            <button onclick="openRemoteScanModal()" id="remote-scan-btn" class="hdr-btn" style="--accent:#0ea5e9;">
-                <i class="fa-solid fa-mobile-screen-button" style="font-size:15px;"></i>
-                <span id="remote-scan-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
-            </button>
-            <button onclick="openCustomerDisplayModal()" id="cd-btn" class="hdr-btn" style="--accent:#8b5cf6;">
-                <i class="fa-solid fa-tv" style="font-size:15px;"></i>
-                <span id="cd-dot" class="hidden" style="position:absolute;top:-2px;right:-2px;width:9px;height:9px;background:#10b981;border-radius:50%;border:2px solid var(--nav-bg);"></span>
             </button>
             <button onclick="openNotifPanel()" id="notif-bell" class="hdr-btn" style="--accent:#f43f5e;">
                 <i class="fa-solid fa-bell" style="font-size:15px;"></i>
@@ -3232,7 +3233,7 @@ function updateRemoteStatusUI(connected){
     remoteConnected = connected;
     const pill = document.getElementById('remote-status-pill');
     const txt = document.getElementById('remote-status-text');
-    const dot = document.getElementById('remote-scan-dot');
+    const dot = document.getElementById('sb-remote-scan-dot');
     const settingsStatus = document.getElementById('remote-scan-status-display');
     if(pill){ pill.classList.toggle('waiting', !connected); pill.classList.toggle('connected', connected); }
     if(txt) txt.textContent = connected ? 'HP tersambung ✓' : 'Menunggu HP...';
@@ -3334,7 +3335,7 @@ function updateCustomerDisplayStatusUI(connected){
     cdConnected = connected;
     const pill = document.getElementById('cd-status-pill');
     const txt = document.getElementById('cd-status-text');
-    const dot = document.getElementById('cd-dot');
+    const dot = document.getElementById('sb-cd-dot');
     const settingsStatus = document.getElementById('cd-status-display');
     if(pill){ pill.classList.toggle('waiting', !connected); pill.classList.toggle('connected', connected); }
     if(txt) txt.textContent = connected ? 'Layar pelanggan tersambung ✓' : 'Menunggu layar tersambung...';
@@ -3682,6 +3683,13 @@ function closeModal(id){
         el.classList.add('hidden');
     }
 }
+// Sentuh/tap di mana pun pada area backdrop bottom sheet (di luar kartu modal-sheet) akan menutup pop up.
+// Dipasang sebagai satu listener global (delegasi) sehingga otomatis berlaku untuk SEMUA modal bottom sheet.
+document.addEventListener('click',function(e){
+    if(e.target && e.target.classList && e.target.classList.contains('bottom-sheet-modal') && !e.target.classList.contains('hidden')){
+        closeModal(e.target.id);
+    }
+});
 
 /* ── SWIPE-TO-DISMISS untuk bottom sheet (ala aplikasi native) ──
    Geser handle di bagian atas modal ke bawah untuk menutup, gantinya tombol close. */
