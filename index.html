@@ -322,9 +322,9 @@
         }
         .modal-sheet.sheet-show { transform: translateY(0); }
         .modal-sheet.sheet-dragging { transition: background 0.3s; }
-        .sheet-handle-wrap { display: flex; justify-content: center; padding: 5px 0 10px; margin: -10px -10px 0; touch-action: none; cursor: grab; }
+        .sheet-handle-wrap { display: flex; justify-content: center; padding: 4px 0 8px; margin: -15px -10px 0; touch-action: none; cursor: grab; }
         .sheet-handle-wrap:active { cursor: grabbing; }
-        .sheet-handle { width: 30px; height: 3px; border-radius: 3px; background: var(--card-border); transition: background 0.3s; }
+        .sheet-handle { width: 24px; height: 2px; border-radius: 2px; background: var(--card-border); transition: background 0.3s; }
         .sheet-handle-wrap:active .sheet-handle { background: var(--text-muted); }
         @media (min-width: 1024px) {
             .bottom-sheet-modal .sheet-handle-wrap { display: none; }
@@ -3703,14 +3703,19 @@ document.addEventListener('click',function(e){
         return !!(el && el.closest && el.closest('input, textarea, select'));
     }
     // Cari elemen scroll terdekat di dalam sheet (supaya konten yg sedang di-scroll
-    // tidak ikut ketarik menutup modal)
+    // tidak ikut ketarik menutup modal). BUG LAMA: loop berhenti SEBELUM memeriksa
+    // elemen "sheet" itu sendiri, padahal banyak modal yang overflow-y-auto-nya
+    // menempel langsung di .modal-sheet (bukan di div anak) — akibatnya elemen
+    // scroll itu tidak pernah terdeteksi, dan drag-to-close jadi salah baca
+    // status scroll konten di seluruh area modal tsb. Sekarang "sheet" ikut diperiksa.
     function findScrollable(el, sheet){
         let node = el;
-        while(node && node !== sheet && node !== document.body){
+        while(node && node !== document.body){
             if(node.scrollHeight > node.clientHeight + 1){
                 const cs = getComputedStyle(node);
                 if(/(auto|scroll)/.test(cs.overflowY)) return node;
             }
+            if(node === sheet) break;
             node = node.parentElement;
         }
         return null;
@@ -3731,13 +3736,18 @@ document.addEventListener('click',function(e){
             if(e.pointerType==='mouse') return;
             if(isTypingTarget(e.target)) return;
         }
+        const scrollable = onHandle ? null : findScrollable(e.target, sheet);
         drag={
             sheet, overlay,
             startY:e.clientY, startX:e.clientX, dy:0,
             startTime:Date.now(), pointerId:e.pointerId,
             height:sheet.offsetHeight,
             active:onHandle, // handle langsung aktif; area lain nunggu gestur turun jelas
-            scrollable: onHandle? null : findScrollable(e.target, sheet)
+            scrollable,
+            // Simpan posisi scroll SAAT sentuhan dimulai (bukan dibaca ulang saat move),
+            // supaya keputusan "ini scroll konten atau drag-tutup?" tidak keliru
+            // gara-gara scrollTop keburu berubah akibat native-scroll browser.
+            scrollableStartTop: scrollable ? scrollable.scrollTop : 0
         };
         if(onHandle){
             sheet.classList.add('sheet-dragging');
@@ -3754,7 +3764,7 @@ document.addEventListener('click',function(e){
         if(!drag.active){
             if(Math.abs(dy)<DRAG_THRESHOLD && Math.abs(dx)<DRAG_THRESHOLD) return;
             const turunDominan = dy>0 && Math.abs(dy) > Math.abs(dx)*1.2;
-            const kontenSedangDiScroll = drag.scrollable && drag.scrollable.scrollTop>0;
+            const kontenSedangDiScroll = drag.scrollable && drag.scrollableStartTop>0;
             if(!turunDominan || kontenSedangDiScroll){
                 // Bukan gestur tutup (misalnya scroll konten / geser ke atas) — biarkan normal
                 cancelDrag();
