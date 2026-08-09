@@ -1651,9 +1651,10 @@
                 <h2 class="page-title">Laporan</h2>
                 <input type="date" id="date-filter" onchange="renderData()" class="card px-3 py-2 text-[10px] font-bold outline-none rounded-xl">
             </div>
-            <div class="grid grid-cols-2 gap-3" id="data-export-row">
+            <div class="grid grid-cols-3 gap-3" id="data-export-row">
                 <button onclick="exportExcel()" class="py-4 bg-emerald-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-excel mr-2"></i> Excel</button>
                 <button onclick="exportPDF()" class="py-4 bg-rose-600 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-pdf mr-2"></i> PDF</button>
+                <button onclick="exportJSON()" class="py-4 bg-amber-500 text-white rounded-2xl font-black text-[10px] uppercase shadow-lg"><i class="fa-solid fa-file-code mr-2"></i> JSON</button>
             </div>
             <div id="export-info" class="text-[9px] font-bold uppercase text-center text-muted"></div>
             <div id="staff-sales-report" class="card p-2 space-y-1 hidden"></div>
@@ -1675,6 +1676,7 @@
                     </div>
                     <div class="dsp-action-btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel" style="color:#16a34a;"></i><span>Export Excel</span></div>
                     <div class="dsp-action-btn" onclick="exportPDF()"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i><span>Export PDF</span></div>
+                    <div class="dsp-action-btn" onclick="exportJSON()"><i class="fa-solid fa-file-code" style="color:#f59e0b;"></i><span>Export JSON</span></div>
                 </div>
             </aside>
         </section>
@@ -4877,6 +4879,53 @@ function handleItemsDrop(e){
     if(file)importProductsFromFile(file);
 }
 function exportPDF(){if(typeof window.jspdf==='undefined')return showToast('Gagal export PDF!');const filtered=getFilteredLogs();if(filtered.length===0)return showToast('Tidak ada data!');try{const{jsPDF}=window.jspdf;const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});const pc=[79,70,229];const PW=210,M=14,CW=PW-M*2;doc.setFillColor(...pc);doc.rect(0,0,PW,22,'F');doc.setFontSize(13);doc.setFont('helvetica','bold');doc.setTextColor(255,255,255);doc.text(config.storeName||'DheKasir',M,10);doc.setFontSize(7);doc.setFont('helvetica','normal');doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`,M,15.5);doc.autoTable({head:[["ID","Tanggal","Item","Total","Metode"]],body:filtered.slice().reverse().map(l=>[l.id.substring(0,12)+'…',l.date,(l.items||[]).slice(0,2).map(i=>`${i.name} x${i.qty}`).join(', ')+(l.items&&l.items.length>2?'…':''),formatIDR(l.amount),l.method]),startY:28,margin:{left:M,right:M},styles:{fontSize:7,cellPadding:2.5},headStyles:{fillColor:pc,textColor:[255,255,255],fontStyle:'bold'},alternateRowStyles:{fillColor:[248,248,255]}});const f=(document.getElementById('date-filter')||{value:''}).value;doc.save(`DheKasir_v2${f?'_'+f:''}_${Date.now()}.pdf`);showToast('PDF berhasil diunduh!');}catch(e){showToast('Gagal export PDF!');}}
+
+// Ekspor laporan transaksi (mengikuti filter tanggal yang sama dengan Excel/PDF) sebagai file .json —
+// berisi data mentah tiap transaksi (bukan ringkasan yang sudah diformat) sehingga cocok untuk backup
+// atau diproses ulang oleh sistem/skrip lain.
+function exportJSON(){
+    const filtered = getFilteredLogs();
+    if(filtered.length===0) return showToast('Tidak ada data!');
+    try{
+        const f = (document.getElementById('date-filter')||{value:''}).value;
+        const totalSales = filtered.reduce((s,l)=>s+Number(l.amount||0),0);
+        const totalCost  = filtered.reduce((s,l)=>s+Number(l.total_cost||0),0);
+        const payload = {
+            store: config.storeName || 'DheKasir',
+            exported_at: new Date().toISOString(),
+            date_filter: f || 'semua_tanggal',
+            summary: {
+                total_transactions: filtered.length,
+                total_sales: totalSales,
+                total_profit: totalSales - totalCost
+            },
+            transactions: filtered.slice().reverse().map(l=>({
+                id: l.id,
+                date: l.date || null,
+                created_at: l.created_at || null,
+                method: l.method || null,
+                items: (l.items||[]).map(i=>({name:i.name, qty:i.qty, price:i.price, cost:i.cost||0})),
+                amount: Number(l.amount||0),
+                total_cost: Number(l.total_cost||0),
+                pay_cash: Number(l.pay_cash||0),
+                pay_qris: Number(l.pay_qris||0),
+                change: Number(l.change||0)
+            }))
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `DheKasir_v2${f?'_'+f:''}_${Date.now()}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        showToast('JSON berhasil diunduh!');
+    }catch(e){
+        showToast('Gagal export JSON!');
+    }
+}
 
 // ══════════════════════════════════════════════════════════════
 // DEBTS
