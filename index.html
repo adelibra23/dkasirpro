@@ -324,8 +324,8 @@
         .modal-sheet.sheet-dragging { transition: background 0.3s; }
         .sheet-handle-wrap { display: flex; justify-content: center; padding: 4px 0 8px; margin: -15px -10px 0; touch-action: none; cursor: grab; }
         .sheet-handle-wrap:active { cursor: grabbing; }
-        .sheet-handle { width: 24px; height: 2px; border-radius: 2px; background: var(--card-border); transition: background 0.3s; }
-        .sheet-handle-wrap:active .sheet-handle { background: var(--text-muted); }
+        .sheet-handle { width: 24px; height: 2px; border-radius: 2px; background: var(--text-muted); opacity: 0.55; transition: background 0.3s, opacity 0.3s; }
+        .sheet-handle-wrap:active .sheet-handle { background: var(--text); opacity: 0.85; }
         @media (min-width: 1024px) {
             .bottom-sheet-modal .sheet-handle-wrap { display: none; }
         }
@@ -1791,7 +1791,6 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">HP sebagai Scanner</h3>
-            <button onclick="closeModal('modal-remote-scan')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <p class="text-xs text-muted mb-5">Scan kode QR ini pakai kamera HP, atau buka DheKasir di HP lalu masukkan kode. Barang hasil scan HP otomatis masuk ke keranjang kasir di layar ini — dan muncul LIVE di layar pelanggan. Koneksi tetap aktif meski modal ini ditutup.</p>
 
@@ -1831,7 +1830,6 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">Layar Pelanggan</h3>
-            <button onclick="closeModal('modal-customer-display')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <p class="text-xs text-muted mb-5">Buka tautan/kode ini sebagai <strong class="text-indigo-500">halaman terpisah</strong> di monitor kedua, tablet, atau layar apa pun yang menghadap pelanggan. Setiap barang yang di-scan kasir — lewat kamera perangkat ini maupun HP Scanner — otomatis tampil live di layar tersebut lengkap dengan total belanja, persis seperti layar kasir di minimarket. Tidak perlu install apa pun, cukup buka tautannya di browser.</p>
 
@@ -1866,7 +1864,6 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex items-center justify-between mb-1">
             <h3 class="text-lg font-black">Login ID Toko</h3>
-            <button onclick="closeModal('modal-login-id')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <p class="text-xs text-muted mb-5">Gunakan <strong class="text-indigo-500">Login ID</strong> yang sama di HP dan Desktop agar data produk, transaksi, stok, dan hutang otomatis tersinkron secara realtime antar perangkat.</p>
 
@@ -1975,7 +1972,6 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex justify-between items-center mb-4">
             <h3 class="text-lg font-black uppercase tracking-widest">Ringkasan Scan</h3>
-            <button onclick="closeModal('modal-scan-stats')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <div class="flex gap-3 mb-4">
             <div class="flex-1 card p-4 text-center shadow-sm"><p class="text-[8px] font-black uppercase text-muted mb-1">Total Item</p><p class="text-2xl font-black text-indigo-600" id="ss-total-items">0</p></div>
@@ -2010,7 +2006,6 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="flex justify-between items-center mb-5">
             <h3 class="text-lg font-black uppercase tracking-widest">Notifikasi Stok</h3>
-            <button onclick="closeModal('modal-notif')" class="font-bold text-[10px] uppercase text-muted">Tutup</button>
         </div>
         <div id="notif-list" class="flex-1 overflow-y-auto space-y-3 hide-scrollbar"></div>
     </div>
