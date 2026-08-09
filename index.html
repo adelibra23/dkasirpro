@@ -104,14 +104,37 @@
         .splash-app-name { margin-top: 28px; font-size: 30px; font-weight: 900; color: #fff; letter-spacing: -0.5px; text-align: center; animation: textSlideUp 0.6s ease 0.6s both; }
         .splash-tagline { margin-top: 6px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.55); letter-spacing: 0.15em; text-transform: uppercase; text-align: center; animation: textSlideUp 0.6s ease 0.75s both; }
         @keyframes textSlideUp { 0%{opacity:0;transform:translateY(16px);}100%{opacity:1;transform:translateY(0);} }
-        .splash-progress-area { position: absolute; bottom: 72px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 0 48px; animation: textSlideUp 0.6s ease 1s both; }
-        .splash-dots { display: flex; align-items: center; justify-content: center; gap: 7px; }
-        .splash-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.9); animation: dotBounce 1.2s ease-in-out infinite; box-shadow: 0 0 8px rgba(255,255,255,0.5); }
-        .splash-dot:nth-child(2) { animation-delay: 0.15s; }
-        .splash-dot:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes dotBounce { 0%,80%,100%{opacity:0.35;transform:scale(0.7) translateY(0);} 40%{opacity:1;transform:scale(1.1) translateY(-5px);} }
-        .splash-status-text { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.1em; text-transform: uppercase; text-align: center; min-height: 14px; transition: opacity 0.3s; }
-        .splash-version { position: absolute; bottom: 32px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
+
+        /* Rotating gradient trail around the logo — a decorative "alive" loading cue, deliberately NOT a progress bar */
+        .splash-spinner-ring {
+            position: absolute; width: 196px; height: 196px; border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.65) 30deg, transparent 95deg, transparent 360deg);
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+                    mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2.5px));
+            opacity: 0;
+            animation: spinnerRotate 2.6s linear infinite, spinnerFadeIn 0.6s ease 0.35s forwards;
+        }
+        @keyframes spinnerRotate { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+        @keyframes spinnerFadeIn { to{opacity:1;} }
+
+        /* Checkmark badge that pops onto the logo right before the app is ready */
+        .splash-check-badge { position: absolute; bottom: -3px; right: -3px; width: 27px; height: 27px; border-radius: 50%; background: #10b981; border: 3px solid #211d54; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; opacity: 0; transform: scale(0); z-index: 3; box-shadow: 0 4px 12px rgba(16,185,129,0.5); }
+        .splash-check-badge.show { animation: checkPop 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+        @keyframes checkPop { 0%{opacity:0;transform:scale(0) rotate(-45deg);} 60%{opacity:1;transform:scale(1.3) rotate(8deg);} 100%{opacity:1;transform:scale(1) rotate(0);} }
+        .splash-logo-box.splash-ready { animation: readyGlow 0.9s ease forwards; }
+        @keyframes readyGlow { 0%{box-shadow:0 0 0 1px rgba(255,255,255,0.1),0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.3);} 45%{box-shadow:0 0 0 1px rgba(16,185,129,0.6),0 0 40px 6px rgba(16,185,129,0.45),0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.3);} 100%{box-shadow:0 0 0 1px rgba(16,185,129,0.35),0 0 24px 2px rgba(16,185,129,0.25),0 20px 60px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.3);} }
+
+        /* Feature highlight carousel — showcases what the app does during the 7s splash, no percentage/bar anywhere */
+        .splash-feature-area { position: absolute; bottom: 68px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 0 40px; animation: textSlideUp 0.6s ease 1s both; }
+        .splash-feature { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 34px; }
+        .splash-feature-icon { width: 30px; height: 30px; border-radius: 10px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px; flex-shrink: 0; }
+        .splash-feature-text { font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.92); letter-spacing: 0.01em; white-space: nowrap; }
+        .splash-feature.fade-swap { animation: featureFade 1.25s ease both; }
+        @keyframes featureFade { 0%{opacity:0;transform:translateY(8px);} 14%{opacity:1;transform:translateY(0);} 84%{opacity:1;transform:translateY(0);} 100%{opacity:0;transform:translateY(-8px);} }
+        .splash-step-dots { display: flex; gap: 6px; }
+        .splash-step-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.25); transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+        .splash-step-dot.active { width: 18px; border-radius: 3px; background: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.6); }
+        .splash-version { position: absolute; bottom: 30px; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; }
 
         /* ── Card ── */
         .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; transition: background 0.3s, border-color 0.3s; }
@@ -195,13 +218,10 @@
 
         /* ── BOTTOM NAV ── */
         #bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; background: var(--nav-bg); border-top: 1px solid var(--card-border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 50; padding: 8px 8px 20px; display: flex; align-items: center; justify-content: space-around; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 10px; border-radius: 14px; cursor: pointer; transition: all 0.2s; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; min-width: 52px; position: relative; }
-        .nav-item i { font-size: 18px; transition: all 0.2s; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 10px 6px; border-radius: 14px; cursor: pointer; transition: color 0.25s ease; color: var(--text-muted); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; min-width: 52px; position: relative; }
         .nav-item.active { color: var(--accent, var(--primary)); }
-        .nav-item.active i { transform: translateY(-1px); }
-        .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--primary); opacity: 0; transition: opacity 0.2s,width 0.2s; }
-        .nav-item.active .nav-item-pill { opacity: 1; background: var(--accent, var(--primary)); }
+        .nav-item-pill { position: absolute; bottom: -2px; width: 20px; height: 3px; border-radius: 2px; background: var(--accent, var(--primary)); opacity: 0; box-shadow: 0 0 8px 0 var(--accent, var(--primary)); transition: opacity 0.25s ease, width 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-item.active .nav-item-pill { opacity: 1; width: 22px; }
         .nav-dot { position: absolute; top: 4px; right: 8px; width: 7px; height: 7px; background: #ef4444; border-radius: 50%; border: 1.5px solid var(--nav-bg); }
         .nav-scan-fab { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; position: relative; min-width: 60px; }
         .nav-scan-fab-btn { width: 52px; height: 52px; background: linear-gradient(135deg,#4f46e5,#7c3aed); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; box-shadow: 0 4px 18px rgba(79,70,229,0.45); transition: all 0.2s; margin-top: -18px; border: 3px solid var(--nav-bg); }
@@ -211,18 +231,21 @@
         /* ══════════════════════════════════════════════════════════════
            ICON LIVELINESS — bottom nav, sidebar, header & action icons
         ═══════════════════════════════════════════════════════════════ */
-        /* Bottom nav: icon "pops" with a springy bounce when its tab becomes active */
-        .nav-item i { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), color 0.25s ease; }
-        .nav-item:active i { transform: scale(0.8); }
+        /* Bottom nav: colorful icon bubble that lights up + springy bounce when a tab becomes active */
+        .nav-icon-wrap { position: relative; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
+        .nav-icon-wrap::before { content: ''; position: absolute; inset: 0; border-radius: 13px; background: var(--accent, var(--primary)); opacity: 0; transform: scale(0.55); transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        .nav-item.active .nav-icon-wrap::before { opacity: 0.16; transform: scale(1); }
+        .nav-item i { font-size: 17px; color: var(--accent, var(--text-muted)); opacity: 0.55; position: relative; z-index: 1; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease, color 0.25s ease; }
+        .nav-item.active i { opacity: 1; }
+        .nav-item:active .nav-icon-wrap { transform: scale(0.86); }
+        .nav-icon-wrap { transition: transform 0.18s ease; }
         @keyframes navIconPop {
             0% { transform: scale(1) translateY(0) rotate(0); }
-            40% { transform: scale(1.3) translateY(-4px) rotate(-8deg); }
-            65% { transform: scale(0.92) translateY(0) rotate(4deg); }
+            40% { transform: scale(1.32) translateY(-4px) rotate(-8deg); }
+            65% { transform: scale(0.9) translateY(0) rotate(4deg); }
             100% { transform: scale(1) translateY(-1px) rotate(0); }
         }
         .nav-item.active i { animation: navIconPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
-        .nav-item-pill { transition: opacity 0.25s ease, width 0.35s cubic-bezier(0.34,1.56,0.64,1); }
-        .nav-item.active .nav-item-pill { width: 22px; }
 
         /* Notification dot: pops in then breathes with a soft pulse ring */
         @keyframes dotPop { 0%{transform:scale(0);} 65%{transform:scale(1.4);} 100%{transform:scale(1);} }
@@ -1099,21 +1122,28 @@
     <div class="splash-orb splash-orb-3"></div>
     <div class="splash-grid"></div>
     <div class="splash-logo-wrap">
+        <div class="splash-spinner-ring"></div>
         <div class="splash-ring splash-ring-3"></div>
         <div class="splash-ring splash-ring-2"></div>
         <div class="splash-ring splash-ring-1"></div>
-        <div class="splash-logo-box">
+        <div class="splash-logo-box" id="splash-logo-box">
             <span class="splash-logo-letter">D</span>
             <div class="splash-sparkle sp1"></div>
             <div class="splash-sparkle sp2"></div>
             <div class="splash-sparkle sp3"></div>
+            <div class="splash-check-badge" id="splash-check-badge"><i class="fa-solid fa-check"></i></div>
         </div>
         <div class="splash-app-name">DheKasir</div>
         <div class="splash-tagline" id="splash-tagline">Sistem Kasir Digital UMKM</div>
     </div>
-    <div class="splash-progress-area">
-        <div class="splash-status-text" id="splash-status">Memuat sistem...</div>
-        <div class="splash-dots"><span class="splash-dot"></span><span class="splash-dot"></span><span class="splash-dot"></span></div>
+    <div class="splash-feature-area">
+        <div class="splash-feature" id="splash-feature">
+            <div class="splash-feature-icon" id="splash-feature-icon"><i class="fa-solid fa-bolt"></i></div>
+            <span class="splash-feature-text" id="splash-feature-text">Transaksi kasir super cepat</span>
+        </div>
+        <div class="splash-step-dots" id="splash-step-dots">
+            <span class="splash-step-dot"></span><span class="splash-step-dot"></span><span class="splash-step-dot"></span><span class="splash-step-dot"></span>
+        </div>
     </div>
     <div class="splash-version">DheKasir v2.0 • © 2025</div>
 </div>
@@ -1603,14 +1633,14 @@
 
     <!-- BOTTOM NAV -->
     <nav id="bottom-nav">
-        <div class="nav-item active" id="n-home" onclick="switchTab('home')" style="--accent:#4f46e5;"><i class="fa-solid fa-house"></i><span>Home</span><div class="nav-item-pill"></div></div>
-        <div class="nav-item" id="n-pos" onclick="switchTab('pos')" style="--accent:#8b5cf6;"><i class="fa-solid fa-cash-register"></i><span>Kasir</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item active" id="n-home" onclick="switchTab('home')" style="--accent:#4f46e5;"><div class="nav-icon-wrap"><i class="fa-solid fa-house"></i></div><span>Home</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-pos" onclick="switchTab('pos')" style="--accent:#8b5cf6;"><div class="nav-icon-wrap"><i class="fa-solid fa-cash-register"></i></div><span>Kasir</span><div class="nav-item-pill"></div></div>
         <div class="nav-scan-fab" onclick="openScanner('cart')">
             <div class="nav-scan-fab-btn scan-pulse"><i class="fa-solid fa-barcode"></i></div>
             <span class="nav-scan-fab-label">Scan</span>
         </div>
-        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;--accent:#14b8a6;"><i class="fa-solid fa-warehouse"></i><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
-        <div class="nav-item" id="n-data" onclick="switchTab('data')" style="--accent:#f43f5e;"><i class="fa-solid fa-chart-bar"></i><span>Data</span><div class="nav-item-pill"></div></div>
+        <div class="nav-item" id="n-stock" onclick="switchTab('stock')" style="position:relative;--accent:#14b8a6;"><div class="nav-icon-wrap"><i class="fa-solid fa-warehouse"></i></div><span>Gudang</span><div class="nav-item-pill"></div><span id="nav-stock-dot" class="nav-dot hidden"></span></div>
+        <div class="nav-item" id="n-data" onclick="switchTab('data')" style="--accent:#f43f5e;"><div class="nav-icon-wrap"><i class="fa-solid fa-chart-bar"></i></div><span>Data</span><div class="nav-item-pill"></div></div>
     </nav>
 
     <!-- CART FLOAT -->
@@ -2530,15 +2560,23 @@ function confirmProceed() { document.getElementById('modal-confirm').classList.r
 function confirmCancel()  { document.getElementById('modal-confirm').classList.remove('open'); _unlockBodyScroll(); if(_confirmResolve){_confirmResolve(false);_confirmResolve=null;} }
 
 // ── SPLASH ──
-// Splash tampil hanya SEKALI di kali pertama aplikasi dibuka (disimpan permanen
-// di localStorage, bukan sessionStorage), berdurasi tetap 7 detik, tanpa progress bar —
-// hanya animasi logo/ring/sparkle + teks status yang berganti dan indikator titik (dots).
+// Splash tampil hanya SEKALI di kali pertama aplikasi dibuka (disimpan permanen di
+// localStorage, bukan sessionStorage), berdurasi tetap 7 detik dengan koreografi:
+// logo masuk dengan spring animation → spinner ring dekoratif berputar (BUKAN progress bar) →
+// carousel highlight fitur aplikasi bergantian (dengan indikator titik/step, bukan bar) →
+// badge centang "siap" muncul di logo → fade-out halus. Total durasi presisi 7000ms.
 (function(){
     const SPLASH_KEY='dk_splash_shown_v1';
-    const SPLASH_DURATION=7000; // total durasi splash: 7 detik
+    const SPLASH_DURATION=7000; // total durasi splash: tepat 7 detik
+    const FADE_MS=600;          // durasi transisi fade-out di akhir
     const splash=document.getElementById('splash-screen');
     const app=document.getElementById('app');
-    const statusText=document.getElementById('splash-status');
+    const logoBox=document.getElementById('splash-logo-box');
+    const checkBadge=document.getElementById('splash-check-badge');
+    const featureEl=document.getElementById('splash-feature');
+    const featureIconEl=document.getElementById('splash-feature-icon');
+    const featureTextEl=document.getElementById('splash-feature-text');
+    const stepDots=document.querySelectorAll('#splash-step-dots .splash-step-dot');
     const lang=localStorage.getItem('dk_lang')||'id';
     try{const cfg=JSON.parse(localStorage.getItem('dk_config')||'{}');if(cfg.darkMode)document.body.classList.add('dark');}catch(e){}
     const tagEl=document.getElementById('splash-tagline');
@@ -2549,21 +2587,53 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
     // Sudah pernah tampil sebelumnya (kapan pun, bukan hanya sesi ini) → lewati
     if(localStorage.getItem(SPLASH_KEY)==='1'){splash.classList.add('skip-instant');app.style.opacity='1';app.style.transition='none';return;}
     localStorage.setItem(SPLASH_KEY,'1');
-    const messagesId=[TRANSLATIONS[lang]?.splash_loading||'Memuat sistem...','Menyiapkan data toko...','Menghubungkan inventaris...','Hampir siap...','Selamat datang!'];
-    let msgIdx=0;
-    function cycleText(){
-        statusText.style.opacity='0';
-        setTimeout(()=>{statusText.textContent=messagesId[msgIdx%messagesId.length];statusText.style.opacity='1';msgIdx++;},200);
+
+    // 4 highlight fitur aplikasi yang ditampilkan bergantian selama splash (EN fallback jika bahasa Inggris)
+    const featuresId=[
+        {icon:'fa-bolt', text:'Transaksi kasir super cepat'},
+        {icon:'fa-boxes-stacked', text:'Kelola stok otomatis'},
+        {icon:'fa-chart-line', text:'Laporan penjualan instan'},
+        {icon:'fa-check', text:'Siap digunakan!'}
+    ];
+    const featuresEn=[
+        {icon:'fa-bolt', text:'Lightning-fast checkout'},
+        {icon:'fa-boxes-stacked', text:'Automatic stock tracking'},
+        {icon:'fa-chart-line', text:'Instant sales reports'},
+        {icon:'fa-check', text:'All set — ready to go!'}
+    ];
+    const features=(lang==='en')?featuresEn:featuresId;
+
+    const SLOT_MS=1275;           // durasi tiap fitur tampil
+    const FEATURES_START=1300;    // mulai carousel setelah animasi masuk logo/teks selesai
+    let slotIdx=0;
+
+    function showFeature(i){
+        const f=features[i];
+        featureIconEl.innerHTML=`<i class="fa-solid ${f.icon}"></i>`;
+        featureTextEl.textContent=f.text;
+        featureEl.classList.remove('fade-swap');
+        void featureEl.offsetWidth; // restart animasi
+        featureEl.classList.add('fade-swap');
+        stepDots.forEach((d,idx)=>d.classList.toggle('active',idx===i));
+        // Fitur terakhir = momen "siap" → nyalakan badge centang + efek glow pada logo
+        if(i===features.length-1){
+            logoBox.classList.add('splash-ready');
+            checkBadge.classList.add('show');
+        }
     }
-    cycleText();
-    const textTimer=setInterval(cycleText,1400);
+
+    const slotTimers=[];
+    for(let i=0;i<features.length;i++){
+        slotTimers.push(setTimeout(()=>showFeature(i), FEATURES_START + i*SLOT_MS));
+    }
+
     // Splash tetap tampil penuh selama SPLASH_DURATION (7 detik), lalu fade-out halus
     setTimeout(()=>{
-        clearInterval(textTimer);
+        slotTimers.forEach(clearTimeout);
         splash.classList.add('fade-out');
         app.style.opacity='1';
-        setTimeout(()=>splash.style.display='none',600);
-    },SPLASH_DURATION-600);
+        setTimeout(()=>splash.style.display='none',FADE_MS);
+    },SPLASH_DURATION-FADE_MS);
 })();
 
 // ── PWA: INSTAL APLIKASI (Android/Chrome) ──
