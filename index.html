@@ -64,6 +64,10 @@
         * { box-sizing: border-box; }
         html, body { scrollbar-width: none !important; -ms-overflow-style: none !important; }
         html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+        /* Matikan pull-to-refresh & efek glow/overscroll bawaan browser (Chrome/Android) di sumbu Y,
+           supaya tidak "berebut" dengan pull-to-refresh kustom aplikasi (indikator kustom + tanpa
+           garis loading/progress bar bawaan browser yang biasa muncul saat overscroll). */
+        html, body { overscroll-behavior-y: contain; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -72,6 +76,7 @@
             transition: background 0.3s, color 0.3s;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            overscroll-behavior-y: contain;
         }
         body.sidebar-open { overflow: hidden !important; position: fixed; width: 100%; }
         body.modal-open { overflow: hidden !important; position: fixed; width: 100%; }
@@ -176,7 +181,7 @@
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 8px 20px rgba(79,70,229,0.35), 0 0 0 4px var(--bg);
-            z-index: 38; opacity: 0; pointer-events: none;
+            z-index: 50; opacity: 0; pointer-events: none;
             transition: opacity 0.15s ease, background 0.25s ease, box-shadow 0.25s ease;
         }
         #ptr-indicator.ptr-visible { opacity: 1; }
@@ -2674,8 +2679,10 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
 // indikator meluncur balik ke posisi semula (dibatalkan).
 (function(){
     const PTR_THRESHOLD = 68;   // px jarak tarik (setelah resistensi) untuk memicu refresh
-    const PTR_MAX = 100;        // px batas maksimum jarak visual indikator turun
+    const PTR_MAX = 100;        // px batas maksimum jarak tarik (mentah) yang dipakai untuk hitung progres
     const PTR_RESIST = 0.5;     // faktor resistensi/efek karet saat menarik
+    const HIDDEN_Y = -64;       // posisi tersembunyi (di atas layar)
+    const REST_Y = 76;          // posisi akhir saat "siap"/loading — tepat di BAWAH header (62px), tidak menimpa logo/judul header
     const indicator = document.getElementById('ptr-indicator');
     const icon = document.getElementById('ptr-icon');
     if(!indicator || !icon) return;
@@ -2692,7 +2699,7 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
     function reset(){
         indicator.classList.add('ptr-snap');
         indicator.classList.remove('ptr-visible','ptr-ready');
-        indicator.style.transform = 'translate(-50%,-64px)';
+        indicator.style.transform = `translate(-50%, ${HIDDEN_Y}px)`;
         icon.style.transform = 'rotate(0deg)';
         ready = false;
     }
@@ -2711,8 +2718,9 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
         if(dy <= 0){ reset(); return; }
         e.preventDefault();
         const dist = Math.min(dy * PTR_RESIST, PTR_MAX);
+        const progress = dist / PTR_MAX; // 0 → 1, dipakai untuk posisi visual indikator (berhenti tepat di bawah header)
         indicator.classList.add('ptr-visible');
-        indicator.style.transform = `translate(-50%, ${-64 + dist}px)`;
+        indicator.style.transform = `translate(-50%, ${HIDDEN_Y + progress * (REST_Y - HIDDEN_Y)}px)`;
         icon.style.transform = `rotate(${Math.min((dist / PTR_THRESHOLD) * 180, 180)}deg)`;
         const nowReady = dist >= PTR_THRESHOLD;
         if(nowReady !== ready){
@@ -2729,7 +2737,7 @@ function confirmCancel()  { document.getElementById('modal-confirm').classList.r
             active = true;
             indicator.classList.add('ptr-snap','ptr-loading');
             indicator.classList.remove('ptr-ready');
-            indicator.style.transform = 'translate(-50%, 34px)';
+            indicator.style.transform = `translate(-50%, ${REST_Y}px)`;
             icon.className = 'fa-solid fa-arrow-rotate-right';
             setTimeout(() => location.reload(), 650);
         } else {
